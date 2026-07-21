@@ -249,7 +249,8 @@ const s = site;
         <div class="venues__chips">
           {s.venues.chips.map((c) => (<span class="chip">{c}</span>))}
         </div>
-        <img class="venues__map" src={asset(s.venues.map)} alt="Карта площадок «Чё за Квест» в Ростове-на-Дону" width="1200" height="500" loading="lazy" decoding="async" />
+        <div class="venues__map" role="img" aria-label="Карта площадок «Чё за Квест» в Ростове-на-Дону"
+             style={`background-image:url(${asset('/assets/_static/map.webp')})`}></div>
       </div>
     </section>
   </main>

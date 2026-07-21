@@ -139,7 +139,7 @@
 .venues__sub{margin-top:8px;font-size:18px;color:var(--muted);line-height:1.4;max-width:640px}
 .venues__chips{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0}
 .chip{background:#fff;border-radius:10px;padding:14px 22px;font-size:15px;font-weight:600;color:var(--dark);box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.venues__map{width:100%;height:auto;border-radius:16px;margin-top:6px}
+.venues__map{width:100%;aspect-ratio:1160/428;background-size:cover;background-position:center;background-repeat:no-repeat;border-radius:16px;margin-top:6px}
 
 /* ===================== ФУТЕР ===================== */
 .ft{background:var(--dark);color:#fff;margin-top:0;border-radius:28px 28px 0 0;padding:44px 0 26px}
