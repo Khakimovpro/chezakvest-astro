@@ -1,0 +1,12 @@
+---
+// Главная чезаквест.рф, замороженная в статику.
+// head/body вставляются дословно (?raw + set:html) — без парсинга Astro-выражений,
+// поэтому весь Tilda-CSS и разметка сохраняются пиксель-в-пиксель.
+import headHtml from '../html/head.html?raw';
+import bodyHtml from '../html/body.html?raw';
+---
+<!DOCTYPE html>
+<html lang="ru">
+  <head set:html={headHtml}></head>
+  <body class="t-body" style="margin: 0px;" set:html={bodyHtml}></body>
+</html>

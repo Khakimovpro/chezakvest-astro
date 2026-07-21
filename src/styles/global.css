@@ -1,0 +1,70 @@
+/* ===== Дизайн-токены + база (нативная главная «Чё за Квест») ===== */
+:root{
+  --orange:#ff6b00;
+  --orange-2:#ff8a00;      /* верх градиента оранжевых кнопок */
+  --dark:#333333;
+  --ink:#333333;
+  --muted:#474747;
+  --grey:#ababab;
+  --bg:#eeeeee;
+  --white:#ffffff;
+  --container:1200px;      /* контент 1160 при паддинге 20 → левый край 140 на 1440 */
+  --pad:20px;
+  --radius-card:20px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  margin:0;
+  font-family:'Montserrat',Arial,sans-serif;
+  color:var(--ink);
+  background-color:var(--bg);
+  background-image:url(/assets/optim.tildacdn.com/tild3463-3931-4833-b565-346437376365/-/format/webp/_GPT_light.png.webp);
+  background-repeat:repeat-y;
+  background-size:100% auto;
+  background-position:top center;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  line-height:1.4;
+  overflow-x:hidden;
+}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,p,ul,figure{margin:0}
+ul{padding:0;list-style:none}
+button{font-family:inherit;cursor:pointer}
+
+.container{width:100%;max-width:var(--container);margin:0 auto;padding:0 var(--pad)}
+/* Широкие секции (герой, слайдер, стат-блок): контент 1200, край 120 при 1440 */
+.container-wide{width:100%;max-width:1240px;margin:0 auto;padding:0 var(--pad)}
+
+/* Заголовок секции (H2): Montserrat 700 40/62 #333 */
+.section-title{
+  font-weight:700;font-size:40px;line-height:1.15;color:var(--dark);
+}
+.section-sub{font-size:20px;font-weight:400;color:var(--ink);margin-top:6px}
+
+/* Оранжевая pill-кнопка */
+.btn-orange{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:var(--orange);color:#fff;font-weight:600;font-size:17px;
+  border:0;border-radius:60px;padding:0 34px;height:56px;line-height:1;
+  transition:background-color .2s ease,transform .2s ease;
+}
+.btn-orange:hover{background:#ff7d1a}
+
+/* Градиентная оранжевая кнопка (Узнать подробнее / Получить консультацию / Жду звонка) */
+.btn-grad{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#ffb100 0%,#ff7a00 100%);
+  color:#fff;font-weight:700;font-size:16px;border:0;border-radius:8px;
+  padding:0 28px;height:52px;box-shadow:0 6px 16px rgba(255,128,0,.35);
+  transition:filter .2s ease;
+}
+.btn-grad:hover{filter:brightness(1.05)}
+
+/* визуально скрытый (для a11y) */
+.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+section{position:relative}

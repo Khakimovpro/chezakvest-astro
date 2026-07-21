@@ -1,0 +1,43 @@
+---
+import '../styles/fonts.css';
+import '../styles/global.css';
+import site from '../data/site.json';
+const m = site.meta;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => base + p;              // /assets/x -> /<base>/assets/x
+// LCP: адаптивный фон-подземелье героя (мобайл 760 / десктоп 1200)
+const heroBg = asset('/assets/_static/hero_dungeon_1200.webp');
+const heroSrcset = `${asset('/assets/_static/hero_dungeon_760.webp')} 760w, ${asset('/assets/_static/hero_dungeon_1200.webp')} 1200w`;
+const heroSizes = '(max-width:700px) 100vw, 1200px';
+// кириллический woff2 Montserrat — критичен для первого экрана
+const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2');
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{m.title}</title>
+    <meta name="description" content={m.description} />
+    <meta name="keywords" content={m.keywords} />
+    <link rel="canonical" href={m.canonical} />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="yandex-verification" content={m.yandex} />
+    <meta name="theme-color" content="#333333" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={m.canonical} />
+    <meta property="og:title" content={m.title} />
+    <meta property="og:description" content={m.description} />
+    {m.ogimage && <meta property="og:image" content={asset(m.ogimage)} />}
+
+    <link rel="icon" href={asset(m.favicon)} sizes="any" />
+
+    <!-- LCP: фон-подземелье героя + критичный шрифт -->
+    <link rel="preload" as="image" href={heroBg} imagesrcset={heroSrcset} imagesizes={heroSizes} fetchpriority="high" />
+    <link rel="preload" as="font" type="font/woff2" href={montserratCyr} crossorigin />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

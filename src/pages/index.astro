@@ -1,12 +1,298 @@
 ---
-// Главная чезаквест.рф, замороженная в статику.
-// head/body вставляются дословно (?raw + set:html) — без парсинга Astro-выражений,
-// поэтому весь Tilda-CSS и разметка сохраняются пиксель-в-пиксель.
-import headHtml from '../html/head.html?raw';
-import bodyHtml from '../html/body.html?raw';
+import Layout from '../layouts/Layout.astro';
+import QuestCard from '../components/QuestCard.astro';
+import site from '../data/site.json';
+import '../styles/page.css';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => (p ? base + p : '#');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+
+// категории в порядке появления
+const catOrder = [];
+for (const c of site.cards) if (!catOrder.includes(c.cat)) catOrder.push(c.cat);
+const anchorForCat = {
+  'Квесты в Ростове': 'catalog',
+  'Страшные квесты в Ростове': 'strashnye',
+  'Прятки в лабиринте 200м²': 'pryatki',
+  'Квест-шоу на площадке 200м²': 'kvestshou',
+  'VR-игры на арене 300м²': 'vr',
+};
+const cardsByCat = (cat) => site.cards.filter((c) => c.cat === cat);
+const s = site;
 ---
-<!DOCTYPE html>
-<html lang="ru">
-  <head set:html={headHtml}></head>
-  <body class="t-body" style="margin: 0px;" set:html={bodyHtml}></body>
-</html>
+
+<Layout>
+  <!-- ============ ШАПКА ============ -->
+  <header class="hdr" id="top">
+    <div class="hdr__inner container">
+      <a class="hdr__logo" href="#top" aria-label="Чё за Квест — на главную">
+        <img src={asset(s.header.logo)} alt="Чё за Квест" width="150" height="47" />
+      </a>
+
+      <nav class="hdr__nav" aria-label="Основная навигация">
+        <ul class="nav">
+          <li class="nav__item has-mega">
+            <a href="#catalog">Каталог квестов</a>
+            <div class="mega">
+              {catOrder.map((cat) => (
+                <a class="mega__link" href={`#${anchorForCat[cat]}`}>{cat}</a>
+              ))}
+            </div>
+          </li>
+          <li class="nav__item has-mega">
+            <a href="#party">Проведение праздников</a>
+            <div class="mega">
+              {s.footer.cols[0].links.map((l) => (
+                <a class="mega__link" href={link(l.href)}>{l.t}</a>
+              ))}
+            </div>
+          </li>
+          <li class="nav__item"><a href="#strashnye">Хоррор</a></li>
+          <li class="nav__item"><a href="#otzivy">Отзывы</a></li>
+          <li class="nav__item"><a href="#contacts">Контакты</a></li>
+        </ul>
+      </nav>
+
+      <div class="hdr__actions">
+        <a class="hdr__phone" href={s.header.phoneHref}>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 006.6 6.6l2.2-2.2a1 1 0 011-.24 11 11 0 003.4.55 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.55 3.4 1 1 0 01-.25 1L6.6 10.8z"/></svg>
+          <span>{s.header.phone}</span>
+        </a>
+        <a class="hdr__wa" href={s.header.wa} target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
+          <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><path fill="#fff" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.1 1.6 5.9L4 29l8.3-1.6c1.7.9 3.6 1.4 5.7 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.3l-.4-.2-3.7.7.7-3.6-.2-.4a9.8 9.8 0 01-1.5-5.2c0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.4 9.8-9.8 9.8zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.6.1a8 8 0 01-2.4-1.5 9 9 0 01-1.6-2c-.2-.3 0-.4.1-.6l.5-.5c.1-.2.2-.3.3-.5s0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1 2.2 3.4 5.3 4.7c2 .9 2.8.9 3.7.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4l-.6-.3z"/></svg>
+        </a>
+        <button class="hdr__burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Мобильное меню -->
+  <div class="mmenu" id="mobile-menu" hidden>
+    <ul>
+      <li><a href="#catalog">Каталог квестов</a></li>
+      <li><a href="#party">Проведение праздников</a></li>
+      <li><a href="#strashnye">Хоррор</a></li>
+      <li><a href="#otzivy">Отзывы</a></li>
+      <li><a href="#contacts">Контакты</a></li>
+      <li><a href={s.header.phoneHref} class="mmenu__phone">{s.header.phone}</a></li>
+    </ul>
+  </div>
+
+  <main>
+    <!-- ============ ГЕРОЙ ============ -->
+    <section class="hero">
+      <div class="container-wide">
+      <div class="hero__panel">
+        <img class="hero__bg" src={asset('/assets/_static/hero_dungeon_1200.webp')}
+             srcset={`${asset('/assets/_static/hero_dungeon_760.webp')} 760w, ${asset('/assets/_static/hero_dungeon_1200.webp')} 1200w`}
+             sizes="(max-width:700px) 100vw, 1200px"
+             alt="" fetchpriority="high" width="1200" height="723" />
+        <div class="hero__content">
+          <h1 class="hero__title"><span>{s.hero.h1line1}</span><br />{s.hero.h1line2}</h1>
+          <p class="hero__sub">{s.hero.subtitle}</p>
+        </div>
+        <img class="hero__ghost" src={asset(s.hero.ghost)} alt="Привидение — талисман «Чё за Квест»" width="432" height="493" fetchpriority="low" decoding="async" />
+        <div class="hero__cta">
+          <a class="hero__btn-calc" href={link(s.hero.btnCalcHref)}>{s.hero.btnCalc}</a>
+          <a class="hero__btn-pick btn-orange" href={link(s.hero.btnPickHref)}>{s.hero.btnPick}</a>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- ============ ПРОМО-СЛАЙДЕР ============ -->
+    <section class="promo">
+      <div class="promo__wrap container-wide">
+        <div class="slider" id="promo-slider">
+          <div class="slider__track">
+            {s.slider.map((sl, i) => (
+              <div class="slider__slide">
+                {i === 0
+                  ? <img src={asset(sl.img)} alt={sl.alt} width="1200" height="500" decoding="async" />
+                  : <img data-src={asset(sl.img)} alt={sl.alt} width="1200" height="500" loading="lazy" decoding="async" />}
+              </div>
+            ))}
+          </div>
+          <button class="slider__arrow slider__arrow--prev" aria-label="Предыдущий слайд">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <button class="slider__arrow slider__arrow--next" aria-label="Следующий слайд">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <div class="slider__dots" id="promo-dots" aria-label="Навигация по слайдам"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ КАТАЛОГ (табы + карточки) ============ -->
+    <section class="catalog" id="catalog">
+      <div class="container">
+        <!-- Табы (десктоп) -->
+        <div class="tabs" role="tablist" aria-label="Категории игр">
+          {s.tabs.map((t, i) => (
+            <button class={`tab${i === 0 ? ' is-active' : ''}`} data-cat={t.cat} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
+              {i !== 0 && <span class="tab__mark" aria-hidden="true">◆</span>}{t.t}
+            </button>
+          ))}
+        </div>
+        <!-- Дропдаун (мобайл) -->
+        <div class="tabs-mobile">
+          <select id="cat-select" aria-label="Категория игр">
+            {s.tabs.map((t) => (<option value={t.cat}>{t.t}</option>))}
+          </select>
+          <svg class="tabs-mobile__chev" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" d="M6 9l6 6 6-6"/></svg>
+        </div>
+      </div>
+
+      {catOrder.map((cat, ci) => (
+        <div class="catblock container" data-cat={cat} id={anchorForCat[cat]}>
+          <h2 class="section-title catblock__title">{cat === 'Квесты в Ростове' ? 'Квесты в Ростове' : cat}</h2>
+          <div class="grid">
+            {cardsByCat(cat).map((card) => (
+              <QuestCard card={card} base={base} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <!-- ============ ПРАЗДНИК + СТАТЫ ============ -->
+    <section class="party" id="party">
+      <div class="container">
+        <h2 class="section-title">{s.stats.title}</h2>
+        <p class="section-sub">{s.stats.subtitle}</p>
+      </div>
+      <div class="container-wide">
+        <div class="party__card">
+          <img class="party__bg" src={asset(s.stats.bg)} alt="Дети на празднике в квесте" width="1200" height="550" loading="lazy" decoding="async" />
+          <div class="party__stats">
+            {s.stats.items.map((it) => (
+              <div class="pstat">
+                {it.big
+                  ? <img class="pstat__num" src={asset(s.stats.numImg)} alt="" width="60" height="73" loading="lazy" />
+                  : <img class="pstat__icon" src={asset(it.icon)} alt="" width="56" height="56" loading="lazy" />}
+                <span class="pstat__t">{it.t}</span>
+              </div>
+            ))}
+          </div>
+          <div class="party__btnrow"><button class="btn-grad">{s.stats.btn}</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ СЕРТИФИКАТ ============ -->
+    <section class="gift">
+      <div class="container gift__inner">
+        <img class="gift__arrow gift__arrow--l" src={asset(s.gift.arrowL)} alt="" width="70" height="60" loading="lazy" />
+        <img class="gift__arrow gift__arrow--r" src={asset(s.gift.arrowR)} alt="" width="70" height="60" loading="lazy" />
+        <h2 class="section-title gift__title">{s.gift.title}</h2>
+        <p class="gift__text">{s.gift.text}</p>
+        <img class="gift__cert" src={asset(s.gift.cert)} alt="Подарочный сертификат «Чё за Квест»" width="503" height="358" loading="lazy" decoding="async" />
+        <div class="gift__consult">
+          <img class="gift__mark" src={asset(s.consult.logo)} alt="" width="80" height="69" loading="lazy" />
+          <button class="btn-grad">{s.consult.btn}</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ОТЗЫВЫ (статичный виджет) ============ -->
+    <section class="reviews" id="otzivy">
+      <div class="container">
+        <h2 class="section-title reviews__title">{s.reviews.title}</h2>
+        <div class="reviews__scroll">
+          <img class="reviews__img" src={asset('/assets/_static/reviews_desktop.webp')} alt="Отзывы гостей: 4.9 на Яндекс, 2ГИС, Google — более 4404 отзывов" width="1160" height="1255" loading="lazy" decoding="async" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ФОРМА «ЕСТЬ ВОПРОС?» ============ -->
+    <section class="callback">
+      <div class="container">
+        <form class="cbform" onsubmit="return false">
+          <h2 class="cbform__title">{s.callback.title}</h2>
+          <p class="cbform__sub">{s.callback.sub}</p>
+          <div class="cbform__fields">
+            <label class="visually-hidden" for="cb-name">Ваше имя</label>
+            <input id="cb-name" type="text" placeholder={s.callback.namePh} autocomplete="name" />
+            <label class="visually-hidden" for="cb-phone">Телефон</label>
+            <div class="cbform__phone">
+              <span class="cbform__flag" aria-hidden="true">🇷🇺</span>
+              <input id="cb-phone" type="tel" placeholder={`+7 ${s.callback.phonePh}`} autocomplete="tel" />
+            </div>
+          </div>
+          <label class="cbform__consent">
+            <input type="checkbox" checked />
+            <span>{s.callback.consent} <a href={link('/privacy')}>{s.callback.consentLink}</a></span>
+          </label>
+          <button class="btn-orange cbform__submit" type="submit">{s.callback.btn}</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ ГАЛЕРЕЯ ============ -->
+    <section class="gallery">
+      <div class="gallery__inner">
+        {s.gallery.map((g, i) => (
+          <img class="gallery__img" src={asset(g)} alt={`Фото с праздника в «Чё за Квест» ${i + 1}`} loading="lazy" decoding="async" />
+        ))}
+      </div>
+    </section>
+
+    <!-- ============ НАШИ ПЛОЩАДКИ ============ -->
+    <section class="venues" id="contacts">
+      <div class="container">
+        <h2 class="section-title">{s.venues.title}</h2>
+        <p class="venues__sub">{s.venues.subtitle}</p>
+        <div class="venues__chips">
+          {s.venues.chips.map((c) => (<span class="chip">{c}</span>))}
+        </div>
+        <img class="venues__map" src={asset(s.venues.map)} alt="Карта площадок «Чё за Квест» в Ростове-на-Дону" width="1200" height="500" loading="lazy" decoding="async" />
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ ФУТЕР ============ -->
+  <footer class="ft">
+    <div class="container ft__inner">
+      {s.footer.cols.map((col) => (
+        <div class="ft__col">
+          <div class="ft__h">{col.title}</div>
+          <ul>{col.links.map((l) => (<li><a href={link(l.href)}>{l.t}</a></li>))}</ul>
+        </div>
+      ))}
+      <div class="ft__col ft__contacts">
+        <a class="ft__phone" href={s.footer.phoneHref}>{s.footer.phone}</a>
+        <div class="ft__hours">{s.footer.hours}</div>
+        <div class="ft__req">{s.footer.req.map((r) => (<div>{r}</div>))}</div>
+        <a class="ft__privacy" href={link('/privacy')}>{s.footer.privacy}</a>
+        <div class="ft__social">
+          <a href={s.header.wa} target="_blank" rel="noopener" aria-label="WhatsApp" class="ft__soc ft__soc--wa">
+            <svg viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><path fill="#fff" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.1 1.6 5.9L4 29l8.3-1.6c1.7.9 3.6 1.4 5.7 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.3l-.4-.2-3.7.7.7-3.6-.2-.4a9.8 9.8 0 01-1.5-5.2c0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.4 9.8-9.8 9.8zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.6.1a8 8 0 01-2.4-1.5 9 9 0 01-1.6-2c-.2-.3 0-.4.1-.6l.5-.5c.1-.2.2-.3.3-.5s0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1 2.2 3.4 5.3 4.7c2 .9 2.8.9 3.7.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4l-.6-.3z"/></svg>
+          </a>
+          <a href="https://vk.com" target="_blank" rel="noopener" aria-label="ВКонтакте" class="ft__soc ft__soc--vk">
+            <svg viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><path fill="#fff" d="M16.9 22.4c-7 0-11.4-4.9-11.6-13h3.6c.1 5.9 2.8 8.4 4.8 8.9V9.4h3.4v5.1c2-.2 4.1-2.6 4.8-5.1h3.3c-.5 3-2.6 5.4-4.1 6.4 1.5.8 3.9 2.9 4.8 6.6h-3.7c-.7-2.3-2.5-4.1-5.1-4.4v4.4h-.5z"/></svg>
+          </a>
+          <a href={s.footer.phoneHref} aria-label="Написать нам" class="ft__soc ft__soc--mail">
+            <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path fill="#fff" d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="container ft__bottom">
+      <img class="ft__logo" src={asset(s.footer.logo)} alt="Чё за Квест" width="125" height="53" loading="lazy" />
+      <div class="ft__copy">{s.footer.copyright}</div>
+    </div>
+  </footer>
+
+  <!-- Плавающая кнопка WhatsApp -->
+  <a class="wa-float" href={s.header.wa} target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
+    <svg viewBox="0 0 32 32" width="34" height="34" aria-hidden="true"><path fill="#fff" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.1 1.6 5.9L4 29l8.3-1.6c1.7.9 3.6 1.4 5.7 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.3l-.4-.2-3.7.7.7-3.6-.2-.4a9.8 9.8 0 01-1.5-5.2c0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.4 9.8-9.8 9.8zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.6.1a8 8 0 01-2.4-1.5 9 9 0 01-1.6-2c-.2-.3 0-.4.1-.6l.5-.5c.1-.2.2-.3.3-.5s0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1 2.2 3.4 5.3 4.7c2 .9 2.8.9 3.7.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4l-.6-.3z"/></svg>
+  </a>
+</Layout>
+
+<script>
+  import '../scripts/main.js';
+</script>

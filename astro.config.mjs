@@ -9,9 +9,9 @@ export default defineConfig({
   site: 'https://khakimovpro.github.io',
   base: BASE,
   trailingSlash: 'ignore',
-  compressHTML: false,      // сохраняем инлайн-JS Tilda нетронутым
+  compressHTML: true,
   build: {
     assets: '_astro',
-    inlineStylesheets: 'never', // Tilda-CSS оставляем внешними файлами (кэшируются)
+    inlineStylesheets: 'always', // инлайним весь CSS нативной главной (нет render-blocking запроса)
   },
 });
