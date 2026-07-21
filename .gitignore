@@ -1,0 +1,11 @@
+# build output
+dist/
+# generated
+.astro/
+# deps
+node_modules/
+# рабочий кэш зеркалирования (сырьё, скриншоты, скрипты) — не тащим в репо демо
+_capture/
+# os / editor
+.DS_Store
+*.log
