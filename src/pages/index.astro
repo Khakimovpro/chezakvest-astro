@@ -108,20 +108,22 @@ const s = site;
       <!-- container (1160), НЕ container-wide: слайдер оригинала уже героя (поля 140px), как в Tilda -->
       <div class="promo__wrap container">
         <div class="slider" id="promo-slider">
-          <div class="slider__track">
-            {s.slider.map((sl, i) => (
-              <div class="slider__slide">
-                {i === 0
-                  ? <img src={asset(sl.img)} alt={sl.alt} width="1200" height="500" decoding="async" />
-                  : <img data-src={asset(sl.img)} alt={sl.alt} width="1200" height="500" loading="lazy" decoding="async" />}
-              </div>
-            ))}
+          <div class="slider__viewport">
+            <div class="slider__track">
+              {s.slider.map((sl, i) => (
+                <div class="slider__slide">
+                  {i === 0
+                    ? <img src={asset(sl.img)} alt={sl.alt} width="1010" height="375" decoding="async" />
+                    : <img data-src={asset(sl.img)} alt={sl.alt} width="1010" height="375" loading="lazy" decoding="async" />}
+                </div>
+              ))}
+            </div>
           </div>
           <button class="slider__arrow slider__arrow--prev" aria-label="Предыдущий слайд">
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="#ff6b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
           </button>
           <button class="slider__arrow slider__arrow--next" aria-label="Следующий слайд">
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="#ff6b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
           </button>
           <div class="slider__dots" id="promo-dots" aria-label="Навигация по слайдам"></div>
         </div>

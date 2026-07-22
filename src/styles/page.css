@@ -12,8 +12,9 @@
 .nav__item{position:relative}
 .nav__item>a{font-size:15px;font-weight:500;color:var(--dark);transition:color .2s}
 .nav__item>a:hover{color:var(--orange)}
-.nav__item.has-mega>a::after{content:"";display:inline-block;width:7px;height:7px;margin-left:7px;
-  border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg)}
+/* оригинал: префикс «∷» перед Каталог/Проведение/Контакты (без выпадающих шевронов) */
+.nav__item.has-mega>a::before,
+.nav__item:last-child>a::before{content:"∷";margin-right:8px;color:var(--orange);font-weight:700}
 .mega{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%) translateY(8px);
   min-width:250px;background:#fff;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.16);
   padding:12px;display:flex;flex-direction:column;gap:2px;opacity:0;visibility:hidden;transition:.2s;z-index:210}
@@ -42,30 +43,32 @@
 .hero__panel{position:relative;width:100%;border-radius:20px;overflow:hidden;background:#2b2b2b;
   aspect-ratio:1200/550}
 .hero__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
-.hero__ghost{position:absolute;right:5%;bottom:0;width:36%;height:auto;max-height:90%;object-fit:contain;z-index:2}
+.hero__ghost{position:absolute;right:8%;bottom:-40px;width:36%;height:auto;max-height:90%;object-fit:contain;z-index:2}
 .hero__content{position:relative;z-index:3;padding:58px 60px 0;max-width:none}
 .hero__title{font-size:50px;font-weight:700;line-height:1.2;color:#fff;max-width:650px}
 .hero__sub{margin-top:16px;font-size:30px;font-weight:400;color:#fff}
 .hero__cta{position:relative;z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-top:36px;padding:0 60px}
-.hero__btn-calc{display:inline-flex;align-items:center;justify-content:center;height:60px;padding:0 34px;
-  border-radius:60px;border:2px dotted #fff;color:#fff;font-weight:500;font-size:17px;background:transparent;transition:.2s}
+.hero__btn-calc{display:inline-flex;align-items:center;justify-content:center;height:72px;padding:0 40px;
+  border-radius:60px;border:2px dotted #fff;color:#fff;font-weight:500;font-size:19px;background:transparent;transition:.2s}
 .hero__btn-calc:hover{background:rgba(255,255,255,.12)}
-.hero__btn-pick{height:60px;font-size:18px}
+.hero__btn-pick{height:72px;font-size:19px;padding:0 40px}
 
 /* ===================== СЛАЙДЕР ===================== */
 .promo{margin-top:24px}
-.slider{position:relative;overflow:hidden;border-radius:16px}
+.slider{position:relative}
+/* viewport обрезает слайды, а стрелки живут в боковых полях (гаттере) — как в оригинале */
+.slider__viewport{overflow:hidden;border-radius:16px}
 .slider__track{display:flex;transition:transform .5s ease}
 /* aspect-ratio = натуральное соотношение картинок слайдов (1010x375=2.69),
    иначе object-fit:cover обрезал баннер по бокам (срезался текст «ДЕНЬ РОЖДЕНИЯ…») */
 .slider__slide{flex:0 0 100%;aspect-ratio:1010/375}
 .slider__slide img{width:100%;height:100%;object-fit:cover;border-radius:16px}
-/* стрелки: в оригинале не показаны в покое — проявляем на hover (навигация для 7 слайдов сохранена) */
+/* стрелки — оранжевый шеврон в белом круге, в боковых полях за баннером (как в оригинале) */
 .slider__arrow{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;
-  border:0;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;z-index:5;cursor:pointer;opacity:0;transition:opacity .25s ease}
-.slider:hover .slider__arrow{opacity:1}
-.slider__arrow--prev{left:8px}
-.slider__arrow--next{right:8px}
+  border:0;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;z-index:5;cursor:pointer;transition:box-shadow .2s ease}
+.slider__arrow:hover{box-shadow:0 8px 22px rgba(0,0,0,.22)}
+.slider__arrow--prev{left:-72px}
+.slider__arrow--next{right:-72px}
 /* точки навигации: в оригинале их нет — скрываем (свайп/стрелки/автопрокрутка остаются) */
 .slider__dots{display:none}
 
