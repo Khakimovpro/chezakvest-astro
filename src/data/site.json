@@ -90,11 +90,13 @@
   },
   {
    "t": "ПРЯТКИ",
-   "cat": "Прятки в лабиринте 200м²"
+   "cat": "Прятки в лабиринте 200м²",
+   "badge": true
   },
   {
    "t": "КВЕСТ-ШОУ",
-   "cat": "Квест-шоу на площадке 200м²"
+   "cat": "Квест-шоу на площадке 200м²",
+   "badge": true
   },
   {
    "t": "ХОРРОРЫ",
@@ -234,7 +236,8 @@
    "baked": false,
    "addrLines": [
     "пр-т Нагибина, 14а"
-   ]
+   ],
+   "new": true
   },
   {
    "i": 10,
@@ -247,7 +250,8 @@
    "baked": false,
    "addrLines": [
     "пр-т Нагибина, 14а"
-   ]
+   ],
+   "new": true
   },
   {
    "i": 11,
@@ -260,7 +264,8 @@
    "baked": false,
    "addrLines": [
     "пр-т Нагибина, 14а"
-   ]
+   ],
+   "new": true
   },
   {
    "i": 12,
@@ -273,7 +278,8 @@
    "baked": false,
    "addrLines": [
     "пр-т Нагибина, 14а"
-   ]
+   ],
+   "new": true
   },
   {
    "i": 13,
@@ -286,7 +292,8 @@
    "baked": false,
    "addrLines": [
     "пр-т Нагибина, 14а"
-   ]
+   ],
+   "new": true
   },
   {
    "i": 14,
@@ -299,7 +306,8 @@
    "baked": false,
    "addrLines": [
     "пр-т Нагибина, 14а"
-   ]
+   ],
+   "new": true
   },
   {
    "i": 15,
@@ -579,7 +587,7 @@
   "title": "Проведите незабываемый праздник",
   "subtitle": "в формате увлекательного квест-приключения",
   "bg": "/assets/optim.tildacdn.com/tild6537-3037-4763-b532-383030323031/-/format/webp/FOTO_PARTY_MAIN_.png.webp",
-  "numImg": "/assets/static.tildacdn.com/tild3861-3135-4930-b932-383731343136/5.webp",
+  "numImg": "/assets/static.tildacdn.com/tild6466-3630-4265-a339-643130333939/image.webp",
   "items": [
    {
     "t": "15 квестов",
@@ -607,16 +615,16 @@
  },
  "gift": {
   "title": "Подарите незабываемое приключение!",
-  "text": "Сертификат действует на любом квесте компании «Чё за квест» в течении 6-ти месяцев с момента покупки. Возможна доставка в любую точку Ростова-на-Дону",
+  "text": "Сертификат действует на любом квесте компании «Че за квест» в течении 6-ти месяцев с момента покупки. Возможна доставка в любую точку Ростова-на-Дону",
   "cert": "/assets/static.tildacdn.com/tild3032-3630-4539-b636-303163646634/_.webp",
   "arrowL": "/assets/static.tildacdn.com/tild6666-6265-4239-a537-643961396530/logo2-02.svg",
-  "arrowR": "/assets/static.tildacdn.com/tild6234-3334-4733-a235-646132656433/logo2-04.svg",
+  "arrowR": "/assets/static.tildacdn.com/tild3666-3139-4239-a333-396537623161/logo2-03.svg",
   "btn": "Купить сертификат в подарок"
  },
  "consult": {
   "title": "Получить консультацию",
   "btn": "Получить консультацию",
-  "logo": "/assets/static.tildacdn.com/tild3666-3139-4239-a333-396537623161/logo2-03.svg"
+  "logo": "/assets/static.tildacdn.com/tild6234-3334-4733-a235-646132656433/logo2-04.svg"
  },
  "reviews": {
   "title": "Отзывы наших гостей и их родителей",
@@ -758,17 +766,53 @@
   "copyright": "© 2026 ЧЁ ЗА КВЕСТ"
  },
  "gallery": [
-  "/assets/static.tildacdn.com/tild3361-3138-4962-b233-633164663065/LAT_3538.webp",
-  "/assets/static.tildacdn.com/tild3137-6331-4636-b564-346438323161/LAT_0655.webp",
-  "/assets/static.tildacdn.com/tild6639-3232-4330-b132-333866666566/LAT_3415.webp",
-  "/assets/static.tildacdn.com/tild6632-3738-4561-b862-653733333135/IMG_6569_mini.webp",
-  "/assets/static.tildacdn.com/tild6430-3930-4633-b861-333864653265/LAT_1165.webp",
-  "/assets/static.tildacdn.com/tild3665-6436-4665-b563-356139333732/_.webp",
-  "/assets/static.tildacdn.com/tild6461-6536-4438-b932-663731386337/IMG_7067.webp",
-  "/assets/static.tildacdn.com/tild6266-6465-4137-b734-363963626331/LAT_3531.webp",
-  "/assets/static.tildacdn.com/tild3264-3538-4530-b761-666561356535/photo_2024-10-30_14-.webp",
-  "/assets/static.tildacdn.com/tild3265-3038-4238-b365-643839373336/LAT_1323.webp",
-  "/assets/static.tildacdn.com/tild3736-6130-4661-a561-366163396461/LAT_3451.webp",
-  "/assets/static.tildacdn.com/tild6338-3130-4363-b962-653062373030/photo.webp"
+  {
+   "img": "/assets/static.tildacdn.com/tild3361-3138-4962-b233-633164663065/LAT_3538.webp",
+   "ar": 1.498
+  },
+  {
+   "img": "/assets/static.tildacdn.com/tild3137-6331-4636-b564-346438323161/LAT_0655.webp",
+   "ar": 1.498
+  },
+  {
+   "img": "/assets/static.tildacdn.com/tild6639-3232-4330-b132-333866666566/LAT_3415.webp",
+   "ar": 1.498
+  },
+  {
+   "img": "/assets/static.tildacdn.com/tild6632-3738-4561-b862-653733333135/IMG_6569_mini.webp",
+   "ar": 1.382
+  },
+  {
+   "img": "/assets/static.tildacdn.com/tild6430-3930-4633-b861-333864653265/LAT_1165.webp",
+   "ar": 1.498
+  },
+  {
+   "img": "/assets/static.tildacdn.com/tild3665-6436-4665-b563-356139333732/_.webp",
+   "ar": 1.489
+  },
+  {
+   "img": "/assets/static.tildacdn.com/tild6461-6536-4438-b932-663731386337/IMG_7067.webp",
+   "ar": 1.498
+  },
+  {
+   "img": "/assets/static.tildacdn.com/tild6266-6465-4137-b734-363963626331/LAT_3531.webp",
+   "ar": 0.667
+  },
+  {
+   "img": "/assets/static.tildacdn.com/tild3264-3538-4530-b761-666561356535/photo_2024-10-30_14-.webp",
+   "ar": 1.501
+  },
+  {
+   "img": "/assets/static.tildacdn.com/tild3265-3038-4238-b365-643839373336/LAT_1323.webp",
+   "ar": 1.498
+  },
+  {
+   "img": "/assets/static.tildacdn.com/tild3736-6130-4661-a561-366163396461/LAT_3451.webp",
+   "ar": 1.498
+  },
+  {
+   "img": "/assets/static.tildacdn.com/tild6338-3130-4363-b962-653062373030/photo.webp",
+   "ar": 1.5
+  }
  ]
 }

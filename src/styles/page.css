@@ -1,9 +1,12 @@
 /* ===================== ШАПКА ===================== */
-.hdr{position:sticky;top:0;z-index:200;background:linear-gradient(180deg,#e6e6e6 0%,#ededed 100%);
-  box-shadow:0 1px 0 rgba(0,0,0,.05)}
-.hdr__inner{display:flex;align-items:center;height:86px;gap:20px}
+/* оригинал — плавающий скруглённый бар с горизонтальным градиентом серый→персик
+   и БЕЛЫМ логотипом (не плоская серая полоса во всю ширину) */
+.hdr{position:sticky;top:0;z-index:200;padding-top:11px;background:transparent;box-shadow:none}
+.hdr__inner{display:flex;align-items:center;height:86px;gap:20px;
+  background:linear-gradient(90deg,#9c9a99 0%,#bfab9d 55%,#ffcb9d 100%);
+  border-radius:16px;padding-left:30px;padding-right:16px;box-shadow:0 6px 18px rgba(0,0,0,.10)}
 .hdr__logo{flex:0 0 auto;display:block}
-.hdr__logo img{height:47px;width:auto}
+.hdr__logo img{height:47px;width:auto;filter:brightness(0) invert(1)}
 .hdr__nav{flex:1 1 auto;display:flex;justify-content:center}
 .nav{display:flex;gap:30px;align-items:center}
 .nav__item{position:relative}
@@ -53,32 +56,40 @@
 .promo{margin-top:24px}
 .slider{position:relative;overflow:hidden;border-radius:16px}
 .slider__track{display:flex;transition:transform .5s ease}
-.slider__slide{flex:0 0 100%;aspect-ratio:1200/500}
+/* aspect-ratio = натуральное соотношение картинок слайдов (1010x375=2.69),
+   иначе object-fit:cover обрезал баннер по бокам (срезался текст «ДЕНЬ РОЖДЕНИЯ…») */
+.slider__slide{flex:0 0 100%;aspect-ratio:1010/375}
 .slider__slide img{width:100%;height:100%;object-fit:cover;border-radius:16px}
+/* стрелки: в оригинале не показаны в покое — проявляем на hover (навигация для 7 слайдов сохранена) */
 .slider__arrow{position:absolute;top:50%;transform:translateY(-50%);width:56px;height:56px;border-radius:50%;
-  border:0;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;z-index:5;cursor:pointer}
-.slider__arrow--prev{left:-8px}
-.slider__arrow--next{right:-8px}
-.slider__dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:2px;z-index:5}
-.slider__dots button{width:24px;height:24px;border:0;background:transparent;cursor:pointer;padding:0;position:relative}
-.slider__dots button::after{content:"";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.65);transition:background .2s}
-.slider__dots button.is-active::after{background:#fff}
+  border:0;background:#fff;box-shadow:0 6px 16px rgba(0,0,0,.16);display:flex;align-items:center;justify-content:center;z-index:5;cursor:pointer;opacity:0;transition:opacity .25s ease}
+.slider:hover .slider__arrow{opacity:1}
+.slider__arrow--prev{left:8px}
+.slider__arrow--next{right:8px}
+/* точки навигации: в оригинале их нет — скрываем (свайп/стрелки/автопрокрутка остаются) */
+.slider__dots{display:none}
 
 /* ===================== КАТАЛОГ ===================== */
 .catalog{margin-top:64px}
-.tabs{display:flex;border:1px solid #e0e0e0;border-radius:40px;background:#fff;overflow:hidden;margin-bottom:20px}
+/* сегментированный контрол: оранжевая рамка + разделители между табами (как в оригинале) */
+.tabs{display:flex;border:1px solid var(--orange);border-radius:40px;background:#fff;overflow:hidden;margin-bottom:20px}
 .tab{flex:1 1 0;height:52px;border:0;background:transparent;font-weight:700;font-size:14px;color:var(--muted);
-  display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:.2s;text-transform:uppercase;white-space:nowrap}
+  display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:.2s;text-transform:uppercase;white-space:nowrap;position:relative}
+.tab + .tab{border-left:1px solid rgba(255,107,0,.4)}
 .tab__mark{color:var(--orange);font-size:10px}
+/* синий бейдж-звезда на новых категориях (ПРЯТКИ, КВЕСТ-ШОУ) */
+.tab__badge{width:16px;height:16px;border-radius:50%;background:#2b8fff;color:#fff;font-size:9px;
+  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
 .tab.is-active{background:var(--orange);color:#fff;border-radius:40px}
 .tab.is-active .tab__mark{display:none}
 .tabs-mobile{display:none;position:relative}
 .tabs-mobile select{appearance:none;-webkit-appearance:none;width:100%;height:56px;border:0;border-radius:40px;
   background:var(--orange);color:#fff;font-weight:700;font-size:15px;text-transform:uppercase;padding:0 48px 0 24px;cursor:pointer}
 .tabs-mobile__chev{position:absolute;right:20px;top:50%;transform:translateY(-50%);pointer-events:none}
-.catblock{margin-top:36px}
+/* межкатегорийный отступ и отступ заголовок→карточки — как в оригинале (было сжато) */
+.catblock{margin-top:76px}
 .catblock:first-of-type{margin-top:8px}
-.catblock__title{margin-bottom:24px}
+.catblock__title{margin-bottom:38px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
 
 /* ===================== ПРАЗДНИК + СТАТЫ ===================== */
@@ -99,7 +110,7 @@
 .gift__inner{position:relative;text-align:center}
 .gift__title{font-size:30px}
 .gift__text{max-width:720px;margin:14px auto 0;font-size:17px;color:var(--muted);line-height:1.5}
-.gift__cert{margin:26px auto 0;width:460px;max-width:80%;height:auto}
+.gift__cert{margin:26px auto 0;width:503px;max-width:80%;height:auto}
 .gift__arrow{position:absolute;top:120px;width:70px;height:auto;opacity:.95}
 .gift__arrow--l{left:60px}
 .gift__arrow--r{right:60px}
@@ -114,7 +125,7 @@
 
 /* ===================== ФОРМА ===================== */
 .callback{margin-top:64px}
-.cbform{position:relative;background:linear-gradient(180deg,#e9e9e9,#f2f2f2);border-radius:20px;padding:48px 60px;text-align:center;overflow:hidden}
+.cbform{position:relative;background:linear-gradient(180deg,#e9e9e9,#f2f2f2);border-radius:20px;padding:48px 132px;text-align:center;overflow:hidden}
 .cbform__title{font-size:34px;font-weight:700;color:var(--dark)}
 .cbform__sub{margin-top:8px;font-size:20px;color:var(--muted)}
 .cbform__fields{display:flex;gap:20px;margin-top:26px}
@@ -131,20 +142,22 @@
 /* ===================== ГАЛЕРЕЯ ===================== */
 .gallery{margin-top:64px}
 .gallery__inner{max-width:1440px;margin:0 auto;padding:0 10px;
-  columns:3;column-gap:10px}
-.gallery__img{width:100%;height:auto;border-radius:14px;margin-bottom:10px;break-inside:avoid;display:block}
+  display:flex;flex-wrap:wrap;gap:10px}
+/* height задаёт высоту ряда; flex-basis/grow (inline, по пропорции) выравнивают ряды по ширине;
+   object-fit:cover компенсирует лёгкое растяжение flex-grow */
+.gallery__img{height:310px;min-width:0;border-radius:14px;object-fit:cover;display:block}
 
 /* ===================== ПЛОЩАДКИ ===================== */
 .venues{margin-top:64px}
-.venues__sub{margin-top:8px;font-size:18px;color:var(--muted);line-height:1.4;max-width:640px}
+.venues__sub{margin-top:8px;font-size:20px;color:var(--muted);line-height:1.4;max-width:640px}
 .venues__chips{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0}
-.chip{background:#fff;border-radius:10px;padding:14px 22px;font-size:15px;font-weight:600;color:var(--dark);box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.chip{background:#fff;border-radius:10px;padding:15px 22px;font-size:15px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.2px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
 .venues__map{width:100%;aspect-ratio:1160/428;background-size:cover;background-position:center;background-repeat:no-repeat;border-radius:16px;margin-top:6px}
 
 /* ===================== ФУТЕР ===================== */
 .ft{background:var(--dark);color:#fff;margin-top:0;border-radius:28px 28px 0 0;padding:44px 0 26px}
 .ft__inner{display:grid;grid-template-columns:1.1fr 1fr 1fr 1.2fr;gap:24px}
-.ft__h{color:var(--orange);font-weight:700;font-size:16px;margin-bottom:14px}
+.ft__h{color:var(--orange);font-weight:700;font-size:16px;text-transform:uppercase;margin-bottom:14px}
 .ft__col ul{display:flex;flex-direction:column;gap:8px}
 .ft__col a{font-size:14px;color:#fff;opacity:.92;transition:color .2s}
 .ft__col a:hover{color:var(--orange)}
@@ -155,7 +168,9 @@
 .ft__social{display:flex;gap:10px;margin-top:18px}
 .ft__soc{width:34px;height:34px;border-radius:50%;background:#4a4a4a;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff}
 .ft__soc--wa{background:#25d366}
-.ft__bottom{display:flex;align-items:center;justify-content:space-between;margin-top:34px}
+/* низ футера: слева бренд (лого + копирайт под ним), справа соцкнопки — как в оригинале */
+.ft__bottom{display:flex;align-items:flex-end;justify-content:space-between;margin-top:34px}
+.ft__brand{display:flex;flex-direction:column;gap:14px}
 .ft__logo{height:53px;width:auto;opacity:.9}
 .ft__copy{font-size:14px;font-weight:300;color:var(--grey)}
 
@@ -181,7 +196,7 @@
   .party__stats{flex-wrap:wrap;position:static;padding:20px;background:rgba(20,14,8,.55)}
   .party__card{aspect-ratio:auto}
   .party__bg{position:absolute}
-  .gallery__inner{columns:2}
+  .gallery__img{height:240px}
 }
 @media (max-width:640px){
   .hdr__inner{height:70px}
@@ -200,7 +215,7 @@
   .cbform__fields{flex-direction:column}
   .cbform__title{font-size:26px}
   .cbform__sub{font-size:16px}
-  .gallery__inner{columns:1}
+  .gallery__img{height:190px}
   .reviews__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .reviews__img{min-width:820px}
   .ft__inner{grid-template-columns:1fr;gap:22px}

@@ -15,6 +15,7 @@ const loading = eager ? 'eager' : 'lazy';
     <>
       <span class="qcard__scrim" aria-hidden="true"></span>
       {overlay && <img class="qcard__badges" src={overlay} alt="" width="322" height="322" loading={loading} decoding="async" />}
+      {card.new && <span class="qcard__new" aria-hidden="true"><svg viewBox="0 0 24 24" width="11" height="11"><path fill="currentColor" d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg>Новинка</span>}
       <div class="qcard__body">
         <h3 class="qcard__title">{card.title}</h3>
         {lines.length > 0 && (
@@ -40,7 +41,11 @@ const loading = eager ? 'eager' : 'lazy';
     background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.62) 78%,rgba(0,0,0,.78) 100%);pointer-events:none}
   .qcard__badges{position:absolute;top:5.3%;left:5.3%;width:89.3%;height:89.3%;object-fit:contain;pointer-events:none}
   .qcard__body{position:absolute;left:0;right:0;bottom:0;padding:0 20px 20px 20px;color:#fff}
-  .qcard__title{font-weight:700;font-size:18px;line-height:1.16;text-transform:uppercase;max-width:62%}
+  /* бейдж «Новинка» — отдельный элемент (в overlay-PNG его нет), по центру верха карточки */
+  .qcard__new{position:absolute;top:5.3%;left:50%;transform:translateX(-50%);z-index:3;
+    display:inline-flex;align-items:center;gap:4px;background:var(--orange);color:#fff;
+    font-weight:700;font-size:12px;line-height:1;padding:5px 11px;border-radius:20px;white-space:nowrap}
+  .qcard__title{font-weight:700;font-size:18px;line-height:1.16;text-transform:uppercase;max-width:55%}
   .qcard__addr{display:flex;align-items:flex-start;gap:5px;margin-top:9px;font-weight:300;font-size:14px;line-height:1.2;max-width:64%}
   .qcard__pin{flex:0 0 auto;margin-top:1px}
 
