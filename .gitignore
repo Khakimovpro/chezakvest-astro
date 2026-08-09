@@ -9,3 +9,5 @@ _capture/
 # os / editor
 .DS_Store
 *.log
+.preview-password
+dist-enc/
