@@ -99,8 +99,10 @@ def keyword_weights():
 
 
 def migrated_slugs():
-    """Что уже лежит в src/pages (без служебного tilda.astro)."""
+    """Перенесённые страницы: данные в src/data/pages/*.json либо отдельный файл в src/pages."""
     done = set()
+    for f in glob.glob(os.path.join(CLONE, "src", "data", "pages", "*.json")):
+        done.add(os.path.basename(f)[:-5])
     for f in glob.glob(os.path.join(CLONE, "src", "pages", "*.astro")):
         name = os.path.basename(f)[:-6]
         if name == "tilda":

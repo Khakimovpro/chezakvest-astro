@@ -43,9 +43,9 @@
 
 /* --- ПРЕДЫСТОРИЯ --- */
 .qstory{padding:56px 0 10px}
-.qstory__cols{margin-top:28px;columns:2;column-gap:60px}
-.qstory__lead{font-size:22px;line-height:1.45;color:#8a8a8a;margin-bottom:18px;break-inside:avoid}
-.qstory__p{font-size:16px;line-height:1.6;color:var(--muted);margin-bottom:16px}
+.qstory__cols{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:0 60px;align-items:start}
+.qstory__lead{grid-column:1;grid-row:1 / span 99;font-size:22px;line-height:1.45;color:#8a8a8a;margin-bottom:18px}
+.qstory__p{grid-column:2;font-size:16px;line-height:1.6;color:var(--muted);margin-bottom:16px}
 
 /* --- ОСОБЕННОСТИ --- */
 .qfeat{padding:50px 0 10px}
@@ -141,9 +141,12 @@
 .qvenue{padding:52px 0 8px}
 .qvenue__card{
   margin-top:26px;display:grid;grid-template-columns:minmax(0,600px) minmax(0,1fr);gap:34px;
+  /* без фото карточка схлопывается в одну колонку — иначе половина остаётся пустой */
   background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.05);
 }
 .qvenue__photo{width:100%;height:100%;object-fit:cover;min-height:340px}
+.qvenue__card:not(:has(.qvenue__photo)){grid-template-columns:1fr}
+.qvenue__card:not(:has(.qvenue__photo)) .qvenue__info{padding:34px}
 .qvenue__info{padding:34px 34px 34px 0}
 .qvenue__addr{font-size:24px;font-weight:700;text-transform:uppercase;color:var(--dark)}
 .qvenue__list{margin:18px 0 24px;display:flex;flex-direction:column;gap:8px;font-size:15px;color:var(--muted)}
@@ -160,7 +163,8 @@
 
 /* ===== Мобайл ===== */
 @media (max-width:900px){
-  .qstory__cols{columns:1}
+  .qstory__cols{grid-template-columns:1fr}
+  .qstory__lead,.qstory__p{grid-column:1;grid-row:auto}
   .qvenue__card{grid-template-columns:1fr}
   .qvenue__info{padding:24px}
   .qhero__title{font-size:30px}
@@ -201,3 +205,12 @@
 
 /* герой: кнопки крупнее базовых (в оригинале текст 22px) */
 .qhero__cta .btn-orange{height:58px;font-size:19px;font-weight:600;padding:0 38px}
+
+/* --- прочие блоки оригинала --- */
+.qextra{padding:46px 0 6px}
+.qextra__line{margin-top:12px;font-size:16px;line-height:1.55;color:var(--muted)}
+.qextra__photos{margin-top:24px;display:grid;gap:20px}
+.qextra__photos--row{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.qextra__photos--grid{grid-template-columns:repeat(3,1fr)}
+.qextra__photos img{width:100%;height:100%;object-fit:cover;border-radius:16px;aspect-ratio:3/2}
+@media (max-width:900px){.qextra__photos--grid{grid-template-columns:repeat(2,1fr)}}

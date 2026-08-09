@@ -1,0 +1,38 @@
+---
+// Страница 404: держит человека на сайте — ведёт в каталог квестов и к телефону.
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import site from '../data/site.json';
+import '../styles/page.css';
+import '../styles/quest.css';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+---
+<Layout
+  title="Страница не найдена — Чё за Квест"
+  description="Такой страницы нет. Выберите квест в каталоге «Чё за Квест» или позвоните нам — подберём игру под вашу компанию."
+  path="/404"
+  noindex={true}
+  preloadImage={null}
+>
+  <Header />
+  <main>
+    <section class="qbook" style="padding:90px 0 70px">
+      <div class="container">
+        <h1 class="section-title">Такой страницы нет</h1>
+        <p class="qbook__line">Возможно, квест переехал на другой адрес или ссылка устарела.</p>
+        <div class="qbook__cta">
+          <a class="btn-orange" href={link('/#catalog')}>Выбрать квест</a>
+          <a class="qbook__wa" href={site.header.phoneHref}>{site.header.phone}</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  import '../scripts/main.js';
+</script>

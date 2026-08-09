@@ -5,13 +5,15 @@ import QuestPage from '../layouts/QuestPage.astro';
 
 export async function getStaticPaths() {
   const files = import.meta.glob('../data/pages/*.json', { eager: true });
-  return Object.entries(files).map(([path, mod]) => {
+  const all = Object.entries(files).map(([path, mod]) => {
     const page = mod.default ?? mod;
-    const slug = page.slug || path.split('/').pop().replace('.json', '');
-    return { params: { slug }, props: { page } };
+    return { ...page, slug: page.slug || path.split('/').pop().replace('.json', '') };
   });
+  // короткая карточка каждой страницы — из неё собирается перелинковка там, где её нет в оригинале
+  const index = all.map((p) => ({ slug: p.slug, t: p.hero?.h1 || p.seo?.h1 || p.slug, img: p.hero?.bg }));
+  return all.map((page) => ({ params: { slug: page.slug }, props: { page, index } }));
 }
 
-const { page } = Astro.props;
+const { page, index } = Astro.props;
 ---
-{page.type === 'quest' && <QuestPage page={page} />}
+{page.type === 'quest' && <QuestPage page={page} index={index} />}

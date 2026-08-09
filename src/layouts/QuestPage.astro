@@ -12,7 +12,7 @@ import site from '../data/site.json';
 import '../styles/page.css';
 import '../styles/quest.css';
 
-const { page } = Astro.props;
+const { page, index = [] } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '');
 const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
@@ -69,6 +69,16 @@ const jsonld = [
 const heroSrcset = hero.bgset
   ? Object.entries(hero.bgset).map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
   : (hero.bg ? `${asset(hero.bg)} 1600w` : '');
+// запасная перелинковка: без неё страница остаётся сиротой и теряет вес в поиске
+const relatedItems = page.related?.items?.length
+  ? page.related.items
+  : index.filter((p) => p.slug !== page.slug && p.img)
+      .sort((a, b) => a.slug.localeCompare(b.slug))
+      .slice(0, 8)
+      .map((p) => ({ t: p.t.replace(/^Квест\s+/i, ''), href: '/' + p.slug, img: p.img }));
+const relatedTitle = page.related?.title || 'Другие квесты от «Чё за Квест?»';
+const relatedSub = page.related?.subtitle || 'У нас есть из чего выбрать';
+
 const preload = hero.bg
   ? { href: asset(hero.bgset?.['1200'] || hero.bg), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
   : null;
@@ -180,9 +190,9 @@ const preload = hero.bg
       </section>
     )}
 
-    {page.related && (
-      <CardsRow title={page.related.title} subtitle={page.related.subtitle}
-                items={page.related.items} variant="poster" id="drugie" />
+    {relatedItems.length > 0 && (
+      <CardsRow title={relatedTitle} subtitle={relatedSub}
+                items={relatedItems} variant="poster" id="drugie" />
     )}
 
     <PartyForm />
@@ -211,6 +221,23 @@ const preload = hero.bg
         </div>
       </section>
     )}
+
+    <!-- ============ ПРОЧИЕ БЛОКИ ОРИГИНАЛА (у части квестов свой набор секций) ============ -->
+    {(page.extra || []).map((e) => (
+      <section class="qextra">
+        <div class="container">
+          {e.title && <h2 class="section-title">{e.title}</h2>}
+          {e.lines.map((l) => (<p class="qextra__line">{l}</p>))}
+          {e.photos.length > 0 && (
+            <div class={`qextra__photos qextra__photos--${e.photos.length > 3 ? 'grid' : 'row'}`}>
+              {e.photos.map((ph) => (
+                <img src={asset(ph)} alt={e.title || `Фото квеста «${seo.h1}»`} loading="lazy" decoding="async" />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    ))}
 
     <!-- ============ ВИДЕО ============ -->
     {page.video && page.video.poster && (
