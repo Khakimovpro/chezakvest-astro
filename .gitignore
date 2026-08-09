@@ -4,8 +4,17 @@ dist/
 .astro/
 # deps
 node_modules/
-# рабочий кэш зеркалирования (сырьё, скриншоты, скрипты) — не тащим в репо демо
+# рабочий кэш зеркалирования (сырьё и скриншоты) — не тащим в репо
 _capture/
+# ...но инструменты переноса нужны в репозитории
+!_capture/scrape_page.mjs
+!_capture/shot.mjs
+!_capture/build_quest.py
+!_capture/build_venue.py
+!_capture/build_misc.py
+!_capture/check_pages.py
+!_capture/compare.py
+!_capture/encrypt_site.py
 # os / editor
 .DS_Store
 *.log
