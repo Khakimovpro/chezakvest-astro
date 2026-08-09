@@ -244,3 +244,57 @@
   .vhow__card{grid-template-columns:1fr;padding:26px 20px;gap:24px}
   .vhow__title{font-size:26px}
 }
+
+/* ===== Категория и контакты ===== */
+.qhero__sub{margin:-14px 0 22px;color:#f0f0f0;font-size:19px;max-width:640px}
+.ccert{padding:50px 0 8px}
+.ccert__inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,500px);gap:40px;align-items:center}
+.ccert__line{margin-top:14px;font-size:16px;line-height:1.55;color:var(--muted)}
+.ccert__text .btn-orange{margin-top:24px}
+.ccert__img{width:100%;height:auto;border-radius:16px}
+.cvenues{padding:44px 0 20px}
+.cvenues__list{margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px 24px}
+.cvenues__list a{display:inline-flex;align-items:center;gap:8px;font-size:16px;color:var(--ink)}
+.cvenues__list a::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--orange)}
+.cvenues__list a:hover{color:var(--orange)}
+.info{padding:26px 0 10px}
+.info__grid{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.info__card{background:#fff;border-radius:18px;padding:26px;box-shadow:0 8px 24px rgba(0,0,0,.05)}
+.info__label{font-size:14px;color:#8a8a8a}
+.info__value{display:inline-block;margin-top:10px;font-size:18px;font-weight:600;color:var(--dark)}
+.info__value--big{font-size:24px}
+.info__hours{margin-top:10px;font-size:15px;color:var(--muted)}
+.info__row{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+.info__chip{padding:9px 16px;border-radius:40px;background:var(--orange);color:#fff;font-size:14px;font-weight:600}
+.info__chip:hover{background:#ff7d1a}
+.info__venues{margin-top:44px}
+.info__note{margin-top:26px;font-size:13px;color:#8a8a8a;line-height:1.5}
+@media (max-width:900px){
+  .ccert__inner{grid-template-columns:1fr}
+  .cvenues__list{grid-template-columns:1fr}
+  .info__grid{grid-template-columns:1fr}
+}
+
+/* ===== Сетка квестов категории (тёмная секция, как в оригинале) ===== */
+.cgrid{margin-top:34px;padding:46px 0 54px;background:#161616}
+.cgrid__title{color:#fff}
+.cgrid__list{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.ccard__link{position:relative;display:block;border-radius:18px;overflow:hidden;background:#000;aspect-ratio:38/29}
+.ccard__img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.ccard__link:hover .ccard__img{transform:scale(1.04)}
+.ccard__link::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,0) 45%,rgba(0,0,0,.85) 100%)}
+.ccard__age{
+  position:absolute;top:14px;right:14px;z-index:2;min-width:44px;height:32px;padding:0 12px;
+  border-radius:40px;background:rgba(255,255,255,.92);color:#161616;font-size:14px;font-weight:600;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.ccard__body{position:absolute;left:18px;right:120px;bottom:18px;z-index:2;color:#fff}
+.ccard__name{display:block;font-size:16px;font-weight:700;text-transform:uppercase;line-height:1.2}
+.ccard__addr{display:block;margin-top:8px;font-size:13px;opacity:.85}
+.ccard__meta{position:absolute;right:14px;bottom:16px;z-index:2;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.ccard__chip{
+  background:rgba(255,255,255,.92);color:#161616;border-radius:40px;padding:6px 12px;
+  font-size:12px;font-weight:600;white-space:nowrap;
+}
+@media (max-width:1100px){.cgrid__list{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:700px){.cgrid__list{grid-template-columns:1fr}.ccard__body{right:110px}}

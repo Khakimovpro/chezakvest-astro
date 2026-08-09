@@ -1,0 +1,76 @@
+{
+ "slug": "contacts",
+ "type": "info",
+ "seo": {
+  "title": "Контакты для связи с Чё За Квест в Ростове-на-Дону",
+  "description": "Социальные сети, мессенджеры, телефоны, email, часы работы площадок органицации Чё За Квест в городе Ростов-на-Дону",
+  "keywords": "че за квест телефон",
+  "h1": "Контакты Чё за Квест?"
+ },
+ "breadcrumbs": [
+  {
+   "t": "Главная",
+   "href": "/"
+  },
+  {
+   "t": "Контакты",
+   "href": null
+  }
+ ],
+ "contacts": {
+  "items": [
+   {
+    "label": "Телефон",
+    "value": "+7 (958) 717 69 94"
+   },
+   {
+    "label": "Email",
+    "value": "marketing.chezaquest@yandex.ru"
+   },
+   {
+    "label": "Часы работы",
+    "value": "Работаем c 10:00 до 23:30"
+   },
+   {
+    "label": "Мессенджеры",
+    "value": "Написать в мессенджер 💬"
+   }
+  ],
+  "links": [
+   {
+    "t": "+7 (958) 717 69 94",
+    "href": "tel:+79587176994"
+   },
+   {
+    "t": "marketing.chezaquest@yandex.ru",
+    "href": "mailto:marketing.chezaquest@yandex.ru"
+   },
+   {
+    "t": "VK",
+    "href": "https://vk.com/chezaquest"
+   },
+   {
+    "t": "Instagram*",
+    "href": "https://www.instagram.com/chezaquest"
+   },
+   {
+    "t": "Написать в мессенджер 💬",
+    "href": ""
+   }
+  ],
+  "raw": [
+   "Телефон",
+   "+7 (958) 717 69 94",
+   "Email:",
+   "marketing.chezaquest@yandex.ru",
+   "Социальные сети",
+   "VK",
+   "Instagram*",
+   "Часы работы:",
+   "Работаем c 10:00 до 23:30",
+   "Мессенджеры:",
+   "Написать в мессенджер 💬"
+  ]
+ },
+ "note": "* Instagram принадлежит компании Meta, признанной экстремистской организацией и запрещенной в РФ"
+}

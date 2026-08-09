@@ -1,0 +1,195 @@
+---
+// Шаблон страницы-категории («Страшные квесты в Ростове-на-Дону»).
+// Данные — src/data/pages/<slug>.json (_capture/build_misc.py). Виджет отзывов не переносится.
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CardsRow from '../components/CardsRow.astro';
+import CallbackForm from '../components/CallbackForm.astro';
+import site from '../data/site.json';
+import '../styles/page.css';
+import '../styles/quest.css';
+
+const { page, index = [] } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => (p ? base + p : '');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
+
+const path = '/' + page.slug;
+const seo = page.seo;
+const hero = page.hero || {};
+// к карточкам подмешиваем данные самих квестов: возраст, вместимость, длительность, адрес
+const byslug = Object.fromEntries(index.map((p) => [p.slug, p]));
+const games = (page.games?.items || []).map((g) => {
+  const info = byslug[g.href.replace(/^\//, '')] || {};
+  const pills = info.pills || [];
+  return {
+    ...g,
+    img: g.img || info.img,
+    age: pills.find((p) => /\+$/.test(p)) || '',
+    people: pills.find((p) => /^\d+\s*[-–]\s*\d+$/.test(p)) || '',
+    time: pills.find((p) => /мин|час/i.test(p)) || '',
+    addr: info.addr || '',
+  };
+});
+
+// ---- Schema.org: список игр категории + крошки ----
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: seo.h1,
+    description: seo.description,
+    url: ORIGIN + path,
+    isPartOf: { '@type': 'WebSite', name: 'Чё за Квест', url: ORIGIN },
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: games.length,
+      itemListElement: games.map((g, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: g.t,
+        url: ORIGIN + g.href,
+      })),
+    },
+  },
+  page.breadcrumbs && {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: page.breadcrumbs.map((c, i) => ({
+      '@type': 'ListItem', position: i + 1, name: c.t,
+      item: c.href ? ORIGIN + (c.href === '/' ? '' : c.href) : ORIGIN + path,
+    })),
+  },
+].filter(Boolean);
+
+const heroSrcset = hero.bgset
+  ? Object.entries(hero.bgset).filter(([, p]) => p).map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
+  : '';
+const preload = hero.bg
+  ? { href: asset(hero.bgset?.['1200'] || hero.bg), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
+  : null;
+---
+<Layout
+  title={seo.title}
+  description={seo.description}
+  keywords={seo.keywords}
+  path={path}
+  ogImage={hero.bg}
+  jsonld={jsonld}
+  preloadImage={preload}
+>
+  <Header />
+
+  <main>
+    <!-- ============ ГЕРОЙ КАТЕГОРИИ ============ -->
+    <section class="qhero">
+      <div class="container-wide">
+        <div class="qhero__panel">
+          {hero.bg && (
+            <img class="qhero__bg" src={asset(hero.bgset?.['1200'] || hero.bg)} srcset={heroSrcset}
+                 sizes="(max-width:700px) 100vw, 1200px" alt={seo.h1}
+                 width="1200" height="550" fetchpriority="high" decoding="async" />
+          )}
+          <div class="qhero__body">
+            <h1 class="qhero__title">{hero.h1 || seo.h1}</h1>
+            {hero.sub && <p class="qhero__sub">{hero.sub}</p>}
+            <div class="qhero__cta">
+              {(hero.buttons || []).map((b, i) => (
+                <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={link(b.href)}>{b.t}</a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <Breadcrumbs items={page.breadcrumbs} />
+
+    <!-- ============ СЕТКА КВЕСТОВ КАТЕГОРИИ ============ -->
+    {games.length > 0 && (
+      <section class="cgrid" id="kvesty">
+        <div class="container">
+          <h2 class="section-title cgrid__title">{page.games.title}</h2>
+          <ul class="cgrid__list">
+            {games.map((g) => (
+              <li class="ccard">
+                <a class="ccard__link" href={link(g.href)}>
+                  {g.img && <img class="ccard__img" src={asset(g.img)} alt={g.t} loading="lazy" decoding="async" width="380" height="290" />}
+                  {g.age && <span class="ccard__age">{g.age}</span>}
+                  <span class="ccard__body">
+                    <span class="ccard__name">{g.t}</span>
+                    {g.addr && <span class="ccard__addr">{g.addr}</span>}
+                  </span>
+                  {(g.people || g.time) && (
+                    <span class="ccard__meta">
+                      {g.people && <span class="ccard__chip">{g.people} чел.</span>}
+                      {g.time && <span class="ccard__chip">{g.time}</span>}
+                    </span>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <!-- ============ ФОТО С КВЕСТОВ ============ -->
+    {page.gallery?.photos?.length > 0 && (
+      <section class="qextra">
+        <div class="container">
+          {page.gallery.title && <h2 class="section-title">{page.gallery.title}</h2>}
+          <div class="qextra__photos qextra__photos--grid">
+            {page.gallery.photos.map((p, i) => (
+              <img src={asset(p)} alt={`${seo.h1} — фото ${i + 1}`} loading="lazy" decoding="async" />
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- ============ СЕРТИФИКАТ ============ -->
+    {page.cert && (
+      <section class="ccert">
+        <div class="container ccert__inner">
+          <div class="ccert__text">
+            <h2 class="section-title">{page.cert.title}</h2>
+            {page.cert.lines.map((l) => (<p class="ccert__line">{l}</p>))}
+            <a class="btn-orange" href={site.header.phoneHref}>{page.cert.cta}</a>
+          </div>
+          {page.cert.photos?.[0] && (
+            <img class="ccert__img" src={asset(page.cert.photos[0])} alt="Подарочный сертификат «Чё за Квест»"
+                 loading="lazy" decoding="async" width="500" height="356" />
+          )}
+        </div>
+      </section>
+    )}
+
+    <CallbackForm id="c" />
+
+    <!-- ============ ПЛОЩАДКИ ============ -->
+    {page.venues?.items?.length > 0 && (
+      <section class="cvenues">
+        <div class="container">
+          <h2 class="section-title">{page.venues.title}</h2>
+          {page.venues.subtitle && <p class="section-sub">{page.venues.subtitle}</p>}
+          <ul class="cvenues__list">
+            {page.venues.items.map((v) => (
+              <li><a href={link(v.href)}>{v.t}</a></li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import '../scripts/main.js';
+  import '../scripts/rows.js';
+</script>

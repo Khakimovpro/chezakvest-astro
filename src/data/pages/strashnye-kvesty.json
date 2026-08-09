@@ -1,0 +1,181 @@
+{
+ "slug": "strashnye-kvesty",
+ "type": "category",
+ "seo": {
+  "title": "Страшные квесты в Ростове",
+  "description": "Страшные квесты в Ростове-на-Дону от компании «Чё за Квест»: 13 программ на выбор, 9 площадок в городе. Бронирование игры по телефону, работаем ежедневно.",
+  "keywords": "",
+  "h1": "Страшные квесты в Ростове-на-Дону"
+ },
+ "breadcrumbs": [
+  {
+   "t": "Главная",
+   "href": "/"
+  },
+  {
+   "t": "Все квесты",
+   "href": null
+  },
+  {
+   "t": "Страшные квесты",
+   "href": null
+  }
+ ],
+ "hero": {
+  "h1": "Страшные квесты в Ростове-на-Дону",
+  "sub": "Испытай свои нервы на прочность в страшных квестах в Ростове-на-Дону.",
+  "buttons": [
+   {
+    "t": "Рассчитать стоимость праздника",
+    "href": "/strashnye-kvesty#popup:marquiz_60431b2afe1a980044eacd7b"
+   },
+   {
+    "t": "Подобрать квест",
+    "href": "/strashnye-kvesty#popup:marquiz_60431b2afe1a980044eacd7b"
+   }
+  ],
+  "bg": "/assets/q/40b9b2eb4d.webp",
+  "bgset": {
+   "760": "/assets/q/db5bf4845c.webp",
+   "1200": "/assets/q/f5a8ebae63.webp",
+   "1600": "/assets/q/40b9b2eb4d.webp"
+  }
+ },
+ "games": {
+  "title": "Выберите свой страшный квест",
+  "items": [
+   {
+    "t": "Психбольница",
+    "href": "/kvest_v_realnosti_psihbolnitsa",
+    "img": null
+   },
+   {
+    "t": "Уэнсдей. Новая битва",
+    "href": "/kvest_v_realnosti_wednesday",
+    "img": "/assets/q/abb318ccb1.webp"
+   },
+   {
+    "t": "Коралина в Стране Кошмаров",
+    "href": "/kvest_v_realnosti_koralina",
+    "img": "/assets/q/e6b87ab45d.webp"
+   },
+   {
+    "t": "Техасская резня бензопилой",
+    "href": "/tekhasskaya-reznya-benzopiloj",
+    "img": "/assets/q/c3181340e6.webp"
+   },
+   {
+    "t": "Звонок",
+    "href": "/zvonok",
+    "img": "/assets/q/51c67323e2.webp"
+   },
+   {
+    "t": "Бегущий в лабиринте",
+    "href": "/beguschij_v_labirinte",
+    "img": "/assets/q/2950393a90.webp"
+   },
+   {
+    "t": "Дом призраков",
+    "href": "/kvest_v_realnosti_dom_prizrakov",
+    "img": null
+   },
+   {
+    "t": "ОНО",
+    "href": "/ono",
+    "img": "/assets/q/ab71a7cd83.webp"
+   },
+   {
+    "t": "Игра в Кальмара",
+    "href": "/igra_v_kalmara",
+    "img": null
+   },
+   {
+    "t": "Замок Графа Дракулы",
+    "href": "/kvest_v_realnosti_zamok_drakuly",
+    "img": "/assets/q/f4196df202.webp"
+   },
+   {
+    "t": "Патология",
+    "href": "/patologiya",
+    "img": "/assets/q/ce2fec6888.webp"
+   },
+   {
+    "t": "Хостел. Подвал пыток",
+    "href": "/hostel-podval-pytok",
+    "img": "/assets/q/3838632926.webp"
+   },
+   {
+    "t": "Шизофрения. Тени правды",
+    "href": "/shizofreniya",
+    "img": "/assets/q/d621abd216.webp"
+   }
+  ]
+ },
+ "gallery": {
+  "title": "Фотографии со страшных квестов в Ростове",
+  "photos": [
+   "/assets/q/300565b5c5.webp",
+   "/assets/q/22ab0a737a.webp",
+   "/assets/q/0643f227e4.webp",
+   "/assets/q/9e9ebe515b.webp",
+   "/assets/q/7652fac8ce.webp",
+   "/assets/q/5383e8c3bb.webp",
+   "/assets/q/dbdbff566f.webp",
+   "/assets/q/989e0fdafe.webp",
+   "/assets/q/c9ad032ad6.webp",
+   "/assets/q/89fb923deb.webp"
+  ]
+ },
+ "cert": {
+  "title": "Подарите незабываемое приключение!",
+  "lines": [
+   "Сертификат действует на любом квесте компании «Че за квест» в течении 6-ти месяцев с момента покупки. Возможна доставка в любую точку Ростова-на-Дону"
+  ],
+  "cta": "Заказать сертификат",
+  "photos": [
+   "/assets/q/eae9e32b68.webp"
+  ]
+ },
+ "venues": {
+  "title": "Наши площадки",
+  "subtitle": "9 современно оборудованных площадок с квест-комнатами и зонами отдыха в Ростове-на-Дону",
+  "items": [
+   {
+    "t": "Гвардейский пер., 61",
+    "href": "/guardeskypereulog61"
+   },
+   {
+    "t": "ул. Социалистическая, 186",
+    "href": "/socialicheskaya186"
+   },
+   {
+    "t": "ул. Красноармейская, 103",
+    "href": "/krasnormerskaya103"
+   },
+   {
+    "t": "пр-т Соколова, 23",
+    "href": "/sokolova23"
+   },
+   {
+    "t": "пр-т Мира, д. 27",
+    "href": "/mira27"
+   },
+   {
+    "t": "ул. Нансена, 107/1",
+    "href": "/nansena107"
+   },
+   {
+    "t": "ул. Магнитогорская, 1",
+    "href": "/magnitogorskaya1"
+   },
+   {
+    "t": "ул. 40-летия Победы, 216",
+    "href": "/40letpobedy216"
+   },
+   {
+    "t": "пр-т Нагибина, 14а",
+    "href": "/nagibina14"
+   }
+  ]
+ }
+}

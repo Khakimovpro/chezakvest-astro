@@ -1,0 +1,104 @@
+---
+// Шаблон страницы «Контакты». Телефон и мессенджеры берутся из site.json — на живом сайте
+// номер подменяет call-tracking, в переносе везде стоит базовый.
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CallbackForm from '../components/CallbackForm.astro';
+import site from '../data/site.json';
+import '../styles/page.css';
+import '../styles/quest.css';
+
+const { page, venues = [] } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
+
+const path = '/' + page.slug;
+const seo = page.seo;
+const raw = page.contacts?.raw || [];
+const links = page.contacts?.links || [];
+const email = links.find((l) => l.href.startsWith('mailto:'));
+const vk = links.find((l) => l.href.includes('vk.com'));
+const hours = raw.find((t) => /\d{1,2}:\d{2}/.test(t)) || 'Работаем c 10:00 до 23:30';
+
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Чё за Квест',
+    url: ORIGIN,
+    telephone: site.footer.phone,
+    email: email ? email.href.replace('mailto:', '') : undefined,
+    sameAs: vk ? [vk.href] : undefined,
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: site.footer.phone,
+      contactType: 'reservations',
+      areaServed: 'RU',
+      availableLanguage: 'Russian',
+    },
+  },
+  page.breadcrumbs && {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: page.breadcrumbs.map((c, i) => ({
+      '@type': 'ListItem', position: i + 1, name: c.t,
+      item: c.href ? ORIGIN + (c.href === '/' ? '' : c.href) : ORIGIN + path,
+    })),
+  },
+].filter(Boolean);
+---
+<Layout title={seo.title} description={seo.description} keywords={seo.keywords}
+        path={path} jsonld={jsonld} preloadImage={null}>
+  <Header />
+
+  <main>
+    <Breadcrumbs items={page.breadcrumbs} />
+
+    <section class="info">
+      <div class="container">
+        <h1 class="section-title">{seo.h1}</h1>
+        <div class="info__grid">
+          <div class="info__card">
+            <div class="info__label">Телефон</div>
+            <a class="info__value info__value--big" href={site.header.phoneHref}>{site.header.phone}</a>
+            <div class="info__hours">{hours}</div>
+          </div>
+          {email && (
+            <div class="info__card">
+              <div class="info__label">Почта</div>
+              <a class="info__value" href={email.href}>{email.href.replace('mailto:', '')}</a>
+            </div>
+          )}
+          <div class="info__card">
+            <div class="info__label">Мессенджеры и соцсети</div>
+            <div class="info__row">
+              <a class="info__chip" href={site.header.wa} target="_blank" rel="noopener">WhatsApp</a>
+              {vk && <a class="info__chip" href={vk.href} target="_blank" rel="noopener">ВКонтакте</a>}
+            </div>
+          </div>
+        </div>
+
+        {venues.length > 0 && (
+          <div class="info__venues">
+            <h2 class="section-title">Наши площадки</h2>
+            <ul class="cvenues__list">
+              {venues.map((v) => (<li><a href={link('/' + v.slug)}>{v.address}</a></li>))}
+            </ul>
+          </div>
+        )}
+
+      </div>
+    </section>
+
+    <CallbackForm id="i" />
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import '../scripts/main.js';
+</script>
