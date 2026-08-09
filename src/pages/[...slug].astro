@@ -2,6 +2,7 @@
 // Единый роут внутренних страниц: слаг = имя файла в src/data/pages/.
 // Тип страницы берётся из поля "type" — сейчас реализован quest, дальше добавятся venue/holiday.
 import QuestPage from '../layouts/QuestPage.astro';
+import VenuePage from '../layouts/VenuePage.astro';
 
 export async function getStaticPaths() {
   const files = import.meta.glob('../data/pages/*.json', { eager: true });
@@ -17,3 +18,4 @@ export async function getStaticPaths() {
 const { page, index } = Astro.props;
 ---
 {page.type === 'quest' && <QuestPage page={page} index={index} />}
+{page.type === 'venue' && <VenuePage page={page} />}

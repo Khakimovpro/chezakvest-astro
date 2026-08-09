@@ -1,0 +1,155 @@
+---
+// Шаблон страницы площадки (адреса). Данные — src/data/pages/<slug>.json (_capture/build_venue.py).
+// Порядок секций как в оригинале: как нас найти → карта → квесты на локации → форма праздника →
+// зал для праздника → форма «Есть вопрос?». Виджет отзывов не переносится (доменно-залочен).
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CardsRow from '../components/CardsRow.astro';
+import PartyForm from '../components/PartyForm.astro';
+import CallbackForm from '../components/CallbackForm.astro';
+import site from '../data/site.json';
+import '../styles/page.css';
+import '../styles/quest.css';
+
+const { page } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => (p ? base + p : '');
+const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
+
+const path = '/' + page.slug;
+const seo = page.seo;
+const howto = page.howto || {};
+const address = (page.breadcrumbs || []).slice(-1)[0]?.t || page.hall?.address || '';
+const mapsUrl = howto.routeUrl
+  || `https://yandex.ru/maps/?text=${encodeURIComponent('Ростов-на-Дону, ' + address)}`;
+
+// ---- Schema.org: площадка как заведение + хлебные крошки ----
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'EntertainmentBusiness',
+    name: `Чё за Квест — ${address}`,
+    description: seo.description,
+    url: ORIGIN + path,
+    telephone: site.footer.phone,
+    image: howto.photos?.[0] ? ORIGIN + howto.photos[0] : undefined,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: address,
+      addressLocality: 'Ростов-на-Дону',
+      addressRegion: 'Ростовская область',
+      addressCountry: 'RU',
+    },
+    openingHours: 'Mo-Su 10:00-23:30',
+    hasMap: mapsUrl,
+    parentOrganization: { '@type': 'Organization', name: 'Чё за Квест', url: ORIGIN },
+  },
+  page.breadcrumbs && {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: page.breadcrumbs.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.t,
+      item: c.href ? ORIGIN + (c.href === '/' ? '' : c.href) : ORIGIN + path,
+    })),
+  },
+].filter(Boolean);
+
+const lcp = howto.photos?.[0];
+const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: '(max-width:900px) 100vw, 560px' } : null;
+---
+<Layout
+  title={seo.title}
+  description={seo.description}
+  keywords={seo.keywords}
+  path={path}
+  ogImage={lcp}
+  jsonld={jsonld}
+  preloadImage={preload}
+>
+  <Header />
+
+  <main>
+    <Breadcrumbs items={page.breadcrumbs} />
+
+    <!-- ============ КАК НАС НАЙТИ ============ -->
+    <section class="vhow">
+      <div class="container">
+        <div class="vhow__card">
+          <div class="vhow__text">
+            <p class="vhow__up">{howto.uptitle}</p>
+            <h1 class="vhow__title">{howto.title || seo.h1}</h1>
+            {(howto.variants || []).map((v) => (<p class="vhow__var">{v}</p>))}
+            <a class="vhow__cta" href={mapsUrl} target="_blank" rel="noopener">{howto.cta || 'Построить маршрут'}</a>
+          </div>
+          {howto.photos?.length > 0 && (
+            <div class="vhow__photos">
+              {howto.photos.slice(0, 4).map((p, i) => (
+                <img src={asset(p)} alt={`Как найти «Чё за Квест» — ${address}`}
+                     width="560" height="400" loading={i === 0 ? 'eager' : 'lazy'}
+                     fetchpriority={i === 0 ? 'high' : undefined} decoding="async" />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ КАРТА (снимок оригинала + ссылка в Яндекс.Карты) ============ -->
+    {page.map?.img && (
+      <section class="vmap">
+        <div class="container">
+          <a class="vmap__link" href={mapsUrl} target="_blank" rel="noopener">
+            <img src={asset(page.map.img)} alt={`«Чё за Квест» на карте: ${address}`}
+                 width="1400" height="400" loading="lazy" decoding="async" />
+            <span class="vmap__badge">Открыть в Яндекс.Картах</span>
+          </a>
+        </div>
+      </section>
+    )}
+
+    {page.games?.items?.length > 0 && (
+      <CardsRow title={page.games.title} subtitle={`Адрес: ${address}`}
+                items={page.games.items} variant="poster" id="kvesty" />
+    )}
+
+    <PartyForm />
+
+    <!-- ============ ЗАЛ ДЛЯ ПРАЗДНИКА ============ -->
+    {page.hall && (
+      <section class="qvenue">
+        <div class="container">
+          {page.hall.title && <h2 class="section-title">{page.hall.title}</h2>}
+          {page.hall.subtitle && <p class="section-sub">{page.hall.subtitle}</p>}
+          <div class="qvenue__card">
+            <div class="qvenue__photos">
+              {(page.hall.photos || []).slice(0, 1).map((ph) => (
+                <img class="qvenue__photo" src={asset(ph)} alt={`Зал для праздника — ${address}`}
+                     loading="lazy" decoding="async" width="600" height="400" />
+              ))}
+            </div>
+            <div class="qvenue__info">
+              <h3 class="qvenue__addr">{page.hall.address}</h3>
+              <ul class="qvenue__list">
+                {page.hall.lines.map((l) => (<li>{l}</li>))}
+              </ul>
+              <a class="btn-orange" href={site.header.phoneHref}>{page.hall.cta}</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <CallbackForm id="v" />
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import '../scripts/main.js';
+  import '../scripts/rows.js';
+</script>
