@@ -1,0 +1,49 @@
+---
+// Сквозной футер + плавающая кнопка WhatsApp. Разметка перенесена с главной без изменений.
+import site from '../data/site.json';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => (p ? base + p : '#');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+
+const s = site;
+---
+
+<footer class="ft">
+  <div class="container ft__inner">
+    {s.footer.cols.map((col) => (
+      <div class="ft__col">
+        <div class="ft__h">{col.title}</div>
+        <ul>{col.links.map((l) => (<li><a href={link(l.href)}>{l.t}</a></li>))}</ul>
+      </div>
+    ))}
+    <div class="ft__col ft__contacts">
+      <a class="ft__phone" href={s.footer.phoneHref}>{s.footer.phone}</a>
+      <div class="ft__hours">{s.footer.hours}</div>
+      <div class="ft__req">{s.footer.req.map((r) => (<div>{r}</div>))}</div>
+      <a class="ft__privacy" href={link('/privacy')}>{s.footer.privacy}</a>
+    </div>
+  </div>
+  <div class="container ft__bottom">
+    <div class="ft__brand">
+      <img class="ft__logo" src={asset(s.footer.logo)} alt="Чё за Квест" width="125" height="53" loading="lazy" />
+      <div class="ft__copy">{s.footer.copyright}</div>
+    </div>
+    <div class="ft__social">
+      <a href={s.header.wa} target="_blank" rel="noopener" aria-label="WhatsApp" class="ft__soc ft__soc--wa">
+        <svg viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><path fill="#fff" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.1 1.6 5.9L4 29l8.3-1.6c1.7.9 3.6 1.4 5.7 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.3l-.4-.2-3.7.7.7-3.6-.2-.4a9.8 9.8 0 01-1.5-5.2c0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.4 9.8-9.8 9.8zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.6.1a8 8 0 01-2.4-1.5 9 9 0 01-1.6-2c-.2-.3 0-.4.1-.6l.5-.5c.1-.2.2-.3.3-.5s0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1 2.2 3.4 5.3 4.7c2 .9 2.8.9 3.7.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4l-.6-.3z"/></svg>
+      </a>
+      <a href="https://vk.com" target="_blank" rel="noopener" aria-label="ВКонтакте" class="ft__soc ft__soc--vk">
+        <svg viewBox="0 0 32 32" width="18" height="18" aria-hidden="true"><path fill="#fff" d="M16.9 22.4c-7 0-11.4-4.9-11.6-13h3.6c.1 5.9 2.8 8.4 4.8 8.9V9.4h3.4v5.1c2-.2 4.1-2.6 4.8-5.1h3.3c-.5 3-2.6 5.4-4.1 6.4 1.5.8 3.9 2.9 4.8 6.6h-3.7c-.7-2.3-2.5-4.1-5.1-4.4v4.4h-.5z"/></svg>
+      </a>
+      <a href={s.footer.phoneHref} aria-label="Написать нам" class="ft__soc ft__soc--mail">
+        <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path fill="#fff" d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<!-- Плавающая кнопка WhatsApp -->
+<a class="wa-float" href={s.header.wa} target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
+  <svg viewBox="0 0 32 32" width="34" height="34" aria-hidden="true"><path fill="#fff" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.1 1.6 5.9L4 29l8.3-1.6c1.7.9 3.6 1.4 5.7 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.3l-.4-.2-3.7.7.7-3.6-.2-.4a9.8 9.8 0 01-1.5-5.2c0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.4 9.8-9.8 9.8zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.6.1a8 8 0 01-2.4-1.5 9 9 0 01-1.6-2c-.2-.3 0-.4.1-.6l.5-.5c.1-.2.2-.3.3-.5s0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1 2.2 3.4 5.3 4.7c2 .9 2.8.9 3.7.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4l-.6-.3z"/></svg>
+</a>

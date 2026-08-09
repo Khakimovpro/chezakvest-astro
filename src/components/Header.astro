@@ -1,0 +1,78 @@
+---
+// Сквозная шапка сайта + мобильное меню. Разметка и классы взяты с главной без изменений,
+// чтобы styles/page.css работал на всех страницах одинаково.
+import site from '../data/site.json';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => (p ? base + p : '#');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+
+const s = site;
+// категории каталога — в порядке появления карточек на главной
+const catOrder = [];
+for (const c of s.cards) if (!catOrder.includes(c.cat)) catOrder.push(c.cat);
+const anchorForCat = {
+  'Квесты в Ростове': 'catalog',
+  'Страшные квесты в Ростове': 'strashnye',
+  'Прятки в лабиринте 200м²': 'pryatki',
+  'Квест-шоу на площадке 200м²': 'kvestshou',
+  'VR-игры на арене 300м²': 'vr',
+};
+---
+
+<header class="hdr" id="top">
+  <div class="hdr__inner container">
+    <a class="hdr__logo" href={link('/')} aria-label="Чё за Квест — на главную">
+      <img src={asset(s.header.logo)} alt="Чё за Квест" width="150" height="47" />
+    </a>
+
+    <nav class="hdr__nav" aria-label="Основная навигация">
+      <ul class="nav">
+        <li class="nav__item has-mega">
+          <a href={link('/#catalog')}>Каталог квестов</a>
+          <div class="mega">
+            {catOrder.map((cat) => (
+              <a class="mega__link" href={link(`/#${anchorForCat[cat]}`)}>{cat}</a>
+            ))}
+          </div>
+        </li>
+        <li class="nav__item has-mega">
+          <a href={link('/#party')}>Проведение праздников</a>
+          <div class="mega">
+            {s.footer.cols[0].links.map((l) => (
+              <a class="mega__link" href={link(l.href)}>{l.t}</a>
+            ))}
+          </div>
+        </li>
+        <li class="nav__item"><a href={link('/strashnye-kvesty')}>Хоррор</a></li>
+        <li class="nav__item"><a href={link('/#otzivy')}>Отзывы</a></li>
+        <li class="nav__item"><a href={link('/contacts')}>Контакты</a></li>
+      </ul>
+    </nav>
+
+    <div class="hdr__actions">
+      <a class="hdr__phone" href={s.header.phoneHref}>
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 006.6 6.6l2.2-2.2a1 1 0 011-.24 11 11 0 003.4.55 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.55 3.4 1 1 0 01-.25 1L6.6 10.8z"/></svg>
+        <span>{s.header.phone}</span>
+      </a>
+      <a class="hdr__wa" href={s.header.wa} target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
+        <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><path fill="#fff" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.1 1.6 5.9L4 29l8.3-1.6c1.7.9 3.6 1.4 5.7 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.3l-.4-.2-3.7.7.7-3.6-.2-.4a9.8 9.8 0 01-1.5-5.2c0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.4 9.8-9.8 9.8zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.6.1a8 8 0 01-2.4-1.5 9 9 0 01-1.6-2c-.2-.3 0-.4.1-.6l.5-.5c.1-.2.2-.3.3-.5s0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1 2.2 3.4 5.3 4.7c2 .9 2.8.9 3.7.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4l-.6-.3z"/></svg>
+      </a>
+      <button class="hdr__burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Мобильное меню -->
+<div class="mmenu" id="mobile-menu" hidden>
+  <ul>
+    <li><a href={link('/#catalog')}>Каталог квестов</a></li>
+    <li><a href={link('/#party')}>Проведение праздников</a></li>
+    <li><a href={link('/strashnye-kvesty')}>Хоррор</a></li>
+    <li><a href={link('/#otzivy')}>Отзывы</a></li>
+    <li><a href={link('/contacts')}>Контакты</a></li>
+    <li><a href={s.header.phoneHref} class="mmenu__phone">{s.header.phone}</a></li>
+  </ul>
+</div>

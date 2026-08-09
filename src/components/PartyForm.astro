@@ -1,0 +1,40 @@
+---
+// Сквозной блок «У нас вы можете отметить День рождения!» — белая карточка с формой заявки
+// и оранжевой волной снизу. Одинаковый на всех страницах квестов.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+const { id = 'party' } = Astro.props;
+---
+<section class="pform" id="prazdnik">
+  <div class="container">
+    <div class="pform__card">
+      <h2 class="pform__title">У нас вы можете отметить День рождения!</h2>
+      <p class="pform__sub">Отправьте заявку, узнайте свободна ли ваша дата.<br />Поможем подобрать программу праздника.</p>
+      <form class="pform__form" onsubmit="return false">
+        <div class="pform__grid">
+          <label class="pform__field">
+            <span class="pform__label">Выберите дату</span>
+            <input id={`${id}-date`} type="text" placeholder="дд.мм.гггг" inputmode="numeric" />
+          </label>
+          <label class="pform__field">
+            <span class="visually-hidden">Ваше имя</span>
+            <input id={`${id}-name`} type="text" placeholder="Ваше имя" autocomplete="name" />
+          </label>
+          <label class="pform__field pform__field--phone">
+            <span class="visually-hidden">Телефон</span>
+            <span class="pform__flag" aria-hidden="true">🇷🇺</span>
+            <input id={`${id}-phone`} type="tel" placeholder="+7 (000) 000-00-00" autocomplete="tel" />
+          </label>
+        </div>
+        <label class="pform__consent">
+          <input type="checkbox" checked />
+          <span>Даю согласие на обработку моих персональных данных в соответствии с <a href={link('/privacy')}>Политикой обработки персональных данных</a></span>
+        </label>
+        <button class="btn-orange pform__submit" type="submit">Отправить</button>
+      </form>
+      <div class="pform__wave" aria-hidden="true">
+        <svg viewBox="0 0 1120 210" preserveAspectRatio="none"><path fill="#ff8a00" d="M0 78c186-52 373-52 560 0s374 52 560 0v132H0z"/></svg>
+      </div>
+    </div>
+  </div>
+</section>

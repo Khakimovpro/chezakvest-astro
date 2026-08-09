@@ -1,0 +1,44 @@
+---
+// Горизонтальный ряд карточек с фото и подписью: «Другие квесты» и «Сценарии праздника».
+// На десктопе — сетка со скроллом, на мобайле — свайп. Стрелки листают ряд (scripts/row.js).
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => (p ? base + p : '');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+const {
+  title = '',
+  subtitle = '',
+  items = [],
+  variant = 'poster',   // poster — вертикальные 275x367 (квесты); square — 360x360 (сценарии)
+  uptitle = '',         // мелкая строка над названием (у сценариев «День рождения в стиле»)
+  id = '',
+} = Astro.props;
+---
+{items.length > 0 && (
+  <section class={`cards cards--${variant}`} id={id || undefined}>
+    <div class="container">
+      {title && <h2 class="section-title cards__title" set:html={title.replace('«Чё за Квест?»', '<nobr>«Чё за Квест?»</nobr>')} />}
+      {subtitle && <p class="cards__sub">{subtitle}</p>}
+    </div>
+    <div class="cards__wrap container">
+      <button class="cards__arrow cards__arrow--prev" type="button" aria-label="Предыдущие">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <ul class="cards__row">
+        {items.map((it) => (
+          <li class="card">
+            <a class="card__link" href={link(it.href)}>
+              {it.img && <img class="card__img" src={asset(it.img)} alt={it.t} loading="lazy" decoding="async" />}
+              <span class="card__cap">
+                {uptitle && <span class="card__up">{uptitle}</span>}
+                <span class="card__name">{it.t}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <button class="cards__arrow cards__arrow--next" type="button" aria-label="Следующие">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </section>
+)}

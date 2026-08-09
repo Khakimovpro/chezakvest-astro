@@ -1,0 +1,248 @@
+---
+// Шаблон страницы квеста. Данные — src/data/pages/<slug>.json (собирает _capture/build_quest.py).
+// Порядок секций повторяет оригинал на Tilda, кроме блока расписания: он не переносится.
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CardsRow from '../components/CardsRow.astro';
+import PartyForm from '../components/PartyForm.astro';
+import CallbackForm from '../components/CallbackForm.astro';
+import site from '../data/site.json';
+import '../styles/page.css';
+import '../styles/quest.css';
+
+const { page } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => (p ? base + p : '');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
+
+const path = '/' + page.slug;
+const seo = page.seo;
+const hero = page.hero || {};
+
+// возраст («12+») в оригинале стоит отдельным кружком справа, остальное — пилюли слева
+const age = (hero.pills || []).find((p) => /\+$/.test(p));
+const pills = (hero.pills || []).filter((p) => p !== age)
+  .sort((a, b) => (/мин|час/i.test(b) ? 1 : 0) - (/мин|час/i.test(a) ? 1 : 0));   // длительность первой, как в оригинале
+
+// ---- Schema.org: услуга с предложением + хлебные крошки ----
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: seo.h1,
+    serviceType: 'Квест в реальности',
+    description: seo.description,
+    url: ORIGIN + path,
+    image: hero.bg ? ORIGIN + hero.bg : undefined,
+    areaServed: { '@type': 'City', name: 'Ростов-на-Дону' },
+    audience: age ? { '@type': 'PeopleAudience', suggestedMinAge: parseInt(age, 10) } : undefined,
+    provider: {
+      '@type': 'EntertainmentBusiness',
+      name: 'Чё за Квест',
+      telephone: site.footer.phone,
+      url: ORIGIN,
+      address: { '@type': 'PostalAddress', addressLocality: 'Ростов-на-Дону', addressCountry: 'RU' },
+    },
+    offers: {
+      '@type': 'Offer',
+      availability: 'https://schema.org/InStock',
+      priceCurrency: 'RUB',
+      url: ORIGIN + path,
+      category: 'Квест',
+    },
+  },
+  page.breadcrumbs && {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: page.breadcrumbs.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.t,
+      item: c.href ? ORIGIN + (c.href === '/' ? '' : c.href) : ORIGIN + path,
+    })),
+  },
+].filter(Boolean);
+
+const heroSrcset = hero.bgset
+  ? Object.entries(hero.bgset).map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
+  : (hero.bg ? `${asset(hero.bg)} 1600w` : '');
+const preload = hero.bg
+  ? { href: asset(hero.bgset?.['1200'] || hero.bg), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
+  : null;
+---
+<Layout
+  title={seo.title}
+  description={seo.description}
+  keywords={seo.keywords}
+  path={path}
+  ogImage={hero.bg}
+  ogType="article"
+  jsonld={jsonld}
+  preloadImage={preload}
+>
+  <Header />
+
+  <main>
+    <!-- ============ ГЕРОЙ КВЕСТА ============ -->
+    <section class="qhero">
+      <div class="container-wide">
+        <div class="qhero__panel">
+          {hero.bg && (
+            <img class="qhero__bg" src={asset(hero.bgset?.['1200'] || hero.bg)}
+                 srcset={heroSrcset} sizes="(max-width:700px) 100vw, 1200px"
+                 alt={`Квест «${seo.h1}» в Ростове-на-Дону`}
+                 width="1200" height="550" fetchpriority="high" decoding="async" />
+          )}
+          {pills.length > 0 && (
+            <div class="qhero__pills">
+              {pills.map((p) => (
+                <span class="qpill">
+                  {/мин|час/i.test(p)
+                    ? <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#ff8a00" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="#ff8a00" stroke-width="2" stroke-linecap="round"/></svg>
+                    : <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#ff8a00" d="M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4 0-7 2-7 4.5V21h14v-2.5c0-2.5-3-4.5-7-4.5z"/></svg>}
+                  {p}
+                </span>
+              ))}
+            </div>
+          )}
+          {age && <span class="qhero__age">{age}</span>}
+          {page.video && page.video.poster && (
+            <a class="qhero__play" href="#video" aria-label="Смотреть видео о квесте">
+              <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="#fff" d="M8 5.5v13l11-6.5z"/></svg>
+            </a>
+          )}
+          <div class="qhero__body">
+            <h1 class="qhero__title">{hero.h1}</h1>
+            <div class="qhero__cta">
+              {(hero.buttons || []).map((b, i) => (
+                <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={link(b.href)}>{b.t}</a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <Breadcrumbs items={page.breadcrumbs} />
+
+    <!-- ============ ПРЕДЫСТОРИЯ ============ -->
+    {page.story && (
+      <section class="qstory" id="story">
+        <div class="container">
+          <h2 class="section-title">{page.story.title}</h2>
+          <div class="qstory__cols">
+            {page.story.paragraphs.map((p, i) => (
+              <p class={i === 0 ? 'qstory__lead' : 'qstory__p'}>{p}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- ============ ОСОБЕННОСТИ ============ -->
+    {page.features && page.features.items && (
+      <section class="qfeat">
+        <div class="container">
+          <h2 class="section-title qfeat__title">{page.features.title || 'Особенности'}</h2>
+          {(page.features.lead || []).map((l, i) => (
+            <p class={i === 0 ? 'qfeat__lead qfeat__lead--strong' : 'qfeat__lead'}>{l}</p>
+          ))}
+        </div>
+        <div class="qfeat__wrap container">
+          <ul class="qfeat__row">
+            {page.features.items.map((it) => (
+              <li class="qfeat__card">
+                <h3 class="qfeat__cardtitle">{it.t}</h3>
+                {it.sub && <p class="qfeat__cardsub">{it.sub}</p>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <!-- ============ БРОНИРОВАНИЕ (расписание — внешний модуль, здесь заявка) ============ -->
+    {page.booking && (
+      <section class="qbook" id="booking">
+        <div class="container">
+          <h2 class="section-title qbook__title">
+            {page.booking.title.split(' ')[0]} <span class="accent">{page.booking.title.split(' ').slice(1).join(' ')}</span>
+          </h2>
+          {page.booking.lines.map((l) => (<p class="qbook__line">{l}</p>))}
+          <div class="qbook__cta">
+            <a class="btn-orange" href={site.header.phoneHref}>Забронировать по телефону</a>
+            <a class="qbook__wa" href={site.header.wa} target="_blank" rel="noopener">Написать в WhatsApp</a>
+          </div>
+        </div>
+      </section>
+    )}
+
+    {page.related && (
+      <CardsRow title={page.related.title} subtitle={page.related.subtitle}
+                items={page.related.items} variant="poster" id="drugie" />
+    )}
+
+    <PartyForm />
+
+    <!-- ============ ПЛОЩАДКА ============ -->
+    {page.venue && (
+      <section class="qvenue">
+        <div class="container">
+          {page.venue.title && <h2 class="section-title">{page.venue.title}</h2>}
+          {page.venue.subtitle && <p class="section-sub">{page.venue.subtitle}</p>}
+          <div class="qvenue__card">
+            <div class="qvenue__photos">
+              {(page.venue.photos || []).slice(0, 1).map((ph) => (
+                <img class="qvenue__photo" src={asset(ph)} alt={`Зал «Чё за Квест» — ${page.venue.address}`}
+                     loading="lazy" decoding="async" width="600" height="400" />
+              ))}
+            </div>
+            <div class="qvenue__info">
+              <h3 class="qvenue__addr">{page.venue.address}</h3>
+              <ul class="qvenue__list">
+                {page.venue.lines.map((l) => (<li>{l}</li>))}
+              </ul>
+              <a class="btn-orange" href={site.header.phoneHref}>{page.venue.cta}</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- ============ ВИДЕО ============ -->
+    {page.video && page.video.poster && (
+      <section class="qvideo" id="video">
+        <div class="container">
+          <h2 class="section-title qvideo__title">{page.video.title}</h2>
+          <figure class="qvideo__frame" data-video={page.video.src || undefined}>
+            <img class="qvideo__poster" src={asset(page.video.poster)} alt={page.video.caption}
+                 loading="lazy" decoding="async" width="1120" height="630" />
+            {page.video.src && (
+              <button class="qvideo__play" type="button" aria-label="Воспроизвести видео">
+                <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path fill="#fff" d="M8 5.5v13l11-6.5z"/></svg>
+              </button>
+            )}
+            <figcaption class="qvideo__cap">{page.video.caption}</figcaption>
+          </figure>
+        </div>
+      </section>
+    )}
+
+    {page.scenarios && (
+      <CardsRow title={page.scenarios.title} subtitle={page.scenarios.subtitle}
+                items={page.scenarios.items} variant="square" uptitle="День рождения в стиле" />
+    )}
+
+    <CallbackForm id="q" />
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import '../scripts/main.js';
+  import '../scripts/rows.js';
+</script>

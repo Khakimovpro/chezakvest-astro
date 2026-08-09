@@ -1,0 +1,20 @@
+---
+// Хлебные крошки внутренних страниц. Разметку дублирует JSON-LD BreadcrumbList в Layout.
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : null);
+const { items = [] } = Astro.props;
+---
+{items.length > 0 && (
+  <nav class="crumbs" aria-label="Хлебные крошки">
+    <div class="container">
+      <ol>
+        {items.map((c, i) => (
+          <li>
+            {c.href ? <a href={link(c.href)}>{c.t}</a> : <span aria-current="page">{c.t}</span>}
+            {i < items.length - 1 && <span class="crumbs__sep" aria-hidden="true">/</span>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </nav>
+)}

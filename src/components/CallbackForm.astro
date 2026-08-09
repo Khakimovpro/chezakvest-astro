@@ -1,0 +1,30 @@
+---
+// Сквозная форма «Есть вопрос?» — есть на главной и на всех внутренних страницах.
+import site from '../data/site.json';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+const { id = 'cb' } = Astro.props;
+const s = site;
+---
+<section class="callback">
+  <div class="container">
+    <form class="cbform" onsubmit="return false">
+      <h2 class="cbform__title">{s.callback.title}</h2>
+      <p class="cbform__sub">{s.callback.sub}</p>
+      <div class="cbform__fields">
+        <label class="visually-hidden" for={`${id}-name`}>Ваше имя</label>
+        <input id={`${id}-name`} type="text" placeholder={s.callback.namePh} autocomplete="name" />
+        <label class="visually-hidden" for={`${id}-phone`}>Телефон</label>
+        <div class="cbform__phone">
+          <span class="cbform__flag" aria-hidden="true">🇷🇺</span>
+          <input id={`${id}-phone`} type="tel" placeholder={`+7 ${s.callback.phonePh}`} autocomplete="tel" />
+        </div>
+      </div>
+      <label class="cbform__consent">
+        <input type="checkbox" checked />
+        <span>{s.callback.consent} <a href={link('/privacy')}>{s.callback.consentLink}</a></span>
+      </label>
+      <button class="btn-orange cbform__submit" type="submit">{s.callback.btn}</button>
+    </form>
+  </div>
+</section>
