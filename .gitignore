@@ -13,8 +13,16 @@ _capture/
 !_capture/build_venue.py
 !_capture/build_misc.py
 !_capture/check_pages.py
+!_capture/check_assets.py
 !_capture/compare.py
 !_capture/encrypt_site.py
+!_capture/build_holiday.py
+!_capture/dump_page.py
+!_capture/extract_recs.py
+!_capture/tabs_shot.mjs
+!_capture/slider_shot.mjs
+!_capture/crop_section.py
+!_capture/fetch_images.py
 # os / editor
 .DS_Store
 *.log

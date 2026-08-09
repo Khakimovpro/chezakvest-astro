@@ -1,0 +1,541 @@
+---
+// Шаблон праздничных страниц (/kids, /prazdnik-maxi, дни рождения, выпускной).
+// У каждой из них на Tilda свой макет, поэтому данные — не фиксированные поля, а СПИСОК СЕКЦИЙ
+// (src/data/pages/<slug>.json, черновик делает _capture/build_holiday.py). Здесь — рендер по видам.
+// Виджеты квиза и отзывов не переносятся: они доменно-залочены. Их место занимают формы заявки.
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CardsRow from '../components/CardsRow.astro';
+import PartyForm from '../components/PartyForm.astro';
+import CallbackForm from '../components/CallbackForm.astro';
+import site from '../data/site.json';
+import '../styles/page.css';
+import '../styles/quest.css';
+import '../styles/holiday.css';
+
+const { page, index = [], venues = [] } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => (p ? base + p : '');
+const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
+
+const path = '/' + page.slug;
+const seo = page.seo;
+const sections = page.sections || [];
+const hero = sections.find((s) => s.kind === 'hero') || {};
+const rest = sections.filter((s) => s.kind !== 'hero');
+
+// ---- Schema.org: услуга «организация праздника» + цена, если она названа на странице ----
+// цена для разметки: явное поле страницы или первое число из ценника пакета
+// (в ценнике встречается «30 900 ₽ за 8 участников, +1000 ₽ …» — берём только первую сумму)
+const priceBlock = sections.find((s) => s.kind === 'packages' && s.items?.some((i) => i.price));
+const firstPrice = (t) => Number((String(t).match(/\d[\d  ]*/) || [''])[0].replace(/\D/g, '')) || null;
+const minPrice = page.priceFrom
+  || (priceBlock ? Math.min(...priceBlock.items.filter((i) => i.price).map((i) => firstPrice(i.price)).filter(Boolean)) : null);
+const faq = sections.find((s) => s.kind === 'faq');
+
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: seo.h1,
+    serviceType: page.serviceType || 'Организация детского праздника',
+    description: seo.description,
+    url: ORIGIN + path,
+    image: hero.bg ? ORIGIN + hero.bg : undefined,
+    areaServed: { '@type': 'City', name: 'Ростов-на-Дону' },
+    provider: {
+      '@type': 'EntertainmentBusiness',
+      name: 'Чё за Квест',
+      telephone: site.footer.phone,
+      url: ORIGIN,
+      address: { '@type': 'PostalAddress', addressLocality: 'Ростов-на-Дону', addressCountry: 'RU' },
+    },
+    offers: {
+      '@type': 'Offer',
+      availability: 'https://schema.org/InStock',
+      priceCurrency: 'RUB',
+      url: ORIGIN + path,
+      ...(minPrice ? { price: minPrice, priceSpecification: {
+        '@type': 'PriceSpecification', price: minPrice, priceCurrency: 'RUB',
+        valueAddedTaxIncluded: true,
+      } } : {}),
+    },
+  },
+  page.breadcrumbs && {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: page.breadcrumbs.map((c, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: c.t,
+      item: c.href ? ORIGIN + (c.href === '/' ? '' : c.href) : ORIGIN + path,
+    })),
+  },
+  faq && {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.items.map((q) => ({
+      '@type': 'Question',
+      name: q.q,
+      acceptedAnswer: { '@type': 'Answer', text: q.a },
+    })),
+  },
+].filter(Boolean);
+
+const heroSrcset = hero.bgset
+  ? Object.entries(hero.bgset).filter(([, p]) => p).map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
+  : '';
+const preload = hero.bg
+  ? { href: asset(hero.bgset?.['1200'] || hero.bg), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
+  : null;
+---
+<Layout
+  title={seo.title}
+  description={seo.description}
+  keywords={seo.keywords}
+  path={path}
+  ogImage={hero.bg}
+  ogType="article"
+  jsonld={jsonld}
+  preloadImage={preload}
+>
+  <Header />
+
+  <main>
+    <!-- ============ ГЕРОЙ ============ -->
+    {/* светлый вариант: фото-вырезка справа на фирменном фоне (как /kids на оригинале) */}
+    {hero.variant === 'light' ? (
+      <section class="lhero">
+        <div class="container lhero__inner">
+          <div class="lhero__text">
+            {hero.up && <p class="lhero__up">{hero.up}</p>}
+            <h1 class="lhero__title">{hero.h1 || seo.h1}</h1>
+            {hero.sub && <p class="lhero__sub">{hero.sub}</p>}
+            <div class="lhero__cta">
+              {(hero.buttons || []).map((b, i) => (
+                <a class={i === 0 ? 'btn-orange' : 'lhero__btn-ghost'} href={link(b.href)}>{b.t}</a>
+              ))}
+            </div>
+          </div>
+          {hero.bg && (
+            <img class="lhero__img" src={asset(hero.bgset?.['1200'] || hero.bg)} srcset={heroSrcset}
+                 sizes="(max-width:900px) 100vw, 620px" alt={seo.h1}
+                 width="620" height="535" fetchpriority="high" decoding="async" />
+          )}
+        </div>
+      </section>
+    ) : (
+      <section class="qhero">
+        <div class="container-wide">
+          <div class="qhero__panel">
+            {hero.bg && (
+              <img class="qhero__bg" src={asset(hero.bgset?.['1200'] || hero.bg)} srcset={heroSrcset}
+                   sizes="(max-width:700px) 100vw, 1200px" alt={seo.h1}
+                   width="1200" height="550" fetchpriority="high" decoding="async" />
+            )}
+            {(hero.pills || []).length > 0 && (
+              <div class="qhero__pills">
+                {hero.pills.map((p) => (<span class="qpill">{p}</span>))}
+              </div>
+            )}
+            <div class="qhero__body">
+              {hero.up && <p class="hhero__up">{hero.up}</p>}
+              <h1 class="qhero__title">{hero.h1 || seo.h1}</h1>
+              {hero.sub && <p class="qhero__sub hhero__sub">{hero.sub}</p>}
+              <div class="qhero__cta">
+                {(hero.buttons || []).map((b, i) => (
+                  <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={link(b.href)}>{b.t}</a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <Breadcrumbs items={page.breadcrumbs} />
+
+    {rest.map((s) => (
+      <>
+        {/* ---- текстовый блок: заголовок, подзаголовок, абзацы, фото ---- */}
+        {s.kind === 'text' && (
+          <section class="htext">
+            <div class="container">
+              {s.title && <h2 class="section-title">{s.title}</h2>}
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+              {(s.lines || []).map((l) => (<p class="htext__p">{l}</p>))}
+              {(s.photos || []).length > 0 && (
+                <div class={`qextra__photos qextra__photos--${s.photos.length > 3 ? 'grid' : 'row'}`}>
+                  {s.photos.map((p, i) => (
+                    <img src={asset(p)} alt={`${s.title || seo.h1} — фото ${i + 1}`}
+                         loading="lazy" decoding="async" />
+                  ))}
+                </div>
+              )}
+              {s.cta && (
+                <p class="htext__cta"><a class="btn-orange" href={site.header.phoneHref}>{s.cta}</a></p>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* ---- список преимуществ карточками ---- */}
+        {s.kind === 'features' && (
+          <section class="qfeat">
+            <div class="container">
+              {s.title && <h2 class="section-title qfeat__title">{s.title}</h2>}
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+            </div>
+            <div class="qfeat__wrap container">
+              <ul class="hfeat__grid">
+                {s.items.map((it) => (
+                  <li class="qfeat__card">
+                    <h3 class="qfeat__cardtitle">{it.t}</h3>
+                    {it.sub && <p class="qfeat__cardsub">{it.sub}</p>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
+        {/* ---- цифры компании ---- */}
+        {s.kind === 'stats' && (
+          <section class="hstats">
+            <div class="container">
+              {s.title && <h2 class="section-title">{s.title}</h2>}
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+              <ul class="hstats__row">
+                {s.items.map((it) => (
+                  <li class="hstat">
+                    {it.up && <span class="hstat__up">{it.up}</span>}
+                    <span class="hstat__num">{it.n}</span>
+                    <span class="hstat__sub">{it.sub}</span>
+                  </li>
+                ))}
+              </ul>
+              {(s.notes || []).length > 0 && (
+                <ul class="hnotes">
+                  {s.notes.map((n) => (
+                    <li class="hnote">
+                      <h3 class="hnote__t">{n.t}</h3>
+                      <p class="hnote__sub">{n.sub}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* ---- пакеты, разложенные по вкладкам (квест / VR / игры) ----
+             вкладки переключаются радиокнопками и CSS: весь текст всех пакетов лежит
+             в разметке сразу, поэтому его видит поиск, а страница обходится без JS */}
+        {s.kind === 'packages' && s.groups && (
+          <section class="hpack" id="pakety">
+            <div class="container">
+              {s.title && <h2 class="section-title">{s.title}</h2>}
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+              <div class="hpack__tabs">
+                {s.groups.map((g, gi) => (
+                  <input type="radio" name={`pk-${page.slug}`} id={`pk-${page.slug}-${gi}`}
+                         class="hpack__radio" checked={gi === 0} />
+                ))}
+                <div class="hpack__labels">
+                  {s.groups.map((g, gi) => (
+                    <label class="hpack__tab" for={`pk-${page.slug}-${gi}`}>{g.tab}</label>
+                  ))}
+                </div>
+                <div class="hpack__panels">
+                  {s.groups.map((g) => (
+                    <div class="hpack__panel">
+                      <h3 class="visually-hidden">{g.tab}</h3>
+                      <ul class="hpack__grid">
+                        {g.items.map((p) => (
+                          <li class={`hpack__card${p.badge ? ' hpack__card--hit' : ''}`}>
+                            <div class="hpack__head">
+                              <h4 class="hpack__name">{p.name}</h4>
+                              {p.badge && <span class="hpack__badge">{p.badge}</span>}
+                              {p.duration && <span class="hpack__dur">{p.duration}</span>}
+                            </div>
+                            {p.price && <p class="hpack__price">{p.price}</p>}
+                            {p.priceNote && <p class="hpack__pricenote">{p.priceNote}</p>}
+                            {(p.includes || []).length > 0 && (
+                              <>
+                                <p class="hpack__label">В программу входит</p>
+                                <ul class="hpack__list">
+                                  {p.includes.map((i) => (
+                                    <li><span>{i.t}</span>{i.time && <b>{i.time}</b>}</li>
+                                  ))}
+                                </ul>
+                              </>
+                            )}
+                            {(p.bullets || []).length > 0 && (
+                              <>
+                                <p class="hpack__label">В пакет включено</p>
+                                <ul class="hpack__bullets">
+                                  {p.bullets.map((b) => (<li>{b}</li>))}
+                                </ul>
+                              </>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div class="hpack__cta">
+                <a class="btn-orange" href={site.header.phoneHref}>{s.cta || 'Узнать стоимость'}</a>
+                <a class="qbook__wa" href={site.header.wa} target="_blank" rel="noopener">Написать в WhatsApp</a>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ---- пакеты одним списком ---- */}
+        {s.kind === 'packages' && !s.groups && (
+          <section class="hpack" id="pakety">
+            <div class="container">
+              {s.title && <h2 class="section-title">{s.title}</h2>}
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+              <ul class="hpack__grid">
+                {s.items.map((p) => (
+                  <li class={`hpack__card${p.badge ? ' hpack__card--hit' : ''}`}>
+                    <div class="hpack__head">
+                      <h3 class="hpack__name">{p.name}</h3>
+                      {p.badge && <span class="hpack__badge">{p.badge}</span>}
+                      {p.duration && <span class="hpack__dur">{p.duration}</span>}
+                    </div>
+                    {p.price && <p class="hpack__price">{p.price}</p>}
+                            {p.priceNote && <p class="hpack__pricenote">{p.priceNote}</p>}
+                    {(p.includes || []).length > 0 && (
+                      <>
+                        <p class="hpack__label">В программу входит</p>
+                        <ul class="hpack__list">
+                          {p.includes.map((i) => (
+                            <li><span>{i.t}</span>{i.time && <b>{i.time}</b>}</li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                    {(p.bullets || []).length > 0 && (
+                      <>
+                        <p class="hpack__label">В пакет включено</p>
+                        <ul class="hpack__bullets">
+                          {p.bullets.map((b) => (<li>{b}</li>))}
+                        </ul>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              <div class="hpack__cta">
+                <a class="btn-orange" href={site.header.phoneHref}>{s.cta || 'Узнать стоимость'}</a>
+                <a class="qbook__wa" href={site.header.wa} target="_blank" rel="noopener">Написать в WhatsApp</a>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ---- тайминг праздника ---- */}
+        {s.kind === 'timeline' && (
+          <section class="htime">
+            <div class="container">
+              {s.title && <h2 class="section-title">{s.title}</h2>}
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+              <ol class="htime__list">
+                {s.items.map((it) => (
+                  <li class="htime__item">
+                    <span class="htime__dur">{it.time}</span>
+                    <div>
+                      <h3 class="htime__t">{it.t}</h3>
+                      {it.sub && <p class="htime__sub">{it.sub}</p>}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </section>
+        )}
+
+        {/* ---- ряд карточек-ссылок (сценарии, игры) ---- */}
+        {s.kind === 'cards' && (
+          <CardsRow title={s.title} subtitle={s.subtitle} items={s.items} id={s.id || ''}
+                    variant={s.variant || 'square'} uptitle={s.uptitle || ''} />
+        )}
+
+        {/* ---- плитки без ссылок (шоу-программы, дополнения) ---- */}
+        {s.kind === 'tiles' && (
+          <section class="htiles">
+            <div class="container">
+              {s.title && <h2 class="section-title">{s.title}</h2>}
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+              <ul class="htiles__grid">
+                {s.items.map((it) => (
+                  <li class="htile">
+                    {it.img
+                      ? <img class="htile__img" src={asset(it.img)} alt={it.t}
+                             loading="lazy" decoding="async" width="326" height="326" />
+                      : <span class="htile__img htile__img--empty" aria-hidden="true"></span>}
+                    <span class="htile__name">{it.t}</span>
+                    {it.sub && <span class="htile__sub">{it.sub}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
+        {/* ---- площадка ---- */}
+        {s.kind === 'venue' && (
+          <section class="qvenue">
+            <div class="container">
+              {s.title && <h2 class="section-title">{s.title}</h2>}
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+              <div class="qvenue__card">
+                <div class="qvenue__photos">
+                  {(s.photos || []).slice(0, 1).map((ph) => (
+                    <img class="qvenue__photo" src={asset(ph)} alt={`Зал «Чё за Квест» — ${s.address}`}
+                         loading="lazy" decoding="async" width="600" height="400" />
+                  ))}
+                </div>
+                <div class="qvenue__info">
+                  <h3 class="qvenue__addr">{s.address}</h3>
+                  <ul class="qvenue__list">
+                    {(s.lines || []).map((l) => (<li>{l}</li>))}
+                  </ul>
+                  <a class="btn-orange" href={s.href ? link(s.href) : site.header.phoneHref}>{s.cta}</a>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ---- залы: на Tilda карусель, здесь все карточки сразу ---- */}
+        {s.kind === 'halls' && (
+          <section class="hhalls">
+            <div class="container">
+              {s.title && <h2 class="section-title">{s.title}</h2>}
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+              <ul class="hhalls__grid">
+                {s.items.map((v) => (
+                  <li class="hhall">
+                    {v.img && <img class="hhall__img" src={asset(v.img)} alt={`Зал для праздника — ${v.t}`}
+                                   loading="lazy" decoding="async" width="600" height="400" />}
+                    <div class="hhall__body">
+                      <h3 class="hhall__t">{v.href ? <a href={link(v.href)}>{v.t}</a> : v.t}</h3>
+                      {v.size && <p class="hhall__size">{v.size}</p>}
+                      {v.capacity && <p class="hhall__cap">{v.capacity}</p>}
+                      {v.format && <p class="hhall__format">{v.format}</p>}
+                      {(v.equipment || []).length > 0 && (
+                        <ul class="hhall__eq">
+                          {v.equipment.map((e) => (<li>{e}</li>))}
+                        </ul>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <div class="hhalls__cta">
+                <a class="btn-orange" href={site.header.phoneHref}>{s.cta || 'Забронировать дату'}</a>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ---- шаги (как получить пригласительный, как проходит день) ---- */}
+        {s.kind === 'steps' && (
+          <section class="hsteps">
+            <div class="container">
+              {s.title && <h2 class="section-title">{s.title}</h2>}
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+              <ol class="hsteps__list">
+                {s.items.map((it, i) => (
+                  <li class="hstep">
+                    <span class="hstep__n">{i + 1}</span>
+                    <div>
+                      <h3 class="hstep__t">{it.t}</h3>
+                      {it.sub && <p class="hstep__sub">{it.sub}</p>}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              {(s.photos || []).length > 0 && (
+                <div class="qextra__photos qextra__photos--row">
+                  {s.photos.map((p, i) => (
+                    <img src={asset(p)} alt={`${s.title || seo.h1} — образец ${i + 1}`}
+                         loading="lazy" decoding="async" />
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* ---- фотогалерея ---- */}
+        {s.kind === 'gallery' && (
+          <section class="qextra">
+            <div class="container">
+              {s.title && <h2 class="section-title">{s.title}</h2>}
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+              <div class="qextra__photos qextra__photos--grid">
+                {s.photos.map((p, i) => (
+                  <img src={asset(p)} alt={`${s.title || seo.h1} — фото ${i + 1}`}
+                       loading="lazy" decoding="async" />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ---- вопросы и ответы ---- */}
+        {s.kind === 'faq' && (
+          <section class="hfaq">
+            <div class="container">
+              <h2 class="section-title">{s.title || 'Частые вопросы'}</h2>
+              <ul class="hfaq__list">
+                {s.items.map((q) => (
+                  <li class="hfaq__item">
+                    <h3 class="hfaq__q">{q.q}</h3>
+                    <p class="hfaq__a">{q.a}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
+        {/* ---- форма заявки на праздник ---- */}
+        {s.kind === 'party-form' && <PartyForm id={`p${s.n || ''}`} />}
+      </>
+    ))}
+
+    <!-- ============ ПЛОЩАДКИ КОМПАНИИ ============ -->
+    {venues.length > 0 && (
+      <section class="cvenues">
+        <div class="container">
+          <h2 class="section-title">Наши площадки</h2>
+          <p class="section-sub">9 оборудованных площадок с квест-комнатами и зонами отдыха в Ростове-на-Дону</p>
+          <ul class="cvenues__list">
+            {venues.map((v) => (
+              <li><a href={link('/' + v.slug)}>{v.address}</a></li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <CallbackForm id="h" />
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import '../scripts/main.js';
+  import '../scripts/rows.js';
+</script>
