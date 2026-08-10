@@ -25,12 +25,16 @@ archive from the public artifact.
 ## Generated legacy redirect map
 
 `migration/legacy-url-map.csv` is the source of truth for every audited hidden
-Tilda URL and the consolidated Wednesday duplicate. Generate `public/_redirects`
-and this table with `node migration/build_legacy_redirects.mjs`; use
-`node migration/build_legacy_redirects.mjs --check` in CI. Rows marked `301 +
-fallback` also have a static noindex route for GitHub Pages, where server-side
-redirects are unavailable. The `200` rows are already published at their canonical
-paths and deliberately produce no self-redirect. The checked-in
+Tilda URL and the consolidated Wednesday duplicate. Generate `public/_redirects`,
+the root `.htaccess`, `docs/nginx-legacy-redirects.conf`, and this table with
+`node migration/build_legacy_redirects.mjs`; use
+`node migration/build_legacy_redirects.mjs --check` in CI. `_redirects` is for
+Cloudflare Pages/Netlify-style static hosts; deploy `.htaccess` beside `dist/` on
+Apache (with `mod_rewrite` and `AllowOverride FileInfo`), or include the nginx
+file inside the relevant `server` block. Rows marked `301 + fallback` also have a
+static noindex route for GitHub Pages, where server-side redirects are unavailable.
+The `200` rows are already published at their canonical paths and deliberately
+produce no self-redirect. The checked-in
 `migration/legacy-url-audit-snapshot.csv` freezes the 102 audited source paths so
 the test suite can enforce complete coverage without relying on an external crawl
 artifact.
@@ -67,7 +71,7 @@ artifact.
 | `/madagaskar-kvesttam` | `/kvesty-v-rostove-na-donu/` | 301 | Retired Madagascar quest has no matching migrated page; send visitors to the catalog. |
 | `/minecraft-lend` | `/minecraft-lend/` | 200 | Published Minecraft campaign landing owns its canonical URL. |
 | `/new-year` | `/new-year/` | 200 | Published current New Year campaign owns its canonical URL. |
-| `/new-year-2025` | `/new-year-2025/` | 200 | Captured New Year landing is published at its canonical path. |
+| `/new-year-2025` | `/new-year/` | 301 + fallback | Retired seasonal landing redirects to the current New Year campaign. |
 | `/noch-hunter` | `/kvest_v_realnosti_noch_v_museum_ograblenie/` | 301 | KvestHunter alias for the matching Night at the Museum quest. |
 | `/noch-kvesttam` | `/kvest_v_realnosti_noch_v_museum_ograblenie/` | 301 | KvestTam alias for the matching Night at the Museum quest. |
 | `/ono-hunter` | `/ono/` | 301 | KvestHunter alias for the matching IT quest. |
@@ -116,7 +120,7 @@ artifact.
 | `/page56559131.html` | `/` | 301 | Retired loyalty-form utility page returns visitors to the homepage. |
 | `/page57141531.html` | `/` | 301 | Retired certificate-form utility page returns visitors to the homepage. |
 | `/page57307963.html` | `/minecraft/` | 301 | Legacy numeric alias for the Minecraft landing. |
-| `/page59359589.html` | `/new-year-2025/` | 301 | Legacy numeric alias for the published New Year landing. |
+| `/page59359589.html` | `/new-year/` | 301 | Legacy numeric alias for the current New Year landing. |
 | `/page62529067.html` | `/kids/` | 301 | Retired children's thank-you page returns to the party landing. |
 | `/page63266477.html` | `/igra_v_kalmara/` | 301 | Legacy numeric alias for the Squid Game landing. |
 | `/page64505705.html` | `/roblox/` | 301 | Legacy numeric alias for the Roblox landing. |
@@ -124,7 +128,7 @@ artifact.
 | `/page71881007.html` | `/` | 301 | Retired Tilda alias-block utility page returns visitors to the homepage. |
 | `/page7266054.html` | `/` | 301 | Retired Tilda header utility page returns visitors to the homepage. |
 | `/page7837595.html` | `/` | 301 | Retired Tilda script utility page returns visitors to the homepage. |
-| `/page87839976.html` | `/new-year-2025/` | 301 | Legacy numeric alias for the published New Year landing. |
+| `/page87839976.html` | `/new-year/` | 301 | Legacy numeric alias for the current New Year landing. |
 | `/pirate-hunter` | `/pirati/` | 301 | KvestHunter alias for the matching Pirates quest. |
 | `/pirate-kvesttam` | `/pirati/` | 301 | KvestTam alias for the matching Pirates quest. |
 | `/pl` | `/` | 301 | Retired loyalty-form utility page returns visitors to the homepage. |
@@ -153,12 +157,15 @@ artifact.
    redirect.
 3. Keep production at the domain root: do not set `SITE_BASE` for the custom-domain
    release. `SITE_BASE` is only for GitHub Pages project previews.
-4. Configure host-level permanent redirects from generated `public/_redirects`.
-   It uses portable `source target 301` syntax accepted by Cloudflare Pages-style
-   static hosts. On Netlify, force the five `301 + fallback` rows (`301!` or
-   `force = true`) so their static fallback file cannot shadow the server redirect.
-   Static fallbacks keep those explicitly marked paths available on GitHub Pages,
-   which cannot create server-side redirects itself.
+4. Configure host-level permanent redirects from the generated artifact for the
+   chosen host: `public/_redirects` for Cloudflare Pages/Netlify-style static
+   hosts, root `.htaccess` deployed beside `dist/` for Apache, or
+   `docs/nginx-legacy-redirects.conf` included inside nginx's `server` block.
+   The Apache and nginx forms use exact path matches and retain query strings. On
+   Netlify, force all `301 + fallback` rows (`301!` or `force = true`) so
+   their static fallback file cannot shadow the server redirect. Static fallbacks
+   keep those explicitly marked paths available on GitHub Pages, which cannot
+   create server-side redirects itself.
 5. Set platform security headers at the CDN/host layer: HSTS (after TLS is proven),
    `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`,
    `X-Frame-Options: SAMEORIGIN`, and a CSP tested against the inline Astro assets.

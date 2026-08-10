@@ -35,7 +35,7 @@ HOLIDAY = {
 }
 CATEGORY = {"strashnye-kvesty"}
 INFO = {"contacts"}
-REDIRECT_ONLY = {"wednesday_ukradennaya_vesch"}
+REDIRECT_ONLY = {"new-year-2025", "wednesday_ukradennaya_vesch"}
 CANONICAL_ORIGIN = "https://xn--80aehcht5ci1b.xn--p1ai"
 
 
@@ -181,6 +181,48 @@ def current_data_pages(known_slugs, weights):
     return records
 
 
+def retired_redirect_records(inventory, known_slugs, weights):
+    """Keep non-sitemap seasonal routes visible after they become redirects.
+
+    These pages were once deliberately captured outside the official sitemap.
+    Removing their JSON should not make a registry reader believe the legacy
+    URL disappeared; its status is instead derived from REDIRECT_ONLY and the
+    audited inventory metadata.
+    """
+    records = []
+    for slug in sorted(REDIRECT_ONLY - known_slugs):
+        candidates = [
+            row for row in inventory
+            if row.get("status") == "200" and slug_of(row.get("url", "")) == slug
+        ]
+        if not candidates:
+            continue
+        row = next(
+            (candidate for candidate in candidates if candidate.get("url", "").rstrip("/").endswith("/" + slug)),
+            candidates[0],
+        )
+        path = "/" + slug
+        weight = weights.get(path, {"freq": 0, "prio": set()})
+        records.append({
+            "slug": slug,
+            "path": path,
+            "type": page_type(slug),
+            "template_cluster": "retired-redirect",
+            "status": "redirect",
+            "kw_freq": weight["freq"],
+            "kw_priority": ",".join(sorted(p for p in weight["prio"] if p)),
+            "words": row.get("word_count", ""),
+            "title": row.get("title", ""),
+            "title_len": len(row.get("title", "")),
+            "description": row.get("description", ""),
+            "description_len": len(row.get("description", "")),
+            "h1": row.get("h1", ""),
+            "url": f"{CANONICAL_ORIGIN}{path}",
+            "snapshot": f"_capture/pages/{slug}.json" if os.path.exists(os.path.join(CLONE, "_capture", "pages", f"{slug}.json")) else "",
+        })
+    return records
+
+
 def catalog_record(weights):
     """The catalogue is a static Astro route, so read its literal SEO constants."""
     source = os.path.join(CLONE, "src", "pages", "kvesty-v-rostove-na-donu.astro")
@@ -254,6 +296,7 @@ def main():
                 os.path.dirname(CLONE) + "/", ""),
         })
 
+    out.extend(retired_redirect_records(inv, known_slugs, weights))
     out.extend(current_data_pages(known_slugs, weights))
     catalog = catalog_record(weights)
     if catalog:

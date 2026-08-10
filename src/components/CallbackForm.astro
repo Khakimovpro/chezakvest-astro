@@ -9,7 +9,7 @@ const s = site;
 ---
 <section class="callback" id={sectionId}>
   <div class="container">
-    <form class="cbform" data-lead-form data-lead-kind="callback" data-lead-target={s.header.wa} aria-describedby={`${id}-status`}>
+    <form class="cbform" data-lead-form data-lead-kind="callback" data-lead-target={s.header.wa} data-lead-recipient={s.leads?.recipient || ''} aria-describedby={`${id}-status`}>
       <h2 class="cbform__title">{s.callback.title}</h2>
       <p class="cbform__sub">{s.callback.sub}</p>
       <div class="cbform__fields">
@@ -26,12 +26,12 @@ const s = site;
         </div>
       </div>
       <label class="cbform__consent">
-        <input name="consent" type="checkbox" checked required />
-        <span>{s.callback.consent} и передачу их в WhatsApp для обработки заявки в соответствии с <a href={link('/privacy')}>{s.callback.consentLink}</a></span>
+        <input name="consent" type="checkbox" required />
+        <span>{s.callback.consent} <a href={link('/privacy')}>{s.callback.consentLink}</a></span>
       </label>
       <button class="btn-orange cbform__submit" type="button" data-lead-submit>{s.callback.btn}</button>
       <p class="lead-form__status" id={`${id}-status`} data-lead-status role="status" aria-live="polite" hidden></p>
-      <noscript><p class="lead-form__status">Чтобы отправить заявку в WhatsApp, включите JavaScript или позвоните нам по телефону на сайте.</p></noscript>
+      <noscript><p class="lead-form__status">Чтобы оставить заявку, включите JavaScript или позвоните нам по телефону на сайте.</p></noscript>
     </form>
   </div>
 </section>

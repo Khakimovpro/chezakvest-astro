@@ -83,7 +83,7 @@ async function createValidDist({ inertForm = false, hiddenLeadLabels = false, sl
     hiddenLeadLabels,
     slashlessCanonical,
     canonicalPath: LEGACY_TARGETS.get(pathname) || pathname,
-    noindex: pathname === '/privacy' || LEGACY_TARGETS.has(pathname),
+    noindex: LEGACY_TARGETS.has(pathname),
     leadForms: pathname === '/' ? 1 : 0,
   }))));
   return distDir;

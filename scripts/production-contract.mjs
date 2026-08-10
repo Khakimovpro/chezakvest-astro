@@ -319,7 +319,7 @@ function validatePage({ html, pagePath, origin, errors, legacyRedirectTargets, n
 
   const noindex = isNoindex(html);
   if (noindexPaths.has(pagePath) && !noindex) {
-    errors.push(`${pagePath}: migration or privacy page must be noindex`);
+    errors.push(`${pagePath}: static legacy fallback must be noindex`);
   }
   if (noindex && !noindexPaths.has(pagePath) && pagePath !== '/404') {
     errors.push(`${pagePath}: published route must not be noindex`);
@@ -350,7 +350,7 @@ export async function verifyProductionContract({
   const legacyRedirectTargets = new Map(
     legacyUrlMap.filter(isStaticFallback).map(({ source, target }) => [source, target]),
   );
-  const noindexPaths = new Set(['/privacy', ...legacyRedirectTargets.keys()]);
+  const noindexPaths = new Set(legacyRedirectTargets.keys());
   const resolvedRequiredPaths = requiredPaths ?? [...CORE_REQUIRED_PATHS, ...legacyRedirectTargets.keys()];
 
   if (!await exists(resolvedDistDir)) {

@@ -31,11 +31,11 @@ function createFetch({
   redirectStatus = 301,
   serveStaticFallbackWithoutRedirect = false,
 } = {}) {
-  const sitemap = `<urlset><url><loc>${ORIGIN}/</loc></url><url><loc>${ORIGIN}/quest/</loc></url></urlset>`;
+  const sitemap = `<urlset><url><loc>${ORIGIN}/</loc></url><url><loc>${ORIGIN}/quest/</loc></url><url><loc>${ORIGIN}/privacy/</loc></url></urlset>`;
   const pages = new Map([
     [`${ORIGIN}/`, page('/', { slashlessCanonical })],
     [`${ORIGIN}/quest/`, page('/quest', { slashlessCanonical })],
-    [`${ORIGIN}/privacy/`, page('/privacy', { noindex: true, slashlessCanonical })],
+    [`${ORIGIN}/privacy/`, page('/privacy', { slashlessCanonical })],
     [`${ORIGIN}/minecraft-lend/`, page('/minecraft-lend', { slashlessCanonical })],
     [`${ORIGIN}/roblox-land/`, page('/roblox-land', { slashlessCanonical })],
     [`${ORIGIN}/amongus-land/`, page('/amongus-land', { slashlessCanonical })],
@@ -68,7 +68,7 @@ function createFetch({
 test('accepts a deployed static site with internal legacy redirects', async () => {
   const report = await verifyLiveSite({ origin: ORIGIN, fetchImpl: createFetch() });
 
-  assert.equal(report.pagesChecked, 2);
+  assert.equal(report.pagesChecked, 3);
   assert.deepEqual(report.errors, []);
 });
 

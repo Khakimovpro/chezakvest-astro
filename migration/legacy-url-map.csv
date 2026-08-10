@@ -23,7 +23,7 @@ source,target,status,reason
 /page40355277.html,/,301,Retired Tilda block archive returns visitors to the homepage.
 /page71881007.html,/,301,Retired Tilda alias-block utility page returns visitors to the homepage.
 /alias-block,/,301,Retired Tilda alias-block utility page returns visitors to the homepage.
-/page87839976.html,/new-year-2025,301,Legacy numeric alias for the published New Year landing.
+/page87839976.html,/new-year,301,Legacy numeric alias for the current New Year landing.
 /new-year,/new-year,200,Published current New Year campaign owns its canonical URL.
 /page131787606.html,/,301,Retired image utility page returns visitors to the homepage.
 /aimg,/,301,Retired image utility page returns visitors to the homepage.
@@ -99,6 +99,6 @@ source,target,status,reason
 /page10719803.html,/,301,Legacy numeric alias for the homepage.
 /page41891214.html,/prazdniki-pod-kluch,301,Legacy numeric alias for the published turnkey party landing.
 /prazdniki-pod-kluch,/prazdniki-pod-kluch,200,Captured turnkey party landing is published at its canonical path.
-/page59359589.html,/new-year-2025,301,Legacy numeric alias for the published New Year landing.
-/new-year-2025,/new-year-2025,200,Captured New Year landing is published at its canonical path.
+/page59359589.html,/new-year,301,Legacy numeric alias for the current New Year landing.
+/new-year-2025,/new-year,301 + fallback,Retired seasonal landing redirects to the current New Year campaign.
 /wednesday_ukradennaya_vesch,/wednesday-poteryannaya-dusha,301 + fallback,Tilda captures are duplicate; consolidate on the retained Wednesday page.

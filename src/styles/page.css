@@ -15,7 +15,7 @@
   color:#fff;font-size:14px;font-weight:400;white-space:nowrap;transition:background-color .2s,color .2s}
 .nav__item>a:hover,.nav__item:focus-within>a{background:#fff;color:var(--dark);text-decoration:none}
 .nav__prefix{width:14px;height:14px;margin-right:0;flex:0 0 auto}
-.mega{position:fixed;top:80px;left:0;width:100vw;padding:15px 0 30px;border-radius:0 0 30px 30px;background:#fff;
+.mega{position:absolute;top:70px;left:50%;width:100vw;margin-left:-50vw;padding:15px 0 30px;border-radius:0 0 30px 30px;background:#fff;
   opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);transition:opacity .2s ease,transform .2s ease;z-index:890}
 .nav__item.has-mega:hover .mega,.nav__item.has-mega:focus-within .mega{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
 .mega__inner{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:40px}
@@ -174,11 +174,11 @@ body.menu-open{overflow:hidden}
 .cbform__flag{font-size:20px}
 .cbform__phone input{background:transparent;padding-left:10px}
 .cbform__consent{display:flex;align-items:flex-start;gap:10px;margin-top:16px;font-size:13px;color:var(--muted);text-align:left}
-.cbform__consent a{color:var(--orange)}
-.cbform__consent input{width:16px;height:16px;margin-top:1px;accent-color:var(--orange);flex:0 0 auto}
+.cbform__consent a{color:var(--orange-text);text-decoration:underline;text-underline-offset:2px}
+.cbform__consent input{width:24px;height:24px;margin-top:0;accent-color:var(--orange);flex:0 0 auto}
 .cbform__submit{margin-top:22px;height:56px}
 .lead-form__status{margin:16px auto 0;max-width:560px;font-size:14px;line-height:1.45;color:var(--dark)}
-.lead-form__status a{color:var(--orange);font-weight:700;text-decoration:underline}
+.lead-form__status a{color:var(--orange-text);font-weight:700;text-decoration:underline}
 
 /* Legal and legacy-route fallbacks stay readable without reproducing Tilda's heavy runtime. */
 .legal-page,.legacy-redirect{padding:112px 0 72px}
@@ -226,9 +226,10 @@ body.menu-open{overflow:hidden}
 /* ===================== ФУТЕР ===================== */
 .ft{margin-top:0;padding:30px 0;background:#333;color:#fff}
 .ft__inner{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:40px}
-.ft__h{margin-bottom:14px;color:#ff6900;font-size:16px;font-weight:700;letter-spacing:1px;line-height:1.35;text-transform:uppercase}
+.ft__h{margin-bottom:14px;color:#ff7800;font-size:16px;font-weight:700;letter-spacing:1px;line-height:1.35;text-transform:uppercase}
 .ft__col ul{display:flex;flex-direction:column;gap:10px}
 .ft__col a,.ft__plain{color:#fff;font-size:14px;font-weight:300;line-height:1.35;opacity:.94;transition:color .2s}
+.ft__col a{display:flex;align-items:center;min-height:24px;padding:4px 0}
 .ft__col a:hover{color:#ff6900}
 .ft__plain{display:block}
 .ft__contacts .ft__phone{display:block;color:#fff;font-size:18px;font-weight:700;opacity:1}

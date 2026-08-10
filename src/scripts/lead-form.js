@@ -1,6 +1,7 @@
 const RUSSIAN_PHONE_PATTERN = /^(?:7\d{10}|\d{10})$/;
+const MOSCOW_TIME_ZONE = 'Europe/Moscow';
 
-function getPhoneDigits(value) {
+export function getPhoneDigits(value) {
   const digits = value.replace(/\D/g, '');
   if (digits.length === 11 && digits.startsWith('8')) return `7${digits.slice(1)}`;
   if (digits.length === 11 && digits.startsWith('7')) return digits;
@@ -17,13 +18,39 @@ function formatDate(value) {
   return year && month && day ? `${day}.${month}.${year}` : value;
 }
 
-function createWhatsAppUrl(target, message) {
+export function getMoscowDate(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: MOSCOW_TIME_ZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(date);
+  const value = (type) => parts.find((part) => part.type === type)?.value || '';
+  return `${value('year')}-${value('month')}-${value('day')}`;
+}
+
+export function createWhatsAppUrl(target, message) {
   const recipient = target.replace(/\D/g, '');
   if (!/^\d{10,15}$/.test(recipient)) return '';
   return `https://wa.me/${recipient}?text=${encodeURIComponent(message)}`;
 }
 
-function setStatus(form, message, link) {
+export async function sendLead(recipient, payload, fetchImpl = globalThis.fetch) {
+  const endpoint = String(recipient || '').trim();
+  if (!endpoint) return false;
+  if (typeof fetchImpl !== 'function') throw new Error('Lead delivery is unavailable');
+
+  const response = await fetchImpl(endpoint, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    credentials: 'omit',
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw new Error(`Lead delivery failed with ${response.status}`);
+  return true;
+}
+
+function setStatus(form, message, link, linkLabel = 'Открыть черновик WhatsApp') {
   const status = form.querySelector('[data-lead-status]');
   if (!status) return;
 
@@ -35,7 +62,7 @@ function setStatus(form, message, link) {
     anchor.href = link;
     anchor.target = '_blank';
     anchor.rel = 'noopener noreferrer';
-    anchor.textContent = 'Открыть WhatsApp';
+    anchor.textContent = linkLabel;
     status.append(' ', anchor);
   }
 }
@@ -69,20 +96,58 @@ function validatePhone(input) {
   return digits;
 }
 
-function createMessage(form, phone) {
+function createLeadPayload(form, phone) {
   const data = new FormData(form);
-  const name = String(data.get('name') || '').trim();
   const date = String(data.get('date') || '').trim();
-  const kind = form.dataset.leadKind === 'party' ? 'Заявка на праздник' : 'Заявка на обратный звонок';
+  return {
+    kind: form.dataset.leadKind || 'callback',
+    name: String(data.get('name') || '').trim(),
+    phone: formatPhone(phone),
+    date: date || null,
+    quest: form.dataset.leadQuest || null,
+    calendarId: form.dataset.leadCalendarId || null,
+    page: window.location.pathname,
+  };
+}
+
+function createMessage(payload) {
+  const kind = payload.kind === 'party'
+    ? 'Заявка на праздник'
+    : payload.kind === 'booking'
+      ? 'Предварительная заявка на квест'
+      : 'Заявка на обратный звонок';
   const lines = [
     kind,
-    `Имя: ${name}`,
-    `Телефон: ${formatPhone(phone)}`,
+    `Имя: ${payload.name}`,
+    `Телефон: ${payload.phone}`,
   ];
 
-  if (date) lines.push(`Дата: ${formatDate(date)}`);
-  lines.push(`Страница: ${window.location.pathname}`);
+  if (payload.date) lines.push(`Дата: ${formatDate(payload.date)}`);
+  if (payload.quest) lines.push(`Квест: ${payload.quest}`);
+  lines.push(`Страница: ${payload.page}`);
   return lines.join('\n');
+}
+
+function setDateMinimums(form) {
+  const min = getMoscowDate();
+  form.querySelectorAll('input[type="date"]').forEach((input) => {
+    input.min = min;
+  });
+}
+
+function setSubmitting(form, submitting) {
+  form.toggleAttribute('aria-busy', submitting);
+  form.querySelectorAll('[data-lead-submit]').forEach((button) => {
+    button.disabled = submitting;
+  });
+}
+
+function openWhatsAppDraft(url) {
+  if (url) window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+function announceLeadAccepted() {
+  document.dispatchEvent(new CustomEvent('lead:accepted'));
 }
 
 function initialiseLeadForm(form) {
@@ -91,6 +156,7 @@ function initialiseLeadForm(form) {
 
   const phoneInput = form.elements.namedItem('phone');
   if (!(phoneInput instanceof HTMLInputElement)) return;
+  setDateMinimums(form);
 
   const refreshPhoneValidity = () => {
     if (phoneInput.value) validatePhone(phoneInput);
@@ -106,24 +172,40 @@ function initialiseLeadForm(form) {
     input.addEventListener('change', () => clearValidationState(form, input));
   });
 
-  const submitLead = (event) => {
+  let submitting = false;
+  const submitLead = async (event) => {
+    event?.preventDefault();
+    if (submitting) return;
+
     const phone = validatePhone(phoneInput);
     if (!form.checkValidity()) {
-      event.preventDefault();
       showValidationStatus(form);
       return;
     }
 
-    event.preventDefault();
-    const url = createWhatsAppUrl(form.dataset.leadTarget || '', createMessage(form, phone));
-    if (!url) {
-      setStatus(form, 'Не удалось подготовить заявку. Позвоните нам по телефону на сайте.');
+    const payload = createLeadPayload(form, phone);
+    const draftUrl = createWhatsAppUrl(form.dataset.leadTarget || '', createMessage(payload));
+    if (!draftUrl) {
+      setStatus(form, 'Не удалось подготовить черновик WhatsApp. Позвоните нам по телефону на сайте.');
       return;
     }
 
-    window.open(url, '_blank', 'noopener,noreferrer');
-    form.reset();
-    setStatus(form, 'Заявка подготовлена. WhatsApp должен открыться в новой вкладке.', url);
+    const recipient = form.dataset.leadRecipient || '';
+    submitting = true;
+    setSubmitting(form, true);
+    openWhatsAppDraft(draftUrl);
+
+    try {
+      const delivered = await sendLead(recipient, payload);
+      if (delivered) form.reset();
+      setStatus(form, 'Заявка принята, перезвоним', draftUrl);
+      announceLeadAccepted();
+    } catch {
+      setStatus(form, 'Не удалось передать заявку. Откройте черновик WhatsApp, чтобы отправить её самостоятельно.', draftUrl);
+    } finally {
+      submitting = false;
+      setSubmitting(form, false);
+    }
   };
 
   form.addEventListener('submit', submitLead);
@@ -135,4 +217,6 @@ function initialiseLeadForm(form) {
   });
 }
 
-document.querySelectorAll('[data-lead-form]').forEach(initialiseLeadForm);
+if (typeof document !== 'undefined') {
+  document.querySelectorAll('[data-lead-form]').forEach(initialiseLeadForm);
+}

@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
+import CallbackForm from '../components/CallbackForm.astro';
 import QuestCard from '../components/QuestCard.astro';
 import { absoluteUrl, breadcrumbJsonLd } from '../lib/seo.js';
 import '../styles/page.css';
@@ -114,6 +115,7 @@ const jsonld = [
         </div>
         <p class="catalog-page__count" data-catalog-count aria-live="polite">Показано игр: {quests.length}</p>
 
+        <h2 class="visually-hidden">Каталог игр</h2>
         <ul class="catalog-page__grid" data-catalog-grid>
           {quests.map(({ page, venue, themes }, index) => (
             <li data-catalog-card data-themes={themes.join(' ')}>
@@ -136,6 +138,7 @@ const jsonld = [
     </section>
   </main>
 
+  <CallbackForm id="catalog-callback" sectionId="catalog-callback" />
   <Footer />
 </Layout>
 

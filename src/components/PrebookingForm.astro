@@ -15,7 +15,7 @@ const { id = 'booking-form', quest = '', calendarId = '' } = Astro.props;
       <h3 id={`${id}-title`} class="prebook__title">Расписание не загрузилось</h3>
       <p class="prebook__sub">Оставьте предварительную заявку — перезвоним и подберём удобное время для квеста «{quest}».</p>
       <form class="prebook__form" data-lead-form data-lead-kind="booking" data-lead-quest={quest}
-            data-lead-calendar-id={String(calendarId)} data-lead-target={site.header.wa}
+            data-lead-calendar-id={String(calendarId)} data-lead-target={site.header.wa} data-lead-recipient={site.leads?.recipient || ''}
             aria-describedby={`${id}-status`}>
         <div class="prebook__grid">
           <label class="prebook__field" for={`${id}-date`}>

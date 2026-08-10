@@ -44,6 +44,12 @@
   "podkluch": "64b5110b7b839400258d8c7e",
   "vypusknoj": "67d071e5d174cb00188cdd22"
  },
+ "leads": {
+  "recipient": ""
+ },
+ "analytics": {
+  "metrikaId": ""
+ },
  "megamenu": {
   "catalog": {
    "cols": [
@@ -781,10 +787,11 @@
     "title": "Организация мероприятий",
     "links": [
      { "t": "Детский День рождения", "href": "/kids" },
-     { "t": "Взрослый День рождения", "href": null },
-     { "t": "День Рождения в VR", "href": "https://нереально.рф/kids", "ext": true },
+     { "t": "Взрослый День рождения", "href": "/prazdniki-pod-kluch" },
+     { "t": "Праздник Макси", "href": "/prazdnik-maxi" },
+     { "t": "День Рождения в VR", "href": "/den-rozhdeniya-na-vr-arene" },
      { "t": "Выпускной 2026", "href": "/vypusknoj-kalmar" },
-     { "t": "Корпоратив | Тимбилдинг", "href": null },
+     { "t": "Корпоратив | Тимбилдинг", "href": "/prazdniki-pod-kluch" },
      { "t": "Новый год 2027", "href": "/new-year" }
     ]
    },

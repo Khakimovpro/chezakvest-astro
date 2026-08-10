@@ -6,6 +6,7 @@ const PROJECT_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PAGES_DIRECTORY = join(PROJECT_ROOT, 'src', 'data', 'pages');
 const SITE_DATA_PATH = join(PROJECT_ROOT, 'src', 'data', 'site.json');
 const CATALOG_PAGE_PATH = join(PROJECT_ROOT, 'src', 'pages', 'kvesty-v-rostove-na-donu.astro');
+const PRIVACY_PAGE_PATH = join(PROJECT_ROOT, 'src', 'pages', 'privacy.astro');
 export const LEGACY_NOINDEX_SLUG = 'wednesday_ukradennaya_vesch';
 
 const GEO_PATTERN = /Ростов(?:е|-на-Дону)?/iu;
@@ -61,10 +62,32 @@ async function loadStaticSeoRecords({ siteDataPath = SITE_DATA_PATH, catalogPage
   };
 }
 
+async function loadPrivacySeoRecord(privacyPagePath = PRIVACY_PAGE_PATH) {
+  const source = await readFile(privacyPagePath, 'utf8');
+  const errors = [];
+  const seo = {};
+
+  for (const field of ['title', 'description', 'keywords']) {
+    const match = source.match(new RegExp("const\\s+" + field + "\\s*=\\s*(['\"])([\\s\\S]*?)\\1;"));
+    if (!match) {
+      errors.push('privacy: missing ' + field + ' SEO constant');
+      seo[field] = '';
+      continue;
+    }
+    seo[field] = match[2];
+    if (!new RegExp("<Layout\\b(?=[^>]*\\b" + field + "=\\{" + field + "\\})", 's').test(source)) {
+      errors.push('privacy: Layout must receive ' + field + ' from its SEO constant');
+    }
+  }
+
+  return { errors, record: { filename: privacyPagePath, page: { slug: 'privacy', seo } } };
+}
+
 export async function auditSeoData({
   pagesDirectory = PAGES_DIRECTORY,
   siteDataPath = SITE_DATA_PATH,
   catalogPagePath = CATALOG_PAGE_PATH,
+  privacyPagePath = PRIVACY_PAGE_PATH,
   includeStaticRoutes = true,
 } = {}) {
   const records = await loadSeoPageData(pagesDirectory);
@@ -82,10 +105,13 @@ export async function auditSeoData({
   }
 
   if (includeStaticRoutes) {
-    const staticSeo = await loadStaticSeoRecords({ siteDataPath, catalogPagePath });
-    errors.push(...staticSeo.errors);
-    indexableRecords.push(...staticSeo.records);
-    staticRouteSlugs.push(...staticSeo.records.map((record) => record.page.slug));
+    const [staticSeo, privacySeo] = await Promise.all([
+      loadStaticSeoRecords({ siteDataPath, catalogPagePath }),
+      loadPrivacySeoRecord(privacyPagePath),
+    ]);
+    errors.push(...staticSeo.errors, ...privacySeo.errors);
+    indexableRecords.push(...staticSeo.records, privacySeo.record);
+    staticRouteSlugs.push(...staticSeo.records.map((record) => record.page.slug), privacySeo.record.page.slug);
   }
 
   const keywordOwners = new Map();

@@ -2,17 +2,30 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { breadcrumbJsonLd } from '../lib/seo.js';
 import '../styles/page.css';
+
+const title = 'Политика обработки данных в Ростове | Чё за Квест';
+const description = 'Политика обработки персональных данных компании «Чё за Квест» в Ростове-на-Дону: правила хранения, использования и защиты сведений посетителей сайта.';
+const keywords = 'политика обработки персональных данных, Чё за Квест, Ростов-на-Дону';
+const breadcrumbs = [
+  { t: 'Главная', href: '/' },
+  { t: 'Политика обработки персональных данных', href: null },
+];
+const jsonld = [breadcrumbJsonLd(breadcrumbs, '/privacy')];
 ---
 <Layout
-  title="Политика обработки персональных данных | Чё за Квест"
-  description="Политика в отношении обработки персональных данных «Чё за Квест»."
+  title={title}
+  description={description}
+  keywords={keywords}
   path="/privacy"
-  noindex={true}
+  jsonld={jsonld}
   preloadImage={null}
 >
   <Header />
   <main class="legal-page">
+    <Breadcrumbs items={breadcrumbs} />
     <div class="container">
       <article class="legal-page__card">
         <div class="legal-page__requisites">

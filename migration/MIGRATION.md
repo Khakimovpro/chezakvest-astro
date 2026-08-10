@@ -159,6 +159,45 @@
   retained under ignored `_capture/shots/wave4/` with side-by-side diffs against all available
   original captures. Those historical captures have mixed viewport/DPR and old third-party blocks,
   so their aggregate pixel scores are diagnostic only rather than a false release threshold.
+- **10.08.2026 — Wave 5 lead delivery and consent.** Callback, party and preliminary-booking
+  forms share `src/scripts/lead-form.js`. `site.leads.recipient` is deliberately the empty string:
+  this produces no background request, preserves the entered fields, shows the honest confirmation
+  “Заявка принята, перезвоним” and opens a prefilled WhatsApp draft. Filling that single value with
+  an approved lead endpoint enables one JSON POST for all forms. Consent is opt-in, duplicate
+  submissions are guarded, date fields use `Europe/Moscow`, and the emitted `lead:accepted` event
+  carries no personal data. The catalogue now also has the common callback form.
+- **10.08.2026 — Wave 5 analytics, accessibility and link graph.** `Analytics.astro` is inert
+  until the numeric `site.analytics.metrikaId` is supplied; then it lazy-adds Metrika and reports
+  only `lead_accepted`, phone-click and WhatsApp-click goals. No analytics request is present now.
+  Consent controls were raised to 24 px and their legal links use the accessible orange text token.
+  The privacy policy is an indexable breadcrumbed page in `sitemap.xml`. Footer event links now use
+  published local routes, including the previously orphaned `/prazdnik-maxi`. The desktop mega menu
+  is now viewport-anchored without a hidden 121 px horizontal overflow.
+- **10.08.2026 — Wave 5 seasonal and redirect decision.** The obsolete 2025 New Year page is
+  retired rather than kept as an indexable duplicate: `/new-year-2025` is a noindex static fallback
+  to `/new-year`, while server hosts issue a 301. Its two numeric aliases also target `/new-year`.
+  The redirect generator now writes all three deployment formats: `public/_redirects`, root
+  `.htaccess`, and `docs/nginx-legacy-redirects.conf`; the map has 96 exact permanent redirects.
+- **10.08.2026 — Wave 5 asset audit.** `scripts/asset-audit.mjs` checks runtime source and emitted
+  build references separately, preserving lazy/data assets and reporting ordinary unused images
+  without deleting them. It removed only 37 proven-unreachable Tilda executables/index artifacts
+  (1,773,789 bytes); 428 unreferenced image/report-only assets remain intentionally because
+  reachability alone is not evidence that a visual asset is safe to discard.
+- **10.08.2026 — Wave 5 owner switches.** Before real lead delivery, set the approved endpoint in
+  `src/data/site.json` at `leads.recipient`; it is intentionally blank in the committed build.
+  Before analytics, set the numeric value at `analytics.metrikaId`. Before a production cutover,
+  choose the owner-controlled host and apply the matching redirect artifact documented in
+  `docs/PRODUCTION_CUTOVER.md`; all three formats are ready and no DNS was touched.
+- **10.08.2026 — Wave 5 verification.** The full `npm run ci` gate passed (68 tests, production
+  build, root and GitHub Pages builds, redirect/SEO/asset/production contracts and dependency audit).
+  Targeted browser QA recorded zero initial foreign requests, console errors, failed requests and
+  horizontal overflows across home, catalogue, privacy, a quest and the new campaign. The blank
+  recipient flow was exercised on mobile: consent started unchecked, one `lead:accepted` event was
+  emitted, input remained visible and the WhatsApp draft was correct. Fresh 1440/390 captures and
+  diffs are ignored under `_capture/shots/wave5/`; historical source/clone full-page dimensions
+  differ materially, so their 20.65%/11.46% catalogue and 36.57%/23.02% quest pixel scores are
+  diagnostic only. Fresh mobile Lighthouse: home **100/97/100/100**, catalogue **100/100/100/100**,
+  `among_us` **100/100/100/100** (Performance/Accessibility/Best Practices/SEO), all with CLS 0.
 
 ## Шаблоны: 57 страниц сводятся к 6 макетам
 

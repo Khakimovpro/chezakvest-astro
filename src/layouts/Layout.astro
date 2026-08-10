@@ -4,6 +4,7 @@ import '../styles/global.css';
 import site from '../data/site.json';
 import { canonicalUrl } from '../lib/urls.js';
 import Lightbox from '../components/Lightbox.astro';
+import Analytics from '../components/Analytics.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => base + p;              // /assets/x -> /<base>/assets/x
@@ -86,6 +87,7 @@ const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1
     {jsonld.map((data) => (
       <script type="application/ld+json" set:html={JSON.stringify(data)} />
     ))}
+    <Analytics />
   </head>
   <body class={bodyClass}>
     <slot />

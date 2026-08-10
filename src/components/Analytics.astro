@@ -1,0 +1,39 @@
+---
+// Deliberately inert until the owner supplies one numeric Yandex Metrika id in
+// site.json. That keeps the initial render local and makes activation a one-line
+// configuration change instead of a template edit.
+import site from '../data/site.json';
+
+const rawId = String(site.analytics?.metrikaId || '').trim();
+const metrikaId = /^\d{4,20}$/.test(rawId) ? rawId : '';
+---
+{metrikaId && (
+  <script is:inline define:vars={{ metrikaId }}>
+    (function initMetrika() {
+      window.ym = window.ym || function queueMetrika() {
+        (window.ym.a = window.ym.a || []).push(arguments);
+      };
+      window.ym.l = Date.now();
+      window.ym(metrikaId, 'init', {
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true,
+      });
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://mc.yandex.ru/metrika/tag.js`;
+      document.head.append(script);
+
+      const reachGoal = (name) => window.ym?.(metrikaId, 'reachGoal', name);
+      document.addEventListener('lead:accepted', () => reachGoal('lead_accepted'));
+      document.addEventListener('click', (event) => {
+        const link = event.target.closest?.('a[href]');
+        if (!link) return;
+        const href = link.getAttribute('href') || '';
+        if (/^tel:/i.test(href)) reachGoal('phone_click');
+        if (/^https:\/\/wa\.me\//i.test(href)) reachGoal('whatsapp_click');
+      });
+    }());
+  </script>
+)}

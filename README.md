@@ -3,9 +3,9 @@
 Сайт **чезаквест.рф** (Ростов-на-Дону), переписанный с Tilda на Astro: те же страницы и тот же
 контент, только быстрее и чище. Перенесены все **58 страниц исходного официального sitemap** —
 главная, 37 квестов, 4 VR-игры, 9 площадок, категория «Страшные квесты», «Контакты» и 5
-праздничных страниц. Дополнительно перенесены две живые коммерческие страницы вне sitemap
-(`/new-year-2025`, `/prazdniki-pod-kluch`) и создан каталог `/kvesty-v-rostove-na-donu`.
-Дубль Уэнсдей закрыт noindex-фолбэком и будущим 301 на канонический URL.
+праздничных страниц. Дополнительно опубликованы актуальные тематические кампании и каталог
+`/kvesty-v-rostove-na-donu`; архивный `/new-year-2025` и дубль Уэнсдей закрыты noindex-фолбэками
+до серверного 301 на актуальные канонические URL.
 
 Журнал переноса, правила и известные расхождения — `migration/MIGRATION.md`,
 реестр страниц со статусами — `migration/pages.csv`.
@@ -15,10 +15,10 @@
 - Вёрстка нативная, без Tilda-рантайма: страницы собираются шаблонами из JSON-данных
   (`src/layouts/*.astro` + `src/data/pages/<slug>.json`), роут один — `src/pages/[...slug].astro`.
 - Все ассеты (CSS/JS/шрифты/картинки) **захостены локально**, обращений к tildacdn нет.
-- Вырезаны **сторонние трекеры и call-tracking** (Roistat, Метрика, Google, marquiz).
-  Поэтому телефон показывается настоящий базовый, а не подменённый трекинговый номер.
-- Карта, виджет отзывов и квиз доменно-залочены и на своём хосте не работают: карта — снимком
-  со ссылкой в Яндекс.Карты, на месте квиза и отзывов — формы заявки.
+- Вырезаны сторонние трекеры и call-tracking (Roistat, Google); Метрика выключена до передачи
+  ID в `src/data/site.json`, поэтому при начальной загрузке нет внешних запросов.
+- Карта, отзывы и квиз не нужны при начальной загрузке: отзывы рендерятся локальным текстом,
+  а публичные Yandex Map и Marquiz создаются только после явного действия посетителя.
 - SEO в переносе, а не вторым заходом: свои title/description под кластер, один H1, Schema.org
   (`Service`/`EntertainmentBusiness`/`CollectionPage`, `Offer`, `FAQPage`, `BreadcrumbList`),
   canonical на боевой домен, перелинковка квест ↔ площадка ↔ категория, `sitemap.xml`, `robots.txt`.
@@ -27,9 +27,10 @@
 
 ## Замеры
 
-Последняя локальная проверка production build на главной: Lighthouse mobile — **96/100/100/100**
-(Performance/Accessibility/Best Practices/SEO), CLS 0, LCP 2.67 с, TBT 60 мс. Метрики на выбранном
-боевом хосте нужно повторно снять после переключения DNS.
+Последняя локальная проверка на главной: Lighthouse mobile — **100/97/100/100**
+(Performance/Accessibility/Best Practices/SEO), CLS 0, LCP 1.26 с. Каталог и `among_us` также
+прошли с Performance 100 и CLS 0. Метрики на выбранном боевом хосте нужно повторно снять после
+переключения DNS.
 
 ## Разработка
 
@@ -39,7 +40,7 @@ python3 -m pip install --requirement requirements-ci.txt  # нужен для т
 npm run build          # -> dist/
 npm run preview        # локальный предпросмотр
 npm run ci             # unit-тесты, production SEO-контракт и dependency audit
-npm run verify:seo     # SEO-ограничения 60 indexable-маршрутов
+npm run verify:seo     # SEO-ограничения 65 indexable-маршрутов
 python3 _capture/check_pages.py    # legacy-диагностика миграции; не release gate
 python3 _capture/check_assets.py   # все ли картинки из данных лежат в public/
 node scripts/browser-audit.mjs      # локальный browser QA собранного dist (нужен Playwright)

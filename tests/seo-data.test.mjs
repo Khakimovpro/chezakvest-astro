@@ -10,7 +10,7 @@ test('keeps every indexable page and static route within the SEO metadata contra
   const report = await auditSeoData();
 
   assert.equal(report.indexablePageCount, 65);
-  assert.deepEqual(report.staticRouteSlugs, ['home', 'kvesty-v-rostove-na-donu']);
+  assert.deepEqual(report.staticRouteSlugs, ['home', 'kvesty-v-rostove-na-donu', 'privacy']);
   assert.deepEqual(report.errors, []);
 });
 

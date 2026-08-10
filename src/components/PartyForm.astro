@@ -13,7 +13,7 @@ const s = site;
     <div class="pform__card">
       <h2 class="pform__title">У нас вы можете отметить День рождения!</h2>
       <p class="pform__sub">Отправьте заявку, узнайте свободна ли ваша дата.<br />Поможем подобрать программу праздника.</p>
-      <form class="pform__form" data-lead-form data-lead-kind="party" data-lead-target={s.header.wa} aria-describedby={`${id}-status`}>
+      <form class="pform__form" data-lead-form data-lead-kind="party" data-lead-target={s.header.wa} data-lead-recipient={s.leads?.recipient || ''} aria-describedby={`${id}-status`}>
         <div class="pform__grid">
           <div class="pform__field pform__field--date">
             <label class="pform__label" for={`${id}-date`}>Выберите дату</label>
@@ -30,12 +30,12 @@ const s = site;
           </div>
         </div>
         <label class="pform__consent">
-          <input name="consent" type="checkbox" checked required />
-          <span>Даю согласие на обработку моих персональных данных и передачу их в WhatsApp для обработки заявки в соответствии с <a href={link('/privacy')}>Политикой обработки персональных данных</a></span>
+          <input name="consent" type="checkbox" required />
+          <span>Даю согласие на обработку моих персональных данных в соответствии с <a href={link('/privacy')}>Политикой обработки персональных данных</a></span>
         </label>
         <button class="btn-orange pform__submit" type="button" data-lead-submit>Отправить</button>
         <p class="lead-form__status" id={`${id}-status`} data-lead-status role="status" aria-live="polite" hidden></p>
-        <noscript><p class="lead-form__status">Чтобы отправить заявку в WhatsApp, включите JavaScript или позвоните нам по телефону на сайте.</p></noscript>
+        <noscript><p class="lead-form__status">Чтобы оставить заявку, включите JavaScript или позвоните нам по телефону на сайте.</p></noscript>
       </form>
       <div class="pform__wave" aria-hidden="true">
         <svg viewBox="0 0 1120 210" preserveAspectRatio="none"><path fill="#ff8a00" d="M0 78c186-52 373-52 560 0s374 52 560 0v132H0z"/></svg>
