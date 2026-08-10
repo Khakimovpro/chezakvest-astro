@@ -78,6 +78,28 @@
   `raw/mobile/CATALOG-BROKEN-*` evidence was overwritten, a pre-wave static snapshot was captured
   again in `raw/wave-1/recovered-baseline/`; it faithfully reproduces the broken CSS state, while
   the original PNG bytes are not recoverable.
+- **10.08.2026 — Wave 2 shared chrome and navigation.** Header, footer, desktop mega-navigation
+  and the 320 px mobile accordion are now data-driven from `src/data/site.json`. The desktop
+  menu uses the measured glass treatment and real internal destinations; all 56 distinct header,
+  footer and mobile-menu internal destinations were checked locally without 4xx responses. The
+  reconnaissance wording "41 catalogue links" was not reproducible from its supplied JSON: it
+  contains 36 actionable links (the larger count includes headings/separators), so the code uses
+  36 instead of inventing five destinations. The verified 1200/1100/480 px header breakpoints,
+  separate orange drawer logo and keyboard focus containment are deliberate accessibility and
+  fidelity choices.
+- **10.08.2026 — Wave 2 messenger decision.** Replaced the permanent WhatsApp-only floater with
+  one local, accessible three-channel panel used by Header, Footer and mobile navigation. Exact
+  MAX, WhatsApp and Telegram links are held in `site.json`; no messenger script or any other
+  third-party request is loaded before a user follows a link. `/new-year-2025` remains the
+  temporary navigation destination until Wave 4 creates `/new-year`; this avoids a transient 404.
+- **10.08.2026 — Wave 2 verification and simplification.** `npm run build`, focused navigation
+  tests, browser QA and the full `npm run ci` gate passed. Captures and pixel-diff artifacts are
+  in ignored `_capture/shots/wave2/`: header comparison was 93.86% at 1440 and 86.73% at 390;
+  footer desktop comparison was 90.67%. The supplied mobile footer source is only a viewport crop,
+  so it was retained as a visual reference rather than treated as a false full-section pixel metric.
+  Lazyweb reporting was attempted twice as required by the UI workflow but its signed upload was
+  rejected first by a fetch error and then by the 10 MB image cap; existing recon screenshots were
+  used instead. This external-tool limitation does not change the implementation.
 
 ## Шаблоны: 57 страниц сводятся к 6 макетам
 

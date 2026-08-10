@@ -1,21 +1,15 @@
 ---
-// Сквозная шапка сайта + мобильное меню. Разметка и классы взяты с главной без изменений,
-// чтобы styles/page.css работал на всех страницах одинаково.
+// Shared glass header, desktop mega-menu, and accessible mobile accordion.
 import site from '../data/site.json';
 import { siteHref } from '../lib/urls.js';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const asset = (p) => (p ? base + p : '#');
-const link = (h) => siteHref(base, h);
-
+const asset = (path) => (path ? base + path : '#');
+const link = (href) => siteHref(base, href);
 const s = site;
-const catalogThemes = [
-  { t: 'Все игры', href: '/kvesty-v-rostove-na-donu' },
-  { t: 'Квесты', href: '/kvesty-v-rostove-na-donu?theme=quest' },
-  { t: 'VR-игры', href: '/kvesty-v-rostove-na-donu?theme=vr' },
-  { t: 'Страшные', href: '/kvesty-v-rostove-na-donu?theme=scary' },
-  { t: 'Прятки и лабиринты', href: '/kvesty-v-rostove-na-donu?theme=hide' },
-];
+const prefixIcon = asset('/assets/static.tildacdn.com/lib/icons/button/loosedots_light.svg');
+const menuColumns = (key) => s.megamenu[key]?.cols ?? [];
+const hrefFor = (item) => item.external ? item.href : link(item.href);
 ---
 
 <header class="hdr" id="top">
@@ -26,51 +20,151 @@ const catalogThemes = [
 
     <nav class="hdr__nav" aria-label="Основная навигация">
       <ul class="nav">
-        <li class="nav__item has-mega">
-          <a href={link('/kvesty-v-rostove-na-donu')}><span class="nav__prefix" aria-hidden="true">∷</span>Каталог квестов</a>
-          <div class="mega">
-            {catalogThemes.map((theme) => (
-              <a class="mega__link" href={link(theme.href)}>{theme.t}</a>
-            ))}
-          </div>
-        </li>
-        <li class="nav__item has-mega">
-          <a href={link('/#party')}><span class="nav__prefix" aria-hidden="true">∷</span>Проведение праздников</a>
-          <div class="mega">
-            {s.footer.cols[0].links.map((l) => (
-              <a class="mega__link" href={link(l.href)}>{l.t}</a>
-            ))}
-          </div>
-        </li>
-        <li class="nav__item"><a href={link('/strashnye-kvesty')}>Хоррор</a></li>
-        <li class="nav__item"><a href={link('/#otzivy')}>Отзывы</a></li>
-        <li class="nav__item"><a href={link('/contacts')}><span class="nav__prefix" aria-hidden="true">∷</span>Контакты</a></li>
+        {s.header.nav.map((item) => (
+          <li class:list={['nav__item', { 'has-mega': item.mega }]}>
+            <a href={link(item.href)}>
+              {item.mega && <img class="nav__prefix" src={prefixIcon} width="14" height="14" alt="" aria-hidden="true" />}
+              {item.t}
+            </a>
+            {item.mega && (
+              <div class:list={['mega', `mega--${item.mega}`]}>
+                <div class="mega__inner container">
+                  {menuColumns(item.mega).map((column) => (
+                    <section class="mega__col">
+                      {column.href ? (
+                        <a class:list={['mega__title', { 'mega__title--accent': column.accent }]} href={link(column.href)}>{column.title}</a>
+                      ) : <div class="mega__title">{column.title}</div>}
+                      {column.links?.length > 0 && (
+                        <ul class="mega__links">
+                          {column.links.map((entry) => (
+                            <li><a class="mega__link" href={hrefFor(entry)} {...(entry.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{entry.t}</a></li>
+                          ))}
+                        </ul>
+                      )}
+                    </section>
+                  ))}
+                </div>
+              </div>
+            )}
+          </li>
+        ))}
       </ul>
     </nav>
 
     <div class="hdr__actions">
       <a class="hdr__phone" href={s.header.phoneHref}>
-        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 006.6 6.6l2.2-2.2a1 1 0 011-.24 11 11 0 003.4.55 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.55 3.4 1 1 0 01-.25 1L6.6 10.8z"/></svg>
+        <svg viewBox="0 0 24 24" width="20" height="21" aria-hidden="true"><path fill="currentColor" d="M6.6 10.8a15.5 15.5 0 006.6 6.6l2.2-2.2a1 1 0 011-.24 11 11 0 003.4.55 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.55 3.4 1 1 0 01-.25 1L6.6 10.8z"/></svg>
         <span>{s.header.phone}</span>
       </a>
-      <a class="hdr__wa" href={s.header.wa} target="_blank" rel="noopener" aria-label="Написать в WhatsApp">
-        <svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><path fill="#fff" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.1 1.6 5.9L4 29l8.3-1.6c1.7.9 3.6 1.4 5.7 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.3l-.4-.2-3.7.7.7-3.6-.2-.4a9.8 9.8 0 01-1.5-5.2c0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.4 9.8-9.8 9.8zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.6.1a8 8 0 01-2.4-1.5 9 9 0 01-1.6-2c-.2-.3 0-.4.1-.6l.5-.5c.1-.2.2-.3.3-.5s0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1 2.2 3.4 5.3 4.7c2 .9 2.8.9 3.7.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4l-.6-.3z"/></svg>
-      </a>
-      <button class="hdr__burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu">
+      <button class="hdr__wa" type="button" data-messenger-open aria-label="Написать нам в мессенджер">
+        <svg viewBox="0 0 32 32" width="27" height="27" aria-hidden="true"><path fill="#60D249" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.1 1.6 5.9L4 29l8.3-1.6c1.7.9 3.6 1.4 5.7 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.3l-.4-.2-3.7.7.7-3.6-.2-.4a9.8 9.8 0 01-1.5-5.2c0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.4 9.8-9.8 9.8zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.6.1a8 8 0 01-2.4-1.5 9 9 0 01-1.6-2c-.2-.3 0-.4.1-.6l.5-.5c.1-.2.2-.3.3-.5s0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1 2.2 3.4 5.3 4.7c2 .9 2.8.9 3.7.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4l-.6-.3z"/></svg>
+      </button>
+      <button class="hdr__burger" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu">
         <span></span><span></span><span></span>
       </button>
     </div>
   </div>
 </header>
 
-<!-- Мобильное меню -->
-<div class="mmenu" id="mobile-menu" hidden>
-  <ul>
-    <li><a href={link('/kvesty-v-rostove-na-donu')}>Каталог квестов</a></li>
-    <li><a href={link('/#party')}>Проведение праздников</a></li>
-    <li><a href={link('/strashnye-kvesty')}>Хоррор</a></li>
-    <li><a href={link('/#otzivy')}>Отзывы</a></li>
-    <li><a href={link('/contacts')}>Контакты</a></li>
-    <li><a href={s.header.phoneHref} class="mmenu__phone">{s.header.phone}</a></li>
-  </ul>
+<div class="mmenu-shell" id="mobile-menu" hidden>
+  <button class="mmenu__overlay" type="button" data-mobile-menu-close aria-label="Закрыть меню"></button>
+  <div class="mmenu" role="dialog" aria-modal="true" aria-label="Меню сайта">
+    <button class="mmenu__close" type="button" data-mobile-menu-close aria-label="Закрыть меню">×</button>
+    <a class="mmenu__logo" href={link('/')} aria-label="Чё за Квест — на главную">
+      <img src={asset(s.header.mobileLogo)} alt="Чё за Квест" width="270" height="47" />
+    </a>
+    <nav aria-label="Мобильная навигация">
+    <ul class="mmenu__list">
+      {s.header.nav.map((item) => (
+        <li>
+          {item.mega ? (
+            <>
+              <button class="mmenu__toggle" type="button" data-mobile-accordion aria-expanded="false" aria-controls={`mobile-${item.mega}`}>
+                <span>{item.t}</span><span class="mmenu__chev" aria-hidden="true"></span>
+              </button>
+              <div class="mmenu__sub" id={`mobile-${item.mega}`} hidden>
+                {menuColumns(item.mega).map((column) => (
+                  <section class="mmenu__group">
+                    {column.href ? <a class:list={['mmenu__group-title', { 'mmenu__group-title--accent': column.accent }]} href={link(column.href)}>{column.title}</a> : <div class="mmenu__group-title">{column.title}</div>}
+                    {column.links?.map((entry) => (
+                      <a class="mmenu__link" href={hrefFor(entry)} {...(entry.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{entry.t}</a>
+                    ))}
+                  </section>
+                ))}
+              </div>
+            </>
+          ) : <a class="mmenu__plain-link" href={link(item.href)}>{item.t}</a>}
+        </li>
+      ))}
+    </ul>
+    <button class="mmenu__messenger" type="button" data-messenger-open>Написать в мессенджер</button>
+    <a href={s.header.phoneHref} class="mmenu__phone">{s.header.phone}</a>
+    </nav>
+  </div>
 </div>
+
+<script>
+  const initMobileMenu = () => {
+    const burger = document.querySelector('.hdr__burger');
+    const menu = document.getElementById('mobile-menu');
+    if (!burger || !menu || menu.dataset.ready) return;
+    menu.dataset.ready = 'true';
+
+    const drawer = menu.querySelector('.mmenu');
+    const focusableItems = () => Array.from(drawer?.querySelectorAll('a[href], button:not([disabled])') ?? []).filter((item) => !item.closest('[hidden]'));
+    const firstItem = () => drawer?.querySelector('.mmenu__close') || focusableItems()[0];
+    const isOpen = () => !menu.hasAttribute('hidden');
+    const setOpen = (open, restoreFocus = false) => {
+      if (open) {
+        menu.removeAttribute('hidden');
+        requestAnimationFrame(() => firstItem()?.focus());
+      } else {
+        menu.setAttribute('hidden', '');
+        if (restoreFocus || menu.contains(document.activeElement)) burger.focus();
+      }
+      document.body.classList.toggle('menu-open', open);
+      burger.setAttribute('aria-expanded', String(open));
+      burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
+    };
+
+    burger.addEventListener('click', () => setOpen(!isOpen()));
+    menu.querySelectorAll('[data-mobile-menu-close]').forEach((button) => button.addEventListener('click', () => setOpen(false, true)));
+    menu.querySelectorAll('a').forEach((anchor) => anchor.addEventListener('click', () => setOpen(false)));
+    menu.querySelectorAll('[data-mobile-accordion]').forEach((button) => button.addEventListener('click', () => {
+      const panel = document.getElementById(button.getAttribute('aria-controls'));
+      const open = button.getAttribute('aria-expanded') !== 'true';
+      menu.querySelectorAll('[data-mobile-accordion]').forEach((other) => {
+        const otherPanel = document.getElementById(other.getAttribute('aria-controls'));
+        other.setAttribute('aria-expanded', 'false');
+        otherPanel?.setAttribute('hidden', '');
+      });
+      button.setAttribute('aria-expanded', String(open));
+      if (open) panel?.removeAttribute('hidden');
+    }));
+    document.addEventListener('keydown', (event) => {
+      // Let an open dialog consume Escape first; otherwise a mobile menu behind it
+      // would close while the messenger panel remained visible.
+      if (!isOpen() || document.getElementById('messenger-panel')?.open) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setOpen(false, true);
+      }
+      if (event.key === 'Tab') {
+        const items = focusableItems();
+        const first = items[0];
+        const last = items.at(-1);
+        if (!first || !last) return;
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initMobileMenu, { once: true });
+  else initMobileMenu();
+</script>

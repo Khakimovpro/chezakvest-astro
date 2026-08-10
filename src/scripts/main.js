@@ -169,39 +169,9 @@ function initSlider() {
   syncAutoplayControl();
 }
 
-// ---------- Бургер-меню ----------
-function initBurger() {
-  const burger = document.querySelector('.hdr__burger');
-  const menu = document.getElementById('mobile-menu');
-  if (!burger || !menu) return;
-  const firstMenuItem = () => menu.querySelector('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
-  const isOpen = () => !menu.hasAttribute('hidden');
-
-  function toggle(open, { restoreFocus = false } = {}) {
-    const willOpen = open ?? !isOpen();
-    if (willOpen) {
-      menu.removeAttribute('hidden');
-      requestAnimationFrame(() => firstMenuItem()?.focus());
-    } else {
-      menu.setAttribute('hidden', '');
-      if (restoreFocus || menu.contains(document.activeElement)) burger.focus();
-    }
-    burger.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-    burger.setAttribute('aria-label', willOpen ? 'Закрыть меню' : 'Открыть меню');
-  }
-  burger.addEventListener('click', () => toggle());
-  menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => toggle(false)));
-  document.addEventListener('keydown', (event) => {
-    if (event.key !== 'Escape' || !isOpen()) return;
-    event.preventDefault();
-    toggle(false, { restoreFocus: true });
-  });
-}
-
 function boot() {
   initCatalog();
   initSlider();
-  initBurger();
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 else boot();

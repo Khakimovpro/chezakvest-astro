@@ -13,34 +13,127 @@
  },
  "header": {
   "logo": "/assets/static.tildacdn.com/tild6366-3839-4131-b434-613364343233/--__.svg",
+  "mobileLogo": "/assets/static.tildacdn.com/tild3237-6263-4632-b333-313961383531/svg_1749642066155.svg",
   "phone": "+7 (928) 216 36 23",
   "phoneHref": "tel:+79282163623",
   "wa": "https://wa.me/79282163623",
   "nav": [
-   {
-    "t": "Каталог квестов",
-    "href": "/kvesty-v-rostove-na-donu",
-    "mega": "catalog"
-   },
-   {
-    "t": "Проведение праздников",
-    "href": "#party",
-    "mega": "party"
-   },
-   {
-    "t": "Хоррор",
-    "href": "#strashnye"
-   },
-   {
-    "t": "Отзывы",
-    "href": "#otzivy"
-   },
-   {
-    "t": "Контакты",
-    "href": "#contacts"
-   }
+   { "t": "Каталог квестов", "href": "/kvesty-v-rostove-na-donu", "mega": "catalog" },
+   { "t": "Проведение праздников", "href": "/kids", "mega": "party" },
+   { "t": "Хоррор", "href": "/strashnye-kvesty" },
+   { "t": "Отзывы", "href": "/#otzivy" },
+   { "t": "Контакты", "href": "/contacts", "mega": "contacts" }
   ],
   "vk": "https://vk.com/chezaquest"
+ },
+ "messengers": {
+  "title": "Мы на связи в мессенджерах",
+  "items": [
+   { "id": "max", "label": "MAX", "href": "https://max.ru/id164409771610_bot?start=c1775808014480-ds" },
+   { "id": "wa", "label": "WhatsApp", "href": "https://wa.me/79282163623" },
+   { "id": "tg", "label": "Telegram", "href": "https://t.me/chezakvest_rnd_bot" }
+  ]
+ },
+ "megamenu": {
+  "catalog": {
+   "cols": [
+    {
+     "title": "КЛАССИЧЕСКИЕ КВЕСТЫ",
+     "links": [
+      { "t": "Ограбление банка. Бумажный дом", "href": "/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom" },
+      { "t": "Гарри и последний крестраж", "href": "/kvest_v_realnosti_harry_potter_i_krestrazh" },
+      { "t": "Ночь в музее. Ограбление", "href": "/kvest_v_realnosti_noch_v_museum_ograblenie" },
+      { "t": "Уэнздей. Новая битва", "href": "/kvest_v_realnosti_wednesday" },
+      { "t": "Шерлок Холмс", "href": "/kvest_v_realnosti_sherlock_holms" },
+      { "t": "Путешествие во времени", "href": "/puteshestvie" },
+      { "t": "Пираты", "href": "/pirati" },
+      { "t": "Побег из Шоушенка", "href": "/pobeg" },
+      { "t": "Хижина Чудес", "href": "/mystery_shack" },
+      { "t": "Индиана Джонс", "href": "/indiana" },
+      { "t": "Фантастический угон", "href": "/ugon" }
+     ]
+    },
+    {
+     "title": "ПРЯТКИ В ТЕМНОТЕ",
+     "links": [
+      { "t": "Амонг Ас", "href": "/among_us" },
+      { "t": "Бегущий в лабиринте", "href": "/beguschij_v_labirinte" },
+      { "t": "Игра в Кальмара", "href": "/igra_v_kalmara" },
+      { "t": "Гарри Поттер. Кубок огня", "href": "/garri-potter-i-kubok-ognya" },
+      { "t": "Майнкрафт", "href": "/minecraft" },
+      { "t": "Роблокс. Радужные друзья", "href": "/roblox" },
+      { "t": "Роблокс. Дорс", "href": "/roblox-dors" },
+      { "t": "Прятки kids", "href": "/pryatki_kids" },
+      { "t": "Прятки в темноте", "href": "/pryatki_v_temnote" },
+      { "t": "Прятки. Портал в другое измерение", "href": "/pryatki_portal" },
+      { "t": "Уэнсдей. Потерянная душа", "href": "/wednesday-poteryannaya-dusha" }
+     ]
+    },
+    {
+     "title": "СТРАШНЫЕ КВЕСТЫ",
+     "href": "/strashnye-kvesty",
+     "links": [
+      { "t": "Психбольница", "href": "/kvest_v_realnosti_psihbolnitsa" },
+      { "t": "Шизофрения", "href": "/shizofreniya" },
+      { "t": "Хостел. Подвал пыток", "href": "/hostel-podval-pytok" },
+      { "t": "Патология", "href": "/patologiya" },
+      { "t": "Техасская резня бензопилой", "href": "/tekhasskaya-reznya-benzopiloj" },
+      { "t": "Оно", "href": "/ono" },
+      { "t": "Коралина в Стране Кошмаров", "href": "/kvest_v_realnosti_koralina" },
+      { "t": "Дом призраков", "href": "/kvest_v_realnosti_dom_prizrakov" },
+      { "t": "Звонок", "href": "/zvonok" },
+      { "t": "Замок Графа Дракулы", "href": "/kvest_v_realnosti_zamok_drakuly" }
+     ]
+    },
+    {
+     "title": "VR-ИГРЫ",
+     "links": [
+      { "t": "Portal Strike", "href": "/portal-strike" },
+      { "t": "Party Games", "href": "/party-games" },
+      { "t": "Portal Strike Kids", "href": "/portal-strike-kids" },
+      { "t": "Portal Zombie", "href": "/portal-zombie" }
+     ]
+    }
+   ]
+  },
+  "party": {
+   "cols": [
+    {
+     "title": "ДЕНЬ РОЖДЕНИЯ",
+     "links": [
+      { "t": "День рождения в квесте", "href": "/kids" },
+      { "t": "День Рождения в стиле Гарри Поттера", "href": "https://xn----7sbikn1bgfafua.xn--80aehcht5ci1b.xn--p1ai/", "external": true },
+      { "t": "День Рождения в стиле Майнкрафт", "href": "/minecraft-lend" },
+      { "t": "День Рождения в стиле Амонг Ас", "href": "/amongus-land" },
+      { "t": "День Рождения в стиле Игра в Кальмара", "href": "/igra-v-kalmara-lend" },
+      { "t": "День Рождения в стиле Роблокс", "href": "/roblox-land" },
+      { "t": "День Рождения на VR-арене", "href": "/den-rozhdeniya-na-vr-arene" },
+      { "t": "День Рождения в стиле Узник Азкабана", "href": "/den-rozhdeniya-uznik-azkabana" }
+     ]
+    },
+    { "title": "ВЫПУСКНОЙ 2026", "href": "/vypusknoj-kalmar", "accent": true },
+    { "title": "НОВЫЙ ГОД 2027", "href": "/new-year-2025", "accent": true }
+   ]
+  },
+  "contacts": {
+   "cols": [
+    { "title": "КОНТАКТЫ", "href": "/contacts" },
+    {
+     "title": "НАШИ АДРЕСА",
+     "links": [
+      { "t": "пр-т Соколова, 23", "href": "/sokolova23" },
+      { "t": "ул. Красноармейская, 103", "href": "/krasnormerskaya103" },
+      { "t": "ул. Социалистическая, 186", "href": "/socialicheskaya186" },
+      { "t": "Гвардейский пер., 61", "href": "/guardeskypereulog61" },
+      { "t": "пр-т Мира, д. 27", "href": "/mira27" },
+      { "t": "ул. Нансена, 107/1", "href": "/nansena107" },
+      { "t": "ул. Магнитогорская, 1", "href": "/magnitogorskaya1" },
+      { "t": "ул. 40-летия Победы, 216", "href": "/40letpobedy216" },
+      { "t": "пр-т М. Нагибина, 14А", "href": "/nagibina14" }
+     ]
+    }
+   ]
+  }
  },
  "hero": {
   "bg": "/assets/static.tildacdn.com/tild3561-3266-4662-a539-313732383839/noroot.webp",
@@ -668,62 +761,31 @@
  },
  "footer": {
   "logo": "/assets/static.tildacdn.com/tild6337-6561-4434-a631-626137386564/-_.webp",
+  "logoHref": "/",
   "phone": "+7 (928) 216 36 23",
   "phoneHref": "tel:+79282163623",
-  "hours": "График работы уточняйте при бронировании",
+  "hours": "Работаем с 10:00 до 23:30",
+  "email": "mailto:marketing.chezaquest@yandex.ru",
   "cols": [
    {
     "title": "Организация мероприятий",
     "links": [
-     {
-      "t": "Детский День рождения",
-      "href": "#party"
-     },
-     {
-      "t": "Взрослый День рождения",
-      "href": "#party"
-     },
-     {
-      "t": "День Рождения в VR",
-      "href": "#party"
-     },
-     {
-      "t": "Выпускной 2026",
-      "href": "#party"
-     },
-     {
-      "t": "Корпоратив | Тимбилдинг",
-      "href": "#party"
-     },
-     {
-      "t": "Новый год 2027",
-      "href": "#party"
-     }
+     { "t": "Детский День рождения", "href": "/kids" },
+     { "t": "Взрослый День рождения", "href": null },
+     { "t": "День Рождения в VR", "href": "https://нереально.рф/kids", "ext": true },
+     { "t": "Выпускной 2026", "href": "/vypusknoj-kalmar" },
+     { "t": "Корпоратив | Тимбилдинг", "href": null },
+     { "t": "Новый год 2027", "href": "/new-year-2025" }
     ]
    },
    {
     "title": "Виды развлечений",
     "links": [
-     {
-      "t": "Квеструмы",
-      "href": "/kvesty-v-rostove-na-donu?theme=quest"
-     },
-     {
-      "t": "VR-арена",
-      "href": "/kvesty-v-rostove-na-donu?theme=vr"
-     },
-     {
-      "t": "Активные игры",
-      "href": "/kvesty-v-rostove-na-donu?theme=vr"
-     },
-     {
-      "t": "Прятки в темноте",
-      "href": "/kvesty-v-rostove-na-donu?theme=hide"
-     },
-     {
-      "t": "Страшные квесты",
-      "href": "/kvesty-v-rostove-na-donu?theme=scary"
-     }
+     { "t": "Квеструмы", "href": "/kvesty-v-rostove-na-donu" },
+     { "t": "VR-арена", "href": "/den-rozhdeniya-na-vr-arene" },
+     { "t": "Активные игры", "href": "/party-games" },
+     { "t": "Прятки в темноте", "href": "/pryatki_v_temnote" },
+     { "t": "Страшные квесты", "href": "/strashnye-kvesty" }
     ]
    },
    {
@@ -774,6 +836,7 @@
    "ОГРНИП 322169000094990"
   ],
   "privacy": "Политика обработки персональных данных",
+  "privacyHref": "/privacy",
   "copyright": "© 2026 ЧЁ ЗА КВЕСТ"
  },
  "gallery": [
