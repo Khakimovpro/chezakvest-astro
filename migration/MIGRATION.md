@@ -68,6 +68,16 @@
   связка квест → площадка, `lastmod` в sitemap, SEO-проверка, нормализованные legacy-ссылки
   и карта из 103 записей (102 audited hidden URL + дубль Уэнсдей). С живого Tilda сняты `/new-year-2025` и
   `/prazdniki-pod-kluch`; их данные попали в реестр.
+- **10.08.2026 — Wave 1 visible fixes.** The catalogue now imports its shared page styles; the
+  site ships root favicon, Apple touch and Windows tile assets; encrypted preview pages embed their
+  cipher in the loader and keep preview access in localStorage for a rolling seven days.
+- **10.08.2026 — Wave 1 capture provenance.** The original Tilda site has no standalone
+  `/kvesty-v-rostove-na-donu/` route (both forms return 404); the equivalent catalogue is the
+  root section `/#rec1662454701`. Fresh 1440/390 original-and-clone captures are stored under
+  `/home/claude/che_za_kvest/work/recon-2026-08-10/raw/wave-1/`. After the ignored
+  `raw/mobile/CATALOG-BROKEN-*` evidence was overwritten, a pre-wave static snapshot was captured
+  again in `raw/wave-1/recovered-baseline/`; it faithfully reproduces the broken CSS state, while
+  the original PNG bytes are not recoverable.
 
 ## Шаблоны: 57 страниц сводятся к 6 макетам
 
@@ -198,18 +208,21 @@ LCP 1.7 с, CLS 0, TBT 10 мс.
 GitHub Pages на бесплатном тарифе не отдаёт сайты из приватных репозиториев, поэтому доступ
 закрыт не настройками хостинга, а шифрованием: на сервере лежат только зашифрованные данные.
 
-- Каждая страница шифруется в `page.enc`, вместо неё лежит лоадер с формой пароля.
+- Each page cipher is embedded in its loader, so the password loader needs no secondary `page.enc`
+  request. A legacy fallback remains only for an already cached old loader.
 - Каждая картинка шифруется в `<имя>.enc`; в разметке вместо `src` стоит `data-enc`,
   лоадер расшифровывает картинки и подставляет blob-ссылки уже после ввода пароля.
-- Шифр: AES-256-GCM, ключ из пароля через PBKDF2-HMAC-SHA256, 250 000 итераций. Соль общая
-  на сборку, у каждого файла свой nonce. Пароль нигде не хранится.
+- AES-256-GCM uses a PBKDF2-HMAC-SHA256 key with 250,000 iterations. The salt is shared per build
+  and each file has its own nonce. The ready AES key and password are stored in localStorage for a
+  rolling seven days; this is preview convenience, not additional security.
 - **Скорость.** Ключ считается один раз на страницу: с солью на каждый файл разблокировка
   главной занимала 3.7 с, стало ~0.35 с. Картинки расшифровываются лениво — сразу только
   первые два экрана, остальное по мере скролла (IntersectionObserver, запас 800 px).
 - Отложенные картинки Tilda и слайдера (`data-src`) тоже шифруются, иначе слайды ломались.
   Фон-паттерн страницы прописан в CSS через `url()` и остаётся открытым: подменить его
   blob-ссылкой нельзя, а содержимого он не выдаёт.
-- Пароль вводится один раз за сессию браузера (лежит в `sessionStorage`), навигация дальше свободная.
+- Access persists across tabs and browser restarts for a rolling seven days. Append `?logout` to any
+  preview URL to clear it immediately.
 - `robots.txt` в превью запрещает индексацию целиком, `sitemap.xml` из превью удаляется.
 
 **Обновить превью и снять пароль — одной командой:**

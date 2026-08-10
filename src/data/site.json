@@ -5,7 +5,10 @@
   "keywords": "че За квест, квесты в ростове на дону, квест комната, сайт квестов",
   "canonical": "https://xn--80aehcht5ci1b.xn--p1ai",
   "ogimage": "/assets/static.tildacdn.com/tild3066-6334-4736-b130-393264666133/__2026-04-01_122430.webp",
-  "favicon": "/assets/static.tildacdn.com/tild6335-3261-4736-b433-653534356331/favicon.ico",
+  "favicon": "/favicon.ico",
+  "appleIcon": "/apple-touch-icon.png",
+  "tileIcon": "/mstile-270x270.png",
+  "tileColor": "#ff6b00",
   "yandex": "a494e85c16b9bcf4"
  },
  "header": {

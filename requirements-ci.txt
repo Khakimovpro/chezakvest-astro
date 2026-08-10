@@ -1,0 +1,2 @@
+# Required by _capture/encrypt_site.py and its generated-preview regression test.
+cryptography>=41.0.7,<47

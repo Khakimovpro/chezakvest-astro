@@ -35,6 +35,7 @@
 
 ```bash
 npm install
+python3 -m pip install --requirement requirements-ci.txt  # нужен для теста зашифрованного preview
 npm run build          # -> dist/
 npm run preview        # локальный предпросмотр
 npm run ci             # unit-тесты, production SEO-контракт и dependency audit

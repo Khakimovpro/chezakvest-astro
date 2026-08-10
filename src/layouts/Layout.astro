@@ -49,7 +49,6 @@ const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1
     {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="format-detection" content="telephone=no" />
     <meta name="yandex-verification" content={m.yandex} />
-    <meta name="theme-color" content="#333333" />
 
     <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonical} />
@@ -66,7 +65,14 @@ const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1
     {ogImage && <meta name="twitter:image" content={absoluteAsset(ogImage)} />}
     {ogImage && <meta name="twitter:image:alt" content={title} />}
 
-    <link rel="icon" href={asset(m.favicon)} sizes="any" />
+    <link rel="icon" href={asset(m.favicon)} sizes="16x16 24x24 32x32 64x64" type="image/x-icon" />
+    <link rel="shortcut icon" href={asset(m.favicon)} type="image/x-icon" />
+    <link rel="apple-touch-icon" href={asset(m.appleIcon)} />
+    <link rel="apple-touch-icon" sizes="76x76" href={asset(m.appleIcon)} />
+    <link rel="apple-touch-icon" sizes="152x152" href={asset(m.appleIcon)} />
+    <link rel="apple-touch-startup-image" href={asset(m.appleIcon)} />
+    <meta name="msapplication-TileColor" content={m.tileColor} />
+    <meta name="msapplication-TileImage" content={asset(m.tileIcon)} />
 
     <!-- LCP: главная картинка первого экрана + критичный шрифт -->
     {preloadImage && (
