@@ -1,0 +1,23 @@
+---
+const {
+  src,
+  alt,
+  group,
+  width,
+  height,
+  imageClass = '',
+  buttonClass = '',
+  style = undefined,
+  srcset = undefined,
+  sizes = undefined,
+  reveal = undefined,
+  loading = 'lazy',
+  fetchpriority = undefined,
+  decoding = 'async',
+} = Astro.props;
+---
+<button class:list={['zoomable', buttonClass]} type="button" data-zoom={group} data-reveal={reveal}
+        aria-label={`Открыть фото: ${alt}`} style={style}>
+  <img class={imageClass} src={src} alt={alt} width={width} height={height}
+       srcset={srcset} sizes={sizes} loading={loading} fetchpriority={fetchpriority} decoding={decoding} />
+</button>

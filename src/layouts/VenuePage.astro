@@ -1,7 +1,7 @@
 ---
 // Шаблон страницы площадки (адреса). Данные — src/data/pages/<slug>.json (_capture/build_venue.py).
 // Порядок секций как в оригинале: как нас найти → карта → квесты на локации → форма праздника →
-// зал для праздника → форма «Есть вопрос?». Виджет отзывов не переносится (доменно-залочен).
+// зал для праздника → форма «Есть вопрос?». Reviews use the shared local component where required.
 import Layout from './Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -9,6 +9,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
 import CallbackForm from '../components/CallbackForm.astro';
+import ZoomImg from '../components/ZoomImg.astro';
 import site from '../data/site.json';
 import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import '../styles/page.css';
@@ -89,9 +90,10 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
           {howto.photos?.length > 0 && (
             <div class="vhow__photos">
               {howto.photos.map((p, i) => (
-                <img src={asset(p)} alt={`Как найти «Чё за Квест» — ${address}`}
-                     width="560" height="400" loading={i === 0 ? 'eager' : 'lazy'}
-                     fetchpriority={i === 0 ? 'high' : undefined} decoding="async" />
+                <ZoomImg src={asset(p)} group={`venue-how-${page.slug}`} buttonClass="zoomable--vhow"
+                         alt={`Как найти «Чё за Квест» — ${address}`}
+                         width="560" height="400" loading={i === 0 ? 'eager' : 'lazy'}
+                         fetchpriority={i === 0 ? 'high' : undefined} decoding="async" />
               ))}
             </div>
           )}
@@ -128,8 +130,9 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
           <div class="qvenue__card">
             <div class="qvenue__photos">
               {(page.hall.photos || []).map((ph) => (
-                <img class="qvenue__photo" src={asset(ph)} alt={`Зал для праздника — ${address}`}
-                     loading="lazy" decoding="async" width="600" height="400" />
+                <ZoomImg src={asset(ph)} group={`venue-hall-${page.slug}`} imageClass="qvenue__photo"
+                         alt={`Зал для праздника — ${address}`}
+                         loading="lazy" decoding="async" width="600" height="400" />
               ))}
             </div>
             <div class="qvenue__info">

@@ -1,0 +1,56 @@
+---
+import data from '../data/reviews.json';
+
+const { title = 'Отзывы наших гостей и их родителей', limit = 6 } = Astro.props;
+const reviews = data.reviews.slice(0, limit);
+const rating = Math.floor(Number(data.ratings.summaryWeight) * 10) / 10;
+const reviewCount = Number(data.counts.summary);
+const formattedCount = new Intl.NumberFormat('ru-RU').format(reviewCount);
+const isoDate = (value) => {
+  const [day, month, year] = String(value || '').split('.');
+  return day && month && year ? `${year}-${month}-${day}` : undefined;
+};
+const safeUrl = (value) => typeof value === 'string' && value.startsWith('https://');
+---
+<section class="reviews" id="otzivy" itemscope itemtype="https://schema.org/Organization">
+  <meta itemprop="name" content={data.name} />
+  <meta itemprop="address" content={data.address} />
+  <div class="container">
+    <h2 class="section-title reviews__title">{title}</h2>
+    <div class="reviews__summary" itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
+      <span class="reviews__score" aria-label={`Рейтинг ${rating} из 5`}>{String(rating).replace('.', ',')}</span>
+      <span class="reviews__stars" aria-hidden="true">★★★★★</span>
+      <span class="reviews__count">{formattedCount} отзывов</span>
+      <meta itemprop="ratingValue" content={String(rating)} />
+      <meta itemprop="reviewCount" content={String(reviewCount)} />
+      <meta itemprop="bestRating" content="5" />
+    </div>
+    <ul class="reviews__list">
+      {reviews.map((review) => {
+        const service = data.services[String(review.service)];
+        const source = service?.name || 'Отзыв гостя';
+        return (
+          <li>
+            <article class="review-card" itemprop="review" itemscope itemtype="https://schema.org/Review">
+              <div class="review-card__top">
+                <span class="review-card__stars" aria-label={`Оценка ${review.rating} из 5`} itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+                  <span aria-hidden="true">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</span>
+                  <meta itemprop="ratingValue" content={String(review.rating)} />
+                  <meta itemprop="bestRating" content="5" />
+                </span>
+                <time itemprop="datePublished" datetime={isoDate(review.date_create)}>{review.date_create}</time>
+              </div>
+              <p class="review-card__body" itemprop="reviewBody">{review.message}</p>
+              <footer class="review-card__footer">
+                <span itemprop="author" itemscope itemtype="https://schema.org/Person"><span itemprop="name">{review.username}</span></span>
+                {safeUrl(review.url)
+                  ? <a href={review.url} target="_blank" rel="noopener nofollow">{source}</a>
+                  : <span>{source}</span>}
+              </footer>
+            </article>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>

@@ -8,6 +8,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
 import CallbackForm from '../components/CallbackForm.astro';
+import ZoomImg from '../components/ZoomImg.astro';
 import site from '../data/site.json';
 import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, isCurrentRoute, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
@@ -240,8 +241,9 @@ const preload = hero.bg
           <div class="qvenue__card">
             <div class="qvenue__photos">
               {venuePhotos.map((ph) => (
-                <img class="qvenue__photo" src={asset(ph)} alt={`Зал «Чё за Квест» — ${venue.address}`}
-                     loading="lazy" decoding="async" width="600" height="400" />
+                <ZoomImg src={asset(ph)} group={`quest-venue-${page.slug}`} imageClass="qvenue__photo"
+                         alt={`Зал «Чё за Квест» — ${venue.address}`}
+                         loading="lazy" decoding="async" width="600" height="400" />
               ))}
             </div>
             <div class="qvenue__info">
@@ -261,7 +263,7 @@ const preload = hero.bg
     )}
 
     <!-- ============ ПРОЧИЕ БЛОКИ ОРИГИНАЛА (у части квестов свой набор секций) ============ -->
-    {(page.extra || []).map((e) => (
+    {(page.extra || []).map((e, sectionIndex) => (
       <section class="qextra">
         <div class="container">
           {e.title && <h2 class="section-title">{e.title}</h2>}
@@ -269,8 +271,9 @@ const preload = hero.bg
           {e.photos.length > 0 && (
             <div class={`qextra__photos qextra__photos--${e.photos.length > 3 ? 'grid' : 'row'}`}>
               {e.photos.map((ph) => (
-                <img src={asset(ph)} alt={e.title || `Фото квеста «${seo.h1}»`}
-                     width="600" height="400" loading="lazy" decoding="async" />
+                <ZoomImg src={asset(ph)} group={`quest-extra-${page.slug}-${sectionIndex}`}
+                         alt={e.title || `Фото квеста «${seo.h1}»`}
+                         width="600" height="400" loading="lazy" decoding="async" reveal />
               ))}
             </div>
           )}

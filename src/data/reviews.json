@@ -1,0 +1,26 @@
+{
+  "name": "Чё за Квест",
+  "address": "Ростов-на-Дону",
+  "counts": { "summary": 4429 },
+  "ratings": { "summaryWeight": 4.97 },
+  "services": {
+    "1": { "name": "Яндекс Карты", "rating": "5.0", "count": 3239 },
+    "2": { "name": "Google Maps", "rating": "4.8", "count": 198 },
+    "3": { "name": "2ГИС", "rating": "4.9", "count": 828 },
+    "15": { "name": "Яндекс Бизнес", "rating": "5.0", "count": 163 }
+  },
+  "reviews": [
+    {"username":"Виктор К.","message":"Крест очень понравился, ребята в восторге!","rating":5,"date_create":"09.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=jwzkp8fafx1h2chhvkc8mjw58r&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Гвардейский пер. 61"},
+    {"username":"Юлия Кошелева","message":"Супер место, день рождения удался, гостям понравилосб, родителям тоже","rating":5,"date_create":"09.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_3a_kvest/170074300912/reviews?reviews[publicId]=fhjz9pd0vd8c7udwz9vvvtt6v0&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Социалистическая 186"},
+    {"username":"Анька","message":"Сегодня отметили день рождения на квестах «Фантастический угон» и «Индиана Джонс». Сразу понравилась организация: нас встретили приветливо, всё объяснили, помогли с ориентированием и быстро провели инструктаж. Оба квеста прошли чётко, без накладок, время пролетело незаметно. Детям особенно зашла Индиана. Атмосфера, декорации и отношение персонала — всё на высоте. Я в полном восторге, обязательно вернёмся за новыми впечатлениями!\nА главное деткам очень очень понравилось 😊","rating":5,"date_create":"09.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=umqtcb1a72y0ye8wptxgt7b3p0&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"},
+    {"username":"Александра Некрасова","message":"Очень крутой квест, сюжет хороший, актеры здорово играли, всем понравилось","rating":5,"date_create":"09.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=k4w91xrkawbfy451jnecen4088&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Гвардейский пер. 61"},
+    {"username":"Атабекян Нарина","message":"Очень понравилось , было супер крипово и круто , ходили на квест ХОСТОЛ . Было супер круто , спасибо!<3\n","rating":5,"date_create":"08.08.2026","service":1,"url":null,"firmName":"ЧЁ ЗА КВЕСТ Нансена107/1"},
+    {"username":"Марина Б.","message":"Было супер. Спасибо!","rating":5,"date_create":"07.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=tdnvj6ppyb32ady23rvnedwe90&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"},
+    {"username":"Л Ш","message":"Ребенку понравилось","rating":5,"date_create":"05.08.2026","service":3,"url":"https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=265091655","firmName":"ЧЁ ЗА КВЕСТ Соколова 23"},
+    {"username":"Татьяна З.","message":"Отмечали день рождения ребёнка, всё понравилось","rating":5,"date_create":"05.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=r6jgvqw1h6kxzwgmkem6aqqrhw&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"},
+    {"username":"Лера Прудникова","message":"Очень классный квест, очень хорошие актеры, музыка добавляет антуража, вернемся ещё!","rating":5,"date_create":"04.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=yuaakb3nzm5rabux9yp1vag8x0&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нансена107/1"},
+    {"username":"Юлия шурова","message":"Детям очень понравились квесты,как только закончили,сказали,что хотят еще все пройти)Яркое качественное оформление,интересные задания,нестандартные темы квестов.Всем рекомендую это место!Обязательно пройдем и другие квесты в этом месте!","rating":5,"date_create":"03.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=c8hzdb9r9f4u066hwpxbar9ey4&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"},
+    {"username":"Александр Литвинов","message":"Очень понравилось, актёры отыгрывают свою роль на отлично. Квест очень интересный, много интерактивный. В общем, большое спасибо.","rating":5,"date_create":"02.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=renhkvtarh7yv94njmwd69pyqm&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"},
+    {"username":"Евгения Олаг","message":"Недавно посетили квест-комнату «Побег из Шоушенка» и остались в полном восторге! Очень интересные и продуманные загадки, атмосферные декорации и отличная организация. Отдельно хочется отметить приятных и приветливых сотрудников — с самого начала создали хорошее настроение и были очень внимательны. Спасибо за отличный отдых, обязательно вернемся снова и будем рекомендовать друзьям!","rating":5,"date_create":"01.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=gcxvtpgb8v15zyetuckfrxhej4&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"}
+  ]
+}

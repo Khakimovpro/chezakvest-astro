@@ -100,6 +100,37 @@
   Lazyweb reporting was attempted twice as required by the UI workflow but its signed upload was
   rejected first by a fetch error and then by the 10 MB image cap; existing recon screenshots were
   used instead. This external-tool limitation does not change the implementation.
+- **10.08.2026 — Wave 3 interactive media.** A single native `<dialog>` lightbox and `ZoomImg`
+  trigger now cover the captured photo surfaces in the home, quest, category, holiday and venue
+  templates. It uses the clicked image's `currentSrc || src`, so decrypted preview `blob:` URLs
+  work without a second asset source; GIF placeholders do not open an empty dialog. Desktop gets
+  arrows, keyboard and pointer zoom; touch gets swipe navigation/dismiss; reveal animations are
+  opt-in desktop IntersectionObserver effects and completely opt out for reduced motion.
+- **10.08.2026 — Wave 3 venues, map and quizzes.** The nine venue chips and their grouped game
+  lists/coordinates are preserved in `src/data/venues.json` directly from the reconnaissance
+  payload. Local tooltips implement delayed hover/focus, Escape and two-tap mobile behaviour.
+  The poster has its actual local 1160×428 dimensions (the report's 385px height disagreed with
+  the checked asset), and an interactive Yandex iframe with all nine markers is created only after
+  “Показать карту”; it produces no foreign request at initial render. Public Marquiz IDs live in
+  `site.json`; its script is appended only after a `[data-quiz]` click. Both home hero CTAs and
+  the delayed local “БОНУС” pop keep a normal fallback href if loading fails.
+- **10.08.2026 — Wave 3 reviews and reconciled facts.** The MyReviews screenshot was replaced
+  with semantic local cards from `raw/reviews/data.json`, including `Review` and
+  `AggregateRating` microdata. For page weight the component shows the 12 newest 4–5-star reviews
+  from the 103-record snapshot rather than reproducing the remote carousel and its scripts. The
+  only displayed aggregate is the snapshot's `4429`; weighted `4.97` is deliberately truncated to
+  the original visible `4.9`, not rounded to `5.0`. Three older holiday statistic blocks now use
+  the same count. Earlier journal statements that Marquiz or the Yandex map were domain-locked are
+  superseded: both public integrations were verified during reconnaissance, with lazy loading used
+  for performance and privacy instead.
+- **10.08.2026 — Wave 3 verification.** Focused contract tests, build and browser QA passed:
+  no foreign initial request, no console errors, 12-photo carousel navigation/Escape, mobile
+  swipe/dismiss, tooltip hover/tap and lazy map insertion all succeeded. New 1440/390 captures
+  are ignored under `_capture/shots/wave3/`; full-home comparisons against supplied historical
+  original captures are 37.29% (1440, height delta 1394px) and 56.39% (390 DPR-normalized,
+  height delta 3106px), chiefly because the source includes the third-party widget and old
+  page composition. Mobile Lighthouse on the current home: Performance 97, Accessibility 93,
+  Best Practices 100, SEO 100, CLS 0, LCP 2.45s.
 
 ## Шаблоны: 57 страниц сводятся к 6 макетам
 

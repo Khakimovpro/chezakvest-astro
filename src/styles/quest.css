@@ -241,7 +241,8 @@
 .vhow__cta:hover{background:#444}
 .vhow__photos{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .vhow__photos img{width:100%;height:100%;object-fit:cover;border-radius:14px;aspect-ratio:4/3}
-.vhow__photos img:only-child{grid-column:span 2;aspect-ratio:3/2}
+.vhow__photos .zoomable:only-child{grid-column:span 2}
+.vhow__photos .zoomable:only-child img{aspect-ratio:3/2}
 .vmap{padding:22px 0 6px}
 .vmap__link{position:relative;display:block;border-radius:20px;overflow:hidden}
 .vmap__link img{width:100%;height:auto;display:block}

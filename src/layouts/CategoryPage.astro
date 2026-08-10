@@ -1,12 +1,13 @@
 ---
 // Шаблон страницы-категории («Страшные квесты в Ростове-на-Дону»).
-// Данные — src/data/pages/<slug>.json (_capture/build_misc.py). Виджет отзывов не переносится.
+// Данные — src/data/pages/<slug>.json (_capture/build_misc.py). Reviews are rendered locally where needed.
 import Layout from './Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CardsRow from '../components/CardsRow.astro';
 import CallbackForm from '../components/CallbackForm.astro';
+import ZoomImg from '../components/ZoomImg.astro';
 import site from '../data/site.json';
 import { absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
@@ -102,7 +103,7 @@ const preload = hero.bg
             {hero.sub && <p class="qhero__sub">{hero.sub}</p>}
             <div class="qhero__cta">
               {(hero.buttons || []).map((b, i) => (
-                <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={heroLink(b.href)}>{b.t}</a>
+                <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={heroLink(b.href)} data-quiz={i === 0 ? site.quiz.main : undefined}>{b.t}</a>
               ))}
             </div>
           </div>
@@ -155,7 +156,8 @@ const preload = hero.bg
           {page.gallery.title && <h2 class="section-title">{page.gallery.title}</h2>}
           <div class="qextra__photos qextra__photos--grid">
             {page.gallery.photos.map((p, i) => (
-              <img src={asset(p)} alt={`${seo.h1} — фото ${i + 1}`} width="600" height="400" loading="lazy" decoding="async" />
+              <ZoomImg src={asset(p)} group={`category-gallery-${page.slug}`} alt={`${seo.h1} — фото ${i + 1}`}
+                       width="600" height="400" loading="lazy" decoding="async" reveal />
             ))}
           </div>
         </div>
@@ -172,8 +174,8 @@ const preload = hero.bg
             <a class="btn-orange" href={site.header.phoneHref}>{page.cert.cta}</a>
           </div>
           {page.cert.photos?.[0] && (
-            <img class="ccert__img" src={asset(page.cert.photos[0])} alt="Подарочный сертификат «Чё за Квест»"
-                 loading="lazy" decoding="async" width="500" height="356" />
+            <ZoomImg src={asset(page.cert.photos[0])} group={`category-cert-${page.slug}`} imageClass="ccert__img"
+                     alt="Подарочный сертификат «Чё за Квест»" loading="lazy" decoding="async" width="500" height="356" reveal />
           )}
         </div>
       </section>

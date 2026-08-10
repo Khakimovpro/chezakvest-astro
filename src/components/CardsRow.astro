@@ -31,7 +31,7 @@ const {
       </button>
       <ul class="cards__row">
         {items.map((it) => (
-          <li class="card">
+          <li class="card" data-reveal>
             <a class="card__link" href={link(it.href)}>
               {it.img && <img class="card__img" src={asset(it.imgSet?.['760'] || it.img)} srcset={responsiveSrcset(it.imgSet) || undefined}
                               sizes={variant === 'square' ? '216px' : '275px'} alt={it.t}

@@ -34,6 +34,16 @@
    { "id": "tg", "label": "Telegram", "href": "https://t.me/chezakvest_rnd_bot" }
   ]
  },
+ "quiz": {
+  "main": "60431b2afe1a980044eacd7b",
+  "kids": "6a0dc0438b7a3c0019ec1a6d",
+  "kalmar": "67b44fbe6a12ce00190ff367",
+  "amongus": "682f8ce24346f100198e7777",
+  "newyear": "6900ca92c48f8400198b05f4",
+  "newyear2025": "65ffb50868c62b0026e1503f",
+  "podkluch": "64b5110b7b839400258d8c7e",
+  "vypusknoj": "67d071e5d174cb00188cdd22"
+ },
  "megamenu": {
   "catalog": {
    "cols": [

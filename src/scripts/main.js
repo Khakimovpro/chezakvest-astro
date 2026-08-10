@@ -1,5 +1,30 @@
 // ===== Минимальный ванильный интерактив нативной главной =====
 import { createAutoplay } from './slider-autoplay.js';
+import { initMapEmbed } from './map-embed.js';
+import { initQuiz } from './quiz.js';
+import { initVenueTips } from './venue-tips.js';
+
+// Opt-in desktop reveal: elements remain visible if JavaScript, the observer,
+// or motion is unavailable, so it cannot create a loading flash or CLS.
+function initReveal() {
+  if (window.innerWidth < 980 || !('IntersectionObserver' in window)
+    || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+  const targets = Array.from(document.querySelectorAll('[data-reveal]'));
+  if (!targets.length) return;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-in');
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: '0px 0px -8% 0px' });
+  targets.forEach((target, index) => {
+    target.classList.add('reveal');
+    if (target.dataset.reveal === 'zoom') target.classList.add('reveal--zoom');
+    target.style.setProperty('--rv-i', String(index % 5));
+    observer.observe(target);
+  });
+}
 
 // ---------- Табы каталога + мобильный дропдаун ----------
 function initCatalog() {
@@ -172,6 +197,10 @@ function initSlider() {
 function boot() {
   initCatalog();
   initSlider();
+  initReveal();
+  initQuiz();
+  initVenueTips();
+  initMapEmbed();
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
 else boot();

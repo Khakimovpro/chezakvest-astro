@@ -1,0 +1,30 @@
+---
+const { id } = Astro.props;
+---
+<aside class="quiz-pop" data-quiz-pop hidden aria-label="Подобрать квест">
+  <a class="quiz-pop__link" href="#callback" data-quiz={id}>
+    <span class="quiz-pop__badge" aria-hidden="true">✓</span>
+    <span class="quiz-pop__eyebrow">БОНУС</span>
+    <span>«Подобрать квест и получить подарок»</span>
+  </a>
+  <button class="quiz-pop__close" type="button" data-quiz-pop-close aria-label="Закрыть">×</button>
+</aside>
+
+<script>
+  const pop = document.querySelector('[data-quiz-pop]');
+  const close = pop?.querySelector('[data-quiz-pop-close]');
+  const key = 'chezakvest.quiz-pop-dismissed';
+  const dismiss = () => {
+    if (!pop) return;
+    pop.hidden = true;
+    document.body.classList.remove('quiz-pop-visible');
+    sessionStorage.setItem(key, '1');
+  };
+  if (pop && !sessionStorage.getItem(key)) {
+    window.setTimeout(() => {
+      pop.hidden = false;
+      document.body.classList.add('quiz-pop-visible');
+    }, 10000);
+  }
+  close?.addEventListener('click', dismiss);
+</script>

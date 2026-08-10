@@ -17,7 +17,7 @@ const loading = eager ? 'eager' : 'lazy';
 // A quest and its venue are distinct destinations. Keeping their links as
 // siblings avoids invalid nested anchors while preserving both routes.
 ---
-<article class="qcard">
+<article class="qcard" data-reveal>
   <a class="qcard__main" href={href} {...(card.baked ? { 'aria-label': card.title || 'Квест' } : {})}>
     {photo && <img class="qcard__img" src={photo} srcset={photoSrcset || undefined}
                    sizes="(max-width:640px) calc(100vw - 40px), 360px"

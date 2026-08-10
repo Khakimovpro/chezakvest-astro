@@ -4,7 +4,12 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import QuestCard from '../components/QuestCard.astro';
 import CallbackForm from '../components/CallbackForm.astro';
+import QuizPop from '../components/QuizPop.astro';
+import Reviews from '../components/Reviews.astro';
+import VenueChips from '../components/VenueChips.astro';
+import ZoomImg from '../components/ZoomImg.astro';
 import site from '../data/site.json';
+import venues from '../data/venues.json';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 
@@ -107,8 +112,8 @@ const jsonld = [{
         </div>
         <img class="hero__ghost" src={asset(s.hero.ghost)} alt="Привидение — талисман «Чё за Квест»" width="665" height="773" fetchpriority="low" decoding="async" />
         <div class="hero__cta">
-          <a class="hero__btn-calc" href={link(s.hero.btnCalcHref)}>{s.hero.btnCalc}</a>
-          <a class="hero__btn-pick btn-orange" href={link(s.hero.btnPickHref)}>{s.hero.btnPick}</a>
+          <a class="hero__btn-calc" href={link(s.hero.btnCalcHref)} data-quiz={s.quiz.main}>{s.hero.btnCalc}</a>
+          <a class="hero__btn-pick btn-orange" href={link(s.hero.btnPickHref)} data-quiz={s.quiz.main}>{s.hero.btnPick}</a>
         </div>
       </div>
       </div>
@@ -223,15 +228,8 @@ const jsonld = [{
       </div>
     </section>
 
-    <!-- ============ ОТЗЫВЫ (статичный виджет) ============ -->
-    <section class="reviews" id="otzivy">
-      <div class="container">
-        <h2 class="section-title reviews__title">{s.reviews.title}</h2>
-        <div class="reviews__scroll">
-          <img class="reviews__img" src={asset('/assets/_static/reviews_desktop.webp')} alt="Отзывы гостей на сервисах карт" width="1514" height="1600" loading="lazy" decoding="async" />
-        </div>
-      </div>
-    </section>
+    <!-- ============ ОТЗЫВЫ (локальный снимок без стороннего виджета) ============ -->
+    <Reviews title={s.reviews.title} />
 
     <!-- ============ ФОРМА «ЕСТЬ ВОПРОС?» ============ -->
     <CallbackForm id="home-callback" sectionId="callback" />
@@ -241,10 +239,10 @@ const jsonld = [{
     <section class="gallery">
       <div class="gallery__inner">
         {s.gallery.map((g, i) => (
-          <img class="gallery__img" src={asset(g.img)}
-               style={`flex-basis:${Math.round(g.ar * 310)}px;flex-grow:${g.ar}`}
-               width={Math.round(g.ar * 310)} height="310"
-               alt={`Фото с праздника в «Чё за Квест» ${i + 1}`} loading="lazy" decoding="async" />
+          <ZoomImg src={asset(g.img)} group="home-gallery" imageClass="gallery__img" buttonClass="zoomable--gallery"
+                   style={`flex-basis:${Math.round(g.ar * 310)}px;flex-grow:${g.ar}`}
+                   width={Math.round(g.ar * 310)} height="310"
+                   alt={`Фото с праздника в «Чё за Квест» ${i + 1}`} loading="lazy" decoding="async" reveal="zoom" />
         ))}
       </div>
     </section>
@@ -252,18 +250,20 @@ const jsonld = [{
     <!-- ============ НАШИ ПЛОЩАДКИ ============ -->
     <section class="venues" id="contacts">
       <div class="container">
-        <h2 class="section-title">{s.venues.title}</h2>
-        <p class="venues__sub">{s.venues.subtitle}</p>
-        <div class="venues__chips">
-          {s.venues.chips.map((chip) => (<a class="chip" href={link(chip.href)}>{chip.t}</a>))}
+        <h2 class="section-title">{venues.title}</h2>
+        <p class="venues__sub">{venues.subtitle}</p>
+        <VenueChips chips={venues.chips} base={base} />
+        <div class="venues__map" data-map-embed={venues.mapEmbed}>
+          <img src={asset('/assets/_static/map.webp')} alt="Карта площадок «Чё за Квест» в Ростове-на-Дону"
+               width="1160" height="428" loading="lazy" decoding="async" />
+          <button class="venues__map-load" type="button" data-map-load aria-pressed="false">Показать карту</button>
         </div>
-        <div class="venues__map" role="img" aria-label="Карта площадок «Чё за Квест» в Ростове-на-Дону"
-             style={`background-image:url(${asset('/assets/_static/map.webp')})`}></div>
       </div>
     </section>
   </main>
 
   <Footer />
+  <QuizPop id={s.quiz.main} />
 </Layout>
 
 <script>

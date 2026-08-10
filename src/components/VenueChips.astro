@@ -1,0 +1,29 @@
+---
+import { siteHref } from '../lib/urls.js';
+
+const { chips = [], base = '' } = Astro.props;
+const link = (href) => siteHref(base, href);
+---
+<div class="venues__chips" data-venue-chips>
+  {chips.map((chip) => {
+    const tipId = `venue-tip-${chip.slug}`;
+    return (
+      <div class="chipwrap">
+        <a class="chip" href={link(chip.href)} aria-describedby={tipId} aria-expanded="false">
+          {chip.t}
+        </a>
+        <span class="vtip" id={tipId} role="tooltip" hidden>
+          <b class="vtip__title">{chip.tipTitle}</b>
+          {chip.groups.map((group) => (
+            <span class="vtip__group">
+              <span class="vtip__group-title">{group.g}</span>
+              {group.items.map((item) => (
+                <a href={link(item.href)}>{item.t}</a>
+              ))}
+            </span>
+          ))}
+        </span>
+      </div>
+    );
+  })}
+</div>

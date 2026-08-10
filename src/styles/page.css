@@ -149,8 +149,17 @@ body.menu-open{overflow:hidden}
 /* ===================== ОТЗЫВЫ ===================== */
 .reviews{margin-top:72px}
 .reviews__title{font-size:36px;text-align:center;margin-bottom:26px}
-.reviews__scroll{width:100%}
-.reviews__img{width:100%;height:auto;border-radius:16px}
+.reviews__summary{display:flex;align-items:center;justify-content:center;gap:10px;margin:-8px 0 26px;color:var(--dark)}
+.reviews__score{font-size:34px;font-weight:700;line-height:1}
+.reviews__stars,.review-card__stars{color:#ff8a00;letter-spacing:1px}
+.reviews__count{font-size:15px;color:var(--muted)}
+.reviews__list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.review-card{height:100%;padding:20px;border-radius:16px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.05)}
+.review-card__top,.review-card__footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.review-card__top time{font-size:12px;color:var(--muted);white-space:nowrap}
+.review-card__body{margin-top:14px;font-size:14px;line-height:1.55;color:var(--ink)}
+.review-card__footer{margin-top:16px;padding-top:13px;border-top:1px solid #eee;font-size:12px;color:var(--muted)}
+.review-card__footer>a{color:var(--orange-text);text-decoration:underline;text-underline-offset:2px}
 
 /* ===================== ФОРМА ===================== */
 .callback{margin-top:64px}
@@ -188,15 +197,31 @@ body.menu-open{overflow:hidden}
   display:flex;flex-wrap:wrap;gap:10px}
 /* height задаёт высоту ряда; flex-basis/grow (inline, по пропорции) выравнивают ряды по ширине;
    object-fit:cover компенсирует лёгкое растяжение flex-grow */
+.gallery .zoomable--gallery{width:auto;min-width:0}
 .gallery__img{height:310px;min-width:0;border-radius:14px;object-fit:cover;display:block}
 
 /* ===================== ПЛОЩАДКИ ===================== */
 .venues{margin-top:64px}
 .venues__sub{margin-top:8px;font-size:20px;color:var(--muted);line-height:1.4;max-width:640px}
 .venues__chips{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0}
+.chipwrap{position:relative}
 .chip{display:inline-flex;align-items:center;background:#fff;border-radius:10px;padding:15px 22px;font-size:15px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.2px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
 .venues__chips .chip:hover{color:var(--orange-text);box-shadow:0 4px 12px rgba(0,0,0,.12)}
-.venues__map{width:100%;aspect-ratio:1160/428;background-size:cover;background-position:center;background-repeat:no-repeat;border-radius:16px;margin-top:6px}
+.vtip{position:absolute;z-index:20;top:calc(100% + 9px);width:min(330px,calc(100vw - 16px));padding:17px 18px;border-radius:12px;background:#333;color:#fff;box-shadow:0 12px 28px rgba(0,0,0,.24);font-size:13px;line-height:1.35}
+.vtip[hidden]{display:none}
+.vtip--up{top:auto;bottom:calc(100% + 9px)}
+.vtip__title,.vtip__group,.vtip__group-title{display:block}
+.vtip__title{margin-bottom:10px;font-size:15px}
+.vtip__group+.vtip__group{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.18)}
+.vtip__group-title{margin-bottom:4px;color:#ffb15d;font-size:11px;font-weight:700;letter-spacing:.05em}
+.vtip a{display:block;padding:2px 0;color:#fff;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35);text-underline-offset:2px}
+.vtip a:hover{color:#ffb15d}
+.venues__map{position:relative;width:100%;aspect-ratio:1160/428;overflow:hidden;border-radius:16px;margin-top:6px;background:#ddd}
+.venues__map>img,.venues__map>iframe{display:block;width:100%;height:100%;border:0;object-fit:cover}
+.venues__map>iframe{position:absolute;inset:0;z-index:2}
+.venues__map-load{position:absolute;z-index:3;left:50%;top:50%;min-height:48px;padding:0 24px;border:0;border-radius:999px;background:#fff;color:var(--dark);font-size:15px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.2);transform:translate(-50%,-50%)}
+.venues__map-load:hover{background:#fffbf5}
+.venues__map.is-loaded .venues__map-load{display:none}
 
 /* ===================== ФУТЕР ===================== */
 .ft{margin-top:0;padding:30px 0;background:#333;color:#fff}
@@ -243,6 +268,13 @@ body.menu-open{overflow:hidden}
 .mfab__privacy{margin-top:18px;color:#666;font-size:12px;line-height:1.4}
 .mfab__privacy a{color:var(--orange-text);text-decoration:underline}
 
+/* Public Marquiz launcher is local until its explicit click. */
+.quiz-pop{position:fixed;z-index:1080;left:24px;bottom:24px;display:flex;align-items:stretch;width:326px;min-height:54px;border-radius:10px;background:#a600fc;color:#fff;box-shadow:0 10px 28px rgba(71,0,116,.35);overflow:hidden}
+.quiz-pop__link{position:relative;display:flex;flex:1;flex-direction:column;justify-content:center;padding:8px 14px 8px 53px;font-size:12px;font-weight:700;line-height:1.18}
+.quiz-pop__badge{position:absolute;left:13px;top:50%;display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:#ffe64d;color:#a600fc;font-size:18px;font-weight:800;transform:translateY(-50%)}
+.quiz-pop__eyebrow{margin-bottom:2px;font-size:10px;font-weight:500;letter-spacing:.08em;opacity:.88}
+.quiz-pop__close{width:42px;flex:0 0 42px;border:0;background:transparent;color:#fff;font-size:26px;font-weight:300;line-height:1}
+
 /* ===================== АДАПТИВ ===================== */
 @media (max-width:1199px){
   .hdr__burger{display:flex}
@@ -269,6 +301,7 @@ body.menu-open{overflow:hidden}
   .party__card{aspect-ratio:auto}
   .party__bg{position:absolute}
   .gallery__img{height:240px}
+  .reviews__list{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:640px){
   .hdr__inner{height:70px;max-width:360px;margin-inline:auto;padding-inline:20px}
@@ -292,8 +325,9 @@ body.menu-open{overflow:hidden}
   .legal-page__card,.legacy-redirect__card{padding:28px 20px}
   .legal-page h1,.legacy-redirect h1{font-size:28px}
   .gallery__img{height:190px}
-  .reviews__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-  .reviews__img{min-width:820px}
+  .reviews__list{grid-template-columns:1fr}
+  .reviews__summary{margin-bottom:20px}
+  .reviews__score{font-size:30px}
   .ft__inner{grid-template-columns:1fr;gap:22px}
   .ft__h{font-size:12px}
   .ft__col a,.ft__plain{font-size:12px}
@@ -303,6 +337,9 @@ body.menu-open{overflow:hidden}
   .mfab__dialog{inset:auto 0 0;width:100%;padding:28px 24px calc(28px + env(safe-area-inset-bottom));border-radius:18px 18px 0 0}
   .venues__chips{gap:10px}
   .chip{padding:11px 16px;font-size:14px}
+  .vtip{font-size:12px}
+  .quiz-pop{left:12px;bottom:84px;width:calc(100vw - 24px);min-height:60px}
+  .quiz-pop-visible .mfab{bottom:160px}
 }
 
 @media (max-width:480px){

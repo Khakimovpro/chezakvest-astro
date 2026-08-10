@@ -1,0 +1,29 @@
+---
+// One local dialog serves every [data-zoom] trigger on the page.
+---
+<dialog class="lb" id="lightbox" aria-labelledby="lightbox-caption">
+  <div class="lb__stage">
+    <img class="lb__img" alt="" decoding="async" />
+  </div>
+  <p class="lb__caption" id="lightbox-caption" aria-live="polite"></p>
+  <p class="lb__counter" aria-hidden="true"></p>
+  <button class="lb__control lb__control--prev" type="button" data-lightbox-prev aria-label="Предыдущее фото">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m14 6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+  </button>
+  <button class="lb__control lb__control--next" type="button" data-lightbox-next aria-label="Следующее фото">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m10 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+  </button>
+  <button class="lb__control lb__control--scale" type="button" data-lightbox-scale aria-label="Увеличить фото">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2" /><path d="m15 15 4.5 4.5M10.5 7.5v6M7.5 10.5h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+  </button>
+  <button class="lb__control lb__control--close" type="button" data-lightbox-close aria-label="Закрыть просмотр">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+  </button>
+</dialog>
+
+<script>
+  import { initLightbox } from '../scripts/lightbox.js';
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initLightbox, { once: true });
+  else initLightbox();
+</script>

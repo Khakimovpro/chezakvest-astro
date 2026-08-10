@@ -2,7 +2,7 @@
 // Шаблон праздничных страниц (/kids, /prazdnik-maxi, дни рождения, выпускной).
 // У каждой из них на Tilda свой макет, поэтому данные — не фиксированные поля, а СПИСОК СЕКЦИЙ
 // (src/data/pages/<slug>.json, черновик делает _capture/build_holiday.py). Здесь — рендер по видам.
-// Виджеты квиза и отзывов не переносятся: они доменно-залочены. Их место занимают формы заявки.
+// Third-party quiz and review widgets are replaced by local, lazy/shared components.
 import Layout from './Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -10,6 +10,7 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
 import CallbackForm from '../components/CallbackForm.astro';
+import ZoomImg from '../components/ZoomImg.astro';
 import site from '../data/site.json';
 import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
@@ -104,6 +105,18 @@ const heroSrcset = hero.bgset
     .map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
   : '';
 const heroSource = hero.bgset?.['1600'] || hero.bgset?.['1200'] || hero.bg;
+const quizKeyBySlug = {
+  kids: 'kids',
+  'prazdnik-maxi': 'kids',
+  'den-rozhdeniya-na-vr-arene': 'main',
+  'den-rozhdeniya-uznik-azkabana': 'main',
+  'igra-v-kalmara-lend': 'kalmar',
+  'prazdniki-pod-kluch': 'podkluch',
+  'vypusknoj-kalmar': 'vypusknoj',
+  'new-year': 'newyear',
+  'new-year-2025': 'newyear2025',
+};
+const quizId = site.quiz[quizKeyBySlug[page.slug] || 'main'];
 const preload = hero.bg
   ? { href: asset(heroSource), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
   : null;
@@ -132,7 +145,7 @@ const preload = hero.bg
             {hero.sub && <p class="lhero__sub">{hero.sub}</p>}
             <div class="lhero__cta">
               {(hero.buttons || []).map((b, i) => (
-                <a class={i === 0 ? 'btn-orange' : 'lhero__btn-ghost'} href={heroLink(b.href)}>{b.t}</a>
+                <a class={i === 0 ? 'btn-orange' : 'lhero__btn-ghost'} href={heroLink(b.href)} data-quiz={i === 0 ? quizId : undefined}>{b.t}</a>
               ))}
             </div>
           </div>
@@ -163,7 +176,7 @@ const preload = hero.bg
               {hero.sub && <p class="qhero__sub hhero__sub">{hero.sub}</p>}
               <div class="qhero__cta">
                 {(hero.buttons || []).map((b, i) => (
-                  <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={heroLink(b.href)}>{b.t}</a>
+                  <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={heroLink(b.href)} data-quiz={i === 0 ? quizId : undefined}>{b.t}</a>
                 ))}
               </div>
             </div>
@@ -174,7 +187,7 @@ const preload = hero.bg
 
     <Breadcrumbs items={breadcrumbs} />
 
-    {rest.map((s) => (
+    {rest.map((s, sectionIndex) => (
       <>
         {/* ---- текстовый блок: заголовок, подзаголовок, абзацы, фото ---- */}
         {s.kind === 'text' && (
@@ -209,8 +222,9 @@ const preload = hero.bg
                   {(s.photos || []).length > 0 && (
                     <div class={`qextra__photos qextra__photos--${s.photos.length > 3 ? 'grid' : 'row'}`}>
                       {s.photos.map((p, i) => (
-                        <img src={asset(p)} alt={`${s.title || seo.h1} — фото ${i + 1}`}
-                             width="600" height="400" loading="lazy" decoding="async" />
+                        <ZoomImg src={asset(p)} group={`holiday-text-${page.slug}-${sectionIndex}`}
+                                 alt={`${s.title || seo.h1} — фото ${i + 1}`}
+                                 width="600" height="400" loading="lazy" decoding="async" reveal />
                       ))}
                     </div>
                   )}
@@ -296,7 +310,7 @@ const preload = hero.bg
                       <h3 class="visually-hidden">{g.tab}</h3>
                       <ul class="hpack__grid">
                         {g.items.map((p) => (
-                          <li class={`hpack__card${p.badge ? ' hpack__card--hit' : ''}`}>
+                          <li class={`hpack__card${p.badge ? ' hpack__card--hit' : ''}`} data-reveal>
                             <div class="hpack__head">
                               <h4 class="hpack__name">{p.name}</h4>
                               {p.badge && <span class="hpack__badge">{p.badge}</span>}
@@ -345,7 +359,7 @@ const preload = hero.bg
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <ul class="hpack__grid">
                 {s.items.map((p) => (
-                  <li class={`hpack__card${p.badge ? ' hpack__card--hit' : ''}`}>
+                  <li class={`hpack__card${p.badge ? ' hpack__card--hit' : ''}`} data-reveal>
                     <div class="hpack__head">
                       <h3 class="hpack__name">{p.name}</h3>
                       {p.badge && <span class="hpack__badge">{p.badge}</span>}
@@ -417,7 +431,7 @@ const preload = hero.bg
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <ul class="htiles__grid">
                 {s.items.map((it) => (
-                  <li class="htile">
+                  <li class="htile" data-reveal>
                     {it.img
                       ? <img class="htile__img" src={asset(it.img)} alt={it.t}
                              loading="lazy" decoding="async" width="326" height="326" />
@@ -440,8 +454,9 @@ const preload = hero.bg
               <div class="qvenue__card">
                 <div class="qvenue__photos">
                   {(s.photos || []).map((ph) => (
-                    <img class="qvenue__photo" src={asset(ph)} alt={`Зал «Чё за Квест» — ${s.address}`}
-                         loading="lazy" decoding="async" width="600" height="400" />
+                    <ZoomImg src={asset(ph)} group={`holiday-venue-${page.slug}-${sectionIndex}`} imageClass="qvenue__photo"
+                             alt={`Зал «Чё за Квест» — ${s.address}`}
+                             loading="lazy" decoding="async" width="600" height="400" />
                   ))}
                 </div>
                 <div class="qvenue__info">
@@ -496,7 +511,7 @@ const preload = hero.bg
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <ol class="hsteps__list">
                 {s.items.map((it, i) => (
-                  <li class="hstep">
+                  <li class="hstep" data-reveal>
                     <span class="hstep__n">{i + 1}</span>
                     <div>
                       <h3 class="hstep__t">{it.t}</h3>
@@ -508,8 +523,9 @@ const preload = hero.bg
               {(s.photos || []).length > 0 && (
                 <div class="qextra__photos qextra__photos--row">
                   {s.photos.map((p, i) => (
-                    <img src={asset(p)} alt={`${s.title || seo.h1} — образец ${i + 1}`}
-                         width="600" height="400" loading="lazy" decoding="async" />
+                    <ZoomImg src={asset(p)} group={`holiday-steps-${page.slug}-${sectionIndex}`}
+                             alt={`${s.title || seo.h1} — образец ${i + 1}`}
+                             width="600" height="400" loading="lazy" decoding="async" reveal />
                   ))}
                 </div>
               )}
@@ -525,8 +541,9 @@ const preload = hero.bg
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <div class="qextra__photos qextra__photos--grid">
                 {s.photos.map((p, i) => (
-                  <img src={asset(p)} alt={`${s.title || seo.h1} — фото ${i + 1}`}
-                       width="600" height="400" loading="lazy" decoding="async" />
+                  <ZoomImg src={asset(p)} group={`holiday-gallery-${page.slug}-${sectionIndex}`}
+                           alt={`${s.title || seo.h1} — фото ${i + 1}`}
+                           width="600" height="400" loading="lazy" decoding="async" reveal />
                 ))}
               </div>
             </div>
