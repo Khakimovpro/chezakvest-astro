@@ -8,7 +8,9 @@ const BASE = process.env.SITE_BASE || undefined;
 export default defineConfig({
   site: 'https://khakimovpro.github.io',
   base: BASE,
-  trailingSlash: 'ignore',
+  // Static-directory hosts such as GitHub Pages normalize routes to `/slug/`.
+  // Emit that form everywhere to avoid canonical and internal-link redirects.
+  trailingSlash: 'always',
   compressHTML: true,
   build: {
     assets: '_astro',

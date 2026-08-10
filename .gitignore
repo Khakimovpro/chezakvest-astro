@@ -26,5 +26,8 @@ _capture/
 # os / editor
 .DS_Store
 *.log
+.env
+.env.*
+!.env.example
 .preview-password
 dist-enc/

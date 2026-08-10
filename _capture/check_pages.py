@@ -4,7 +4,7 @@
 Запуск: python3 _capture/check_pages.py          (после npm run build)
 
 Для каждой страницы в dist проверяет: title и его длину, description и длину, canonical,
-ровно один H1, JSON-LD (Service + BreadcrumbList), og:image, alt у картинок.
+ровно один H1, JSON-LD (Service + BreadcrumbList) у indexable-страниц, og:image, alt у картинок.
 Отдельно — ссылки на внутренние пути, которых нет в сборке (кандидаты в 404).
 """
 import os
@@ -42,14 +42,15 @@ def main():
         imgs = re.findall(r"<img [^>]*>", html)
         no_alt = [i for i in imgs if "alt=" not in i]
 
+        noindex = bool(re.search(r'<meta name="robots" content="[^"]*\bnoindex\b', html, re.I))
         problems = []
         if not title:
             problems.append("нет title")
-        elif len(title) > 65:
+        elif not noindex and len(title) > 65:
             problems.append(f"title {len(title)} знаков")
         if not desc:
             problems.append("нет description")
-        elif not (100 <= len(desc) <= 180):
+        elif not noindex and not (100 <= len(desc) <= 180):
             problems.append(f"description {len(desc)} знаков")
         if not canon:
             problems.append("нет canonical")
@@ -58,9 +59,9 @@ def main():
         types = " ".join(ld)
         # у квестов — Service, у площадок — EntertainmentBusiness
         SCHEMA_OK = ("Service", "EntertainmentBusiness", "LocalBusiness", "Organization", "CollectionPage")
-        if url != "/" and not any(t in types for t in SCHEMA_OK):
+        if url != "/" and not noindex and not any(t in types for t in SCHEMA_OK):
             problems.append("нет JSON-LD организации/услуги")
-        if url != "/" and "BreadcrumbList" not in types:
+        if url != "/" and not noindex and "BreadcrumbList" not in types:
             problems.append("нет BreadcrumbList")
         if not og:
             problems.append("нет og:image")
