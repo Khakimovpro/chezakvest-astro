@@ -1,0 +1,30 @@
+---
+import Layout from './Layout.astro';
+import { siteHref } from '../lib/urls.js';
+import '../styles/page.css';
+
+const { target, title, description, label } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const targetHref = siteHref(base, target);
+---
+<Layout
+  title={title}
+  description={description}
+  path={target}
+  noindex={true}
+  preloadImage={null}
+>
+  <main class="legacy-redirect">
+    <div class="container">
+      <article class="legacy-redirect__card">
+        <h1>{label}</h1>
+        <p>Мы перенесли эту страницу в актуальный раздел. Перенаправляем вас автоматически.</p>
+        <p class="legacy-redirect__link"><a class="btn-orange" href={targetHref}>Перейти к программе</a></p>
+      </article>
+    </div>
+  </main>
+
+  <script define:vars={{ targetHref }}>
+    window.location.replace(targetHref);
+  </script>
+</Layout>

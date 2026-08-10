@@ -1,0 +1,16 @@
+// Archived Tilda wrapper. This file is deliberately outside src/pages, so the
+// raw snapshot in src/html/body.html cannot become a public Astro route.
+//
+// It is retained only as a migration reference; do not move it back into a
+// routable directory or publish it on the production host.
+---
+import bodyHtml from '../../src/html/body.html?raw';
+---
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body class="t-body" style="margin: 0px;" set:html={bodyHtml}></body>
+</html>
