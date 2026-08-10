@@ -60,6 +60,39 @@ class MemoryStorage {
   }
 }
 
+class MemoryCookieJar {
+  #values;
+
+  constructor(entries = []) {
+    this.#values = new Map(entries);
+  }
+
+  get value() {
+    return [...this.#values.entries()].map(([name, value]) => `${name}=${value}`).join('; ');
+  }
+
+  set(serialized) {
+    const [pair, ...attributes] = String(serialized).split(';').map((part) => part.trim());
+    const separator = pair.indexOf('=');
+    if (separator < 1) return;
+    const name = pair.slice(0, separator);
+    const value = pair.slice(separator + 1);
+    if (attributes.some((attribute) => /^max-age=0$/iu.test(attribute))) {
+      this.#values.delete(name);
+      return;
+    }
+    this.#values.set(name, value);
+  }
+
+  get(name) {
+    return this.#values.get(name) ?? null;
+  }
+
+  entries() {
+    return [...this.#values.entries()];
+  }
+}
+
 function loaderScript(loader) {
   const script = loader.match(/<script>\n([\s\S]*?)\n<\/script>/u)?.[1];
   assert.ok(script, 'loader must contain executable JavaScript');
@@ -81,7 +114,7 @@ function assertRollingWeek(exp, message) {
   assert.ok(remaining <= WEEK + 5_000, `${message}: expiry must be no later than seven days`);
 }
 
-function runLoader(loader, { localStorage = new MemoryStorage(), sessionStorage = new MemoryStorage(), search = '', readyState = 'complete' } = {}) {
+function runLoader(loader, { cookies = new MemoryCookieJar(), localStorage = new MemoryStorage(), sessionStorage = new MemoryStorage(), search = '', readyState = 'complete' } = {}) {
   const listeners = new Map();
   const formListeners = new Map();
   const elements = {
@@ -106,6 +139,8 @@ function runLoader(loader, { localStorage = new MemoryStorage(), sessionStorage 
     open() {},
     querySelectorAll() { return []; },
     write(html) { writes.push(html); },
+    get cookie() { return cookies.value; },
+    set cookie(value) { cookies.set(value); },
   };
   const context = {
     Blob,
@@ -116,6 +151,7 @@ function runLoader(loader, { localStorage = new MemoryStorage(), sessionStorage 
     btoa: (value) => Buffer.from(value, 'binary').toString('base64'),
     crypto: webcrypto,
     document,
+    cookies,
     fetch: async (url) => {
       requests.push(String(url));
       throw new Error(`Unexpected fetch: ${url}`);
@@ -190,11 +226,11 @@ test('encrypted preview embeds pages, preserves icons, and executes the seven-da
 
   for (const destination of [output, redeployed]) {
     execFileSync('python3', [
-      '_capture/encrypt_site.py', PASSWORD,
+      '_capture/encrypt_site.py', '--password-stdin',
       '--src', source,
       '--out', destination,
       '--base', '/preview',
-    ], { encoding: 'utf8' });
+    ], { encoding: 'utf8', input: `${PASSWORD}\n` });
   }
 
   for (const asset of ['favicon.ico', 'apple-touch-icon.png', 'mstile-270x270.png']) {
@@ -211,78 +247,92 @@ test('encrypted preview embeds pages, preserves icons, and executes the seven-da
   assert.match(loader, /html\.ask \.box\{display:block\}/u, 'the password box should appear only when access is absent');
   assert.match(loader, /href="\/preview\/favicon\.ico"/u, 'the root loader must use the preview root for favicon URLs');
   assert.match(nestedLoader, /href="\/preview\/favicon\.ico"/u, 'nested loaders must not resolve favicon URLs relative to their page');
+  assert.match(loader, /const STORE_PATH = "\/preview\/";/u, 'the seven-day credential must be scoped to the preview path');
+  assert.match(loader, /SameSite=Strict; Secure/u, 'the browser credential must not be a broad cross-site cookie');
+  assert.doesNotMatch(loader, /localStorage\.setItem\(STORE/u, 'the loader must not persist a plaintext-capable vault in origin-wide storage');
   const decrypted = decryptEmbeddedPage(loader);
   assert.match(decrypted, /sizes="16x16 24x24 32x32 64x64"/u, 'icon sizes must survive HTML rewriting');
   assert.match(decrypted, /sizes="152x152"/u, 'apple icon sizes must survive HTML rewriting');
   assert.doesNotMatch(decrypted, /rel="preload" as="image"/u, 'image preloads must not request encrypted assets before unlock');
   assert.match(decrypted, /data-enc="\/preview\/photo\.webp\.enc"/u, 'ordinary images must point to encrypted assets');
 
-  const storage = new MemoryStorage();
-  const firstVisit = runLoader(loader, { localStorage: storage });
+  const cookies = new MemoryCookieJar();
+  const firstVisit = runLoader(loader, { cookies });
   await eventually(() => firstVisit.document.documentElement.className === 'ask', 'a fresh visitor must see the password form');
   await firstVisit.submit('wrong-password');
   assert.equal(firstVisit.elements.e.textContent, 'Неверный пароль', 'a wrong password should show an error');
-  assert.equal(storage.getItem(STORE), null, 'a wrong password must not create a vault');
+  assert.equal(cookies.get(STORE), null, 'a wrong password must not create a vault');
   await firstVisit.submit(PASSWORD);
   await eventually(() => firstVisit.writes.length === 1, 'a correct password must render the encrypted page');
   assert.match(firstVisit.writes[0], /<title>Root preview<\/title>/u, 'the correct password must decrypt the page');
-  const firstVault = JSON.parse(storage.getItem(STORE));
+  const firstVault = JSON.parse(decodeURIComponent(cookies.get(STORE)));
   assert.equal(Buffer.from(firstVault.k, 'base64').length, 32, 'the vault must store the ready AES key');
-  assert.equal(firstVault.p, PASSWORD, 'the vault must retain the password for a salt change');
+  assert.equal('p' in firstVault, false, 'the vault must never persist the plaintext password');
   assertRollingWeek(firstVault.exp, 'the first vault');
   assert.equal(firstVisit.requests.filter((url) => url.endsWith('page.enc')).length, 0, 'unlock must not request page.enc');
 
-  const migratedStorage = new MemoryStorage();
+  const obsoleteStorage = new MemoryStorage([[STORE, JSON.stringify({ ...firstVault, p: PASSWORD })]]);
+  const afterLegacyStorage = runLoader(loader, { localStorage: obsoleteStorage });
+  await eventually(() => afterLegacyStorage.document.documentElement.className === 'ask', 'a former localStorage vault must not unlock the new loader');
+  assert.equal(obsoleteStorage.getItem(STORE), null, 'the loader must remove the old origin-wide vault');
+
+  const migratedCookies = new MemoryCookieJar();
   const legacySession = new MemoryStorage([['czk-preview-pass', PASSWORD]]);
-  const migrated = runLoader(loader, { localStorage: migratedStorage, sessionStorage: legacySession });
+  const migrated = runLoader(loader, { cookies: migratedCookies, sessionStorage: legacySession });
   await eventually(() => migrated.writes.length === 1, 'legacy session access must migrate to the vault');
   assert.equal(legacySession.getItem('czk-preview-pass'), null, 'a successful migration must retire the legacy session password');
-  const migratedVault = JSON.parse(migratedStorage.getItem(STORE));
+  const migratedVault = JSON.parse(decodeURIComponent(migratedCookies.get(STORE)));
   migratedVault.exp = Date.now() - 1;
-  migratedStorage.setItem(STORE, JSON.stringify(migratedVault));
-  const afterMigrationExpiry = runLoader(loader, { localStorage: migratedStorage, sessionStorage: legacySession });
+  migratedCookies.set(`${STORE}=${encodeURIComponent(JSON.stringify(migratedVault))}`);
+  const afterMigrationExpiry = runLoader(loader, { cookies: migratedCookies, sessionStorage: legacySession });
   await eventually(
     () => afterMigrationExpiry.document.documentElement.className === 'ask',
     'an expired migrated vault must not fall back to the retired session password',
   );
 
   for (const name of pages) {
-    const saved = JSON.parse(storage.getItem(STORE));
+    const saved = JSON.parse(decodeURIComponent(cookies.get(STORE)));
     saved.exp = Date.now() + 1_000;
-    storage.setItem(STORE, JSON.stringify(saved));
+    cookies.set(`${STORE}=${encodeURIComponent(JSON.stringify(saved))}`);
     const pageLoader = await readFile(join(output, name, 'index.html'), 'utf8');
-    const navigation = runLoader(pageLoader, { localStorage: storage, readyState: 'loading' });
+    const navigation = runLoader(pageLoader, { cookies, readyState: 'loading' });
     assert.equal(navigation.document.documentElement.className, '', 'saved access must not reveal the form during navigation');
     await navigation.finishParsing();
     assert.match(navigation.writes[0], new RegExp(`<title>${name}</title>`, 'u'), `saved access must unlock /${name}/`);
     assert.equal(navigation.requests.filter((url) => url.endsWith('page.enc')).length, 0, 'saved access must not request page.enc');
-    const refreshed = JSON.parse(storage.getItem(STORE));
+    const refreshed = JSON.parse(decodeURIComponent(cookies.get(STORE)));
     assertRollingWeek(refreshed.exp, 'each navigation');
   }
 
-  const restartedStorage = new MemoryStorage(storage.entries());
-  const afterRestart = runLoader(loader, { localStorage: restartedStorage, readyState: 'loading' });
+  const restartedCookies = new MemoryCookieJar(cookies.entries());
+  const afterRestart = runLoader(loader, { cookies: restartedCookies, readyState: 'loading' });
   await afterRestart.finishParsing();
-  assert.equal(afterRestart.document.documentElement.className, '', 'localStorage should survive a browser restart without a form');
+  assert.equal(afterRestart.document.documentElement.className, '', 'the preview-scoped credential should survive a browser restart without a form');
 
   const redeployedLoader = await readFile(join(redeployed, 'index.html'), 'utf8');
-  const afterRedeploy = runLoader(redeployedLoader, { localStorage: restartedStorage, readyState: 'loading' });
-  await afterRedeploy.finishParsing();
-  const redeployedVault = JSON.parse(restartedStorage.getItem(STORE));
-  assert.equal(
-    redeployedVault.salt,
-    redeployedLoader.match(/const SALT_B64 = "([^"]+)";/u)?.[1],
-    'a new salt must silently re-derive and replace the saved key',
-  );
+  const afterRedeploy = runLoader(redeployedLoader, { cookies: restartedCookies });
+  await eventually(() => afterRedeploy.document.documentElement.className === 'ask', 'a new encryption salt must require the password again');
+  assert.equal(restartedCookies.get(STORE), null, 'an incompatible key must be removed rather than retained');
 
-  redeployedVault.exp = Date.now() - 1;
-  restartedStorage.setItem(STORE, JSON.stringify(redeployedVault));
-  const expired = runLoader(redeployedLoader, { localStorage: restartedStorage });
+  const freshRedeployCookies = new MemoryCookieJar([[STORE, encodeURIComponent(JSON.stringify({ ...firstVault, exp: Date.now() - 1 }))]]);
+  const expired = runLoader(redeployedLoader, { cookies: freshRedeployCookies });
   await eventually(() => expired.document.documentElement.className === 'ask', 'an expired vault must show the password form');
-  assert.equal(restartedStorage.getItem(STORE), null, 'an expired vault must be removed rather than retained indefinitely');
+  assert.equal(freshRedeployCookies.get(STORE), null, 'an expired vault must be removed rather than retained indefinitely');
 
-  restartedStorage.setItem(STORE, JSON.stringify(firstVault));
-  const loggedOut = runLoader(loader, { localStorage: restartedStorage, search: '?logout' });
+  restartedCookies.set(`${STORE}=${encodeURIComponent(JSON.stringify(firstVault))}`);
+  const loggedOut = runLoader(loader, { cookies: restartedCookies, search: '?logout' });
   await eventually(() => loggedOut.document.documentElement.className === 'ask', '?logout must return to the password form');
-  assert.equal(restartedStorage.getItem(STORE), null, '?logout must clear the saved access');
+  assert.equal(restartedCookies.get(STORE), null, '?logout must clear the saved access');
+});
+
+test('preview deployment receives the password through stdin and protects its local source', async () => {
+  const [deploy, encryptor] = await Promise.all([
+    readFile(new URL('../migration/deploy_preview.sh', import.meta.url), 'utf8'),
+    readFile(new URL('../_capture/encrypt_site.py', import.meta.url), 'utf8'),
+  ]);
+
+  assert.match(deploy, /chmod 600 \.preview-password/u);
+  assert.match(deploy, /encrypt_site\.py --password-stdin/u);
+  assert.doesNotMatch(deploy, /\$\(cat \.preview-password\)/u);
+  assert.match(encryptor, /--password-stdin/u);
 });

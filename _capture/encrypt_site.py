@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Шифрует собранный сайт паролем: на хостинг уезжают только зашифрованные данные.
 
-Запуск:  python3 _capture/encrypt_site.py <пароль> [--src dist] [--out dist-enc]
+Запуск:  python3 _capture/encrypt_site.py --password-stdin < .preview-password [--src dist] [--out dist-enc]
 
 Как это работает:
   * each `<path>/index.html` is encrypted and embedded in its password loader, so opening a page
@@ -10,9 +10,10 @@
   * HTML src/srcset references become `data-enc` and the loader restores decrypted blob URLs.
 
 Cipher: AES-256-GCM with a PBKDF2-HMAC-SHA256 key (250,000 iterations). The salt is shared by a
-build and lives in the loader; each file has its own nonce. The ready AES key and password remain
-in localStorage for seven days so a preview visitor does not need to re-enter the password on every
-page. This is demo-preview convenience, not stronger cryptographic access control.
+build and lives in the loader; each file has its own nonce. The ready AES key (never the password)
+is kept in a path-scoped Secure cookie for seven days so a preview visitor does not need to re-enter
+the password on every page. This is demo-preview convenience, not stronger cryptographic access
+control.
 """
 import argparse
 import base64
@@ -87,7 +88,8 @@ LOADER = """<!doctype html>
 const BASE = "__BASE__";
 const SALT_B64 = "__SALT__";
 const ITER = __ITER__;
-const STORE = "czk-preview-key";            // {salt, k, p, exp}
+const STORE = "czk-preview-key";            // {salt, k, exp}
+const STORE_PATH = "__STORE_PATH__";
 const OLD_SESSION = "czk-preview-pass";     // ключ прошлой версии лоадера
 const TTL = 7 * 24 * 60 * 60 * 1000;
 
@@ -108,22 +110,34 @@ function tob64(buf) {
   return btoa(s);
 }
 
-function readVault() {
-  let serialized = null;
+function readCookie(name) {
   try {
-    serialized = localStorage.getItem(STORE);
-  } catch (e) {}
+    const prefix = `${name}=`;
+    const found = document.cookie.split("; ").find((item) => item.startsWith(prefix));
+    return found ? decodeURIComponent(found.slice(prefix.length)) : null;
+  } catch (e) { return null; }
+}
+
+function clearLegacyVault() {
+  try { localStorage.removeItem(STORE); } catch (e) {}
+}
+
+function readVault() {
+  const serialized = readCookie(STORE);
   if (serialized !== null) {
     try {
       const vault = JSON.parse(serialized);
       if (vault && vault.exp && vault.exp > Date.now()) return vault;
-      localStorage.removeItem(STORE);
+      forget();
       return null;
     } catch (e) {
-      try { localStorage.removeItem(STORE); } catch (ignore) {}
+      forget();
       return null;
     }
   }
+  // Remove the former origin-wide localStorage record before proceeding. It contained the
+  // plaintext password in an older loader and must never be used for automatic unlocks again.
+  clearLegacyVault();
   try {
     const pass = sessionStorage.getItem(OLD_SESSION);
     if (pass) return { p: pass };
@@ -134,19 +148,20 @@ function readVault() {
 // Access remains valid for a rolling week while the preview is being reviewed.
 function writeVault(vault) {
   try {
-    localStorage.setItem(STORE, JSON.stringify({
+    const record = encodeURIComponent(JSON.stringify({
       salt: vault.salt,
       k: vault.k,
-      p: vault.p,
       exp: Date.now() + TTL,
     }));
+    document.cookie = `${STORE}=${record}; Max-Age=${Math.floor(TTL / 1000)}; Path=${STORE_PATH}; SameSite=Strict; Secure`;
     // Retire the one-time session migration only after persistent storage succeeds.
     try { sessionStorage.removeItem(OLD_SESSION); } catch (ignore) {}
   } catch (e) {}
 }
 
 function forget() {
-  try { localStorage.removeItem(STORE); } catch (e) {}
+  try { document.cookie = `${STORE}=; Max-Age=0; Path=${STORE_PATH}; SameSite=Strict; Secure`; } catch (e) {}
+  clearLegacyVault();
   try { sessionStorage.removeItem(OLD_SESSION); } catch (e) {}
 }
 
@@ -266,7 +281,7 @@ function ask() {
     const pass = input.value;
     try {
       const raw = await keyFromPass(pass);
-      await paint(importRaw(raw), { salt: SALT_B64, k: tob64(raw), p: pass });
+      await paint(importRaw(raw), { salt: SALT_B64, k: tob64(raw) });
     } catch (err) {
       forget();
       error.textContent = "Неверный пароль";
@@ -280,9 +295,10 @@ function ask() {
   const vault = readVault();
   if (vault) {
     try {
-      // A redeploy changes the salt; derive a replacement key silently from the remembered password.
+      // Only a legacy same-tab session can still derive a key from a password. A newly encrypted
+      // deployment intentionally asks once more instead of persisting that password anywhere.
       const raw = (vault.k && vault.salt === SALT_B64) ? b64(vault.k) : await keyFromPass(vault.p);
-      await paint(importRaw(raw), { salt: SALT_B64, k: tob64(raw), p: vault.p });
+      await paint(importRaw(raw), { salt: SALT_B64, k: tob64(raw) });
       return;
     } catch (e) {
       forget();
@@ -336,14 +352,21 @@ def rewrite_html(html, assets_map, base):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("password")
+    ap.add_argument("--password-stdin", action="store_true",
+                    help="read the preview password from stdin instead of exposing it in process arguments")
     ap.add_argument("--src", default="dist")
     ap.add_argument("--out", default="dist-enc")
     ap.add_argument("--base", default="/", help="базовый путь сайта на хостинге")
     args = ap.parse_args()
 
+    if not args.password_stdin:
+        ap.error("use --password-stdin and pass the password through stdin")
+    password = sys.stdin.readline().rstrip("\r\n")
+    if not password:
+        ap.error("preview password from stdin is empty")
+
     site_salt = secrets.token_bytes(16)
-    key = hashlib.pbkdf2_hmac("sha256", args.password.encode(), site_salt, ITERATIONS, 32)
+    key = hashlib.pbkdf2_hmac("sha256", password.encode(), site_salt, ITERATIONS, 32)
     salt_b64 = base64.b64encode(site_salt).decode()
 
     src, out = os.path.abspath(args.src), os.path.abspath(args.out)
@@ -386,6 +409,7 @@ def main():
                 site_base = args.base if args.base.endswith("/") else args.base + "/"
                 loader = (LOADER.replace("__BASE__", page_base)
                           .replace("__SITE__", site_base)
+                          .replace("__STORE_PATH__", site_base)
                           .replace("__ITER__", str(ITERATIONS))
                           .replace("__SALT__", salt_b64)
                           .replace("__CIPHER__", cipher))

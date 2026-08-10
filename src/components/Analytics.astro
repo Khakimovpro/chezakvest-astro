@@ -16,7 +16,8 @@ const metrikaId = /^\d{4,20}$/.test(rawId) ? rawId : '';
       window.ym.l = Date.now();
       window.ym(metrikaId, 'init', {
         clickmap: true,
-        trackLinks: true,
+        // WhatsApp draft links can contain a submitted name and phone in their query string.
+        // Explicit PII-free goals below are enough; automatic outbound-link collection is unsafe.
         accurateTrackBounce: true,
       });
 

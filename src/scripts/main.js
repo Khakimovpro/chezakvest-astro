@@ -188,7 +188,6 @@ function initSlider() {
   }, { passive: true });
 
   loadSlide(i);
-  loadSlide((i + 1) % slides.length);
   render();
   autoplay.start();
   syncAutoplayControl();

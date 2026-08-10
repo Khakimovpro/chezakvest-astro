@@ -66,9 +66,10 @@ test('uses public Marquiz ids only after a user activates a CTA', async () => {
 
 test('renders source reviews from the local snapshot with one aggregate count', async () => {
   const reviews = JSON.parse(await read('src/data/reviews.json'));
-  const [component, home] = await Promise.all([
+  const [component, home, styles] = await Promise.all([
     read('src/components/Reviews.astro'),
     read('src/pages/index.astro'),
+    read('src/styles/page.css'),
   ]);
 
   assert.equal(reviews.counts.summary, 4429);
@@ -77,7 +78,9 @@ test('renders source reviews from the local snapshot with one aggregate count', 
   assert.ok(reviews.reviews.every((review) => review.rating >= 4));
   assert.match(component, /AggregateRating/);
   assert.match(component, /itemprop="review"/);
+  assert.match(component, /review-card__stars" aria-label=.*role="img"/);
   assert.match(component, /startsWith\('https:\/\/'\)/);
   assert.match(home, /<Reviews/);
   assert.doesNotMatch(home, /reviews_desktop\.webp/);
+  assert.match(styles, /\.quiz-pop\[hidden\]\{display:none\}/);
 });

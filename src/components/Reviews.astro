@@ -33,7 +33,7 @@ const safeUrl = (value) => typeof value === 'string' && value.startsWith('https:
           <li>
             <article class="review-card" itemprop="review" itemscope itemtype="https://schema.org/Review">
               <div class="review-card__top">
-                <span class="review-card__stars" aria-label={`Оценка ${review.rating} из 5`} itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
+                <span class="review-card__stars" aria-label={`Оценка ${review.rating} из 5`} role="img" itemprop="reviewRating" itemscope itemtype="https://schema.org/Rating">
                   <span aria-hidden="true">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</span>
                   <meta itemprop="ratingValue" content={String(review.rating)} />
                   <meta itemprop="bestRating" content="5" />

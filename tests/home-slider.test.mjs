@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { access, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import test from 'node:test';
+import sharp from 'sharp';
 
 import { AUTOPLAY_DELAY, createAutoplay } from '../src/scripts/slider-autoplay.js';
 
@@ -96,4 +97,22 @@ test('slider never expands the 1010px-wide original banner artwork', async () =>
 
   assert.match(styles, /\.slider\{position:relative;max-width:1010px;margin-inline:auto\}/u);
   assert.match(styles, /\.slider__pause\{[^}]*width:44px;height:44px/u);
+});
+
+test('homepage loads responsive mobile hero candidates and does not prefetch a hidden slide on startup', async () => {
+  const [mobileHero, retinaMobileHero, desktopHero, index, main] = await Promise.all([
+    sharp(resolve(process.cwd(), 'public/assets/_static/hero_dungeon_760.webp')).metadata(),
+    sharp(resolve(process.cwd(), 'public/assets/_static/hero_dungeon_900.webp')).metadata(),
+    sharp(resolve(process.cwd(), 'public/assets/_static/hero_dungeon_1200.webp')).metadata(),
+    readFile(new URL('../src/pages/index.astro', import.meta.url), 'utf8'),
+    readFile(new URL('../src/scripts/main.js', import.meta.url), 'utf8'),
+  ]);
+
+  assert.equal(mobileHero.width, 760);
+  assert.equal(retinaMobileHero.width, 900);
+  assert.ok(mobileHero.width < desktopHero.width);
+  assert.ok(retinaMobileHero.width < desktopHero.width);
+  assert.match(index, /hero_dungeon_760\.webp.*760w, .*hero_dungeon_900\.webp.*900w/u);
+  assert.equal((main.match(/loadSlide\(\(i \+ 1\) % slides\.length\);/gu) || []).length, 1,
+    'only a user-visible slide transition may prefetch the following artwork');
 });

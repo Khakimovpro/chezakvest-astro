@@ -126,6 +126,10 @@
 .cards__arrow--prev{left:-6px}
 .cards__arrow--next{right:-6px}
 .cards__arrow[disabled]{opacity:.35;cursor:default}
+@media (max-width:1240px){
+  .cards__arrow--prev{left:0}
+  .cards__arrow--next{right:0}
+}
 
 /* --- ФОРМА ПРАЗДНИКА --- */
 .pform{padding:48px 0 8px}

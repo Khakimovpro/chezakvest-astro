@@ -70,7 +70,7 @@
   `/prazdniki-pod-kluch`; их данные попали в реестр.
 - **10.08.2026 — Wave 1 visible fixes.** The catalogue now imports its shared page styles; the
   site ships root favicon, Apple touch and Windows tile assets; encrypted preview pages embed their
-  cipher in the loader and keep preview access in localStorage for a rolling seven days.
+  cipher in the loader and keep preview access for a rolling seven days.
 - **10.08.2026 — Wave 1 capture provenance.** The original Tilda site has no standalone
   `/kvesty-v-rostove-na-donu/` route (both forms return 404); the equivalent catalogue is the
   root section `/#rec1662454701`. Fresh 1440/390 original-and-clone captures are stored under
@@ -114,6 +114,28 @@
   “Показать карту”; it produces no foreign request at initial render. Public Marquiz IDs live in
   `site.json`; its script is appended only after a `[data-quiz]` click. Both home hero CTAs and
   the delayed local “БОНУС” pop keep a normal fallback href if loading fails.
+- **10.08.2026 — final QA hardening.** Preview password handling no longer puts the plaintext
+  password in a process argument or browser storage: the deploy reads it from stdin and forces the ignored
+  local file to mode 0600; the loader remembers only its derived AES key in a `Secure`,
+  `SameSite=Strict`, preview-path cookie for seven days. A new encryption salt deliberately asks
+  for the password once rather than retaining plaintext to unlock silently. This remains a static
+  demo gate, not server-side authentication: an owner who needs a hard boundary must move preview
+  to a dedicated origin or put it behind real server-side access control. Form retries now retain
+  the accepted state until a field changes, WhatsApp PII is never left in an anchor URL, and
+  automatic Metrika outbound-link tracking stays disabled. Final visual QA also fixed the hidden
+  quiz popover, tablet arrow overflow, mobile CTA clipping, review star semantics, and the
+  oversized 760w hero candidate; the second slider image is no longer fetched before it is shown.
+- **10.08.2026 — final QA verification.** The release gate now passes with 71 tests, 68 generated
+  pages, 65 indexable routes, 103 checked legacy records and zero production/asset/dependency
+  findings. Browser sweeps across 67 routes at 390/768/1024/1440 recorded zero horizontal
+  overflows, console errors, failed requests and initial third-party requests; the popup delay,
+  lazy map, and a rapid blank-recipient form double-click were rechecked (one WhatsApp draft only).
+  Fresh local static mobile Lighthouse runs for home, catalogue and `among_us` were
+  100/100/100/100 with CLS 0 (LCP 0.5 s / 0.5 s / 0.4 s). The live preview was republished and
+  tested: a fresh visitor enters the password once, the next page does not flash the form, no
+  plaintext vault remains in localStorage, and the path-scoped cookie is not visible at a sibling
+  GitHub Pages path. Final 1440/390 home captures and diagnostic diffs are ignored under
+  `_capture/shots/final-qa/`.
 - **10.08.2026 — Wave 3 reviews and reconciled facts.** The MyReviews screenshot was replaced
   with semantic local cards from `raw/reviews/data.json`, including `Review` and
   `AggregateRating` microdata. For page weight the component shows the 12 newest 4–5-star reviews
@@ -333,8 +355,10 @@ GitHub Pages на бесплатном тарифе не отдаёт сайты
 - Каждая картинка шифруется в `<имя>.enc`; в разметке вместо `src` стоит `data-enc`,
   лоадер расшифровывает картинки и подставляет blob-ссылки уже после ввода пароля.
 - AES-256-GCM uses a PBKDF2-HMAC-SHA256 key with 250,000 iterations. The salt is shared per build
-  and each file has its own nonce. The ready AES key and password are stored in localStorage for a
-  rolling seven days; this is preview convenience, not additional security.
+  and each file has its own nonce. Only the ready AES key is stored for a rolling seven days, in a
+  `Secure`, `SameSite=Strict` cookie scoped to `/chezakvest-preview/`; the plaintext password is
+  never stored in the browser. A new build has a new salt, so it deliberately asks once again.
+  This is preview convenience, not server-side access control or a hard same-origin boundary.
 - **Скорость.** Ключ считается один раз на страницу: с солью на каждый файл разблокировка
   главной занимала 3.7 с, стало ~0.35 с. Картинки расшифровываются лениво — сразу только
   первые два экрана, остальное по мере скролла (IntersectionObserver, запас 800 px).
@@ -352,7 +376,8 @@ GitHub Pages на бесплатном тарифе не отдаёт сайты
 ./migration/deploy_preview.sh --open   # снять пароль: выложить обычный сайт
 ```
 
-Пароль лежит в `astro-clone/.preview-password` (в `.gitignore`, в репозиторий не попадает).
+Пароль лежит в `astro-clone/.preview-password` (в `.gitignore`, в репозиторий не попадает); скрипт
+передаёт его в шифратор через stdin и перед сборкой выставляет файлу права `0600`.
 Пароль снимаем только после приёмки: пока сайт не доделан, заказчик не должен видеть его целиком
 (решение Эда от 09.08.2026). После `--open` в превью остаётся `robots.txt` с полным запретом
 индексации — превью не должно конкурировать с боевым доменом в поиске.

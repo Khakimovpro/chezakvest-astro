@@ -50,6 +50,29 @@ export async function sendLead(recipient, payload, fetchImpl = globalThis.fetch)
   return true;
 }
 
+export function createSubmissionGuard() {
+  let submitting = false;
+  let accepted = false;
+
+  return {
+    begin() {
+      if (submitting || accepted) return false;
+      submitting = true;
+      return true;
+    },
+    accept() {
+      submitting = false;
+      accepted = true;
+    },
+    fail() {
+      submitting = false;
+    },
+    reset() {
+      accepted = false;
+    },
+  };
+}
+
 function setStatus(form, message, link, linkLabel = 'Открыть черновик WhatsApp') {
   const status = form.querySelector('[data-lead-status]');
   if (!status) return;
@@ -58,12 +81,14 @@ function setStatus(form, message, link, linkLabel = 'Открыть чернов
   status.replaceChildren(document.createTextNode(message));
 
   if (link) {
-    const anchor = document.createElement('a');
-    anchor.href = link;
-    anchor.target = '_blank';
-    anchor.rel = 'noopener noreferrer';
-    anchor.textContent = linkLabel;
-    status.append(' ', anchor);
+    // Do not leave a PII-bearing wa.me URL in the DOM: analytics link trackers can collect its
+    // query string. The draft is reconstructed only when the visitor explicitly retries it.
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'lead-form__draft';
+    button.textContent = linkLabel;
+    button.addEventListener('click', () => openWhatsAppDraft(link));
+    status.append(' ', button);
   }
 }
 
@@ -157,25 +182,31 @@ function initialiseLeadForm(form) {
   const phoneInput = form.elements.namedItem('phone');
   if (!(phoneInput instanceof HTMLInputElement)) return;
   setDateMinimums(form);
+  const submission = createSubmissionGuard();
 
-  const refreshPhoneValidity = () => {
+  const refreshPhoneValidity = (changed = false) => {
+    if (changed) submission.reset();
     if (phoneInput.value) validatePhone(phoneInput);
     else phoneInput.setCustomValidity('');
     clearValidationState(form, phoneInput);
   };
 
-  phoneInput.addEventListener('input', refreshPhoneValidity);
-  phoneInput.addEventListener('blur', refreshPhoneValidity);
+  phoneInput.addEventListener('input', () => refreshPhoneValidity(true));
+  phoneInput.addEventListener('blur', () => refreshPhoneValidity());
   form.querySelectorAll('input').forEach((input) => {
     if (input === phoneInput) return;
-    input.addEventListener('input', () => clearValidationState(form, input));
-    input.addEventListener('change', () => clearValidationState(form, input));
+    input.addEventListener('input', () => {
+      submission.reset();
+      clearValidationState(form, input);
+    });
+    input.addEventListener('change', () => {
+      submission.reset();
+      clearValidationState(form, input);
+    });
   });
 
-  let submitting = false;
   const submitLead = async (event) => {
     event?.preventDefault();
-    if (submitting) return;
 
     const phone = validatePhone(phoneInput);
     if (!form.checkValidity()) {
@@ -183,15 +214,17 @@ function initialiseLeadForm(form) {
       return;
     }
 
+    if (!submission.begin()) return;
+
     const payload = createLeadPayload(form, phone);
     const draftUrl = createWhatsAppUrl(form.dataset.leadTarget || '', createMessage(payload));
     if (!draftUrl) {
+      submission.fail();
       setStatus(form, 'Не удалось подготовить черновик WhatsApp. Позвоните нам по телефону на сайте.');
       return;
     }
 
     const recipient = form.dataset.leadRecipient || '';
-    submitting = true;
     setSubmitting(form, true);
     openWhatsAppDraft(draftUrl);
 
@@ -200,10 +233,11 @@ function initialiseLeadForm(form) {
       if (delivered) form.reset();
       setStatus(form, 'Заявка принята, перезвоним', draftUrl);
       announceLeadAccepted();
+      submission.accept();
     } catch {
+      submission.fail();
       setStatus(form, 'Не удалось передать заявку. Откройте черновик WhatsApp, чтобы отправить её самостоятельно.', draftUrl);
     } finally {
-      submitting = false;
       setSubmitting(form, false);
     }
   };

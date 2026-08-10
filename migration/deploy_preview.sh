@@ -22,8 +22,11 @@ if [ "$MODE" = "--open" ]; then
   MSG="Превью без пароля"
 else
   [ -s .preview-password ] || { echo "нет файла .preview-password"; exit 1; }
+  # The password is intentionally never passed as a process argument. Keep the ignored local
+  # source readable only by the account that performs the deploy.
+  chmod 600 .preview-password
   echo "→ шифруем содержимое"
-  python3 _capture/encrypt_site.py "$(cat .preview-password)" --src dist --out dist-enc --base "$BASE/" | tail -2
+  python3 _capture/encrypt_site.py --password-stdin --src dist --out dist-enc --base "$BASE/" < .preview-password | tail -2
   SRC="dist-enc"
   MSG="Превью под паролем"
 fi

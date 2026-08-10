@@ -178,7 +178,8 @@ body.menu-open{overflow:hidden}
 .cbform__consent input{width:24px;height:24px;margin-top:0;accent-color:var(--orange);flex:0 0 auto}
 .cbform__submit{margin-top:22px;height:56px}
 .lead-form__status{margin:16px auto 0;max-width:560px;font-size:14px;line-height:1.45;color:var(--dark)}
-.lead-form__status a{color:var(--orange-text);font-weight:700;text-decoration:underline}
+.lead-form__status a,.lead-form__draft{color:var(--orange-text);font-weight:700;text-decoration:underline}
+.lead-form__draft{padding:0;border:0;background:transparent;font:inherit;cursor:pointer}
 
 /* Legal and legacy-route fallbacks stay readable without reproducing Tilda's heavy runtime. */
 .legal-page,.legacy-redirect{padding:112px 0 72px}
@@ -271,6 +272,7 @@ body.menu-open{overflow:hidden}
 
 /* Public Marquiz launcher is local until its explicit click. */
 .quiz-pop{position:fixed;z-index:1080;left:24px;bottom:24px;display:flex;align-items:stretch;width:326px;min-height:54px;border-radius:10px;background:#a600fc;color:#fff;box-shadow:0 10px 28px rgba(71,0,116,.35);overflow:hidden}
+.quiz-pop[hidden]{display:none}
 .quiz-pop__link{position:relative;display:flex;flex:1;flex-direction:column;justify-content:center;padding:8px 14px 8px 53px;font-size:12px;font-weight:700;line-height:1.18}
 .quiz-pop__badge{position:absolute;left:13px;top:50%;display:grid;place-items:center;width:29px;height:29px;border-radius:50%;background:#ffe64d;color:#a600fc;font-size:18px;font-weight:800;transform:translateY(-50%)}
 .quiz-pop__eyebrow{margin-bottom:2px;font-size:10px;font-weight:500;letter-spacing:.08em;opacity:.88}
@@ -281,6 +283,8 @@ body.menu-open{overflow:hidden}
   .hdr__burger{display:flex}
   .hdr__wa,.mega{display:none}
   .nav__item:nth-child(n+3){display:none}
+  .slider__arrow--prev{left:12px}
+  .slider__arrow--next{right:12px}
 }
 @media (max-width:1099px){
   .hdr__nav{display:none}
@@ -313,6 +317,7 @@ body.menu-open{overflow:hidden}
   .hero__ghost{position:relative;right:auto;width:54%;margin:14px auto 2px;display:block;max-height:none}
   .hero__cta{flex-direction:column-reverse;width:100%}
   .hero__btn-calc,.hero__btn-pick{width:100%}
+  .hero__btn-calc{height:auto;min-height:72px;padding-inline:20px;font-size:17px;line-height:1.2}
   .slider__arrow{width:44px;height:44px}
   .slider__arrow--prev{left:12px}
   .slider__arrow--next{right:12px}

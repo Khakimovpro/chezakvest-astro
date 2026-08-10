@@ -2,11 +2,25 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  createSubmissionGuard,
   createWhatsAppUrl,
   getMoscowDate,
   getPhoneDigits,
   sendLead,
 } from '../src/scripts/lead-form.js';
+
+test('keeps an accepted blank-recipient request from opening duplicate WhatsApp drafts until a field changes', () => {
+  const guard = createSubmissionGuard();
+
+  assert.equal(guard.begin(), true, 'the first valid request may start');
+  assert.equal(guard.begin(), false, 'an in-flight request cannot start again');
+  guard.accept();
+  assert.equal(guard.begin(), false, 'an accepted request stays latched after a fast local completion');
+  guard.reset();
+  assert.equal(guard.begin(), true, 'editing a field permits a deliberate revised request');
+  guard.fail();
+  assert.equal(guard.begin(), true, 'a failed delivery remains retryable');
+});
 
 test('normalises Russian phone input before lead delivery', () => {
   assert.equal(getPhoneDigits('8 (928) 216-36-23'), '79282163623');
