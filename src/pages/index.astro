@@ -3,18 +3,20 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import QuestCard from '../components/QuestCard.astro';
+import CallbackForm from '../components/CallbackForm.astro';
 import site from '../data/site.json';
+import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '#');
-const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+const link = (h) => siteHref(base, h);
 
 // категории в порядке появления
 const catOrder = [];
 for (const c of site.cards) if (!catOrder.includes(c.cat)) catOrder.push(c.cat);
 const anchorForCat = {
-  'Квесты в Ростове': 'catalog',
+  'Квесты в Ростове': 'kvesty',
   'Страшные квесты в Ростове': 'strashnye',
   'Прятки в лабиринте 200м²': 'pryatki',
   'Квест-шоу на площадке 200м²': 'kvestshou',
@@ -22,9 +24,38 @@ const anchorForCat = {
 };
 const cardsByCat = (cat) => site.cards.filter((c) => c.cat === cat);
 const s = site;
+const tabs = s.tabs.map((tab, index) => ({
+  ...tab,
+  tabId: `catalog-tab-${index}`,
+  panelId: `catalog-panel-${index}`,
+}));
+const panelIdByCategory = new Map(tabs.map((tab) => [tab.cat, tab.panelId]));
+const origin = 'https://xn--80aehcht5ci1b.xn--p1ai';
+const jsonld = [{
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${origin}/#organization`,
+      name: 'Чё за Квест',
+      url: `${origin}/`,
+      logo: `${origin}${s.header.logo}`,
+      telephone: s.header.phone,
+      sameAs: [s.header.vk],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${origin}/#website`,
+      name: 'Чё за Квест',
+      url: `${origin}/`,
+      inLanguage: 'ru-RU',
+      publisher: { '@id': `${origin}/#organization` },
+    },
+  ],
+}];
 ---
 
-<Layout>
+<Layout jsonld={jsonld}>
   <Header />
 
   <main>
@@ -53,11 +84,11 @@ const s = site;
     <section class="promo">
       <!-- container (1160), НЕ container-wide: слайдер оригинала уже героя (поля 140px), как в Tilda -->
       <div class="promo__wrap container">
-        <div class="slider" id="promo-slider">
+        <div class="slider" id="promo-slider" role="region" aria-roledescription="carousel" aria-label="Промо-предложения">
           <div class="slider__viewport">
             <div class="slider__track">
               {s.slider.map((sl, i) => (
-                <div class="slider__slide">
+                <div class="slider__slide" role="group" aria-roledescription="slide" aria-label={`${i + 1} из ${s.slider.length}`} aria-hidden={i === 0 ? 'false' : 'true'}>
                   {i === 0
                     ? <img src={asset(sl.img)} alt={sl.alt} width="1010" height="375" decoding="async" />
                     : <img data-src={asset(sl.img)} alt={sl.alt} width="1010" height="375" loading="lazy" decoding="async" />}
@@ -65,13 +96,13 @@ const s = site;
               ))}
             </div>
           </div>
-          <button class="slider__arrow slider__arrow--prev" aria-label="Предыдущий слайд">
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="#ff6b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+          <button class="slider__arrow slider__arrow--prev" type="button" aria-label="Предыдущий слайд">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="#9b3800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
           </button>
-          <button class="slider__arrow slider__arrow--next" aria-label="Следующий слайд">
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="#ff6b00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+          <button class="slider__arrow slider__arrow--next" type="button" aria-label="Следующий слайд">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="#9b3800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
           </button>
-          <div class="slider__dots" id="promo-dots" aria-label="Навигация по слайдам"></div>
+          <div class="slider__dots" id="promo-dots" role="group" aria-label="Навигация по слайдам"></div>
         </div>
       </div>
     </section>
@@ -81,8 +112,8 @@ const s = site;
       <div class="container">
         <!-- Табы (десктоп) -->
         <div class="tabs" role="tablist" aria-label="Категории игр">
-          {s.tabs.map((t, i) => (
-            <button class={`tab${i === 0 ? ' is-active' : ''}`} data-cat={t.cat} role="tab" aria-selected={i === 0 ? 'true' : 'false'}>
+          {tabs.map((t, i) => (
+            <button class={`tab${i === 0 ? ' is-active' : ''}`} id={t.tabId} data-cat={t.cat} data-panel={t.panelId} role="tab" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={t.panelId} tabindex={i === 0 ? '0' : '-1'}>
               {i !== 0 && <span class="tab__mark" aria-hidden="true">◆</span>}{t.t}{t.badge && <span class="tab__badge" aria-hidden="true">★</span>}
             </button>
           ))}
@@ -90,22 +121,29 @@ const s = site;
         <!-- Дропдаун (мобайл) -->
         <div class="tabs-mobile">
           <select id="cat-select" aria-label="Категория игр">
-            {s.tabs.map((t) => (<option value={t.cat}>{t.t}</option>))}
+            {tabs.map((t) => (<option value={t.cat}>{t.t}</option>))}
           </select>
-          <svg class="tabs-mobile__chev" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" d="M6 9l6 6 6-6"/></svg>
+          <svg class="tabs-mobile__chev" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="#1f2933" stroke-width="2" stroke-linecap="round" d="M6 9l6 6 6-6"/></svg>
         </div>
       </div>
 
-      {catOrder.map((cat, ci) => (
-        <div class="catblock container" data-cat={cat} id={anchorForCat[cat]}>
-          <h2 class="section-title catblock__title">{cat === 'Квесты в Ростове' ? 'Квесты в Ростове' : cat}</h2>
-          <div class="grid">
-            {cardsByCat(cat).map((card) => (
-              <QuestCard card={card} base={base} />
-            ))}
-          </div>
+      <div class="catalog__panels">
+        <div class="catalog__panel" id={tabs[0].panelId} data-cat="all" role="tabpanel" aria-labelledby={tabs[0].tabId}>
+          {catOrder.map((cat) => (
+            <div class="catblock container" data-cat={cat} data-panel={panelIdByCategory.get(cat)} id={anchorForCat[cat]}>
+              <h2 class="section-title catblock__title">{cat === 'Квесты в Ростове' ? 'Квесты в Ростове' : cat}</h2>
+              <div class="grid">
+                {cardsByCat(cat).map((card) => (
+                  <QuestCard card={card} base={base} />
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+        {tabs.slice(1).map((tab) => (
+          <div class="catalog__panel" id={tab.panelId} data-cat={tab.cat} role="tabpanel" aria-labelledby={tab.tabId} hidden></div>
+        ))}
+      </div>
     </section>
 
     <!-- ============ ПРАЗДНИК + СТАТЫ ============ -->
@@ -127,7 +165,7 @@ const s = site;
               </div>
             ))}
           </div>
-          <div class="party__btnrow"><button class="btn-grad">{s.stats.btn}</button></div>
+          <div class="party__btnrow"><a class="btn-grad" href="#callback">{s.stats.btn}</a></div>
         </div>
       </div>
     </section>
@@ -142,7 +180,7 @@ const s = site;
         <img class="gift__cert" src={asset(s.gift.cert)} alt="Подарочный сертификат «Чё за Квест»" width="503" height="358" loading="lazy" decoding="async" />
         <div class="gift__consult">
           <img class="gift__mark" src={asset(s.consult.logo)} alt="" width="80" height="69" loading="lazy" />
-          <button class="btn-grad">{s.consult.btn}</button>
+          <a class="btn-grad" href="#callback">{s.consult.btn}</a>
         </div>
       </div>
     </section>
@@ -158,28 +196,7 @@ const s = site;
     </section>
 
     <!-- ============ ФОРМА «ЕСТЬ ВОПРОС?» ============ -->
-    <section class="callback">
-      <div class="container">
-        <form class="cbform" onsubmit="return false">
-          <h2 class="cbform__title">{s.callback.title}</h2>
-          <p class="cbform__sub">{s.callback.sub}</p>
-          <div class="cbform__fields">
-            <label class="visually-hidden" for="cb-name">Ваше имя</label>
-            <input id="cb-name" type="text" placeholder={s.callback.namePh} autocomplete="name" />
-            <label class="visually-hidden" for="cb-phone">Телефон</label>
-            <div class="cbform__phone">
-              <span class="cbform__flag" aria-hidden="true">🇷🇺</span>
-              <input id="cb-phone" type="tel" placeholder={`+7 ${s.callback.phonePh}`} autocomplete="tel" />
-            </div>
-          </div>
-          <label class="cbform__consent">
-            <input type="checkbox" checked />
-            <span>{s.callback.consent} <a href={link('/privacy')}>{s.callback.consentLink}</a></span>
-          </label>
-          <button class="btn-orange cbform__submit" type="submit">{s.callback.btn}</button>
-        </form>
-      </div>
-    </section>
+    <CallbackForm id="home-callback" sectionId="callback" />
 
     <!-- ============ ГАЛЕРЕЯ ============ -->
     <!-- построчная justified-раскладка (как в Tilda): ряды одной высоты, ширина фото по пропорции -->

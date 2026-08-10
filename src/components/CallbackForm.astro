@@ -1,30 +1,37 @@
 ---
 // Сквозная форма «Есть вопрос?» — есть на главной и на всех внутренних страницах.
 import site from '../data/site.json';
+import { siteHref } from '../lib/urls.js';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
-const { id = 'cb' } = Astro.props;
+const link = (h) => siteHref(base, h);
+const { id = 'cb', sectionId = 'callback' } = Astro.props;
 const s = site;
 ---
-<section class="callback">
+<section class="callback" id={sectionId}>
   <div class="container">
-    <form class="cbform" onsubmit="return false">
+    <form class="cbform" data-lead-form data-lead-kind="callback" data-lead-target={s.header.wa} aria-describedby={`${id}-status`}>
       <h2 class="cbform__title">{s.callback.title}</h2>
       <p class="cbform__sub">{s.callback.sub}</p>
       <div class="cbform__fields">
         <label class="visually-hidden" for={`${id}-name`}>Ваше имя</label>
-        <input id={`${id}-name`} type="text" placeholder={s.callback.namePh} autocomplete="name" />
+        <input id={`${id}-name`} name="name" type="text" placeholder={s.callback.namePh} autocomplete="name" minlength="2" maxlength="80" required />
         <label class="visually-hidden" for={`${id}-phone`}>Телефон</label>
         <div class="cbform__phone">
           <span class="cbform__flag" aria-hidden="true">🇷🇺</span>
-          <input id={`${id}-phone`} type="tel" placeholder={`+7 ${s.callback.phonePh}`} autocomplete="tel" />
+          <input id={`${id}-phone`} name="phone" type="tel" placeholder={`+7 ${s.callback.phonePh}`} inputmode="tel" autocomplete="tel" maxlength="24" required />
         </div>
       </div>
       <label class="cbform__consent">
-        <input type="checkbox" checked />
-        <span>{s.callback.consent} <a href={link('/privacy')}>{s.callback.consentLink}</a></span>
+        <input name="consent" type="checkbox" checked required />
+        <span>{s.callback.consent} и передачу их в WhatsApp для обработки заявки в соответствии с <a href={link('/privacy')}>{s.callback.consentLink}</a></span>
       </label>
-      <button class="btn-orange cbform__submit" type="submit">{s.callback.btn}</button>
+      <button class="btn-orange cbform__submit" type="button" data-lead-submit>{s.callback.btn}</button>
+      <p class="lead-form__status" id={`${id}-status`} data-lead-status role="status" aria-live="polite" hidden></p>
+      <noscript><p class="lead-form__status">Чтобы отправить заявку в WhatsApp, включите JavaScript или позвоните нам по телефону на сайте.</p></noscript>
     </form>
   </div>
 </section>
+
+<script>
+  import '../scripts/lead-form.js';
+</script>

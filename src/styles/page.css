@@ -11,21 +11,20 @@
 .nav{display:flex;gap:30px;align-items:center}
 .nav__item{position:relative}
 .nav__item>a{font-size:15px;font-weight:500;color:var(--dark);transition:color .2s}
-.nav__item>a:hover{color:var(--orange)}
-/* оригинал: префикс «∷» перед Каталог/Проведение/Контакты (без выпадающих шевронов) */
-.nav__item.has-mega>a::before,
-.nav__item:last-child>a::before{content:"∷";margin-right:8px;color:var(--orange);font-weight:700}
+.nav__item>a:hover{color:var(--dark);text-decoration:underline;text-decoration-color:var(--orange-text)}
+/* Декоративный префикс вынесен в aria-hidden span, чтобы не засорять доступное имя ссылки. */
+.nav__prefix{margin-right:8px;color:var(--orange);font-weight:700}
 .mega{position:absolute;top:calc(100% + 14px);left:50%;transform:translateX(-50%) translateY(8px);
   min-width:250px;background:#fff;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.16);
   padding:12px;display:flex;flex-direction:column;gap:2px;opacity:0;visibility:hidden;transition:.2s;z-index:210}
-.nav__item.has-mega:hover .mega{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
+.nav__item.has-mega:hover .mega,.nav__item.has-mega:focus-within .mega{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)}
 .mega__link{padding:9px 14px;border-radius:8px;font-size:14px;color:var(--dark);white-space:nowrap}
-.mega__link:hover{background:#f4f4f4;color:var(--orange)}
+.mega__link:hover{background:#f4f4f4;color:var(--orange-text)}
 .hdr__actions{flex:0 0 auto;display:flex;align-items:center;gap:12px}
 .hdr__phone{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:8px;
   border:1px solid #cfcfcf;background:#fff;color:var(--dark);font-weight:700;font-size:15px;transition:color .2s,border-color .2s}
 .hdr__phone svg{color:var(--orange)}
-.hdr__phone:hover{color:var(--orange);border-color:var(--orange)}
+.hdr__phone:hover{color:var(--orange-text);border-color:var(--orange)}
 .hdr__wa{width:44px;height:44px;border-radius:50%;background:#25d366;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
 .hdr__burger{display:none;width:44px;height:44px;border:0;background:transparent;flex-direction:column;justify-content:center;gap:5px;padding:0}
 .hdr__burger span{display:block;width:26px;height:3px;border-radius:2px;background:var(--dark);margin:0 auto;transition:.25s}
@@ -36,7 +35,7 @@
 .mmenu ul{padding:8px 20px 16px}
 .mmenu li{border-bottom:1px solid #eee}
 .mmenu a{display:block;padding:14px 4px;font-size:16px;font-weight:600;color:var(--dark)}
-.mmenu__phone{color:var(--orange)!important}
+.mmenu__phone{color:var(--orange-text)!important}
 
 /* ===================== ГЕРОЙ ===================== */
 .hero{padding-top:14px}
@@ -49,8 +48,8 @@
 .hero__sub{margin-top:16px;font-size:30px;font-weight:400;color:#fff}
 .hero__cta{position:relative;z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-top:36px;padding:0 60px}
 .hero__btn-calc{display:inline-flex;align-items:center;justify-content:center;height:72px;padding:0 40px;
-  border-radius:60px;border:2px dotted #fff;color:#fff;font-weight:500;font-size:19px;background:transparent;transition:.2s}
-.hero__btn-calc:hover{background:rgba(255,255,255,.12)}
+  border-radius:60px;border:2px solid var(--cta-ink);color:var(--cta-ink);font-weight:700;font-size:19px;background:rgba(255,255,255,.96);transition:.2s}
+.hero__btn-calc:hover{background:#fff}
 .hero__btn-pick{height:72px;font-size:19px;padding:0 40px}
 
 /* ===================== СЛАЙДЕР ===================== */
@@ -75,19 +74,19 @@
 /* ===================== КАТАЛОГ ===================== */
 .catalog{margin-top:64px}
 /* сегментированный контрол: оранжевая рамка + разделители между табами (как в оригинале) */
-.tabs{display:flex;border:1px solid var(--orange);border-radius:40px;background:#fff;overflow:hidden;margin-bottom:20px}
+.tabs{display:flex;border:1px solid var(--orange-text);border-radius:40px;background:#fff;overflow:hidden;margin-bottom:20px}
 .tab{flex:1 1 0;height:52px;border:0;background:transparent;font-weight:700;font-size:14px;color:var(--muted);
   display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:.2s;text-transform:uppercase;white-space:nowrap;position:relative}
-.tab + .tab{border-left:1px solid rgba(255,107,0,.4)}
-.tab__mark{color:var(--orange);font-size:10px}
+.tab + .tab{border-left:1px solid rgba(155,56,0,.45)}
+.tab__mark{color:var(--orange-text);font-size:10px}
 /* синий бейдж-звезда на новых категориях (ПРЯТКИ, КВЕСТ-ШОУ) */
-.tab__badge{width:16px;height:16px;border-radius:50%;background:#2b8fff;color:#fff;font-size:9px;
+.tab__badge{width:16px;height:16px;border-radius:50%;background:#0758a3;color:#fff;font-size:9px;
   display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
-.tab.is-active{background:var(--orange);color:#fff;border-radius:40px}
+.tab.is-active{background:var(--orange);color:var(--cta-ink);border-radius:40px}
 .tab.is-active .tab__mark{display:none}
 .tabs-mobile{display:none;position:relative}
 .tabs-mobile select{appearance:none;-webkit-appearance:none;width:100%;height:56px;border:0;border-radius:40px;
-  background:var(--orange);color:#fff;font-weight:700;font-size:15px;text-transform:uppercase;padding:0 48px 0 24px;cursor:pointer}
+  background:var(--orange);color:var(--cta-ink);font-weight:700;font-size:15px;text-transform:uppercase;padding:0 48px 0 24px;cursor:pointer}
 .tabs-mobile__chev{position:absolute;right:20px;top:50%;transform:translateY(-50%);pointer-events:none}
 /* межкатегорийный отступ и отступ заголовок→карточки — как в оригинале (было сжато) */
 .catblock{margin-top:76px}
@@ -141,6 +140,19 @@
 .cbform__consent a{color:var(--orange)}
 .cbform__consent input{width:16px;height:16px;margin-top:1px;accent-color:var(--orange);flex:0 0 auto}
 .cbform__submit{margin-top:22px;height:56px}
+.lead-form__status{margin:16px auto 0;max-width:560px;font-size:14px;line-height:1.45;color:var(--dark)}
+.lead-form__status a{color:var(--orange);font-weight:700;text-decoration:underline}
+
+/* Legal and legacy-route fallbacks stay readable without reproducing Tilda's heavy runtime. */
+.legal-page,.legacy-redirect{padding:112px 0 72px}
+.legal-page__card,.legacy-redirect__card{max-width:960px;margin:0 auto;background:#fff;border-radius:20px;padding:42px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
+.legal-page__requisites{margin:0 0 32px;text-align:right;font-size:14px;line-height:1.55;color:var(--muted)}
+.legal-page h1,.legacy-redirect h1{font-size:38px;line-height:1.15;color:var(--dark)}
+.legal-page h2{margin-top:32px;font-size:22px;line-height:1.3;color:var(--dark)}
+.legal-page p,.legal-page li,.legacy-redirect p{margin-top:14px;font-size:16px;line-height:1.6;color:var(--ink)}
+.legal-page ol,.legal-page ul{margin:14px 0 0;padding-left:22px;list-style:disc}
+.legal-page ol{list-style:decimal}
+.legacy-redirect__link{margin-top:24px}
 
 /* ===================== ГАЛЕРЕЯ ===================== */
 .gallery{margin-top:64px}
@@ -160,10 +172,10 @@
 /* ===================== ФУТЕР ===================== */
 .ft{background:var(--dark);color:#fff;margin-top:0;border-radius:28px 28px 0 0;padding:44px 0 26px}
 .ft__inner{display:grid;grid-template-columns:1.1fr 1fr 1fr 1.2fr;gap:24px}
-.ft__h{color:var(--orange);font-weight:700;font-size:16px;text-transform:uppercase;margin-bottom:14px}
+.ft__h{color:var(--orange-2);font-weight:700;font-size:16px;text-transform:uppercase;margin-bottom:14px}
 .ft__col ul{display:flex;flex-direction:column;gap:8px}
 .ft__col a{font-size:14px;color:#fff;opacity:.92;transition:color .2s}
-.ft__col a:hover{color:var(--orange)}
+.ft__col a:hover{color:var(--orange-2)}
 .ft__phone{display:block;font-size:22px;font-weight:700}
 .ft__hours{font-size:13px;color:#bdbdbd;margin-top:2px;margin-bottom:16px}
 .ft__req{font-size:14px;line-height:1.6;color:#e6e6e6}
@@ -218,6 +230,9 @@
   .cbform__fields{flex-direction:column}
   .cbform__title{font-size:26px}
   .cbform__sub{font-size:16px}
+  .legal-page,.legacy-redirect{padding:92px 0 48px}
+  .legal-page__card,.legacy-redirect__card{padding:28px 20px}
+  .legal-page h1,.legacy-redirect h1{font-size:28px}
   .gallery__img{height:190px}
   .reviews__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .reviews__img{min-width:820px}
