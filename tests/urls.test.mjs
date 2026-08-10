@@ -20,6 +20,13 @@ test('creates base-aware trailing-slash internal links without altering external
   assert.equal(siteHref('', 'tel:+79282163623'), 'tel:+79282163623');
 });
 
+test('normalizes retired campaign links to canonical internal quest pages', () => {
+  assert.equal(siteHref('', '/igra-v-kalmara-lend'), '/igra_v_kalmara/');
+  assert.equal(siteHref('/chezakvest-preview', '/minecraft-lend#story'), '/chezakvest-preview/minecraft/#story');
+  assert.equal(siteHref('', 'https://xn----7sbikn1bgfafua.xn--80aehcht5ci1b.xn--p1ai/'), '/garri-potter-i-kubok-ognya/');
+  assert.equal(siteHref('', 'https://example.test/path'), 'https://example.test/path');
+});
+
 test('keeps asset filenames intact when generating absolute structured-data URLs', () => {
   assert.equal(absoluteAssetUrl('/assets/q/7e6b2dde60.webp'), `${ORIGIN}/assets/q/7e6b2dde60.webp`);
   assert.equal(absoluteAssetUrl('assets/logo.svg'), `${ORIGIN}/assets/logo.svg`);

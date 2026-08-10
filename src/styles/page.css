@@ -54,7 +54,9 @@
 
 /* ===================== СЛАЙДЕР ===================== */
 .promo{margin-top:24px}
-.slider{position:relative}
+/* Tilda supplied these banner artworks only at 1010px wide; keep their
+   desktop rendering at or below that native width instead of upscaling them. */
+.slider{position:relative;max-width:1010px;margin-inline:auto}
 /* viewport обрезает слайды, а стрелки живут в боковых полях (гаттере) — как в оригинале */
 .slider__viewport{overflow:hidden;border-radius:16px}
 .slider__track{display:flex;transition:transform .5s ease}
@@ -68,6 +70,11 @@
 .slider__arrow:hover{box-shadow:0 8px 22px rgba(0,0,0,.22)}
 .slider__arrow--prev{left:-72px}
 .slider__arrow--next{right:-72px}
+.slider__pause{position:absolute;right:14px;bottom:14px;z-index:6;width:44px;height:44px;padding:0;border:0;border-radius:50%;
+  background:rgba(255,255,255,.92);box-shadow:0 4px 12px rgba(0,0,0,.18);color:var(--dark);font-size:17px;font-weight:700;cursor:pointer}
+.slider__pause:hover{background:#fff}
+.slider__pause[aria-pressed="true"]{background:var(--dark);color:#fff}
+.slider__pause:disabled{cursor:not-allowed;opacity:.78}
 /* точки навигации: в оригинале их нет — скрываем (свайп/стрелки/автопрокрутка остаются) */
 .slider__dots{display:none}
 
@@ -167,7 +174,8 @@
 .venues{margin-top:64px}
 .venues__sub{margin-top:8px;font-size:20px;color:var(--muted);line-height:1.4;max-width:640px}
 .venues__chips{display:flex;flex-wrap:wrap;gap:14px;margin:26px 0}
-.chip{background:#fff;border-radius:10px;padding:15px 22px;font-size:15px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.2px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.chip{display:inline-flex;align-items:center;background:#fff;border-radius:10px;padding:15px 22px;font-size:15px;font-weight:700;color:var(--dark);text-transform:uppercase;letter-spacing:.2px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.venues__chips .chip:hover{color:var(--orange-text);box-shadow:0 4px 12px rgba(0,0,0,.12)}
 .venues__map{width:100%;aspect-ratio:1160/428;background-size:cover;background-position:center;background-repeat:no-repeat;border-radius:16px;margin-top:6px}
 
 /* ===================== ФУТЕР ===================== */
@@ -225,6 +233,8 @@
   .hero__cta{flex-direction:column-reverse;width:100%}
   .hero__btn-calc,.hero__btn-pick{width:100%}
   .slider__arrow{width:44px;height:44px}
+  .slider__arrow--prev{left:12px}
+  .slider__arrow--next{right:12px}
   .grid{grid-template-columns:1fr;gap:18px}
   .catblock__title,.section-title{font-size:24px}
   .cbform{padding:28px 20px}

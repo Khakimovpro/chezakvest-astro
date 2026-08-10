@@ -9,16 +9,13 @@ const asset = (p) => (p ? base + p : '#');
 const link = (h) => siteHref(base, h);
 
 const s = site;
-// категории каталога — в порядке появления карточек на главной
-const catOrder = [];
-for (const c of s.cards) if (!catOrder.includes(c.cat)) catOrder.push(c.cat);
-const anchorForCat = {
-  'Квесты в Ростове': 'kvesty',
-  'Страшные квесты в Ростове': 'strashnye',
-  'Прятки в лабиринте 200м²': 'pryatki',
-  'Квест-шоу на площадке 200м²': 'kvestshou',
-  'VR-игры на арене 300м²': 'vr',
-};
+const catalogThemes = [
+  { t: 'Все игры', href: '/kvesty-v-rostove-na-donu' },
+  { t: 'Квесты', href: '/kvesty-v-rostove-na-donu?theme=quest' },
+  { t: 'VR-игры', href: '/kvesty-v-rostove-na-donu?theme=vr' },
+  { t: 'Страшные', href: '/kvesty-v-rostove-na-donu?theme=scary' },
+  { t: 'Прятки и лабиринты', href: '/kvesty-v-rostove-na-donu?theme=hide' },
+];
 ---
 
 <header class="hdr" id="top">
@@ -30,10 +27,10 @@ const anchorForCat = {
     <nav class="hdr__nav" aria-label="Основная навигация">
       <ul class="nav">
         <li class="nav__item has-mega">
-          <a href={link('/#catalog')}><span class="nav__prefix" aria-hidden="true">∷</span>Каталог квестов</a>
+          <a href={link('/kvesty-v-rostove-na-donu')}><span class="nav__prefix" aria-hidden="true">∷</span>Каталог квестов</a>
           <div class="mega">
-            {catOrder.map((cat) => (
-              <a class="mega__link" href={link(`/#${anchorForCat[cat]}`)}>{cat}</a>
+            {catalogThemes.map((theme) => (
+              <a class="mega__link" href={link(theme.href)}>{theme.t}</a>
             ))}
           </div>
         </li>
@@ -69,7 +66,7 @@ const anchorForCat = {
 <!-- Мобильное меню -->
 <div class="mmenu" id="mobile-menu" hidden>
   <ul>
-    <li><a href={link('/#catalog')}>Каталог квестов</a></li>
+    <li><a href={link('/kvesty-v-rostove-na-donu')}>Каталог квестов</a></li>
     <li><a href={link('/#party')}>Проведение праздников</a></li>
     <li><a href={link('/strashnye-kvesty')}>Хоррор</a></li>
     <li><a href={link('/#otzivy')}>Отзывы</a></li>

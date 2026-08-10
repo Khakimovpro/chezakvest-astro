@@ -1,0 +1,181 @@
+{
+  "slug": "prazdniki-pod-kluch",
+  "type": "holiday",
+  "serviceType": "Организация детского праздника",
+  "venueSlugs": ["sokolova23", "socialicheskaya186", "krasnormerskaya103", "guardeskypereulog61", "magnitogorskaya1"],
+  "venuesSubtitle": "Пять площадок с залами для детских праздников в Ростове-на-Дону",
+  "seo": {
+    "title": "Праздник под ключ в Ростове-на-Дону | Чё за Квест",
+    "description": "Детские дни рождения и праздники под ключ в Ростове-на-Дону: квесты, шоу-программы, мастер-классы, залы для гостей и дополнительные услуги.",
+    "keywords": "детский праздник под ключ ростов-на-дону, день рождения под ключ ростов-на-дону, организация детского праздника, квест на день рождения",
+    "h1": "Детские праздники и дни рождения"
+  },
+  "breadcrumbs": [
+    { "t": "Главная", "href": "/" },
+    { "t": "Детские праздники", "href": "/kids" },
+    { "t": "Детские праздники и дни рождения", "href": null }
+  ],
+  "sections": [
+    {
+      "kind": "hero",
+      "variant": "light",
+      "h1": "Детские праздники и дни рождения",
+      "up": "Детские праздники",
+      "sub": "Дни рождения и праздники «под ключ». Мы развлекаем детей, пока вы отдыхаете.",
+      "buttons": [
+        { "t": "Получить бонус", "href": "#prazdnik" }
+      ],
+      "bg": "/assets/q/5dd1d9337f.webp",
+      "bgset": {
+        "760": "/assets/q/3ac267b243.webp",
+        "1200": "/assets/q/70d009d8af.webp",
+        "1600": "/assets/q/5dd1d9337f.webp"
+      }
+    },
+    {
+      "kind": "text",
+      "title": "Праздник, который можно собрать под ваш повод",
+      "lines": [
+        "Много локаций и квестов: Гарри Поттер, Бумажный дом, Ночь в музее, Дом призраков, Уэнсдей и другие программы.",
+        "Рассчитаем и подберём программу под ваши запросы: день рождения, Новый год или другое торжество."
+      ]
+    },
+    {
+      "kind": "cards",
+      "id": "igry",
+      "title": "Выберите игры",
+      "subtitle": "Квест-шоу для активного праздника",
+      "variant": "poster",
+      "items": [
+        { "t": "Майнкрафт", "href": "/minecraft", "img": "/assets/q/761e33a998.webp" },
+        { "t": "Уэнсдей. Потерянная душа", "href": "/wednesday-poteryannaya-dusha", "img": "/assets/q/aa88f8ca34.webp" },
+        { "t": "Амонг Ас", "href": "/among_us", "img": "/assets/q/80d439303c.webp" },
+        { "t": "Гарри Поттер и Кубок огня", "href": "/garri-potter-i-kubok-ognya", "img": "/assets/q/c9eeb7134d.webp" },
+        { "t": "Бегущий в лабиринте", "href": "/beguschij_v_labirinte", "img": "/assets/q/da6a813157.webp" },
+        { "t": "Игра в Кальмара", "href": "/igra_v_kalmara", "img": "/assets/q/4d2937e385.webp" }
+      ]
+    },
+    {
+      "kind": "cards",
+      "title": "Прятки и хоррор-прятки",
+      "subtitle": "Программы из живого каталога праздника",
+      "variant": "poster",
+      "items": [
+        { "t": "Прятки KIDS", "href": "/pryatki_kids", "img": "/assets/q/8a5eecd29d.webp" },
+        { "t": "Прятки. Портал в другое измерение", "href": "/pryatki_portal", "img": "/assets/q/17543bb600.webp" },
+        { "t": "Прятки в темноте", "href": "/pryatki_v_temnote", "img": "/assets/q/5e881f14ae.webp" },
+        { "t": "Техасская резня бензопилой", "href": "/tekhasskaya-reznya-benzopiloj", "img": "/assets/q/955f82b378.webp" },
+        { "t": "Оно", "href": "/ono", "img": "/assets/q/e450d8e388.webp" },
+        { "t": "Звонок", "href": "/zvonok", "img": "/assets/q/7e6b2dde60.webp" }
+      ]
+    },
+    {
+      "kind": "cards",
+      "title": "Квесты для праздника",
+      "subtitle": "Выберите сценарий и площадку",
+      "variant": "poster",
+      "items": [
+        { "t": "Психбольница", "href": "/kvest_v_realnosti_psihbolnitsa", "img": "/assets/q/25027ab56f.webp" },
+        { "t": "Шерлок Холмс", "href": "/kvest_v_realnosti_sherlock_holms", "img": "/assets/q/bd10282503.webp" },
+        { "t": "Коралина в Стране Кошмаров", "href": "/kvest_v_realnosti_koralina", "img": "/assets/q/869b04fbdb.webp" },
+        { "t": "Гарри Поттер и Последний Крестраж", "href": "/kvest_v_realnosti_harry_potter_i_krestrazh", "img": "/assets/q/1e958119ed.webp" },
+        { "t": "Ночь в музее. Ограбление", "href": "/kvest_v_realnosti_noch_v_museum_ograblenie", "img": "/assets/q/7d972e47c9.webp" },
+        { "t": "Дом призраков", "href": "/kvest_v_realnosti_dom_prizrakov", "img": "/assets/q/7f1a4a0b91.webp" }
+      ]
+    },
+    {
+      "kind": "tiles",
+      "title": "Шоу-программы",
+      "subtitle": "Дополнительные услуги из оригинальной программы праздника",
+      "items": [
+        { "t": "Нащупал" },
+        { "t": "Мафия" },
+        { "t": "Квиз Баттл" },
+        { "t": "Музыкалити" },
+        { "t": "Распределительная шляпа" },
+        { "t": "Попробуй объяснить" },
+        { "t": "Любимый герой" },
+        { "t": "Ютуб пати" }
+      ]
+    },
+    {
+      "kind": "tiles",
+      "title": "Мастер-классы",
+      "items": [
+        { "t": "Сливочное пиво", "img": "/assets/q/1ffb0a5c31.webp" },
+        { "t": "Волшебные палочки", "img": "/assets/q/58e53e7022.webp" },
+        { "t": "Космос в банке", "img": "/assets/q/c7e518b333.webp" },
+        { "t": "Тай-дай", "img": "/assets/q/36df4d4d68.webp" },
+        { "t": "Роспись", "img": "/assets/q/a9aa910814.webp" }
+      ]
+    },
+    {
+      "kind": "tiles",
+      "title": "Дополнения, которые украсят праздник",
+      "items": [
+        { "t": "Вынос торта любимым героем", "img": "/assets/q/a360040221.webp" },
+        { "t": "Банкетное меню", "img": "/assets/q/1f5120f76e.webp" },
+        { "t": "Тематические торты", "img": "/assets/q/df78826d3a.webp" },
+        { "t": "Профессиональные актёры", "img": "/assets/q/e2ba648872.webp" },
+        { "t": "Профессиональный фотограф", "img": "/assets/q/4067e0cef7.webp" }
+      ]
+    },
+    {
+      "kind": "halls",
+      "title": "Выберите зал для праздника",
+      "items": [
+        {
+          "t": "пр-т Соколова, 23",
+          "href": "/sokolova23",
+          "capacity": "До 12 человек",
+          "equipment": ["Магические уроки", "Шпионское приключение", "Страшные тайны", "Свето-музыка и стереозвук", "Праздничная сервировка стола"],
+          "img": "/assets/q/96302b2fe2.webp"
+        },
+        {
+          "t": "Социалистическая, 186",
+          "href": "/socialicheskaya186",
+          "capacity": "До 12 человек",
+          "equipment": ["Квест «Ограбление банка. Бумажный дом»", "Свето-музыка и стереозвук", "Комфортабельная зона ожидания", "Праздничная сервировка"],
+          "img": "/assets/q/d8a336272a.webp"
+        },
+        {
+          "t": "Красноармейская, 103",
+          "href": "/krasnormerskaya103",
+          "capacity": "До 12 человек",
+          "equipment": ["Таинственное приключение", "Пугающая атмосфера квеста", "Мистические загадки", "Свето-музыка и стереозвук"],
+          "img": "/assets/q/028229a807.webp"
+        },
+        {
+          "t": "пер. Гвардейский, 61",
+          "href": "/guardeskypereulog61",
+          "capacity": "До 12 человек",
+          "equipment": ["Квест «Шерлок Холмс»", "Квест «Психбольница»", "Уникальный дизайн комнаты отдыха", "Праздничная сервировка"],
+          "img": "/assets/q/1deeeb06e8.webp"
+        },
+        {
+          "t": "ул. Магнитогорская, 1",
+          "href": "/magnitogorskaya1",
+          "capacity": "До 20 человек",
+          "equipment": ["Лабиринт площадью 150 кв. м", "Девять сценариев", "Две комнаты отдыха", "Свето-музыка и стереозвук"],
+          "img": "/assets/q/83db4ae2f4.webp"
+        }
+      ]
+    },
+    {
+      "kind": "gallery",
+      "id": "gallery",
+      "title": "Фото с наших мероприятий",
+      "photos": [
+        "/assets/q/cd2e630f54.webp",
+        "/assets/q/04d24a34db.webp",
+        "/assets/q/0d15bc7e16.webp",
+        "/assets/q/20cd23b3c4.webp",
+        "/assets/q/077e819ab0.webp",
+        "/assets/q/66dbe30a34.webp",
+        "/assets/q/16557413bc.webp",
+        "/assets/q/05cc9d9e3f.webp"
+      ]
+    },
+    { "kind": "party-form" }
+  ]
+}

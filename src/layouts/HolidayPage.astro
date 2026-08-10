@@ -29,6 +29,21 @@ const sections = page.sections || [];
 const hero = sections.find((s) => s.kind === 'hero') || {};
 const rest = sections.filter((s) => s.kind !== 'hero');
 const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
+const pageVenueSlugs = new Set(page.venueSlugs || []);
+const listedVenues = pageVenueSlugs.size > 0
+  ? venues.filter((venue) => pageVenueSlugs.has(venue.slug))
+  : venues;
+const venuesSubtitle = page.venuesSubtitle
+  || `${listedVenues.length} оборудованных площадок с квест-комнатами и зонами отдыха в Ростове-на-Дону`;
+const pagesBySlug = new Map(index.map((item) => [item.slug, item]));
+const canonicalCardItems = (items = []) => items.map((item) => {
+  const slug = String(item.href || '').split(/[?#]/, 1)[0].replace(/^\/+|\/+$/g, '');
+  return {
+    ...item,
+    img: pagesBySlug.get(slug)?.img || item.img,
+    imgSet: pagesBySlug.get(slug)?.imgSet || null,
+  };
+});
 
 // ---- Schema.org: услуга «организация праздника» + цена, если она названа на странице ----
 // цена для разметки: явное поле страницы или первое число из ценника пакета
@@ -85,10 +100,12 @@ const jsonld = [
 ].filter(Boolean);
 
 const heroSrcset = hero.bgset
-  ? Object.entries(hero.bgset).filter(([, p]) => p).map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
+  ? Object.entries(hero.bgset).filter(([w, p]) => p && (w === '760' || w === '1600' || !hero.bgset?.['1600']))
+    .map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
   : '';
+const heroSource = hero.bgset?.['1600'] || hero.bgset?.['1200'] || hero.bg;
 const preload = hero.bg
-  ? { href: asset(hero.bgset?.['1200'] || hero.bg), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
+  ? { href: asset(heroSource), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
   : null;
 ---
 <Layout
@@ -120,7 +137,7 @@ const preload = hero.bg
             </div>
           </div>
           {hero.bg && (
-            <img class="lhero__img" src={asset(hero.bgset?.['1200'] || hero.bg)} srcset={heroSrcset}
+            <img class="lhero__img" src={asset(heroSource)} srcset={heroSrcset}
                  sizes="(max-width:900px) 100vw, 620px" alt={seo.h1}
                  width="620" height="535" fetchpriority="high" decoding="async" />
           )}
@@ -131,7 +148,7 @@ const preload = hero.bg
         <div class="container-wide">
           <div class="qhero__panel">
             {hero.bg && (
-              <img class="qhero__bg" src={asset(hero.bgset?.['1200'] || hero.bg)} srcset={heroSrcset}
+              <img class="qhero__bg" src={asset(heroSource)} srcset={heroSrcset}
                    sizes="(max-width:700px) 100vw, 1200px" alt={seo.h1}
                    width="1200" height="550" fetchpriority="high" decoding="async" />
             )}
@@ -161,21 +178,46 @@ const preload = hero.bg
       <>
         {/* ---- текстовый блок: заголовок, подзаголовок, абзацы, фото ---- */}
         {s.kind === 'text' && (
-          <section class="htext" id={s.id || undefined}>
+          <section class={`htext${s.giftArt?.length ? ' htext--gift' : ''}`} id={s.id || undefined}>
             <div class="container">
-              {s.title && <h2 class="section-title">{s.title}</h2>}
-              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
-              {(s.lines || []).map((l) => (<p class="htext__p">{l}</p>))}
-              {(s.photos || []).length > 0 && (
-                <div class={`qextra__photos qextra__photos--${s.photos.length > 3 ? 'grid' : 'row'}`}>
-                  {s.photos.map((p, i) => (
-                    <img src={asset(p)} alt={`${s.title || seo.h1} — фото ${i + 1}`}
+              {s.giftArt?.length ? (
+                <div class="htext__gift">
+                  {(s.photos || []).slice(0, 1).map((p) => (
+                    <img class="htext__gift-bg" src={asset(p)} alt="" width="1600" height="482"
                          loading="lazy" decoding="async" />
                   ))}
+                  <div class="htext__gift-copy">
+                    {s.title && <h2 class="htext__gift-title">{s.title}</h2>}
+                    {s.subtitle && <p class="htext__gift-sub">{s.subtitle}</p>}
+                    {(s.lines || []).map((l) => (<p class="htext__p">{l}</p>))}
+                    {s.cta && (
+                      <p class="htext__cta"><a class="btn-orange" href={s.ctaHref ? heroLink(s.ctaHref) : site.header.phoneHref}>{s.cta}</a></p>
+                    )}
+                  </div>
+                  <div class="htext__gift-art" aria-hidden="true">
+                    {s.giftArt.map((art, i) => (
+                      <img class={`htext__gift-art-img htext__gift-art-img--${i + 1}`} src={asset(art.img)} alt=""
+                           width={art.width} height={art.height} loading="lazy" decoding="async" />
+                    ))}
+                  </div>
                 </div>
-              )}
-              {s.cta && (
-                <p class="htext__cta"><a class="btn-orange" href={site.header.phoneHref}>{s.cta}</a></p>
+              ) : (
+                <>
+                  {s.title && <h2 class="section-title">{s.title}</h2>}
+                  {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+                  {(s.lines || []).map((l) => (<p class="htext__p">{l}</p>))}
+                  {(s.photos || []).length > 0 && (
+                    <div class={`qextra__photos qextra__photos--${s.photos.length > 3 ? 'grid' : 'row'}`}>
+                      {s.photos.map((p, i) => (
+                        <img src={asset(p)} alt={`${s.title || seo.h1} — фото ${i + 1}`}
+                             width="600" height="400" loading="lazy" decoding="async" />
+                      ))}
+                    </div>
+                  )}
+                  {s.cta && (
+                    <p class="htext__cta"><a class="btn-orange" href={s.ctaHref ? heroLink(s.ctaHref) : site.header.phoneHref}>{s.cta}</a></p>
+                  )}
+                </>
               )}
             </div>
           </section>
@@ -363,7 +405,7 @@ const preload = hero.bg
 
         {/* ---- ряд карточек-ссылок (сценарии, игры) ---- */}
         {s.kind === 'cards' && (
-          <CardsRow title={s.title} subtitle={s.subtitle} items={s.items} id={s.id || ''}
+          <CardsRow title={s.title} subtitle={s.subtitle} items={canonicalCardItems(s.items)} id={s.id || ''}
                     variant={s.variant || 'square'} uptitle={s.uptitle || ''} />
         )}
 
@@ -467,7 +509,7 @@ const preload = hero.bg
                 <div class="qextra__photos qextra__photos--row">
                   {s.photos.map((p, i) => (
                     <img src={asset(p)} alt={`${s.title || seo.h1} — образец ${i + 1}`}
-                         loading="lazy" decoding="async" />
+                         width="600" height="400" loading="lazy" decoding="async" />
                   ))}
                 </div>
               )}
@@ -484,7 +526,7 @@ const preload = hero.bg
               <div class="qextra__photos qextra__photos--grid">
                 {s.photos.map((p, i) => (
                   <img src={asset(p)} alt={`${s.title || seo.h1} — фото ${i + 1}`}
-                       loading="lazy" decoding="async" />
+                       width="600" height="400" loading="lazy" decoding="async" />
                 ))}
               </div>
             </div>
@@ -514,13 +556,13 @@ const preload = hero.bg
     ))}
 
     <!-- ============ ПЛОЩАДКИ КОМПАНИИ ============ -->
-    {venues.length > 0 && (
+    {listedVenues.length > 0 && (
       <section class="cvenues">
         <div class="container">
           <h2 class="section-title">Наши площадки</h2>
-          <p class="section-sub">9 оборудованных площадок с квест-комнатами и зонами отдыха в Ростове-на-Дону</p>
+          <p class="section-sub">{venuesSubtitle}</p>
           <ul class="cvenues__list">
-            {venues.map((v) => (
+            {listedVenues.map((v) => (
               <li><a href={link('/' + v.slug)}>{v.address}</a></li>
             ))}
           </ul>

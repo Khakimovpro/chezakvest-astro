@@ -5,6 +5,11 @@ import { siteHref } from '../lib/urls.js';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '');
 const link = (h) => siteHref(base, h);
+const responsiveSrcset = (set) => set
+  ? Object.entries(set)
+      .filter(([width, path]) => path && (width === '760' || width === '1600' || !set['1600']))
+      .map(([width, path]) => `${asset(path)} ${width}w`).join(', ')
+  : '';
 const {
   title = '',
   subtitle = '',
@@ -28,7 +33,10 @@ const {
         {items.map((it) => (
           <li class="card">
             <a class="card__link" href={link(it.href)}>
-              {it.img && <img class="card__img" src={asset(it.img)} alt={it.t} loading="lazy" decoding="async" />}
+              {it.img && <img class="card__img" src={asset(it.imgSet?.['760'] || it.img)} srcset={responsiveSrcset(it.imgSet) || undefined}
+                              sizes={variant === 'square' ? '216px' : '275px'} alt={it.t}
+                              width={variant === 'square' ? 216 : 275} height={variant === 'square' ? 216 : 367}
+                              loading="lazy" decoding="async" />}
               <span class="card__cap">
                 {uptitle && <span class="card__up">{uptitle}</span>}
                 <span class="card__name">{it.t}</span>

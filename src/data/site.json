@@ -1,7 +1,7 @@
 {
  "meta": {
   "title": "Че За Квест – квесты в Ростове-на-Дону",
-  "description": "Официальный сайт организации Чё за Квест – сети квест-румов в Ростове-на-Дону. Приключения, шоу, интересные квесты, их адреса, часы работы, отзывы, цены на квесты.",
+  "description": "Официальный сайт «Чё за Квест» — сети квест-румов в Ростове-на-Дону. Квесты, VR-игры, шоу, адреса площадок, отзывы и запись на игру.",
   "keywords": "че За квест, квесты в ростове на дону, квест комната, сайт квестов",
   "canonical": "https://xn--80aehcht5ci1b.xn--p1ai",
   "ogimage": "/assets/static.tildacdn.com/tild3066-6334-4736-b130-393264666133/__2026-04-01_122430.webp",
@@ -16,7 +16,7 @@
   "nav": [
    {
     "t": "Каталог квестов",
-    "href": "#catalog",
+    "href": "/kvesty-v-rostove-na-donu",
     "mega": "catalog"
    },
    {
@@ -48,35 +48,42 @@
   "btnCalc": "Рассчитать стоимость праздника",
   "btnCalcHref": "#party",
   "btnPick": "Подобрать квест",
-  "btnPickHref": "#catalog"
+  "btnPickHref": "/kvesty-v-rostove-na-donu"
  },
  "slider": [
   {
-   "img": "/assets/optim.tildacdn.com/tild3030-3032-4366-b139-373938643134/-/format/webp/_005.png.webp",
+   "img": "/assets/q/dcaea49c7e.webp",
+   "source": "https://static.tildacdn.com/tild3030-3032-4366-b139-373938643134/_005.png",
    "alt": "День рождения в стиле Minecraft"
   },
   {
-   "img": "/assets/optim.tildacdn.com/tild6638-6235-4436-a164-646337663663/-/format/webp/_15.png.webp",
+   "img": "/assets/q/b2fa9a5245.webp",
+   "source": "https://static.tildacdn.com/tild6638-6235-4436-a164-646337663663/_15.png",
    "alt": "Новинка — квест Фантастический угон"
   },
   {
-   "img": "/assets/optim.tildacdn.com/tild3362-6333-4631-a435-656361646166/-/format/webp/_14.png.webp",
+   "img": "/assets/q/53c847a5f5.webp",
+   "source": "https://static.tildacdn.com/tild3362-6333-4631-a435-656361646166/_14.png",
    "alt": "Закажите детский праздник в Хижине чудес"
   },
   {
-   "img": "/assets/optim.tildacdn.com/tild6234-3833-4032-b939-313666333364/-/format/webp/_17.png.webp",
+   "img": "/assets/q/c758969e30.webp",
+   "source": "https://static.tildacdn.com/tild6234-3833-4032-b939-313666333364/_17.png",
    "alt": "День рождения в квесте Узник Азкабана"
   },
   {
-   "img": "/assets/optim.tildacdn.com/tild3730-6634-4766-a632-656164343433/-/format/webp/_007__ROBLOX_.png.webp",
+   "img": "/assets/q/0dcafce563.webp",
+   "source": "https://static.tildacdn.com/tild3730-6634-4766-a632-656164343433/_007__ROBLOX_.png",
    "alt": "День рождения в стиле Roblox"
   },
   {
-   "img": "/assets/optim.tildacdn.com/tild6632-3861-4330-b634-353330616163/-/format/webp/_006__.png.webp",
+   "img": "/assets/q/1aed1de355.webp",
+   "source": "https://static.tildacdn.com/tild6632-3861-4330-b634-353330616163/_006__.png",
    "alt": "Выпускной в стиле Игра в кальмара"
   },
   {
-   "img": "/assets/optim.tildacdn.com/tild6565-6238-4866-a236-623966613864/-/format/webp/_003.png.webp",
+   "img": "/assets/q/2fd07df71b.webp",
+   "source": "https://static.tildacdn.com/tild6565-6238-4866-a236-623966613864/_003.png",
    "alt": "Незабываемый день рождения на VR-арене"
   }
  ],
@@ -644,15 +651,15 @@
   "title": "Наши площадки",
   "subtitle": "9 современно оборудованных площадок с квест-комнатами и зонами отдыха в Ростове-на-Дону",
   "chips": [
-   "Гвардейский пер., 61",
-   "ул. Социалистическая, 186",
-   "ул. Красноармейская, 103",
-   "пр-т Соколова, 23",
-   "пр-т Мира, д. 27",
-   "ул. Нансена, 107/1",
-   "ул. Магнитогорская, 1",
-   "ул. 40-летия Победы, 216",
-   "пр-т Нагибина, 14а"
+   { "t": "Гвардейский пер., 61", "href": "/guardeskypereulog61" },
+   { "t": "ул. Социалистическая, 186", "href": "/socialicheskaya186" },
+   { "t": "ул. Красноармейская, 103", "href": "/krasnormerskaya103" },
+   { "t": "пр-т Соколова, 23", "href": "/sokolova23" },
+   { "t": "пр-т Мира, д. 27", "href": "/mira27" },
+   { "t": "ул. Нансена, 107/1", "href": "/nansena107" },
+   { "t": "ул. Магнитогорская, 1", "href": "/magnitogorskaya1" },
+   { "t": "ул. 40-летия Победы, 216", "href": "/40letpobedy216" },
+   { "t": "пр-т Нагибина, 14а", "href": "/nagibina14" }
   ],
   "map": "/assets/_static/map.png"
  },
@@ -696,23 +703,23 @@
     "links": [
      {
       "t": "Квеструмы",
-      "href": "#catalog"
+      "href": "/kvesty-v-rostove-na-donu?theme=quest"
      },
      {
       "t": "VR-арена",
-      "href": "#catalog"
+      "href": "/kvesty-v-rostove-na-donu?theme=vr"
      },
      {
       "t": "Активные игры",
-      "href": "#catalog"
+      "href": "/kvesty-v-rostove-na-donu?theme=vr"
      },
      {
       "t": "Прятки в темноте",
-      "href": "#catalog"
+      "href": "/kvesty-v-rostove-na-donu?theme=hide"
      },
      {
       "t": "Страшные квесты",
-      "href": "#strashnye"
+      "href": "/kvesty-v-rostove-na-donu?theme=scary"
      }
     ]
    },
@@ -721,39 +728,39 @@
     "links": [
      {
       "t": "пр-т Соколова, 23",
-      "href": "#contacts"
+      "href": "/sokolova23"
      },
      {
       "t": "ул. Красноармейская, 103",
-      "href": "#contacts"
+      "href": "/krasnormerskaya103"
      },
      {
       "t": "ул. Социалистическая, 186",
-      "href": "#contacts"
+      "href": "/socialicheskaya186"
      },
      {
       "t": "Гвардейский пер., 61",
-      "href": "#contacts"
+      "href": "/guardeskypereulog61"
      },
      {
       "t": "пр-т Мира, д. 27",
-      "href": "#contacts"
+      "href": "/mira27"
      },
      {
       "t": "ул. Нансена, 107/1",
-      "href": "#contacts"
+      "href": "/nansena107"
      },
      {
       "t": "ул. Магнитогорская, 1",
-      "href": "#contacts"
+      "href": "/magnitogorskaya1"
      },
      {
       "t": "ул. 40-летия Победы, 216",
-      "href": "#contacts"
+      "href": "/40letpobedy216"
      },
      {
       "t": "пр-т Нагибина, 14А",
-      "href": "#contacts"
+      "href": "/nagibina14"
      }
     ]
    }

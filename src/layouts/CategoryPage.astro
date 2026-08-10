@@ -13,7 +13,7 @@ import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
 
-const { page, index = [] } = Astro.props;
+const { page, index = [], venues = [] } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '');
 const link = (h) => siteHref(base, h);
@@ -23,22 +23,22 @@ const path = '/' + page.slug;
 const seo = page.seo;
 const hero = page.hero || {};
 const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
-// к карточкам подмешиваем данные самих квестов: возраст, вместимость, длительность, адрес
+// Quest records carry venueSlug, while venue pages own the public address.
 const byslug = Object.fromEntries(index.map((p) => [p.slug, p]));
-const cardsByHref = Object.fromEntries(site.cards.map((card) => [card.href, card]));
+const venuesBySlug = Object.fromEntries(venues.map((venue) => [venue.slug, venue]));
 const games = (page.games?.items || []).map((g) => {
   const info = byslug[g.href.replace(/^\//, '')] || {};
-  const card = cardsByHref[g.href] || {};
+  const venue = venuesBySlug[info.venueSlug];
   const pills = info.pills || [];
   return {
     ...g,
-    img: g.img || info.img,
+    img: info.img || g.img,
+    imgSet: info.imgSet || null,
     age: pills.find((p) => /\+$/.test(p)) || '',
     people: pills.find((p) => /^\d+\s*[-–]\s*\d+$/.test(p)) || '',
     time: pills.find((p) => /мин|час/i.test(p)) || '',
-    // The home catalogue is a source record too; use it only as a fallback
-    // when the extracted quest JSON has no location field.
-    addr: info.addr || card.addr || '',
+    venue,
+    addr: venue?.address || '',
   };
 });
 
@@ -68,10 +68,12 @@ const jsonld = [
 ].filter(Boolean);
 
 const heroSrcset = hero.bgset
-  ? Object.entries(hero.bgset).filter(([, p]) => p).map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
+  ? Object.entries(hero.bgset).filter(([w, p]) => p && (w === '760' || w === '1600' || !hero.bgset?.['1600']))
+    .map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
   : '';
+const heroSource = hero.bgset?.['1600'] || hero.bgset?.['1200'] || hero.bg;
 const preload = hero.bg
-  ? { href: asset(hero.bgset?.['1200'] || hero.bg), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
+  ? { href: asset(heroSource), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
   : null;
 ---
 <Layout
@@ -91,7 +93,7 @@ const preload = hero.bg
       <div class="container-wide">
         <div class="qhero__panel">
           {hero.bg && (
-            <img class="qhero__bg" src={asset(hero.bgset?.['1200'] || hero.bg)} srcset={heroSrcset}
+            <img class="qhero__bg" src={asset(heroSource)} srcset={heroSrcset}
                  sizes="(max-width:700px) 100vw, 1200px" alt={seo.h1}
                  width="1200" height="550" fetchpriority="high" decoding="async" />
           )}
@@ -119,11 +121,15 @@ const preload = hero.bg
             {games.map((g) => (
               <li class="ccard">
                 <a class="ccard__link" href={link(g.href)}>
-                  {g.img && <img class="ccard__img" src={asset(g.img)} alt={g.t} loading="lazy" decoding="async" width="380" height="290" />}
+                  {g.img && <img class="ccard__img" src={asset(g.imgSet?.['760'] || g.img)}
+                    srcset={g.imgSet ? Object.entries(g.imgSet)
+                      .filter(([width, image]) => image && (width === '760' || width === '1600' || !g.imgSet['1600']))
+                      .map(([width, image]) => `${asset(image)} ${width}w`).join(', ') : undefined}
+                    sizes="(max-width:640px) calc(100vw - 40px), 359px"
+                    alt={g.t} loading="lazy" decoding="async" width="380" height="290" />}
                   {g.age && <span class="ccard__age">{g.age}</span>}
                   <span class="ccard__body">
                     <span class="ccard__name">{g.t}</span>
-                    {g.addr && <span class="ccard__addr">{g.addr}</span>}
                   </span>
                   {(g.people || g.time) && (
                     <span class="ccard__meta">
@@ -132,6 +138,9 @@ const preload = hero.bg
                     </span>
                   )}
                 </a>
+                {g.venue && (
+                  <a class="ccard__venue" href={link('/' + g.venue.slug)}>{g.addr}</a>
+                )}
               </li>
             ))}
           </ul>
@@ -146,7 +155,7 @@ const preload = hero.bg
           {page.gallery.title && <h2 class="section-title">{page.gallery.title}</h2>}
           <div class="qextra__photos qextra__photos--grid">
             {page.gallery.photos.map((p, i) => (
-              <img src={asset(p)} alt={`${seo.h1} — фото ${i + 1}`} loading="lazy" decoding="async" />
+              <img src={asset(p)} alt={`${seo.h1} — фото ${i + 1}`} width="600" height="400" loading="lazy" decoding="async" />
             ))}
           </div>
         </div>

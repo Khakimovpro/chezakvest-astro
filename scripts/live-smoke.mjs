@@ -1,19 +1,16 @@
 import { fileURLToPath } from 'node:url';
 
-const DEFAULT_REQUIRED_PATHS = [
+import {
+  canonicalTargetPath,
+  isRedirect,
+  isStaticFallback,
+  loadLegacyUrlMap,
+} from '../migration/legacy-redirects.mjs';
+
+const CORE_REQUIRED_PATHS = [
   '/',
   '/privacy',
-  '/igra-v-kalmara-lend',
-  '/minecraft-lend',
-  '/roblox-land',
-  '/amongus-land',
 ];
-const LEGACY_REDIRECT_TARGETS = new Map([
-  ['/igra-v-kalmara-lend', '/igra_v_kalmara/'],
-  ['/minecraft-lend', '/minecraft/'],
-  ['/roblox-land', '/roblox/'],
-  ['/amongus-land', '/among_us/'],
-]);
 const REDIRECT_STATUS_CODES = new Set([301, 302, 307, 308]);
 const PERMANENT_REDIRECT_STATUS_CODES = new Set([301, 308]);
 
@@ -110,13 +107,14 @@ function validateLegacyFallback({ html, pageUrl, expectedCanonical, origin, erro
 }
 
 /**
- * Fetches the deployed static site and verifies the indexable pages and P0 URLs.
+ * Fetches the deployed static site and verifies indexable pages plus every mapped legacy redirect.
  * It is intentionally not invoked by CI because it must run only against the chosen host.
  */
 export async function verifyLiveSite({
   origin,
   fetchImpl = fetch,
-  requiredPaths = DEFAULT_REQUIRED_PATHS,
+  requiredPaths,
+  requireServerRedirects = process.env.REQUIRE_SERVER_REDIRECTS === '1',
 } = {}) {
   const errors = [];
   if (!origin) return { pagesChecked: 0, errors: ['SITE_ORIGIN is required for a live smoke check'] };
@@ -125,6 +123,16 @@ export async function verifyLiveSite({
   if (!isUrlOnOrigin(normalizedOrigin, normalizedOrigin) || !normalizedOrigin.startsWith('https://')) {
     return { pagesChecked: 0, errors: [`SITE_ORIGIN must be an absolute HTTPS origin: ${origin}`] };
   }
+
+  const legacyRedirects = new Map(
+    (await loadLegacyUrlMap())
+      .filter(isRedirect)
+      .map((entry) => [entry.source, {
+        target: canonicalTargetPath(entry.target),
+        hasStaticFallback: isStaticFallback(entry),
+      }]),
+  );
+  const resolvedRequiredPaths = requiredPaths ?? [...CORE_REQUIRED_PATHS, ...legacyRedirects.keys()];
 
   const robotsUrl = `${normalizedOrigin}/robots.txt`;
   const robotsResponse = await fetchUrl(fetchImpl, robotsUrl);
@@ -173,9 +181,10 @@ export async function verifyLiveSite({
     validateIndexedPage({ html: await response.text(), pageUrl, origin: normalizedOrigin, errors });
   }
 
-  for (const pathname of requiredPaths) {
-    const legacyTarget = LEGACY_REDIRECT_TARGETS.get(pathname);
-    const url = `${normalizedOrigin}${pathname === '/' ? '/' : legacyTarget ? pathname : `${pathname}/`}`;
+  for (const pathname of resolvedRequiredPaths) {
+    const legacyRedirect = legacyRedirects.get(pathname);
+    const legacyTarget = legacyRedirect?.target;
+    const url = `${normalizedOrigin}${pathname === '/' ? '/' : legacyRedirect ? pathname : `${pathname}/`}`;
     const response = await fetchUrl(fetchImpl, url);
     if (response.error) {
       errors.push(`${url}: request failed: ${response.error}`);
@@ -190,7 +199,11 @@ export async function verifyLiveSite({
         errors.push(`${url}: legacy migration redirect must use permanent status 301 or 308`);
       } else if (new URL(location, url).href === expectedLegacyTarget) {
         continue;
-      } else if (new URL(location, url).href !== `${normalizedOrigin}${pathname}/`) {
+      } else if (
+        requireServerRedirects
+        || !legacyRedirect.hasStaticFallback
+        || new URL(location, url).href !== `${normalizedOrigin}${pathname}/`
+      ) {
         errors.push(`${url}: redirect must target ${expectedLegacyTarget}`);
       } else {
         const fallbackUrl = new URL(location, url).href;
@@ -217,13 +230,17 @@ export async function verifyLiveSite({
     }
     const html = await response.text();
     if (legacyTarget) {
-      validateLegacyFallback({
-        html,
-        pageUrl: url,
-        expectedCanonical: expectedLegacyTarget,
-        origin: normalizedOrigin,
-        errors,
-      });
+      if (requireServerRedirects || !legacyRedirect.hasStaticFallback) {
+        errors.push(`${url}: legacy URL must use a permanent redirect to ${expectedLegacyTarget}`);
+      } else {
+        validateLegacyFallback({
+          html,
+          pageUrl: url,
+          expectedCanonical: expectedLegacyTarget,
+          origin: normalizedOrigin,
+          errors,
+        });
+      }
     } else {
       const canonical = getCanonical(html);
       if (!canonical || !isUrlOnOrigin(canonical, normalizedOrigin)) {

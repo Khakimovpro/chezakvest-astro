@@ -14,6 +14,7 @@
 import csv
 import collections
 import glob
+import json
 import os
 import re
 
@@ -29,10 +30,13 @@ VENUES = {
 VR = {"portal-strike", "portal-strike-kids", "portal-zombie", "party-games"}
 HOLIDAY = {
     "kids", "prazdnik-maxi", "den-rozhdeniya-uznik-azkabana",
-    "den-rozhdeniya-na-vr-arene", "vypusknoj-kalmar",
+    "den-rozhdeniya-na-vr-arene", "vypusknoj-kalmar", "new-year-2025",
+    "prazdniki-pod-kluch",
 }
 CATEGORY = {"strashnye-kvesty"}
 INFO = {"contacts"}
+REDIRECT_ONLY = {"wednesday_ukradennaya_vesch"}
+CANONICAL_ORIGIN = "https://xn--80aehcht5ci1b.xn--p1ai"
 
 
 def page_type(slug):
@@ -113,6 +117,103 @@ def migrated_slugs():
     return done
 
 
+def word_count(value):
+    """Count a page-data excerpt without pretending it is an audited Tilda total."""
+    if isinstance(value, dict):
+        return sum(word_count(item) for item in value.values())
+    if isinstance(value, list):
+        return sum(word_count(item) for item in value)
+    if isinstance(value, str):
+        return len(re.findall(r"[\wÀ-ɏЁё-]+", value))
+    return 0
+
+
+def current_seo(slug):
+    """Return published Astro metadata when a migrated data record owns it.
+
+    The historic inventory remains the source for crawl facts and word totals, but
+    the registry must show the metadata that will actually ship after the migration.
+    """
+    if slug == "index":
+        path = os.path.join(CLONE, "src", "data", "site.json")
+        if os.path.exists(path):
+            return json.load(open(path, encoding="utf-8")).get("meta") or {}
+        return {}
+
+    path = os.path.join(CLONE, "src", "data", "pages", f"{slug}.json")
+    if not os.path.exists(path):
+        return {}
+    return json.load(open(path, encoding="utf-8")).get("seo") or {}
+
+
+def current_data_pages(known_slugs, weights):
+    """Records that are intentionally outside the historic official sitemap.
+
+    New commercial pages are real Astro data, not hand-maintained CSV rows. This
+    keeps the registry truthful when a route is captured from Tilda later.
+    """
+    records = []
+    for path in sorted(glob.glob(os.path.join(CLONE, "src", "data", "pages", "*.json"))):
+        page = json.load(open(path, encoding="utf-8"))
+        slug = page.get("slug") or os.path.basename(path)[:-5]
+        if slug in known_slugs:
+            continue
+        seo = page.get("seo") or {}
+        route = "/" + slug
+        weight = weights.get(route, {"freq": 0, "prio": set()})
+        records.append({
+            "slug": slug,
+            "path": route,
+            "type": page.get("type") or page_type(slug),
+            "template_cluster": "active-hidden",
+            "status": "done",
+            "kw_freq": weight["freq"],
+            "kw_priority": ",".join(sorted(p for p in weight["prio"] if p)),
+            "words": word_count(page),
+            "title": seo.get("title", ""),
+            "title_len": len(seo.get("title", "")),
+            "description": seo.get("description", ""),
+            "description_len": len(seo.get("description", "")),
+            "h1": seo.get("h1", ""),
+            "url": f"{CANONICAL_ORIGIN}{route}",
+            "snapshot": f"_capture/pages/{slug}.json" if os.path.exists(os.path.join(CLONE, "_capture", "pages", f"{slug}.json")) else "",
+        })
+    return records
+
+
+def catalog_record(weights):
+    """The catalogue is a static Astro route, so read its literal SEO constants."""
+    source = os.path.join(CLONE, "src", "pages", "kvesty-v-rostove-na-donu.astro")
+    if not os.path.exists(source):
+        return None
+    text = open(source, encoding="utf-8").read()
+
+    def literal(name):
+        found = re.search(rf"const {name} = '([^']*)';", text)
+        return found.group(1) if found else ""
+
+    path = "/kvesty-v-rostove-na-donu"
+    weight = weights.get(path, {"freq": 0, "prio": set()})
+    title, description = literal("title"), literal("description")
+    return {
+        "slug": "kvesty-v-rostove-na-donu",
+        "path": path,
+        "type": "category",
+        "template_cluster": "catalog",
+        "status": "done",
+        "kw_freq": weight["freq"],
+        "kw_priority": ",".join(sorted(p for p in weight["prio"] if p)),
+        "words": word_count([title, description]),
+        "title": title,
+        "title_len": len(title),
+        "description": description,
+        "description_len": len(description),
+        "h1": "Квесты в Ростове-на-Дону",
+        "url": f"{CANONICAL_ORIGIN}{path}",
+        "snapshot": "",
+    }
+
+
 def main():
     inv = list(csv.DictReader(open(os.path.join(WORK, "inventory.csv"), encoding="utf-8-sig")))
     pages = [r for r in inv if "sitemap" in r["source"] and r["status"] == "200"]
@@ -127,8 +228,11 @@ def main():
     done = migrated_slugs()
 
     out = []
+    known_slugs = set()
     for r in pages:
         slug = slug_of(r["url"])
+        seo = current_seo(slug)
+        known_slugs.add(slug)
         path = "/" if slug == "index" else "/" + slug
         w = weights.get(path, {"freq": 0, "prio": set()})
         out.append({
@@ -136,34 +240,41 @@ def main():
             "path": path,
             "type": page_type(slug),
             "template_cluster": clusters.get(slug, ""),
-            "status": "done" if (slug in done or (slug == "index" and "index" in done)) else "todo",
+            "status": "redirect" if slug in REDIRECT_ONLY else ("done" if (slug in done or (slug == "index" and "index" in done)) else "todo"),
             "kw_freq": w["freq"],
             "kw_priority": ",".join(sorted(p for p in w["prio"] if p)),
             "words": r["word_count"],
-            "title": r["title"],
-            "title_len": r["title_len"],
-            "description": r["description"],
-            "description_len": r["description_len"],
-            "h1": r["h1"],
+            "title": seo.get("title", r["title"]),
+            "title_len": len(seo.get("title", r["title"])),
+            "description": seo.get("description", r["description"]),
+            "description_len": len(seo.get("description", r["description"])),
+            "h1": seo.get("h1", r["h1"]),
             "url": r["url"],
             "snapshot": (glob.glob(os.path.join(WORK, "raw", "pages", f"{slug}--*.html")) or [""])[0].replace(
                 os.path.dirname(CLONE) + "/", ""),
         })
 
+    out.extend(current_data_pages(known_slugs, weights))
+    catalog = catalog_record(weights)
+    if catalog:
+        out.append(catalog)
+
     # порядок: сначала перенесённые, потом по весу семантики и объёму
     order = {"home": 0, "category": 1, "holiday": 2, "venue": 3, "vr": 4, "quest": 5, "info": 6}
-    out.sort(key=lambda x: (x["status"] != "done", order.get(x["type"], 9), -x["kw_freq"], -int(x["words"] or 0)))
+    status_order = {"done": 0, "redirect": 1, "todo": 2}
+    out.sort(key=lambda x: (status_order.get(x["status"], 9), order.get(x["type"], 9), -x["kw_freq"], -int(x["words"] or 0)))
 
     dest = os.path.join(ROOT, "pages.csv")
     with open(dest, "w", encoding="utf-8", newline="") as f:
-        wr = csv.DictWriter(f, fieldnames=list(out[0].keys()))
+        wr = csv.DictWriter(f, fieldnames=list(out[0].keys()), lineterminator="\n")
         wr.writeheader()
         wr.writerows(out)
 
     by_type = collections.Counter(x["type"] for x in out)
     done_n = sum(1 for x in out if x["status"] == "done")
+    redirect_n = sum(1 for x in out if x["status"] == "redirect")
     print(f"реестр: {dest}")
-    print(f"страниц в sitemap: {len(out)} | перенесено: {done_n} | осталось: {len(out) - done_n}")
+    print(f"страниц в реестре: {len(out)} | перенесено: {done_n} | redirect: {redirect_n} | осталось: {len(out) - done_n - redirect_n}")
     print("по типам:", dict(by_type))
     print("кластеры шаблонов:", dict(collections.Counter(x["template_cluster"] for x in out)))
 

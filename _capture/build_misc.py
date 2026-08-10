@@ -107,7 +107,7 @@ def build_category(slug):
     if gal:
         ls = lines(gal)
         photos = [local_image(i["src"], 900) for i in gal["imgs"]]
-        out["gallery"] = {"title": ls[0] if ls else "", "photos": [p for p in photos if p][:12]}
+        out["gallery"] = {"title": ls[0] if ls else "", "photos": [p for p in photos if p]}
 
     # сертификат
     cert = next((s for s in secs if s["type"] == "396" and "сертификат" in (s.get("plain") or "").lower()), None)
@@ -117,7 +117,7 @@ def build_category(slug):
         out["cert"] = {"title": next((x for x in ls if len(x) < 60), ls[0] if ls else ""),
                        "lines": [x for x in ls if len(x) >= 60],
                        "cta": next((l["text"] for l in cert["links"] if l["text"]), "Заказать сертификат"),
-                       "photos": [p for p in photos if p][:3]}
+                       "photos": [p for p in photos if p]}
 
     # площадки списком
     venues = next((s for s in secs if s["type"] == "976"), None)

@@ -1,0 +1,104 @@
+source,target,status,reason
+/page57307963.html,/minecraft,301,Legacy numeric alias for the Minecraft landing.
+/minecraft-lend,/minecraft,301 + fallback,Legacy Minecraft landing with a static noindex fallback.
+/page48687287.html,/,301,Retired thank-you page returns visitors to the homepage.
+/spasibo,/,301,Retired thank-you page returns visitors to the homepage.
+/page62529067.html,/kids,301,Retired children's thank-you page returns to the party landing.
+/kids_spasibo,/kids,301,Retired children's thank-you page returns to the party landing.
+/page51322757.html,/privacy,301,Legacy numeric alias for the published privacy policy.
+/privacy,/privacy,200,Already published at its canonical path; no redirect is emitted.
+/page56559131.html,/,301,Retired loyalty-form utility page returns visitors to the homepage.
+/pl,/,301,Retired loyalty-form utility page returns visitors to the homepage.
+/page57141531.html,/,301,Retired certificate-form utility page returns visitors to the homepage.
+/sv,/,301,Retired certificate-form utility page returns visitors to the homepage.
+/page52903497.html,/contacts,301,Retired agency request form returns visitors to contacts.
+/agent,/contacts,301,Retired agency request form returns visitors to contacts.
+/page56207935.html,/kvesty-v-rostove-na-donu,301,Retired quest-cart utility page returns visitors to the catalog.
+/page63266477.html,/igra_v_kalmara,301,Legacy numeric alias for the Squid Game landing.
+/igra-v-kalmara-lend,/igra_v_kalmara,301 + fallback,Legacy Squid Game landing with a static noindex fallback.
+/page64505705.html,/roblox,301,Legacy numeric alias for the Roblox landing.
+/roblox-land,/roblox,301 + fallback,Legacy Roblox landing with a static noindex fallback.
+/page69116991.html,/among_us,301,Legacy numeric alias for the Among Us landing.
+/amongus-land,/among_us,301 + fallback,Legacy Among Us landing with a static noindex fallback.
+/page40355277.html,/,301,Retired Tilda block archive returns visitors to the homepage.
+/page71881007.html,/,301,Retired Tilda alias-block utility page returns visitors to the homepage.
+/alias-block,/,301,Retired Tilda alias-block utility page returns visitors to the homepage.
+/page87839976.html,/new-year-2025,301,Legacy numeric alias for the published New Year landing.
+/new-year,/new-year-2025,301,Older New Year landing consolidates on the published current route.
+/page131787606.html,/,301,Retired image utility page returns visitors to the homepage.
+/aimg,/,301,Retired image utility page returns visitors to the homepage.
+/page7266054.html,/,301,Retired Tilda header utility page returns visitors to the homepage.
+/header,/,301,Retired Tilda header utility page returns visitors to the homepage.
+/page7837595.html,/,301,Retired Tilda script utility page returns visitors to the homepage.
+/page48039931.html,/,301,Retired Tilda error page returns visitors to the homepage.
+/error,/,301,Retired Tilda error page returns visitors to the homepage.
+/page17604184.html,/kvesty-v-rostove-na-donu,301,Retired KvestTam aggregator page returns visitors to the catalog.
+/agregator/bez-api-kvesttam,/kvesty-v-rostove-na-donu,301,Retired KvestTam aggregator page returns visitors to the catalog.
+/page17604510.html,/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom,301,KvestTam alias for the matching Bank Heist quest.
+/bank-kvesttam,/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom,301,KvestTam alias for the matching Bank Heist quest.
+/page17604543.html,/kvest_v_realnosti_sherlock_holms,301,KvestTam alias for the matching Sherlock Holmes quest.
+/sherlok-kvesttam,/kvest_v_realnosti_sherlock_holms,301,KvestTam alias for the matching Sherlock Holmes quest.
+/page17604674.html,/kvesty-v-rostove-na-donu,301,Retired Alcatraz quest has no matching migrated page; send visitors to the catalog.
+/alkatraz-kvesttam,/kvesty-v-rostove-na-donu,301,Retired Alcatraz quest has no matching migrated page; send visitors to the catalog.
+/page17604718.html,/kvest_v_realnosti_fantom,301,KvestTam alias for the matching Fantom quest.
+/fantom-kvesttam,/kvest_v_realnosti_fantom,301,KvestTam alias for the matching Fantom quest.
+/page17604750.html,/kvest_v_realnosti_zapad,301,KvestTam alias for the matching Wild West quest.
+/dikiy-kvesttam,/kvest_v_realnosti_zapad,301,KvestTam alias for the matching Wild West quest.
+/page17605141.html,/kvest_v_realnosti_psihbolnitsa,301,KvestTam alias for the matching Psychiatric Hospital quest.
+/psihbolnica-kvesttam,/kvest_v_realnosti_psihbolnitsa,301,KvestTam alias for the matching Psychiatric Hospital quest.
+/page17605205.html,/kvesty-v-rostove-na-donu,301,Retired Madagascar quest has no matching migrated page; send visitors to the catalog.
+/madagaskar-kvesttam,/kvesty-v-rostove-na-donu,301,Retired Madagascar quest has no matching migrated page; send visitors to the catalog.
+/page17605245.html,/kvest_v_realnosti_garri_potter_,301,KvestTam alias for the matching Harry Potter quest.
+/garri-kvesttam,/kvest_v_realnosti_garri_potter_,301,KvestTam alias for the matching Harry Potter quest.
+/page17605296.html,/pirati,301,KvestTam alias for the matching Pirates quest.
+/pirate-kvesttam,/pirati,301,KvestTam alias for the matching Pirates quest.
+/page17605327.html,/ono,301,KvestTam alias for the matching IT quest.
+/ono-kvesttam,/ono,301,KvestTam alias for the matching IT quest.
+/page17605351.html,/kvest_v_realnosti_zamok_drakuly,301,KvestTam alias for the matching Dracula Castle quest.
+/drakula-kvesttam,/kvest_v_realnosti_zamok_drakuly,301,KvestTam alias for the matching Dracula Castle quest.
+/page17605385.html,/kvesty-v-rostove-na-donu,301,Retired Annabelle quest has no matching migrated page; send visitors to the catalog.
+/annabel-kvesttam,/kvesty-v-rostove-na-donu,301,Retired Annabelle quest has no matching migrated page; send visitors to the catalog.
+/page17605408.html,/kvest_v_realnosti_dom_prizrakov,301,KvestTam alias for the matching Ghost House quest.
+/prizrak-kvesttam,/kvest_v_realnosti_dom_prizrakov,301,KvestTam alias for the matching Ghost House quest.
+/page17605454.html,/kvest_v_realnosti_noch_v_museum_ograblenie,301,KvestTam alias for the matching Night at the Museum quest.
+/noch-kvesttam,/kvest_v_realnosti_noch_v_museum_ograblenie,301,KvestTam alias for the matching Night at the Museum quest.
+/page17605476.html,/kvest_v_realnosti_harry_potter_i_krestrazh,301,KvestTam alias for the matching Harry Potter Horcrux quest.
+/krestrazh-kvesttam,/kvest_v_realnosti_harry_potter_i_krestrazh,301,KvestTam alias for the matching Harry Potter Horcrux quest.
+/page17601643.html,/kvesty-v-rostove-na-donu,301,Retired KvestHunter aggregator page returns visitors to the catalog.
+/agregator/bez-api-kvesthunter,/kvesty-v-rostove-na-donu,301,Retired KvestHunter aggregator page returns visitors to the catalog.
+/page17601875.html,/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom,301,KvestHunter alias for the matching Bank Heist quest.
+/bank-hunter,/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom,301,KvestHunter alias for the matching Bank Heist quest.
+/page17602182.html,/kvest_v_realnosti_sherlock_holms,301,KvestHunter alias for the matching Sherlock Holmes quest.
+/sherlok-hunter,/kvest_v_realnosti_sherlock_holms,301,KvestHunter alias for the matching Sherlock Holmes quest.
+/page17602241.html,/kvesty-v-rostove-na-donu,301,Retired Alcatraz quest has no matching migrated page; send visitors to the catalog.
+/alkatraz-hunter,/kvesty-v-rostove-na-donu,301,Retired Alcatraz quest has no matching migrated page; send visitors to the catalog.
+/page17602499.html,/kvest_v_realnosti_fantom,301,KvestHunter alias for the matching Fantom quest.
+/fantom-hunter,/kvest_v_realnosti_fantom,301,KvestHunter alias for the matching Fantom quest.
+/page17602532.html,/kvest_v_realnosti_zapad,301,KvestHunter alias for the matching Wild West quest.
+/dikiy-hunter,/kvest_v_realnosti_zapad,301,KvestHunter alias for the matching Wild West quest.
+/page17602569.html,/kvest_v_realnosti_psihbolnitsa,301,KvestHunter alias for the matching Psychiatric Hospital quest.
+/psihbolniza-hunter,/kvest_v_realnosti_psihbolnitsa,301,KvestHunter alias for the matching Psychiatric Hospital quest.
+/page17602664.html,/kvesty-v-rostove-na-donu,301,Retired Madagascar quest has no matching migrated page; send visitors to the catalog.
+/madagaskar-hunter,/kvesty-v-rostove-na-donu,301,Retired Madagascar quest has no matching migrated page; send visitors to the catalog.
+/page17602693.html,/kvest_v_realnosti_garri_potter_,301,KvestHunter alias for the matching Harry Potter quest.
+/garri-hunter,/kvest_v_realnosti_garri_potter_,301,KvestHunter alias for the matching Harry Potter quest.
+/page17602725.html,/pirati,301,KvestHunter alias for the matching Pirates quest.
+/pirate-hunter,/pirati,301,KvestHunter alias for the matching Pirates quest.
+/page17602753.html,/ono,301,KvestHunter alias for the matching IT quest.
+/ono-hunter,/ono,301,KvestHunter alias for the matching IT quest.
+/page17602790.html,/kvest_v_realnosti_zamok_drakuly,301,KvestHunter alias for the matching Dracula Castle quest.
+/zamok-hunter,/kvest_v_realnosti_zamok_drakuly,301,KvestHunter alias for the matching Dracula Castle quest.
+/page17602829.html,/kvesty-v-rostove-na-donu,301,Retired Annabelle quest has no matching migrated page; send visitors to the catalog.
+/annabel-hunter,/kvesty-v-rostove-na-donu,301,Retired Annabelle quest has no matching migrated page; send visitors to the catalog.
+/page17602893.html,/kvest_v_realnosti_dom_prizrakov,301,KvestHunter alias for the matching Ghost House quest.
+/prizrak-hunter,/kvest_v_realnosti_dom_prizrakov,301,KvestHunter alias for the matching Ghost House quest.
+/page17602934.html,/kvest_v_realnosti_noch_v_museum_ograblenie,301,KvestHunter alias for the matching Night at the Museum quest.
+/noch-hunter,/kvest_v_realnosti_noch_v_museum_ograblenie,301,KvestHunter alias for the matching Night at the Museum quest.
+/page17602969.html,/kvest_v_realnosti_harry_potter_i_krestrazh,301,KvestHunter alias for the matching Harry Potter Horcrux quest.
+/krestrazh-hunter,/kvest_v_realnosti_harry_potter_i_krestrazh,301,KvestHunter alias for the matching Harry Potter Horcrux quest.
+/page10719803.html,/,301,Legacy numeric alias for the homepage.
+/page41891214.html,/prazdniki-pod-kluch,301,Legacy numeric alias for the published turnkey party landing.
+/prazdniki-pod-kluch,/prazdniki-pod-kluch,200,Captured turnkey party landing is published at its canonical path.
+/page59359589.html,/new-year-2025,301,Legacy numeric alias for the published New Year landing.
+/new-year-2025,/new-year-2025,200,Captured New Year landing is published at its canonical path.
+/wednesday_ukradennaya_vesch,/wednesday-poteryannaya-dusha,301 + fallback,Tilda captures are duplicate; consolidate on the retained Wednesday page.

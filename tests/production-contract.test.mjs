@@ -14,12 +14,14 @@ const REQUIRED_PATHS = [
   '/minecraft-lend',
   '/roblox-land',
   '/amongus-land',
+  '/wednesday_ukradennaya_vesch',
 ];
 const LEGACY_TARGETS = new Map([
   ['/igra-v-kalmara-lend', '/igra_v_kalmara'],
   ['/minecraft-lend', '/minecraft'],
   ['/roblox-land', '/roblox'],
   ['/amongus-land', '/among_us'],
+  ['/wednesday_ukradennaya_vesch', '/wednesday-poteryannaya-dusha'],
 ]);
 
 function pageHtml(pathname, {
@@ -180,6 +182,14 @@ test('rejects a legacy fallback that canonicals to its old URL instead of its mi
   const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
 
   assert.ok(report.errors.some((error) => error.includes('/minecraft-lend') && error.includes('canonical does not match')));
+});
+
+test('rejects the Wednesday duplicate fallback when it canonicals to its legacy URL', async () => {
+  const distDir = await createValidDist();
+  await writePage(distDir, '/wednesday_ukradennaya_vesch', pageHtml('/wednesday_ukradennaya_vesch', { noindex: true }));
+  const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
+
+  assert.ok(report.errors.some((error) => error.includes('/wednesday_ukradennaya_vesch') && error.includes('canonical does not match')));
 });
 
 test('rejects slashless sitemap locations', async () => {

@@ -9,7 +9,7 @@ import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import site from '../data/site.json';
-import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, isCurrentRoute, venueForAddress, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, isCurrentRoute, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
@@ -23,7 +23,13 @@ const path = '/' + page.slug;
 const seo = page.seo;
 const hero = page.hero || {};
 const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
-const venue = venueForAddress(venues, page.venue?.address);
+const venue = venues.find((candidate) => candidate.slug === page.venueSlug);
+const venueContent = page.venue || {};
+const venueTitle = venueContent.title || 'Площадка проведения';
+const venueSubtitle = venueContent.subtitle || `Квест проходит на площадке по адресу ${venue?.address || ''}`;
+const venueLines = venueContent.lines || [];
+const venuePhotos = venueContent.photos || [];
+const venueCta = venueContent.cta || 'Забронировать дату';
 const visiblePrice = Number(page.priceFrom) || null;
 
 // возраст («12+») в оригинале стоит отдельным кружком справа, остальное — пилюли слева
@@ -75,8 +81,13 @@ const jsonld = [
 ].filter(Boolean);
 
 const heroSrcset = hero.bgset
-  ? Object.entries(hero.bgset).map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
+  // The 1,600px source is the largest permitted local original. Keeping only the
+  // mobile and maximum candidates makes the browser select a retina-safe source
+  // instead of the former 1,200px intermediary for a 1,200px desktop hero.
+  ? Object.entries(hero.bgset).filter(([w]) => w === '760' || w === '1600' || !hero.bgset?.['1600'])
+    .map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
   : (hero.bg ? `${asset(hero.bg)} 1600w` : '');
+const heroSource = hero.bgset?.['1600'] || hero.bgset?.['1200'] || hero.bg;
 // запасная перелинковка: без неё страница остаётся сиротой и теряет вес в поиске
 const relatedItems = page.related?.items?.length
   ? page.related.items
@@ -85,11 +96,23 @@ const relatedItems = page.related?.items?.length
       .slice(0, 8)
       .map((p) => ({ t: p.t.replace(/^Квест\s+/i, ''), href: '/' + p.slug, img: p.img }));
 const filteredRelatedItems = relatedItems.filter((item) => !isCurrentRoute(item.href, path));
+const pagesBySlug = new Map(index.map((item) => [item.slug, item]));
+const canonicalizeCardItems = (items = []) => items.map((item) => {
+  const slug = String(item.href || '').split(/[?#]/, 1)[0].replace(/^\/+|\/+$/g, '');
+  // Explicit Tilda thumbnails were frequently low-resolution derivatives. Prefer
+  // the linked page's highest-quality local hero whenever it is available.
+  return {
+    ...item,
+    img: pagesBySlug.get(slug)?.img || item.img,
+    imgSet: pagesBySlug.get(slug)?.imgSet || null,
+  };
+});
+const canonicalCardItems = canonicalizeCardItems(filteredRelatedItems);
 const relatedTitle = page.related?.title || 'Другие квесты от «Чё за Квест?»';
 const relatedSub = page.related?.subtitle || 'У нас есть из чего выбрать';
 
 const preload = hero.bg
-  ? { href: asset(hero.bgset?.['1200'] || hero.bg), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
+  ? { href: asset(heroSource), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
   : null;
 ---
 <Layout
@@ -110,7 +133,7 @@ const preload = hero.bg
       <div class="container-wide">
         <div class="qhero__panel">
           {hero.bg && (
-            <img class="qhero__bg" src={asset(hero.bgset?.['1200'] || hero.bg)}
+            <img class="qhero__bg" src={asset(heroSource)}
                  srcset={heroSrcset} sizes="(max-width:700px) 100vw, 1200px"
                  alt={`Квест «${seo.h1}» в Ростове-на-Дону`}
                  width="1200" height="550" fetchpriority="high" decoding="async" />
@@ -203,32 +226,34 @@ const preload = hero.bg
 
     {filteredRelatedItems.length > 0 && (
       <CardsRow title={relatedTitle} subtitle={relatedSub}
-                items={filteredRelatedItems} variant="poster" id="drugie" />
+                items={canonicalCardItems} variant="poster" id="drugie" />
     )}
 
     <PartyForm />
 
     <!-- ============ ПЛОЩАДКА ============ -->
-    {page.venue && (
+    {venue && (
       <section class="qvenue">
         <div class="container">
-          {page.venue.title && <h2 class="section-title">{page.venue.title}</h2>}
-          {page.venue.subtitle && <p class="section-sub">{page.venue.subtitle}</p>}
+          <h2 class="section-title">{venueTitle}</h2>
+          {venueSubtitle && <p class="section-sub">{venueSubtitle}</p>}
           <div class="qvenue__card">
             <div class="qvenue__photos">
-              {(page.venue.photos || []).map((ph) => (
-                <img class="qvenue__photo" src={asset(ph)} alt={`Зал «Чё за Квест» — ${page.venue.address}`}
+              {venuePhotos.map((ph) => (
+                <img class="qvenue__photo" src={asset(ph)} alt={`Зал «Чё за Квест» — ${venue.address}`}
                      loading="lazy" decoding="async" width="600" height="400" />
               ))}
             </div>
             <div class="qvenue__info">
               <h3 class="qvenue__addr">
-                {venue ? <a href={link('/' + venue.slug)}>{page.venue.address}</a> : page.venue.address}
+                <a href={link('/' + venue.slug)}>{venue.address}</a>
               </h3>
-              <ul class="qvenue__list">
-                {page.venue.lines.map((l) => (<li>{l}</li>))}
-              </ul>
-              <a class="btn-orange" href={site.header.phoneHref}>{page.venue.cta}</a>
+              {venueLines.length > 0 && (
+                <ul class="qvenue__list">
+                  {venueLines.map((line) => (<li>{line}</li>))}
+                </ul>
+              )}
+              <a class="btn-orange" href={site.header.phoneHref}>{venueCta}</a>
             </div>
           </div>
         </div>
@@ -244,7 +269,8 @@ const preload = hero.bg
           {e.photos.length > 0 && (
             <div class={`qextra__photos qextra__photos--${e.photos.length > 3 ? 'grid' : 'row'}`}>
               {e.photos.map((ph) => (
-                <img src={asset(ph)} alt={e.title || `Фото квеста «${seo.h1}»`} loading="lazy" decoding="async" />
+                <img src={asset(ph)} alt={e.title || `Фото квеста «${seo.h1}»`}
+                     width="600" height="400" loading="lazy" decoding="async" />
               ))}
             </div>
           )}
@@ -257,7 +283,7 @@ const preload = hero.bg
       <section class="qvideo" id="video">
         <div class="container">
           <h2 class="section-title qvideo__title">{page.video.title}</h2>
-          <figure class="qvideo__frame" data-video={page.video.src || undefined}>
+          <figure class="qvideo__frame" data-video={page.video.src ? asset(page.video.src) : undefined}>
             <img class="qvideo__poster" src={asset(page.video.poster)} alt={page.video.caption}
                  loading="lazy" decoding="async" width="1120" height="630" />
             {page.video.src && (
@@ -273,7 +299,7 @@ const preload = hero.bg
 
     {page.scenarios && (
       <CardsRow title={page.scenarios.title} subtitle={page.scenarios.subtitle}
-                items={page.scenarios.items} variant="square" uptitle="День рождения в стиле" />
+                items={canonicalizeCardItems(page.scenarios.items)} variant="square" uptitle="День рождения в стиле" />
     )}
 
     <CallbackForm id="q" />

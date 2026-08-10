@@ -100,7 +100,6 @@ def build(slug):
             p = local_image(b["url"], 700)
             if p:
                 howto["photos"].append(p)
-        howto["photos"] = howto["photos"][:8]
         ymap = next((l["href"] for l in route["links"] if "yandex" in l["href"]), None)
         if ymap:
             howto["routeUrl"] = ymap
@@ -158,7 +157,7 @@ def build(slug):
             "address": ls[0].title() if ls else "",
             "cta": next((l["text"] for l in hall["links"] if l["text"]), "Забронировать дату"),
             "lines": [t for t in ls[1:] if t.lower() != "забронировать дату" and not re.match(r"^\d+ из \d+$", t)],
-            "photos": photos[:6],
+            "photos": photos,
         }
 
     json.dump(out, open(os.path.join(DST, f"{slug}.json"), "w", encoding="utf-8"),

@@ -90,8 +90,8 @@
 .card__link{position:relative;display:block;border-radius:16px;overflow:hidden;background:#1c1c1c}
 .cards--poster .card{width:275px}
 .cards--poster .card__img{width:275px;height:367px;object-fit:cover}
-.cards--square .card{width:262px}
-.cards--square .card__img{width:262px;height:262px;object-fit:cover}
+.cards--square .card{width:216px}
+.cards--square .card__img{width:216px;height:216px;object-fit:cover}
 .card__img{transition:transform .35s ease}
 .card__link:hover .card__img{transform:scale(1.04)}
 .card__cap{
@@ -288,6 +288,7 @@
 .cgrid{margin-top:34px;padding:46px 0 54px;background:#161616}
 .cgrid__title{color:#fff}
 .cgrid__list{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.ccard{position:relative}
 .ccard__link{position:relative;display:block;border-radius:18px;overflow:hidden;background:#000;aspect-ratio:38/29}
 .ccard__img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
 .ccard__link:hover .ccard__img{transform:scale(1.04)}
@@ -297,9 +298,10 @@
   border-radius:40px;background:rgba(255,255,255,.92);color:#161616;font-size:14px;font-weight:600;
   display:inline-flex;align-items:center;justify-content:center;
 }
-.ccard__body{position:absolute;left:18px;right:120px;bottom:18px;z-index:2;color:#fff}
+.ccard__body{position:absolute;left:18px;right:120px;bottom:48px;z-index:2;color:#fff}
 .ccard__name{display:block;font-size:16px;font-weight:700;text-transform:uppercase;line-height:1.2}
-.ccard__addr{display:block;margin-top:8px;font-size:13px;opacity:.85}
+.ccard__venue{position:absolute;left:18px;right:110px;bottom:8px;z-index:3;display:flex;align-items:center;min-height:44px;color:#fff;font-size:13px;line-height:1.2;opacity:.85}
+.ccard__venue:hover{text-decoration:underline;text-underline-offset:3px;opacity:1}
 .ccard__meta{position:absolute;right:14px;bottom:16px;z-index:2;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
 .ccard__chip{
   background:rgba(255,255,255,.92);color:#161616;border-radius:40px;padding:6px 12px;

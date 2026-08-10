@@ -17,6 +17,7 @@ import os
 import re
 import sys
 import urllib.request
+from urllib.parse import urlsplit, urlunsplit
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "_capture", "pages")
@@ -45,6 +46,34 @@ NAMES = None
 UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120 Safari/537.36"}
 
 
+def original_image_url(url):
+    """Return a Tilda asset URL without its delivery-only transformation chain.
+
+    The page captures keep the exact URL used by Tilda, because that URL is also
+    part of the stable local-file hash.  A chain beginning with ``/-/`` is not
+    the source image though: it may contain cover, contain, resize, resizeb,
+    empty or format operations, including a 20px placeholder.  Downloading the
+    path before that chain keeps the source asset while preserving existing
+    local names and JSON references.
+    """
+    source = url or ""
+    parsed = urlsplit(source)
+    if "/-/" in parsed.path:
+        # Most static URLs place the filename before the chain. Optim URLs —
+        # and a second static form used for lazy placeholders — place it after
+        # the chain instead. Reconstruct the immutable bucket/file endpoint in
+        # both cases instead of fetching a resized derivative or a directory.
+        bucket, transformed = parsed.path.split("/-/", 1)
+        before_name = bucket.rsplit("/", 1)[-1]
+        filename = transformed.rstrip("/").rsplit("/", 1)[-1]
+        if "." in before_name:
+            return urlunsplit((parsed.scheme or "https", parsed.netloc, bucket, "", ""))
+        if "." in filename:
+            original_name = re.sub(r"\.(avif|gif|jpe?g|png|svg|webp)\.webp$", r".\1", filename, flags=re.I)
+            return urlunsplit(("https", "static.tildacdn.com", f"{bucket}/{original_name}", "", ""))
+    return source.split("/-/", 1)[0]
+
+
 def fetch(url):
     """Tilda отдаёт gzip всегда — распаковываем по magic-байтам, иначе получим мусор."""
     req = urllib.request.Request(url, headers=UA)
@@ -67,7 +96,7 @@ def local_image(url, max_w=1200):
         return rel
     try:
         from PIL import Image
-        raw = fetch(url)
+        raw = fetch(original_image_url(url))
         im = Image.open(io.BytesIO(raw))
         if im.mode not in ("RGB", "RGBA"):
             im = im.convert("RGBA" if "A" in im.getbands() else "RGB")
@@ -316,7 +345,7 @@ def build(slug):
             "address": ls[0].title() if ls else "",
             "cta": next((l["text"] for l in venue_sec["links"] if l["text"]), "Забронировать дату"),
             "lines": [t for t in ls[1:] if t.lower() not in ("забронировать дату",) and not re.match(r"^\d+ из \d+$", t)],
-            "photos": photos[:6],
+            "photos": photos,
         }
     # подводка к площадке (блок 396 «Выберите зал…»)
     lead_sec = next((s for s in secs if s["type"] == "396" and "выберите зал" in (s.get("plain") or "").lower()), None)
@@ -391,7 +420,7 @@ def build(slug):
         extra.append({
             "title": title,
             "lines": body,
-            "photos": photos[:8],
+            "photos": photos,
         })
     # склейка: в Tilda заголовок и его картинки часто лежат разными блоками
     merged = []

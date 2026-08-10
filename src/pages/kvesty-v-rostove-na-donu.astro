@@ -1,0 +1,178 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import QuestCard from '../components/QuestCard.astro';
+import { absoluteUrl, breadcrumbJsonLd } from '../lib/seo.js';
+import '../styles/catalog.css';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const path = '/kvesty-v-rostove-na-donu';
+const title = 'Квесты в Ростове-на-Дону — каталог | Чё за Квест';
+const description = 'Квесты в Ростове-на-Дону: каталог из 40 игр, VR, пряток и хоррор-сценариев для детей и взрослых. Выберите формат, тему и площадку.';
+const keywords = 'квесты в Ростове-на-Дону, каталог квестов, VR-игры, страшные квесты, прятки';
+const LEGACY_QUEST_SLUG = 'wednesday_ukradennaya_vesch';
+const modules = import.meta.glob('../data/pages/*.json', { eager: true });
+const pages = Object.entries(modules).map(([filePath, module]) => {
+  const page = module.default ?? module;
+  return { ...page, slug: page.slug || filePath.split('/').pop().replace('.json', '') };
+});
+
+const venuesBySlug = Object.fromEntries(pages
+  .filter((page) => page.type === 'venue')
+  .map((page) => [page.slug, {
+    slug: page.slug,
+    address: (page.breadcrumbs || []).slice(-1)[0]?.t || page.hall?.address || page.seo?.h1 || '',
+  }]));
+
+const contentForTheme = (page) => JSON.stringify({
+  hero: page.hero,
+  seo: page.seo,
+  story: page.story,
+  features: page.features,
+}).toLocaleLowerCase('ru-RU');
+
+const ageFor = (page) => Number((page.hero?.pills || []).find((pill) => /^\d+\+$/.test(pill))?.replace('+', '')) || null;
+
+const themesFor = (page) => {
+  const content = contentForTheme(page);
+  const isVr = /(?:\bvr\b|виртуальн|portal[ -](?:strike|zombie)|party games|brawl)/iu.test(content);
+  const themes = [isVr ? 'vr' : 'quest'];
+
+  if (ageFor(page) && ageFor(page) <= 9) themes.push('kids');
+  if (/(?:страш|хоррор|кошмар|псих|призрак|техасс|оно|дракул|патолог|шизофрен|хостел|пыток|зомби|кальмар)/iu.test(content)) themes.push('scary');
+  if (/(?:прятк|лабиринт)/iu.test(content)) themes.push('hide');
+
+  return themes;
+};
+
+const quests = pages
+  .filter((page) => page.type === 'quest' && page.slug !== LEGACY_QUEST_SLUG)
+  .map((page) => ({
+    page,
+    venue: venuesBySlug[page.venueSlug],
+    themes: themesFor(page),
+  }))
+  .sort((left, right) => (left.page.hero?.h1 || left.page.seo?.h1 || left.page.slug)
+    .localeCompare(right.page.hero?.h1 || right.page.seo?.h1 || right.page.slug, 'ru'));
+
+const filters = [
+  { id: 'all', label: 'Все игры' },
+  { id: 'quest', label: 'Квесты' },
+  { id: 'vr', label: 'VR-игры' },
+  { id: 'scary', label: 'Страшные' },
+  { id: 'kids', label: 'Для детей' },
+  { id: 'hide', label: 'Прятки и лабиринты' },
+];
+const breadcrumbs = [
+  { t: 'Главная', href: '/' },
+  { t: 'Все квесты', href: null },
+];
+const jsonld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': absoluteUrl(`${path}#collectionpage`),
+    name: 'Квесты в Ростове-на-Дону',
+    url: absoluteUrl(path),
+    mainEntity: {
+      '@type': 'ItemList',
+      '@id': absoluteUrl(`${path}#items`),
+      numberOfItems: quests.length,
+      itemListElement: quests.map(({ page }, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: page.hero?.h1 || page.seo?.h1 || page.slug,
+        url: absoluteUrl(`/${page.slug}`),
+      })),
+    },
+  },
+  breadcrumbJsonLd(breadcrumbs, path),
+];
+---
+
+<Layout title={title} description={description} keywords={keywords} path={path} jsonld={jsonld} preloadImage={null}>
+  <Header />
+
+  <main>
+    <Breadcrumbs items={breadcrumbs} />
+
+    <section class="catalog-page" data-catalog>
+      <div class="container">
+        <div class="catalog-page__head">
+          <p class="catalog-page__eyebrow">Чё за Квест · Ростов-на-Дону</p>
+          <h1 class="section-title">Квесты в Ростове-на-Дону</h1>
+          <p class="catalog-page__intro">Выберите игру по настроению, возрасту или формату. У каждой карточки указан адрес площадки.</p>
+        </div>
+
+        <div class="catalog-page__filters" aria-label="Фильтр квестов по темам" data-catalog-filters>
+          {filters.map((filter, index) => (
+            <button class="catalog-page__filter" type="button" data-theme={filter.id} aria-pressed={index === 0 ? 'true' : 'false'}>{filter.label}</button>
+          ))}
+        </div>
+        <p class="catalog-page__count" data-catalog-count aria-live="polite">Показано игр: {quests.length}</p>
+
+        <ul class="catalog-page__grid" data-catalog-grid>
+          {quests.map(({ page, venue, themes }, index) => (
+            <li data-catalog-card data-themes={themes.join(' ')}>
+              <QuestCard
+                base={base}
+                eager={index < 3}
+                card={{
+                  href: `/${page.slug}`,
+                  title: page.hero?.h1 || page.seo?.h1 || page.slug,
+                  photo: page.hero?.bg,
+                  photoSet: page.hero?.bgset || null,
+                  venue,
+                }}
+              />
+            </li>
+          ))}
+        </ul>
+        <p class="catalog-page__empty" data-catalog-empty hidden>По этому фильтру пока нет игр. Попробуйте другую тему.</p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  const catalog = document.querySelector('[data-catalog]');
+
+  if (catalog) {
+    const buttons = [...catalog.querySelectorAll('[data-theme]')];
+    const cards = [...catalog.querySelectorAll('[data-catalog-card]')];
+    const count = catalog.querySelector('[data-catalog-count]');
+    const empty = catalog.querySelector('[data-catalog-empty]');
+    const supportedThemes = new Set(buttons.map((button) => button.dataset.theme));
+
+    const applyTheme = (requestedTheme, { updateUrl = true } = {}) => {
+      const theme = supportedThemes.has(requestedTheme) ? requestedTheme : 'all';
+      let visibleCount = 0;
+
+      for (const card of cards) {
+        const isVisible = theme === 'all' || card.dataset.themes?.split(' ').includes(theme);
+        card.hidden = !isVisible;
+        if (isVisible) visibleCount += 1;
+      }
+      for (const button of buttons) button.setAttribute('aria-pressed', String(button.dataset.theme === theme));
+      if (count) count.textContent = `Показано игр: ${visibleCount}`;
+      if (empty) empty.hidden = visibleCount > 0;
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        if (theme === 'all') url.searchParams.delete('theme');
+        else url.searchParams.set('theme', theme);
+        window.history.replaceState(null, '', url);
+      }
+    };
+
+    for (const button of buttons) {
+      button.addEventListener('click', () => applyTheme(button.dataset.theme));
+    }
+
+    applyTheme(new URLSearchParams(window.location.search).get('theme') || 'all', { updateUrl: false });
+  }
+</script>

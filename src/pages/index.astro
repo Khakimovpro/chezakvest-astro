@@ -12,9 +12,37 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '#');
 const link = (h) => siteHref(base, h);
 
+const modules = import.meta.glob('../data/pages/*.json', { eager: true });
+const pages = Object.entries(modules).map(([filePath, module]) => {
+  const page = module.default ?? module;
+  return { ...page, slug: page.slug || filePath.split('/').pop().replace('.json', '') };
+});
+const questsBySlug = Object.fromEntries(pages
+  .filter((page) => page.type === 'quest')
+  .map((page) => [page.slug, page]));
+const venuesBySlug = Object.fromEntries(pages
+  .filter((page) => page.type === 'venue')
+  .map((page) => [page.slug, {
+    slug: page.slug,
+    address: (page.breadcrumbs || []).slice(-1)[0]?.t || page.hall?.address || page.seo?.h1 || '',
+  }]));
+const homeCards = site.cards.map((card) => {
+  const canonicalHref = link(card.href);
+  const quest = questsBySlug[canonicalHref.replace(/^\/+|\/+$/g, '')];
+  // Tilda catalog thumbnails were often 359px delivery derivatives. Reuse the
+  // linked quest's local hero, which is the canonical first-party image and is
+  // already available at the responsive source size.
+  return {
+    ...card,
+    photo: quest?.hero?.bg || card.photo,
+    photoSet: quest?.hero?.bgset || null,
+    venue: venuesBySlug[quest?.venueSlug],
+  };
+});
+
 // категории в порядке появления
 const catOrder = [];
-for (const c of site.cards) if (!catOrder.includes(c.cat)) catOrder.push(c.cat);
+for (const c of homeCards) if (!catOrder.includes(c.cat)) catOrder.push(c.cat);
 const anchorForCat = {
   'Квесты в Ростове': 'kvesty',
   'Страшные квесты в Ростове': 'strashnye',
@@ -22,7 +50,7 @@ const anchorForCat = {
   'Квест-шоу на площадке 200м²': 'kvestshou',
   'VR-игры на арене 300м²': 'vr',
 };
-const cardsByCat = (cat) => site.cards.filter((c) => c.cat === cat);
+const cardsByCat = (cat) => homeCards.filter((c) => c.cat === cat);
 const s = site;
 const tabs = s.tabs.map((tab, index) => ({
   ...tab,
@@ -31,6 +59,12 @@ const tabs = s.tabs.map((tab, index) => ({
 }));
 const panelIdByCategory = new Map(tabs.map((tab) => [tab.cat, tab.panelId]));
 const origin = 'https://xn--80aehcht5ci1b.xn--p1ai';
+const homeHeroSrcset = `${asset('/assets/_static/hero_dungeon_760.webp')} 760w, ${asset('/assets/_static/hero_dungeon_1200.webp')} 1479w`;
+const homeHeroPreload = {
+  href: asset('/assets/_static/hero_dungeon_760.webp'),
+  srcset: homeHeroSrcset,
+  sizes: '(max-width:700px) 100vw, 1200px',
+};
 const jsonld = [{
   '@context': 'https://schema.org',
   '@graph': [
@@ -55,7 +89,7 @@ const jsonld = [{
 }];
 ---
 
-<Layout jsonld={jsonld}>
+<Layout jsonld={jsonld} preloadImage={homeHeroPreload}>
   <Header />
 
   <main>
@@ -64,14 +98,14 @@ const jsonld = [{
       <div class="container-wide">
       <div class="hero__panel">
         <img class="hero__bg" src={asset('/assets/_static/hero_dungeon_1200.webp')}
-             srcset={`${asset('/assets/_static/hero_dungeon_760.webp')} 760w, ${asset('/assets/_static/hero_dungeon_1200.webp')} 1200w`}
+             srcset={homeHeroSrcset}
              sizes="(max-width:700px) 100vw, 1200px"
-             alt="" fetchpriority="high" width="1200" height="723" />
+             alt="" fetchpriority="high" width="1479" height="891" />
         <div class="hero__content">
           <h1 class="hero__title"><span>{s.hero.h1line1}</span><br />{s.hero.h1line2}</h1>
           <p class="hero__sub">{s.hero.subtitle}</p>
         </div>
-        <img class="hero__ghost" src={asset(s.hero.ghost)} alt="Привидение — талисман «Чё за Квест»" width="432" height="493" fetchpriority="low" decoding="async" />
+        <img class="hero__ghost" src={asset(s.hero.ghost)} alt="Привидение — талисман «Чё за Квест»" width="665" height="773" fetchpriority="low" decoding="async" />
         <div class="hero__cta">
           <a class="hero__btn-calc" href={link(s.hero.btnCalcHref)}>{s.hero.btnCalc}</a>
           <a class="hero__btn-pick btn-orange" href={link(s.hero.btnPickHref)}>{s.hero.btnPick}</a>
@@ -84,7 +118,7 @@ const jsonld = [{
     <section class="promo">
       <!-- container (1160), НЕ container-wide: слайдер оригинала уже героя (поля 140px), как в Tilda -->
       <div class="promo__wrap container">
-        <div class="slider" id="promo-slider" role="region" aria-roledescription="carousel" aria-label="Промо-предложения">
+        <div class="slider" id="promo-slider" role="region" aria-roledescription="carousel" aria-label="Промо-предложения" aria-live="off">
           <div class="slider__viewport">
             <div class="slider__track">
               {s.slider.map((sl, i) => (
@@ -101,6 +135,10 @@ const jsonld = [{
           </button>
           <button class="slider__arrow slider__arrow--next" type="button" aria-label="Следующий слайд">
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="none" stroke="#9b3800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <button class="slider__pause" type="button" aria-pressed="false" aria-label="Остановить автопрокрутку" title="Остановить автопрокрутку">
+            <span class="slider__pause-icon" aria-hidden="true">Ⅱ</span>
+            <span class="visually-hidden slider__pause-text">Остановить автопрокрутку</span>
           </button>
           <div class="slider__dots" id="promo-dots" role="group" aria-label="Навигация по слайдам"></div>
         </div>
@@ -190,7 +228,7 @@ const jsonld = [{
       <div class="container">
         <h2 class="section-title reviews__title">{s.reviews.title}</h2>
         <div class="reviews__scroll">
-          <img class="reviews__img" src={asset('/assets/_static/reviews_desktop.webp')} alt="Отзывы гостей: 4.9 на Яндекс, 2ГИС, Google — более 4404 отзывов" width="1160" height="1255" loading="lazy" decoding="async" />
+          <img class="reviews__img" src={asset('/assets/_static/reviews_desktop.webp')} alt="Отзывы гостей на сервисах карт" width="1514" height="1600" loading="lazy" decoding="async" />
         </div>
       </div>
     </section>
@@ -205,6 +243,7 @@ const jsonld = [{
         {s.gallery.map((g, i) => (
           <img class="gallery__img" src={asset(g.img)}
                style={`flex-basis:${Math.round(g.ar * 310)}px;flex-grow:${g.ar}`}
+               width={Math.round(g.ar * 310)} height="310"
                alt={`Фото с праздника в «Чё за Квест» ${i + 1}`} loading="lazy" decoding="async" />
         ))}
       </div>
@@ -216,7 +255,7 @@ const jsonld = [{
         <h2 class="section-title">{s.venues.title}</h2>
         <p class="venues__sub">{s.venues.subtitle}</p>
         <div class="venues__chips">
-          {s.venues.chips.map((c) => (<span class="chip">{c}</span>))}
+          {s.venues.chips.map((chip) => (<a class="chip" href={link(chip.href)}>{chip.t}</a>))}
         </div>
         <div class="venues__map" role="img" aria-label="Карта площадок «Чё за Квест» в Ростове-на-Дону"
              style={`background-image:url(${asset('/assets/_static/map.webp')})`}></div>

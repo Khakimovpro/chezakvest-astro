@@ -8,31 +8,42 @@ import InfoPage from '../layouts/InfoPage.astro';
 import HolidayPage from '../layouts/HolidayPage.astro';
 
 export async function getStaticPaths() {
+  const legacyQuestSlug = 'wednesday_ukradennaya_vesch';
   const files = import.meta.glob('../data/pages/*.json', { eager: true });
   const all = Object.entries(files).map(([path, mod]) => {
     const page = mod.default ?? mod;
     return { ...page, slug: page.slug || path.split('/').pop().replace('.json', '') };
   });
+  // Venue pages own the public address. Quest data only stores the verified
+  // venueSlug, so consumers never need to infer a venue from address text.
+  const venues = all.filter((p) => p.type === 'venue')
+    .map((p) => ({
+      slug: p.slug,
+      address: (p.breadcrumbs || []).slice(-1)[0]?.t || p.hall?.address || p.seo?.h1 || '',
+      name: p.seo?.h1 || p.slug,
+    }))
+    .sort((a, b) => a.address.localeCompare(b.address, 'ru'));
+  const venueBySlug = Object.fromEntries(venues.map((venue) => [venue.slug, venue]));
   // короткая карточка каждой страницы — из неё собирается перелинковка там, где её нет в оригинале
   // карточка страницы для перелинковки и сеток: название, фото, пилюли (возраст/чел/мин), адрес
   const index = all.map((p) => ({
     slug: p.slug,
     t: p.hero?.h1 || p.seo?.h1 || p.slug,
     img: p.hero?.bg,
+    imgSet: p.hero?.bgset || null,
     pills: p.hero?.pills || [],
-    addr: p.venue?.address || '',
+    venueSlug: p.venueSlug || '',
+    addr: venueBySlug[p.venueSlug]?.address || '',
   }));
-  // адреса площадок — для списка на «Контактах»
-  const venues = all.filter((p) => p.type === 'venue')
-    .map((p) => ({ slug: p.slug, address: (p.breadcrumbs || []).slice(-1)[0]?.t || p.seo?.h1 }))
-    .sort((a, b) => a.address.localeCompare(b.address, 'ru'));
-  return all.map((page) => ({ params: { slug: page.slug }, props: { page, index, venues } }));
+  return all
+    .filter((page) => page.slug !== legacyQuestSlug)
+    .map((page) => ({ params: { slug: page.slug }, props: { page, index, venues } }));
 }
 
 const { page, index, venues } = Astro.props;
 ---
 {page.type === 'quest' && <QuestPage page={page} index={index} venues={venues} />}
-{page.type === 'venue' && <VenuePage page={page} />}
-{page.type === 'category' && <CategoryPage page={page} index={index} />}
+{page.type === 'venue' && <VenuePage page={page} index={index} />}
+{page.type === 'category' && <CategoryPage page={page} index={index} venues={venues} />}
 {page.type === 'info' && <InfoPage page={page} venues={venues} />}
 {page.type === 'holiday' && <HolidayPage page={page} index={index} venues={venues} />}

@@ -2,33 +2,44 @@
 import { siteHref } from '../lib/urls.js';
 const { card, base, eager = false } = Astro.props;
 const asset = (p) => (p ? base + p : null);
-const photo = asset(card.photo);
+const photoSet = card.photoSet || card.hero?.bgset || null;
+const photo = asset(photoSet?.['760'] || card.photo || card.img);
+const photoSrcset = photoSet
+  ? Object.entries(photoSet)
+      .filter(([width, path]) => path && (width === '760' || width === '1600' || !photoSet['1600']))
+      .map(([width, path]) => `${asset(path)} ${width}w`).join(', ')
+  : '';
 const overlay = asset(card.overlay);
 const href = siteHref(base, card.href);
-const lines = card.addrLines && card.addrLines.length ? card.addrLines : (card.addr ? [card.addr] : []);
+const venue = card.venue || null;
+const venueHref = venue?.slug ? siteHref(base, '/' + venue.slug) : '';
 const loading = eager ? 'eager' : 'lazy';
-// у обычной карточки доступное имя формируется из видимого текста (заголовок+адрес),
-// baked-карточка (текста нет) получает aria-label
+// A quest and its venue are distinct destinations. Keeping their links as
+// siblings avoids invalid nested anchors while preserving both routes.
 ---
-<a class="qcard" href={href} {...(card.baked ? { 'aria-label': card.title || 'Квест' } : {})}>
-  <img class="qcard__img" src={photo} alt="" width="360" height="360" loading={loading} decoding="async" />
-  {!card.baked && (
-    <>
-      <span class="qcard__scrim" aria-hidden="true"></span>
-      {overlay && <img class="qcard__badges" src={overlay} alt="" width="322" height="322" loading={loading} decoding="async" />}
-      {card.new && <span class="qcard__new" aria-hidden="true"><svg viewBox="0 0 24 24" width="11" height="11"><path fill="currentColor" d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg>Новинка</span>}
-      <div class="qcard__body">
-        <h3 class="qcard__title">{card.title}</h3>
-        {lines.length > 0 && (
-          <p class="qcard__addr">
-            <svg class="qcard__pin" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 2c-3.87 0-7 3.13-7 7 0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg>
-            <span>{lines.map((l, i) => (<>{i > 0 && <br />}{l}</>))}</span>
-          </p>
-        )}
-      </div>
-    </>
+<article class="qcard">
+  <a class="qcard__main" href={href} {...(card.baked ? { 'aria-label': card.title || 'Квест' } : {})}>
+    {photo && <img class="qcard__img" src={photo} srcset={photoSrcset || undefined}
+                   sizes="(max-width:640px) calc(100vw - 40px), 360px"
+                   alt="" width="360" height="360" loading={loading} decoding="async" />}
+    {!card.baked && (
+      <>
+        <span class="qcard__scrim" aria-hidden="true"></span>
+        {overlay && <img class="qcard__badges" src={overlay} alt="" width="322" height="322" loading={loading} decoding="async" />}
+        {card.new && <span class="qcard__new" aria-hidden="true"><svg viewBox="0 0 24 24" width="11" height="11"><path fill="currentColor" d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg>Новинка</span>}
+        <span class="qcard__body">
+          <h3 class="qcard__title">{card.title}</h3>
+        </span>
+      </>
+    )}
+  </a>
+  {venueHref && (
+    <a class="qcard__venue" href={venueHref}>
+      <svg class="qcard__pin" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 2c-3.87 0-7 3.13-7 7 0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg>
+      <span>{venue.address}</span>
+    </a>
   )}
-</a>
+</article>
 
 <style>
   .qcard{
@@ -37,21 +48,23 @@ const loading = eager ? 'eager' : 'lazy';
     transition:transform .25s ease, box-shadow .25s ease;
   }
   .qcard:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.18)}
+  .qcard__main{position:absolute;inset:0;display:block;color:#fff}
   .qcard__img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
   .qcard__scrim{position:absolute;left:0;right:0;bottom:0;height:52%;
     background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,.62) 78%,rgba(0,0,0,.78) 100%);pointer-events:none}
   .qcard__badges{position:absolute;top:5.3%;left:5.3%;width:89.3%;height:89.3%;object-fit:contain;pointer-events:none}
-  .qcard__body{position:absolute;left:0;right:0;bottom:0;padding:0 20px 20px 20px;color:#fff}
+  .qcard__body{position:absolute;left:0;right:0;bottom:0;padding:0 20px 51px;color:#fff}
   /* бейдж «Новинка» — отдельный элемент (в overlay-PNG его нет), по центру верха карточки */
   .qcard__new{position:absolute;top:5.3%;left:50%;transform:translateX(-50%);z-index:3;
     display:inline-flex;align-items:center;gap:4px;background:var(--orange);color:var(--cta-ink);
     font-weight:700;font-size:12px;line-height:1;padding:5px 11px;border-radius:20px;white-space:nowrap}
-  .qcard__title{font-weight:700;font-size:18px;line-height:1.16;text-transform:uppercase;max-width:55%}
-  .qcard__addr{display:flex;align-items:flex-start;gap:5px;margin-top:9px;font-weight:300;font-size:14px;line-height:1.2;max-width:64%}
+  .qcard__title{display:block;font-weight:700;font-size:18px;line-height:1.16;text-transform:uppercase;max-width:64%}
+  .qcard__venue{position:absolute;z-index:4;left:20px;right:20px;bottom:8px;display:flex;align-items:center;gap:5px;min-height:44px;color:#fff;font-weight:300;font-size:14px;line-height:1.2;max-width:64%}
+  .qcard__venue:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
   .qcard__pin{flex:0 0 auto;margin-top:1px}
 
   @media (max-width:640px){
     .qcard__title{font-size:17px;max-width:60%}
-    .qcard__addr{font-size:13px}
+    .qcard__venue{font-size:13px}
   }
 </style>

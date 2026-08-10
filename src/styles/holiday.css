@@ -32,6 +32,18 @@
 .htext__p{margin-top:14px;font-size:16px;line-height:1.6;color:var(--muted)}
 .htext .section-sub{margin-top:10px}
 .htext__cta{margin-top:24px}
+.htext--gift{padding-bottom:8px}
+.htext__gift{position:relative;min-height:350px;overflow:hidden;border-radius:22px;color:#fff;isolation:isolate}
+.htext__gift-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.htext__gift::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(39,11,83,.93) 0%,rgba(54,14,105,.79) 53%,rgba(54,14,105,.1) 100%);z-index:-1}
+.htext__gift-copy{max-width:58%;padding:42px 44px 38px}
+.htext__gift-title{font-size:34px;font-weight:700;line-height:1.12;text-transform:uppercase;color:#fff}
+.htext__gift-sub,.htext__gift .htext__p{color:#fff}
+.htext__gift-art{position:absolute;inset:0;pointer-events:none}
+.htext__gift-art-img{position:absolute;height:auto;object-fit:contain}
+/* Original foreground assets are intentionally capped below half their source width. */
+.htext__gift-art-img--1{width:min(8%,86px);right:37%;top:19%}
+.htext__gift-art-img--2{width:min(22%,227px);right:7%;bottom:6%}
 
 /* --- цифры компании --- */
 .hstats{padding:48px 0 6px}
@@ -139,12 +151,12 @@
 
 /* --- плитки (шоу-программы, дополнения) --- */
 .htiles{padding:48px 0 6px}
-.htiles__grid{margin-top:26px;display:grid;grid-template-columns:repeat(4,1fr);gap:22px;list-style:none;padding:0}
-.htile{display:flex;flex-direction:column}
+.htiles__grid{margin-top:26px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:22px;list-style:none;padding:0}
+.htile{display:flex;flex-direction:column;min-width:0}
 .htile__img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:16px}
 /* у части плиток на оригинале вместо фото стоит заглушка — рисуем фирменный блок, а не дыру */
 .htile__img--empty{display:block;background:linear-gradient(135deg,#ffb56b,#ff7a00)}
-.htile__name{margin-top:12px;font-size:15px;font-weight:700;text-transform:uppercase;color:var(--dark);line-height:1.25}
+.htile__name{margin-top:12px;font-size:15px;font-weight:700;text-transform:uppercase;color:var(--dark);line-height:1.25;overflow-wrap:anywhere}
 .htile__sub{margin-top:6px;font-size:14px;line-height:1.45;color:var(--muted)}
 
 /* --- преимущества сеткой --- */
@@ -159,8 +171,8 @@
 .hfaq__a{margin-top:10px;font-size:15px;line-height:1.6;color:var(--muted)}
 
 @media (max-width:1100px){
-  .htiles__grid{grid-template-columns:repeat(3,1fr)}
-  .hfeat__grid{grid-template-columns:repeat(2,1fr)}
+  .htiles__grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hfeat__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:1100px){
   .hhalls__grid{grid-template-columns:repeat(2,1fr)}
@@ -176,7 +188,15 @@
   .hpack__tab{padding:11px 18px;font-size:13px}
   .hstats__row{grid-template-columns:1fr}
   .hnotes{grid-template-columns:1fr}
-  .htiles__grid{grid-template-columns:repeat(2,1fr)}
+  .htiles__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .htime__item{flex-direction:column;gap:10px}
   .htime__dur{min-width:0}
+}
+@media (max-width:640px){
+  .hfeat__grid{grid-template-columns:1fr}
+  .htext__gift{min-height:440px}
+  .htext__gift-copy{max-width:100%;padding:30px 24px 172px}
+  .htext__gift-title{font-size:25px}
+  .htext__gift-art-img--1{width:64px;right:39%;top:auto;bottom:26px}
+  .htext__gift-art-img--2{width:min(58%,227px);right:5%;bottom:10px}
 }

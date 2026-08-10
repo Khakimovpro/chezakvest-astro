@@ -55,11 +55,16 @@ def clean_link_text(t):
 
 
 def uniq_bgs(sec, min_side=100):
-    """Фоновые картинки блока без дублей и превьюшек-заглушек (resize/20x, noroot)."""
+    """Фоновые картинки блока без дублей и Tilda-заглушек.
+
+    ``resize/20x`` is deliberately retained: ``local_image`` restores the
+    source before downloading it, so it is not a reason to lose a meaningful
+    image from the migrated page.
+    """
     out, seen = [], set()
     for b in sec["bgs"]:
         u = b["url"]
-        if u.startswith("data:") or "noroot" in u or "/resize/20x/" in u:
+        if u.startswith("data:") or "noroot" in u:
             continue
         key = u.split("/-/")[0]
         if key in seen or b["w"] < min_side or b["h"] < min_side:
@@ -214,7 +219,7 @@ def build(slug, out_type="holiday"):
                              if clean_link_text(l["text"])), "Забронировать дату"),
                 "lines": [x for x in ls[1:] if not re.match(r"^\d+ из \d+$", x)
                           and clean_link_text(x).lower() != "забронировать дату"],
-                "photos": [p for p in photos if p][:4],
+                "photos": [p for p in photos if p],
             })
             pending = None
             continue
@@ -229,7 +234,7 @@ def build(slug, out_type="holiday"):
                     "kind": "gallery",
                     "title": (pending or {}).get("title", ""),
                     "subtitle": (pending or {}).get("sub", ""),
-                    "photos": photos[:12],
+                    "photos": photos,
                 })
                 pending = None
             continue
@@ -286,7 +291,7 @@ def build(slug, out_type="holiday"):
             "title": (pending or {}).get("title", "") or title,
             "subtitle": (pending or {}).get("sub", ""),
             "lines": (ls if (pending or {}).get("title") else body),
-            "photos": [p for p in photos if p][:6],
+            "photos": [p for p in photos if p],
         })
         pending = None
 

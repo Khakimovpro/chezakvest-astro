@@ -1,6 +1,7 @@
 {
  "slug": "kvest_v_realnosti_zapad",
  "type": "quest",
+ "venueSlug": "guardeskypereulog61",
  "seo": {
   "title": "Дикий Запад - квест в Ростове-на-Дону",
   "description": "Квест в Дикий Запад от компании Чё За Квест в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
@@ -81,14 +82,7 @@
     "Стоимость игры для команды от 4 человек —",
     "от 5000 ₽"
    ],
-   "photos": [
-    "/assets/q/7689e0ca0f.webp",
-    "/assets/q/4fb7b13b5c.webp",
-    "/assets/q/12c397675d.webp",
-    "/assets/q/a2f67f21e1.webp",
-    "/assets/q/75f45ec15e.webp",
-    "/assets/q/492c693f9e.webp"
-   ]
+   "photos": []
   }
  ]
 }

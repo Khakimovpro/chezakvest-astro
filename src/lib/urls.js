@@ -1,6 +1,13 @@
 export const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
 
 const EXTERNAL_LINK = /^(?:https?:|mailto:|tel:)/i;
+const LEGACY_INTERNAL_PATHS = new Map([
+  ['/amongus-land', '/among_us'],
+  ['/igra-v-kalmara-lend', '/igra_v_kalmara'],
+  ['/minecraft-lend', '/minecraft'],
+  ['/roblox-land', '/roblox'],
+]);
+const HARRY_POTTER_CAMPAIGN_HOST = 'xn----7sbikn1bgfafua.xn--80aehcht5ci1b.xn--p1ai';
 
 function splitPathAndSuffix(value) {
   const suffixIndex = value.search(/[?#]/);
@@ -31,12 +38,35 @@ export function absoluteAssetUrl(value = '') {
   return `${ORIGIN}${normalized}${suffix}`;
 }
 
+function internalHref(value) {
+  let href = String(value || '');
+  if (!href) return '';
+
+  if (/^https?:\/\//i.test(href)) {
+    try {
+      const url = new URL(href);
+      if (url.origin === ORIGIN) {
+        href = `${url.pathname}${url.search}${url.hash}`;
+      } else if (url.hostname === HARRY_POTTER_CAMPAIGN_HOST && (url.pathname === '/' || url.pathname === '')) {
+        href = '/garri-potter-i-kubok-ognya';
+      }
+    } catch {
+      return '';
+    }
+  }
+
+  if (EXTERNAL_LINK.test(href)) return '';
+  const { path, suffix } = splitPathAndSuffix(href);
+  return `${LEGACY_INTERNAL_PATHS.get(path) || path}${suffix}`;
+}
+
 export function siteHref(base = '', value = '') {
   const href = String(value || '');
   if (!href) return '#';
-  if (EXTERNAL_LINK.test(href)) return href;
+  const internal = internalHref(href);
+  if (!internal) return href;
 
-  const { path, suffix } = splitPathAndSuffix(href);
+  const { path, suffix } = splitPathAndSuffix(internal);
   const normalizedBase = String(base || '').replace(/\/$/, '');
   return `${normalizedBase}${trailingSlashPath(path || '/')}${suffix}`;
 }

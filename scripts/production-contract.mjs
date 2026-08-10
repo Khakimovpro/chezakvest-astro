@@ -3,22 +3,13 @@ import { constants } from 'node:fs';
 import { isAbsolute, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { isStaticFallback, loadLegacyUrlMap } from '../migration/legacy-redirects.mjs';
+
 const DEFAULT_ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
-const DEFAULT_REQUIRED_PATHS = [
+const CORE_REQUIRED_PATHS = [
   '/',
   '/privacy',
-  '/igra-v-kalmara-lend',
-  '/minecraft-lend',
-  '/roblox-land',
-  '/amongus-land',
 ];
-const LEGACY_REDIRECT_TARGETS = new Map([
-  ['/igra-v-kalmara-lend', '/igra_v_kalmara'],
-  ['/minecraft-lend', '/minecraft'],
-  ['/roblox-land', '/roblox'],
-  ['/amongus-land', '/among_us'],
-]);
-const NOINDEX_PATHS = new Set(['/privacy', ...LEGACY_REDIRECT_TARGETS.keys()]);
 const FORBIDDEN_PUBLIC_PATHS = ['/tilda'];
 
 function normalizeOrigin(origin) {
@@ -271,8 +262,8 @@ function validateInternalLinks({ pages, basePath, errors }) {
   }
 }
 
-function validatePage({ html, pagePath, origin, errors }) {
-  const legacyTarget = LEGACY_REDIRECT_TARGETS.get(pagePath);
+function validatePage({ html, pagePath, origin, errors, legacyRedirectTargets, noindexPaths }) {
+  const legacyTarget = legacyRedirectTargets.get(pagePath);
   const expectedCanonical = canonicalForPath(origin, legacyTarget || pagePath);
   const canonical = getCanonical(html);
   if (!canonical) {
@@ -322,7 +313,7 @@ function validatePage({ html, pagePath, origin, errors }) {
   validateLeadForms(html, pagePath, errors);
 
   const noindex = isNoindex(html);
-  if (NOINDEX_PATHS.has(pagePath) && !noindex) {
+  if (noindexPaths.has(pagePath) && !noindex) {
     errors.push(`${pagePath}: migration or privacy page must be noindex`);
   }
 
@@ -341,12 +332,18 @@ function validatePage({ html, pagePath, origin, errors }) {
 export async function verifyProductionContract({
   distDir = 'dist',
   origin = process.env.SITE_ORIGIN ?? DEFAULT_ORIGIN,
-  requiredPaths = DEFAULT_REQUIRED_PATHS,
+  requiredPaths,
   basePath = process.env.SITE_BASE ?? '',
 } = {}) {
   const normalizedOrigin = normalizeOrigin(origin);
   const errors = [];
   const resolvedDistDir = isAbsolute(distDir) ? distDir : join(process.cwd(), distDir);
+  const legacyUrlMap = await loadLegacyUrlMap();
+  const legacyRedirectTargets = new Map(
+    legacyUrlMap.filter(isStaticFallback).map(({ source, target }) => [source, target]),
+  );
+  const noindexPaths = new Set(['/privacy', ...legacyRedirectTargets.keys()]);
+  const resolvedRequiredPaths = requiredPaths ?? [...CORE_REQUIRED_PATHS, ...legacyRedirectTargets.keys()];
 
   if (!await exists(resolvedDistDir)) {
     return { pagesChecked: 0, errors: [`dist directory does not exist: ${distDir}`] };
@@ -373,7 +370,7 @@ export async function verifyProductionContract({
     if (!/<urlset\b/i.test(sitemap)) errors.push('sitemap.xml: missing urlset');
   }
 
-  for (const pathname of requiredPaths) {
+  for (const pathname of resolvedRequiredPaths) {
     const pageFile = await resolvePageFile(resolvedDistDir, pathname);
     if (!await exists(pageFile)) {
       errors.push(`${pathname}: required P0 route is missing from dist`);
@@ -410,7 +407,7 @@ export async function verifyProductionContract({
     const pagePath = pathFromOutputFile(resolvedDistDir, filePath);
     const html = await readFile(filePath, 'utf8');
     pages.set(pagePath, html);
-    validatePage({ html, pagePath, origin: normalizedOrigin, errors });
+    validatePage({ html, pagePath, origin: normalizedOrigin, errors, legacyRedirectTargets, noindexPaths });
   }
   validateInternalLinks({ pages, basePath, errors });
 
