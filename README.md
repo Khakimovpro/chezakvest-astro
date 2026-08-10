@@ -21,13 +21,14 @@
 - SEO в переносе, а не вторым заходом: свои title/description под кластер, один H1, Schema.org
   (`Service`/`EntertainmentBusiness`/`CollectionPage`, `Offer`, `FAQPage`, `BreadcrumbList`),
   canonical на боевой домен, перелинковка квест ↔ площадка ↔ категория, `sitemap.xml`, `robots.txt`.
-- Старый пиксель-в-пиксель клон главной на движке Tilda остался на `/tilda` как архив.
+- Сырой Tilda-снимок сохранён только в `migration/archive/` как reference-артефакт и
+  исключён из production-сборки.
 
 ## Замеры
 
-Lighthouse mobile по страницам: Performance 99–100, Accessibility 96, Best Practices 100, SEO 100,
-CLS 0, LCP 1.7–2.1 с. На главной — 100/96/100/100, LCP 15 с → 1.3 с относительно Tilda.
-Accessibility упирается в контраст брендового оранжевого — цвет клиента, не меняем без его решения.
+Последняя локальная проверка production build на главной: Lighthouse mobile — **97/100/100/100**
+(Performance/Accessibility/Best Practices/SEO), CLS 0, LCP 2.5 с, TBT 0 мс. Метрики на выбранном
+боевом хосте нужно повторно снять после переключения DNS.
 
 ## Разработка
 
@@ -35,7 +36,8 @@ Accessibility упирается в контраст брендового ора
 npm install
 npm run build          # -> dist/
 npm run preview        # локальный предпросмотр
-python3 _capture/check_pages.py    # приёмка: SEO-контур страниц и ссылки в никуда
+npm run ci             # unit-тесты, production SEO-контракт и dependency audit
+python3 _capture/check_pages.py    # legacy-диагностика миграции; не release gate
 python3 _capture/check_assets.py   # все ли картинки из данных лежат в public/
 ```
 
@@ -47,3 +49,5 @@ python3 _capture/check_assets.py   # все ли картинки из данн�
 
 GitHub Pages, ветка `gh-pages`. База пути — `/chezakvest-astro` (проектный сайт).
 Превью под паролем для показа заказчику — `./migration/deploy_preview.sh`, детали в журнале.
+Автопубликация боевого домена намеренно не включена: CI собирает и проверяет `dist/`,
+а порядок переключения DNS и хостинга описан в `docs/PRODUCTION_CUTOVER.md`.

@@ -31,3 +31,7 @@ _capture/
 !.env.example
 .preview-password
 dist-enc/
+
+# reproducible raw QA captures; keep only the human-readable QA reports
+migration/qa-*/_work/
+migration/qa-*/raw/
