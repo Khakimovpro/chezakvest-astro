@@ -118,14 +118,21 @@
 .pform__title{font-size:32px;font-weight:700;color:var(--dark)}
 .pform__sub{margin-top:12px;font-size:16px;color:var(--muted);line-height:1.5}
 .pform__form{position:relative;z-index:2;margin-top:26px}
-.pform__grid{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;max-width:700px;margin:0 auto}
+.pform__grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:
+    '. date'
+    'name phone';
+  gap:16px;align-items:end;max-width:700px;margin:0 auto;
+}
 .pform__field{position:relative;display:flex;flex-direction:column;gap:6px;text-align:left}
+.pform__field--date{grid-area:date}
+.pform__field--name{grid-area:name}
+.pform__field--phone{grid-area:phone}
 .pform__label{font-size:13px;color:var(--muted)}
 .pform__field input{
   height:48px;min-width:250px;border:1px solid #e0e0e0;border-radius:8px;padding:0 14px;
   font-family:inherit;font-size:15px;color:var(--ink);background:#fff;
 }
-.pform__field--phone{align-self:flex-end}
 .pform__field--phone input{padding-left:44px}
 .pform__flag{position:absolute;left:14px;bottom:13px;font-size:16px}
 .pform__consent{
@@ -145,7 +152,8 @@
   /* без фото карточка схлопывается в одну колонку — иначе половина остаётся пустой */
   background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.05);
 }
-.qvenue__photo{width:100%;height:100%;object-fit:cover;min-height:340px}
+.qvenue__photos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;min-width:0}
+.qvenue__photo{width:100%;height:100%;object-fit:cover;min-height:260px}
 .qvenue__card:not(:has(.qvenue__photo)){grid-template-columns:1fr}
 .qvenue__card:not(:has(.qvenue__photo)) .qvenue__info{padding:34px}
 .qvenue__info{padding:34px 34px 34px 0}
@@ -179,7 +187,7 @@
   .pform__card{padding:32px 20px 170px}
   .pform__title{font-size:24px}
   .pform__field input{min-width:0;width:100%}
-  .pform__grid{flex-direction:column;align-items:stretch}
+  .pform__grid{grid-template-columns:1fr;grid-template-areas:'date' 'name' 'phone';align-items:stretch}
   .cards__arrow{display:none}
   .section-title{font-size:28px}
 }

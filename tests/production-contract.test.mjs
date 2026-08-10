@@ -24,6 +24,7 @@ const LEGACY_TARGETS = new Map([
 
 function pageHtml(pathname, {
   inertForm = false,
+  hiddenLeadLabels = false,
   slashlessCanonical = false,
   canonicalPath = pathname,
   noindex = false,
@@ -31,10 +32,16 @@ function pageHtml(pathname, {
   extraBody = '',
   jsonLd = '{"@context":"https://schema.org","@type":"WebSite"}',
 } = {}) {
+  const leadLabels = hiddenLeadLabels
+    ? `<label class="visually-hidden" for="lead-name">Ваше имя</label>
+       <label class="visually-hidden" for="lead-phone">Телефон</label>`
+    : `<label for="lead-name">Ваше имя</label>
+       <label for="lead-phone">Телефон</label>`;
   const form = inertForm
     ? '<form onsubmit="return false"><input name="phone"></form>'
     : `<form data-lead-form data-lead-target="https://wa.me/79282163623">
-      <input name="name" required><input name="phone" required><input name="consent" required>
+      ${leadLabels}
+      <input id="lead-name" name="name" required><input id="lead-phone" name="phone" required><input name="consent" required>
       <button type="button" data-lead-submit>Send</button><p data-lead-status role="status"></p>
     </form>`;
   const canonical = canonicalPath === '/'
@@ -68,12 +75,13 @@ async function writePage(distDir, pathname, html) {
   await writeFile(file, html);
 }
 
-async function createValidDist({ inertForm = false, slashlessCanonical = false, slashlessSitemap = false } = {}) {
+async function createValidDist({ inertForm = false, hiddenLeadLabels = false, slashlessCanonical = false, slashlessSitemap = false } = {}) {
   const distDir = await mkdtemp(join(tmpdir(), 'cheza-contract-'));
   await writeFile(join(distDir, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${ORIGIN}/sitemap.xml\n`);
   await writeFile(join(distDir, 'sitemap.xml'), `<urlset><url><loc>${slashlessSitemap ? ORIGIN : `${ORIGIN}/`}</loc></url></urlset>`);
   await Promise.all(REQUIRED_PATHS.map((pathname) => writePage(distDir, pathname, pageHtml(pathname, {
     inertForm,
+    hiddenLeadLabels,
     slashlessCanonical,
     canonicalPath: LEGACY_TARGETS.get(pathname) || pathname,
     noindex: pathname === '/privacy' || LEGACY_TARGETS.has(pathname),
@@ -110,6 +118,13 @@ test('rejects a build that drops the primary lead forms', async () => {
   const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
 
   assert.ok(report.errors.some((error) => error.includes('expected a primary lead form')));
+});
+
+test('rejects lead forms whose name or phone label is visually hidden', async () => {
+  const distDir = await createValidDist({ hiddenLeadLabels: true });
+  const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
+
+  assert.ok(report.errors.some((error) => error.includes('visible label')));
 });
 
 test('rejects an internal link to a missing generated route', async () => {

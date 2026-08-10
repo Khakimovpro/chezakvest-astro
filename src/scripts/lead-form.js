@@ -40,6 +40,29 @@ function setStatus(form, message, link) {
   }
 }
 
+function labelForInput(form, input) {
+  if (!input.id) return input.name || 'поле';
+  const label = [...form.querySelectorAll('label')].find((item) => item.htmlFor === input.id);
+  return label?.textContent?.trim() || input.name || 'поле';
+}
+
+function showValidationStatus(form) {
+  const invalidInput = [...form.elements].find((element) => (
+    element instanceof HTMLInputElement && !element.validity.valid
+  ));
+  if (!(invalidInput instanceof HTMLInputElement)) return;
+
+  invalidInput.setAttribute('aria-invalid', 'true');
+  setStatus(form, `Проверьте поле «${labelForInput(form, invalidInput)}»: ${invalidInput.validationMessage}`);
+  invalidInput.reportValidity();
+}
+
+function clearValidationState(form, input) {
+  input.removeAttribute('aria-invalid');
+  const status = form.querySelector('[data-lead-status]');
+  if (status?.textContent?.startsWith('Проверьте поле')) status.hidden = true;
+}
+
 function validatePhone(input) {
   const digits = getPhoneDigits(input.value);
   input.setCustomValidity(RUSSIAN_PHONE_PATTERN.test(digits) ? '' : 'Введите номер российского телефона.');
@@ -72,16 +95,22 @@ function initialiseLeadForm(form) {
   const refreshPhoneValidity = () => {
     if (phoneInput.value) validatePhone(phoneInput);
     else phoneInput.setCustomValidity('');
+    clearValidationState(form, phoneInput);
   };
 
   phoneInput.addEventListener('input', refreshPhoneValidity);
   phoneInput.addEventListener('blur', refreshPhoneValidity);
+  form.querySelectorAll('input').forEach((input) => {
+    if (input === phoneInput) return;
+    input.addEventListener('input', () => clearValidationState(form, input));
+    input.addEventListener('change', () => clearValidationState(form, input));
+  });
 
   const submitLead = (event) => {
     const phone = validatePhone(phoneInput);
     if (!form.checkValidity()) {
       event.preventDefault();
-      form.reportValidity();
+      showValidationStatus(form);
       return;
     }
 

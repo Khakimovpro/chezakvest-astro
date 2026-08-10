@@ -15,19 +15,19 @@ const s = site;
       <p class="pform__sub">Отправьте заявку, узнайте свободна ли ваша дата.<br />Поможем подобрать программу праздника.</p>
       <form class="pform__form" data-lead-form data-lead-kind="party" data-lead-target={s.header.wa} aria-describedby={`${id}-status`}>
         <div class="pform__grid">
-          <label class="pform__field">
-            <span class="pform__label">Выберите дату</span>
+          <div class="pform__field pform__field--date">
+            <label class="pform__label" for={`${id}-date`}>Выберите дату</label>
             <input id={`${id}-date`} name="date" type="date" autocomplete="off" required />
-          </label>
-          <label class="pform__field">
-            <span class="visually-hidden">Ваше имя</span>
+          </div>
+          <div class="pform__field pform__field--name">
+            <label class="pform__label" for={`${id}-name`}>Ваше имя</label>
             <input id={`${id}-name`} name="name" type="text" placeholder="Ваше имя" autocomplete="name" minlength="2" maxlength="80" required />
-          </label>
-          <label class="pform__field pform__field--phone">
-            <span class="visually-hidden">Телефон</span>
+          </div>
+          <div class="pform__field pform__field--phone">
+            <label class="pform__label" for={`${id}-phone`}>Телефон</label>
             <span class="pform__flag" aria-hidden="true">🇷🇺</span>
             <input id={`${id}-phone`} name="phone" type="tel" placeholder="+7 (000) 000-00-00" inputmode="tel" autocomplete="tel" maxlength="24" required />
-          </label>
+          </div>
         </div>
         <label class="pform__consent">
           <input name="consent" type="checkbox" checked required />

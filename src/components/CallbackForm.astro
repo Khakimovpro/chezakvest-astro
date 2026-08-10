@@ -13,12 +13,16 @@ const s = site;
       <h2 class="cbform__title">{s.callback.title}</h2>
       <p class="cbform__sub">{s.callback.sub}</p>
       <div class="cbform__fields">
-        <label class="visually-hidden" for={`${id}-name`}>Ваше имя</label>
-        <input id={`${id}-name`} name="name" type="text" placeholder={s.callback.namePh} autocomplete="name" minlength="2" maxlength="80" required />
-        <label class="visually-hidden" for={`${id}-phone`}>Телефон</label>
-        <div class="cbform__phone">
-          <span class="cbform__flag" aria-hidden="true">🇷🇺</span>
-          <input id={`${id}-phone`} name="phone" type="tel" placeholder={`+7 ${s.callback.phonePh}`} inputmode="tel" autocomplete="tel" maxlength="24" required />
+        <div class="cbform__field">
+          <label class="cbform__label" for={`${id}-name`}>Ваше имя</label>
+          <input id={`${id}-name`} name="name" type="text" placeholder={s.callback.namePh} autocomplete="name" minlength="2" maxlength="80" required />
+        </div>
+        <div class="cbform__field">
+          <label class="cbform__label" for={`${id}-phone`}>Телефон</label>
+          <div class="cbform__phone">
+            <span class="cbform__flag" aria-hidden="true">🇷🇺</span>
+            <input id={`${id}-phone`} name="phone" type="tel" placeholder={`+7 ${s.callback.phonePh}`} inputmode="tel" autocomplete="tel" maxlength="24" required />
+          </div>
         </div>
       </div>
       <label class="cbform__consent">

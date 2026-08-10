@@ -79,7 +79,7 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
           </div>
           {howto.photos?.length > 0 && (
             <div class="vhow__photos">
-              {howto.photos.slice(0, 4).map((p, i) => (
+              {howto.photos.map((p, i) => (
                 <img src={asset(p)} alt={`Как найти «Чё за Квест» — ${address}`}
                      width="560" height="400" loading={i === 0 ? 'eager' : 'lazy'}
                      fetchpriority={i === 0 ? 'high' : undefined} decoding="async" />
@@ -118,7 +118,7 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
           {page.hall.subtitle && <p class="section-sub">{page.hall.subtitle}</p>}
           <div class="qvenue__card">
             <div class="qvenue__photos">
-              {(page.hall.photos || []).slice(0, 1).map((ph) => (
+              {(page.hall.photos || []).map((ph) => (
                 <img class="qvenue__photo" src={asset(ph)} alt={`Зал для праздника — ${address}`}
                      loading="lazy" decoding="async" width="600" height="400" />
               ))}

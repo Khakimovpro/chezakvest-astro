@@ -397,7 +397,7 @@ const preload = hero.bg
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <div class="qvenue__card">
                 <div class="qvenue__photos">
-                  {(s.photos || []).slice(0, 1).map((ph) => (
+                  {(s.photos || []).map((ph) => (
                     <img class="qvenue__photo" src={asset(ph)} alt={`Зал «Чё за Квест» — ${s.address}`}
                          loading="lazy" decoding="async" width="600" height="400" />
                   ))}

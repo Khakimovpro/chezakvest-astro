@@ -68,6 +68,20 @@ function requiredInput(formHtml, name) {
   ));
 }
 
+function inputTagByName(formHtml, name) {
+  return (formHtml.match(/<input\b[^>]*>/gi) ?? []).find((tag) => getAttribute(tag, 'name') === name) ?? '';
+}
+
+function hasVisibleAssociatedLabel(formHtml, inputTag) {
+  const inputId = getAttribute(inputTag, 'id');
+  if (!inputId) return false;
+
+  return (formHtml.match(/<label\b[^>]*>[\s\S]*?<\/label>/gi) ?? []).some((label) => (
+    getAttribute(label, 'for') === inputId
+    && !/\bvisually-hidden\b/i.test(getAttribute(label, 'class'))
+  ));
+}
+
 function validateLeadForms(html, pagePath, errors) {
   const leadForms = html.match(/<form\b(?=[^>]*\bdata-lead-form(?:\s|=|>))[^>]*>[\s\S]*?<\/form>/gi) ?? [];
   if (pagePath === '/' && leadForms.length < 1) {
@@ -85,6 +99,12 @@ function validateLeadForms(html, pagePath, errors) {
     }
     for (const name of ['name', 'phone', 'consent']) {
       if (!requiredInput(form, name)) errors.push(`${pagePath}: lead form is missing required ${name} input`);
+    }
+    for (const name of ['name', 'phone']) {
+      const input = inputTagByName(form, name);
+      if (input && !hasVisibleAssociatedLabel(form, input)) {
+        errors.push(`${pagePath}: lead form ${name} input has no visible label`);
+      }
     }
     if (!/<button\b(?=[^>]*\bdata-lead-submit(?:\s|=|>))(?=[^>]*\btype\s*=\s*(["'])button\1)[^>]*>/i.test(form)) {
       errors.push(`${pagePath}: lead form has no JavaScript-only submit control`);
