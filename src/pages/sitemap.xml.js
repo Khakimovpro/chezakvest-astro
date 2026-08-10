@@ -1,5 +1,5 @@
 // Карта сайта: собирается из тех же данных, что и страницы, — руками ничего не поддерживаем.
-const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
+import { canonicalUrl } from '../lib/urls.js';
 
 export async function GET() {
   const files = import.meta.glob('../data/pages/*.json', { eager: true });
@@ -9,8 +9,8 @@ export async function GET() {
   });
 
   const urls = [
-    { loc: ORIGIN + '/', priority: '1.0' },
-    ...inner.sort().map((slug) => ({ loc: `${ORIGIN}/${slug}`, priority: '0.8' })),
+    { loc: canonicalUrl('/'), priority: '1.0' },
+    ...inner.sort().map((slug) => ({ loc: canonicalUrl(`/${slug}`), priority: '0.8' })),
   ];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

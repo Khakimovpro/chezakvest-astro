@@ -1,9 +1,10 @@
 ---
+import { siteHref } from '../lib/urls.js';
 const { card, base, eager = false } = Astro.props;
 const asset = (p) => (p ? base + p : null);
 const photo = asset(card.photo);
 const overlay = asset(card.overlay);
-const href = card.href ? (card.href.startsWith('http') ? card.href : base + card.href) : '#';
+const href = siteHref(base, card.href);
 const lines = card.addrLines && card.addrLines.length ? card.addrLines : (card.addr ? [card.addr] : []);
 const loading = eager ? 'eager' : 'lazy';
 // у обычной карточки доступное имя формируется из видимого текста (заголовок+адрес),
@@ -43,7 +44,7 @@ const loading = eager ? 'eager' : 'lazy';
   .qcard__body{position:absolute;left:0;right:0;bottom:0;padding:0 20px 20px 20px;color:#fff}
   /* бейдж «Новинка» — отдельный элемент (в overlay-PNG его нет), по центру верха карточки */
   .qcard__new{position:absolute;top:5.3%;left:50%;transform:translateX(-50%);z-index:3;
-    display:inline-flex;align-items:center;gap:4px;background:var(--orange);color:#fff;
+    display:inline-flex;align-items:center;gap:4px;background:var(--orange);color:var(--cta-ink);
     font-weight:700;font-size:12px;line-height:1;padding:5px 11px;border-radius:20px;white-space:nowrap}
   .qcard__title{font-weight:700;font-size:18px;line-height:1.16;text-transform:uppercase;max-width:55%}
   .qcard__addr{display:flex;align-items:flex-start;gap:5px;margin-top:9px;font-weight:300;font-size:14px;line-height:1.2;max-width:64%}

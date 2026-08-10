@@ -2,6 +2,7 @@
 import '../styles/fonts.css';
 import '../styles/global.css';
 import site from '../data/site.json';
+import { canonicalUrl } from '../lib/urls.js';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => base + p;              // /assets/x -> /<base>/assets/x
@@ -27,7 +28,12 @@ const {
   },
 } = Astro.props;
 
-const canonical = ORIGIN + (path === '/' ? '' : path.replace(/\/$/, ''));
+const canonical = canonicalUrl(path);
+const absoluteAsset = (p) => {
+  if (!p) return '';
+  if (/^https?:\/\//i.test(p)) return p;
+  return ORIGIN + (p.startsWith('/') ? p : `/${p}`);
+};
 // кириллический woff2 Montserrat — критичен для первого экрана
 const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2');
 ---
@@ -51,8 +57,14 @@ const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1
     <meta property="og:description" content={description} />
     <meta property="og:locale" content="ru_RU" />
     <meta property="og:site_name" content="Чё за Квест" />
-    {ogImage && <meta property="og:image" content={asset(ogImage)} />}
+    {ogImage && <meta property="og:image" content={absoluteAsset(ogImage)} />}
+    {ogImage && <meta property="og:image:alt" content={title} />}
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:url" content={canonical} />
+    {ogImage && <meta name="twitter:image" content={absoluteAsset(ogImage)} />}
+    {ogImage && <meta name="twitter:image:alt" content={title} />}
 
     <link rel="icon" href={asset(m.favicon)} sizes="any" />
 

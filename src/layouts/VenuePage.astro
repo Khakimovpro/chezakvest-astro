@@ -10,18 +10,19 @@ import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import site from '../data/site.json';
+import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import '../styles/page.css';
 import '../styles/quest.css';
 
 const { page } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '');
-const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
 
 const path = '/' + page.slug;
 const seo = page.seo;
 const howto = page.howto || {};
 const address = (page.breadcrumbs || []).slice(-1)[0]?.t || page.hall?.address || '';
+const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
 const mapsUrl = howto.routeUrl
   || `https://yandex.ru/maps/?text=${encodeURIComponent('Ростов-на-Дону, ' + address)}`;
 
@@ -30,11 +31,12 @@ const jsonld = [
   {
     '@context': 'https://schema.org',
     '@type': 'EntertainmentBusiness',
+    '@id': absoluteUrl(`${path}#location`),
     name: `Чё за Квест — ${address}`,
     description: seo.description,
-    url: ORIGIN + path,
-    telephone: site.footer.phone,
-    image: howto.photos?.[0] ? ORIGIN + howto.photos[0] : undefined,
+    url: absoluteUrl(path),
+    telephone: site.header.phone,
+    image: howto.photos?.[0] ? absoluteAssetUrl(howto.photos[0]) : undefined,
     address: {
       '@type': 'PostalAddress',
       streetAddress: address,
@@ -42,20 +44,10 @@ const jsonld = [
       addressRegion: 'Ростовская область',
       addressCountry: 'RU',
     },
-    openingHours: 'Mo-Su 10:00-23:30',
     hasMap: mapsUrl,
-    parentOrganization: { '@type': 'Organization', name: 'Чё за Квест', url: ORIGIN },
+    parentOrganization: { '@type': 'Organization', '@id': absoluteUrl('/#organization'), name: 'Чё за Квест', url: absoluteUrl('/') },
   },
-  page.breadcrumbs && {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: page.breadcrumbs.map((c, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: c.t,
-      item: c.href ? ORIGIN + (c.href === '/' ? '' : c.href) : ORIGIN + path,
-    })),
-  },
+  breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
 ].filter(Boolean);
 
 const lcp = howto.photos?.[0];
@@ -73,7 +65,7 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
   <Header />
 
   <main>
-    <Breadcrumbs items={page.breadcrumbs} />
+    <Breadcrumbs items={breadcrumbs} />
 
     <!-- ============ КАК НАС НАЙТИ ============ -->
     <section class="vhow">

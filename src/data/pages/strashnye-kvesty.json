@@ -27,11 +27,11 @@
   "buttons": [
    {
     "t": "Рассчитать стоимость праздника",
-    "href": "/strashnye-kvesty#popup:marquiz_60431b2afe1a980044eacd7b"
+    "href": "#callback"
    },
    {
     "t": "Подобрать квест",
-    "href": "/strashnye-kvesty#popup:marquiz_60431b2afe1a980044eacd7b"
+    "href": "#callback"
    }
   ],
   "bg": "/assets/q/40b9b2eb4d.webp",

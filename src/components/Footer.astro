@@ -1,10 +1,11 @@
 ---
 // Сквозной футер + плавающая кнопка WhatsApp. Разметка перенесена с главной без изменений.
 import site from '../data/site.json';
+import { siteHref } from '../lib/urls.js';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '#');
-const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+const link = (h) => siteHref(base, h);
 
 const s = site;
 ---

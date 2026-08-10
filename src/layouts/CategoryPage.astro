@@ -8,22 +8,27 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CardsRow from '../components/CardsRow.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import site from '../data/site.json';
+import { absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
 
 const { page, index = [] } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '');
-const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
-const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
+const link = (h) => siteHref(base, h);
+const heroLink = (h) => String(h || '').startsWith('#') ? h : link(h);
 
 const path = '/' + page.slug;
 const seo = page.seo;
 const hero = page.hero || {};
+const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
 // к карточкам подмешиваем данные самих квестов: возраст, вместимость, длительность, адрес
 const byslug = Object.fromEntries(index.map((p) => [p.slug, p]));
+const cardsByHref = Object.fromEntries(site.cards.map((card) => [card.href, card]));
 const games = (page.games?.items || []).map((g) => {
   const info = byslug[g.href.replace(/^\//, '')] || {};
+  const card = cardsByHref[g.href] || {};
   const pills = info.pills || [];
   return {
     ...g,
@@ -31,7 +36,9 @@ const games = (page.games?.items || []).map((g) => {
     age: pills.find((p) => /\+$/.test(p)) || '',
     people: pills.find((p) => /^\d+\s*[-–]\s*\d+$/.test(p)) || '',
     time: pills.find((p) => /мин|час/i.test(p)) || '',
-    addr: info.addr || '',
+    // The home catalogue is a source record too; use it only as a fallback
+    // when the extracted quest JSON has no location field.
+    addr: info.addr || card.addr || '',
   };
 });
 
@@ -40,29 +47,24 @@ const jsonld = [
   {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
+    '@id': absoluteUrl(`${path}#collectionpage`),
     name: seo.h1,
     description: seo.description,
-    url: ORIGIN + path,
-    isPartOf: { '@type': 'WebSite', name: 'Чё за Квест', url: ORIGIN },
+    url: absoluteUrl(path),
+    isPartOf: { '@type': 'WebSite', '@id': absoluteUrl('/#website'), name: 'Чё за Квест', url: absoluteUrl('/') },
     mainEntity: {
       '@type': 'ItemList',
+      '@id': absoluteUrl(`${path}#items`),
       numberOfItems: games.length,
       itemListElement: games.map((g, i) => ({
         '@type': 'ListItem',
         position: i + 1,
         name: g.t,
-        url: ORIGIN + g.href,
+        url: absoluteUrl(g.href),
       })),
     },
   },
-  page.breadcrumbs && {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: page.breadcrumbs.map((c, i) => ({
-      '@type': 'ListItem', position: i + 1, name: c.t,
-      item: c.href ? ORIGIN + (c.href === '/' ? '' : c.href) : ORIGIN + path,
-    })),
-  },
+  breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
 ].filter(Boolean);
 
 const heroSrcset = hero.bgset
@@ -98,7 +100,7 @@ const preload = hero.bg
             {hero.sub && <p class="qhero__sub">{hero.sub}</p>}
             <div class="qhero__cta">
               {(hero.buttons || []).map((b, i) => (
-                <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={link(b.href)}>{b.t}</a>
+                <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={heroLink(b.href)}>{b.t}</a>
               ))}
             </div>
           </div>
@@ -106,7 +108,7 @@ const preload = hero.bg
       </div>
     </section>
 
-    <Breadcrumbs items={page.breadcrumbs} />
+    <Breadcrumbs items={breadcrumbs} />
 
     <!-- ============ СЕТКА КВЕСТОВ КАТЕГОРИИ ============ -->
     {games.length > 0 && (

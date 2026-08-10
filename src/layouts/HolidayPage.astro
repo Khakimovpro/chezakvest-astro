@@ -11,6 +11,8 @@ import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import site from '../data/site.json';
+import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
 import '../styles/holiday.css';
@@ -18,14 +20,15 @@ import '../styles/holiday.css';
 const { page, index = [], venues = [] } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '');
-const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
-const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
+const link = (h) => siteHref(base, h);
+const heroLink = (h) => String(h || '').startsWith('#') ? h : link(h);
 
 const path = '/' + page.slug;
 const seo = page.seo;
 const sections = page.sections || [];
 const hero = sections.find((s) => s.kind === 'hero') || {};
 const rest = sections.filter((s) => s.kind !== 'hero');
+const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
 
 // ---- Schema.org: услуга «организация праздника» + цена, если она названа на странице ----
 // цена для разметки: явное поле страницы или первое число из ценника пакета
@@ -40,40 +43,36 @@ const jsonld = [
   {
     '@context': 'https://schema.org',
     '@type': 'Service',
+    '@id': absoluteUrl(`${path}#service`),
     name: seo.h1,
     serviceType: page.serviceType || 'Организация детского праздника',
     description: seo.description,
-    url: ORIGIN + path,
-    image: hero.bg ? ORIGIN + hero.bg : undefined,
+    url: absoluteUrl(path),
+    image: hero.bg ? absoluteAssetUrl(hero.bg) : undefined,
     areaServed: { '@type': 'City', name: 'Ростов-на-Дону' },
     provider: {
       '@type': 'EntertainmentBusiness',
+      '@id': absoluteUrl('/#organization'),
       name: 'Чё за Квест',
-      telephone: site.footer.phone,
-      url: ORIGIN,
+      telephone: site.header.phone,
+      url: absoluteUrl('/'),
       address: { '@type': 'PostalAddress', addressLocality: 'Ростов-на-Дону', addressCountry: 'RU' },
     },
-    offers: {
-      '@type': 'Offer',
-      availability: 'https://schema.org/InStock',
-      priceCurrency: 'RUB',
-      url: ORIGIN + path,
-      ...(minPrice ? { price: minPrice, priceSpecification: {
-        '@type': 'PriceSpecification', price: minPrice, priceCurrency: 'RUB',
-        valueAddedTaxIncluded: true,
-      } } : {}),
-    },
+    ...(minPrice ? {
+      offers: {
+        '@type': 'Offer',
+        availability: 'https://schema.org/InStock',
+        priceCurrency: 'RUB',
+        url: absoluteUrl(path),
+        price: minPrice,
+        priceSpecification: {
+          '@type': 'PriceSpecification', price: minPrice, priceCurrency: 'RUB',
+          valueAddedTaxIncluded: true,
+        },
+      },
+    } : {}),
   },
-  page.breadcrumbs && {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: page.breadcrumbs.map((c, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: c.t,
-      item: c.href ? ORIGIN + (c.href === '/' ? '' : c.href) : ORIGIN + path,
-    })),
-  },
+  breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
   faq && {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -116,7 +115,7 @@ const preload = hero.bg
             {hero.sub && <p class="lhero__sub">{hero.sub}</p>}
             <div class="lhero__cta">
               {(hero.buttons || []).map((b, i) => (
-                <a class={i === 0 ? 'btn-orange' : 'lhero__btn-ghost'} href={link(b.href)}>{b.t}</a>
+                <a class={i === 0 ? 'btn-orange' : 'lhero__btn-ghost'} href={heroLink(b.href)}>{b.t}</a>
               ))}
             </div>
           </div>
@@ -147,7 +146,7 @@ const preload = hero.bg
               {hero.sub && <p class="qhero__sub hhero__sub">{hero.sub}</p>}
               <div class="qhero__cta">
                 {(hero.buttons || []).map((b, i) => (
-                  <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={link(b.href)}>{b.t}</a>
+                  <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={heroLink(b.href)}>{b.t}</a>
                 ))}
               </div>
             </div>
@@ -156,13 +155,13 @@ const preload = hero.bg
       </section>
     )}
 
-    <Breadcrumbs items={page.breadcrumbs} />
+    <Breadcrumbs items={breadcrumbs} />
 
     {rest.map((s) => (
       <>
         {/* ---- текстовый блок: заголовок, подзаголовок, абзацы, фото ---- */}
         {s.kind === 'text' && (
-          <section class="htext">
+          <section class="htext" id={s.id || undefined}>
             <div class="container">
               {s.title && <h2 class="section-title">{s.title}</h2>}
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}

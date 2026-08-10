@@ -7,47 +7,50 @@ import Footer from '../components/Footer.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import site from '../data/site.json';
+import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
 
 const { page, venues = [] } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
-const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
+const link = (h) => siteHref(base, h);
 
 const path = '/' + page.slug;
 const seo = page.seo;
+const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
 const raw = page.contacts?.raw || [];
 const links = page.contacts?.links || [];
 const email = links.find((l) => l.href.startsWith('mailto:'));
 const vk = links.find((l) => l.href.includes('vk.com'));
-const hours = raw.find((t) => /\d{1,2}:\d{2}/.test(t)) || 'Работаем c 10:00 до 23:30';
+const hours = raw.find((t) => /(?:график работы|часы работы|работаем)/iu.test(t)) || 'График работы уточняйте при бронировании';
 
 const jsonld = [
   {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': absoluteUrl('/#organization'),
     name: 'Чё за Квест',
-    url: ORIGIN,
-    telephone: site.footer.phone,
+    url: absoluteUrl('/'),
+    logo: absoluteAssetUrl(site.header.logo),
+    telephone: site.header.phone,
     email: email ? email.href.replace('mailto:', '') : undefined,
     sameAs: vk ? [vk.href] : undefined,
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: site.footer.phone,
+      telephone: site.header.phone,
       contactType: 'reservations',
       areaServed: 'RU',
       availableLanguage: 'Russian',
     },
-  },
-  page.breadcrumbs && {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: page.breadcrumbs.map((c, i) => ({
-      '@type': 'ListItem', position: i + 1, name: c.t,
-      item: c.href ? ORIGIN + (c.href === '/' ? '' : c.href) : ORIGIN + path,
+    location: venues.map((venue) => ({
+      '@type': 'Place',
+      '@id': absoluteUrl(`/${venue.slug}#location`),
+      name: `Чё за Квест — ${venue.address}`,
+      url: absoluteUrl(`/${venue.slug}`),
     })),
   },
+  breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
 ].filter(Boolean);
 ---
 <Layout title={seo.title} description={seo.description} keywords={seo.keywords}
@@ -55,7 +58,7 @@ const jsonld = [
   <Header />
 
   <main>
-    <Breadcrumbs items={page.breadcrumbs} />
+    <Breadcrumbs items={breadcrumbs} />
 
     <section class="info">
       <div class="container">

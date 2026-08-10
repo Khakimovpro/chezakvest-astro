@@ -2,17 +2,18 @@
 // Сквозная шапка сайта + мобильное меню. Разметка и классы взяты с главной без изменений,
 // чтобы styles/page.css работал на всех страницах одинаково.
 import site from '../data/site.json';
+import { siteHref } from '../lib/urls.js';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '#');
-const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+const link = (h) => siteHref(base, h);
 
 const s = site;
 // категории каталога — в порядке появления карточек на главной
 const catOrder = [];
 for (const c of s.cards) if (!catOrder.includes(c.cat)) catOrder.push(c.cat);
 const anchorForCat = {
-  'Квесты в Ростове': 'catalog',
+  'Квесты в Ростове': 'kvesty',
   'Страшные квесты в Ростове': 'strashnye',
   'Прятки в лабиринте 200м²': 'pryatki',
   'Квест-шоу на площадке 200м²': 'kvestshou',
@@ -29,7 +30,7 @@ const anchorForCat = {
     <nav class="hdr__nav" aria-label="Основная навигация">
       <ul class="nav">
         <li class="nav__item has-mega">
-          <a href={link('/#catalog')}>Каталог квестов</a>
+          <a href={link('/#catalog')}><span class="nav__prefix" aria-hidden="true">∷</span>Каталог квестов</a>
           <div class="mega">
             {catOrder.map((cat) => (
               <a class="mega__link" href={link(`/#${anchorForCat[cat]}`)}>{cat}</a>
@@ -37,7 +38,7 @@ const anchorForCat = {
           </div>
         </li>
         <li class="nav__item has-mega">
-          <a href={link('/#party')}>Проведение праздников</a>
+          <a href={link('/#party')}><span class="nav__prefix" aria-hidden="true">∷</span>Проведение праздников</a>
           <div class="mega">
             {s.footer.cols[0].links.map((l) => (
               <a class="mega__link" href={link(l.href)}>{l.t}</a>
@@ -46,7 +47,7 @@ const anchorForCat = {
         </li>
         <li class="nav__item"><a href={link('/strashnye-kvesty')}>Хоррор</a></li>
         <li class="nav__item"><a href={link('/#otzivy')}>Отзывы</a></li>
-        <li class="nav__item"><a href={link('/contacts')}>Контакты</a></li>
+        <li class="nav__item"><a href={link('/contacts')}><span class="nav__prefix" aria-hidden="true">∷</span>Контакты</a></li>
       </ul>
     </nav>
 

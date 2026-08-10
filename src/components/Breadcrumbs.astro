@@ -1,7 +1,8 @@
 ---
 // Хлебные крошки внутренних страниц. Разметку дублирует JSON-LD BreadcrumbList в Layout.
+import { siteHref } from '../lib/urls.js';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : null);
+const link = (h) => (h ? siteHref(base, h) : null);
 const { items = [] } = Astro.props;
 ---
 {items.length > 0 && (

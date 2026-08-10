@@ -1,9 +1,10 @@
 ---
 // Горизонтальный ряд карточек с фото и подписью: «Другие квесты» и «Сценарии праздника».
 // На десктопе — сетка со скроллом, на мобайле — свайп. Стрелки листают ряд (scripts/row.js).
+import { siteHref } from '../lib/urls.js';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '');
-const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
+const link = (h) => siteHref(base, h);
 const {
   title = '',
   subtitle = '',

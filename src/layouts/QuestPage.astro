@@ -9,61 +9,69 @@ import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import site from '../data/site.json';
+import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, isCurrentRoute, venueForAddress, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
 
-const { page, index = [] } = Astro.props;
+const { page, index = [], venues = [] } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '');
-const link = (h) => (h ? (h.startsWith('http') ? h : base + h) : '#');
-const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
+const link = (h) => siteHref(base, h);
 
 const path = '/' + page.slug;
 const seo = page.seo;
 const hero = page.hero || {};
+const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
+const venue = venueForAddress(venues, page.venue?.address);
+const visiblePrice = Number(page.priceFrom) || null;
 
 // возраст («12+») в оригинале стоит отдельным кружком справа, остальное — пилюли слева
 const age = (hero.pills || []).find((p) => /\+$/.test(p));
 const pills = (hero.pills || []).filter((p) => p !== age)
   .sort((a, b) => (/мин|час/i.test(b) ? 1 : 0) - (/мин|час/i.test(a) ? 1 : 0));   // длительность первой, как в оригинале
 
-// ---- Schema.org: услуга с предложением + хлебные крошки ----
+// ---- Schema.org: услуга + хлебные крошки ----
 const jsonld = [
   {
     '@context': 'https://schema.org',
     '@type': 'Service',
+    '@id': absoluteUrl(`${path}#service`),
     name: seo.h1,
     serviceType: 'Квест в реальности',
     description: seo.description,
-    url: ORIGIN + path,
-    image: hero.bg ? ORIGIN + hero.bg : undefined,
+    url: absoluteUrl(path),
+    image: hero.bg ? absoluteAssetUrl(hero.bg) : undefined,
     areaServed: { '@type': 'City', name: 'Ростов-на-Дону' },
     audience: age ? { '@type': 'PeopleAudience', suggestedMinAge: parseInt(age, 10) } : undefined,
     provider: {
       '@type': 'EntertainmentBusiness',
+      '@id': absoluteUrl('/#organization'),
       name: 'Чё за Квест',
-      telephone: site.footer.phone,
-      url: ORIGIN,
+      telephone: site.header.phone,
+      url: absoluteUrl('/'),
       address: { '@type': 'PostalAddress', addressLocality: 'Ростов-на-Дону', addressCountry: 'RU' },
     },
-    offers: {
-      '@type': 'Offer',
-      availability: 'https://schema.org/InStock',
-      priceCurrency: 'RUB',
-      url: ORIGIN + path,
-      category: 'Квест',
-    },
+    ...(venue ? {
+      availableAtOrFrom: {
+        '@type': 'Place',
+        '@id': absoluteUrl(`/${venue.slug}#location`),
+        name: `Чё за Квест — ${venue.address}`,
+        url: absoluteUrl(`/${venue.slug}`),
+      },
+    } : {}),
+    ...(visiblePrice ? {
+      offers: {
+        '@type': 'Offer',
+        availability: 'https://schema.org/InStock',
+        price: visiblePrice,
+        priceCurrency: 'RUB',
+        url: absoluteUrl(path),
+        category: 'Квест',
+      },
+    } : {}),
   },
-  page.breadcrumbs && {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: page.breadcrumbs.map((c, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: c.t,
-      item: c.href ? ORIGIN + (c.href === '/' ? '' : c.href) : ORIGIN + path,
-    })),
-  },
+  breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
 ].filter(Boolean);
 
 const heroSrcset = hero.bgset
@@ -76,6 +84,7 @@ const relatedItems = page.related?.items?.length
       .sort((a, b) => a.slug.localeCompare(b.slug))
       .slice(0, 8)
       .map((p) => ({ t: p.t.replace(/^Квест\s+/i, ''), href: '/' + p.slug, img: p.img }));
+const filteredRelatedItems = relatedItems.filter((item) => !isCurrentRoute(item.href, path));
 const relatedTitle = page.related?.title || 'Другие квесты от «Чё за Квест?»';
 const relatedSub = page.related?.subtitle || 'У нас есть из чего выбрать';
 
@@ -136,7 +145,7 @@ const preload = hero.bg
       </div>
     </section>
 
-    <Breadcrumbs items={page.breadcrumbs} />
+    <Breadcrumbs items={breadcrumbs} />
 
     <!-- ============ ПРЕДЫСТОРИЯ ============ -->
     {page.story && (
@@ -153,7 +162,7 @@ const preload = hero.bg
     )}
 
     <!-- ============ ОСОБЕННОСТИ ============ -->
-    {page.features && page.features.items && (
+    {page.features && ((page.features.items || []).length > 0 || (page.features.lead || []).length > 0) && (
       <section class="qfeat">
         <div class="container">
           <h2 class="section-title qfeat__title">{page.features.title || 'Особенности'}</h2>
@@ -162,14 +171,16 @@ const preload = hero.bg
           ))}
         </div>
         <div class="qfeat__wrap container">
-          <ul class="qfeat__row">
-            {page.features.items.map((it) => (
-              <li class="qfeat__card">
-                <h3 class="qfeat__cardtitle">{it.t}</h3>
-                {it.sub && <p class="qfeat__cardsub">{it.sub}</p>}
-              </li>
-            ))}
-          </ul>
+          {(page.features.items || []).length > 0 && (
+            <ul class="qfeat__row">
+              {page.features.items.map((it) => (
+                <li class="qfeat__card">
+                  <h3 class="qfeat__cardtitle">{it.t}</h3>
+                  {it.sub && <p class="qfeat__cardsub">{it.sub}</p>}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
     )}
@@ -190,9 +201,9 @@ const preload = hero.bg
       </section>
     )}
 
-    {relatedItems.length > 0 && (
+    {filteredRelatedItems.length > 0 && (
       <CardsRow title={relatedTitle} subtitle={relatedSub}
-                items={relatedItems} variant="poster" id="drugie" />
+                items={filteredRelatedItems} variant="poster" id="drugie" />
     )}
 
     <PartyForm />
@@ -211,7 +222,9 @@ const preload = hero.bg
               ))}
             </div>
             <div class="qvenue__info">
-              <h3 class="qvenue__addr">{page.venue.address}</h3>
+              <h3 class="qvenue__addr">
+                {venue ? <a href={link('/' + venue.slug)}>{page.venue.address}</a> : page.venue.address}
+              </h3>
               <ul class="qvenue__list">
                 {page.venue.lines.map((l) => (<li>{l}</li>))}
               </ul>
