@@ -11,6 +11,8 @@ import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import ZoomImg from '../components/ZoomImg.astro';
+import Reviews from '../components/Reviews.astro';
+import VenuesSection from '../components/VenuesSection.astro';
 import site from '../data/site.json';
 import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
@@ -54,6 +56,7 @@ const firstPrice = (t) => Number((String(t).match(/\d[\d  ]*/) || [''])[0].repla
 const minPrice = page.priceFrom
   || (priceBlock ? Math.min(...priceBlock.items.filter((i) => i.price).map((i) => firstPrice(i.price)).filter(Boolean)) : null);
 const faq = sections.find((s) => s.kind === 'faq');
+const reviewSection = sections.find((s) => s.kind === 'reviews');
 
 const jsonld = [
   {
@@ -237,10 +240,23 @@ const preload = hero.bg
           </section>
         )}
 
+        {/* ---- standalone conversion block supplied by the source landing pages ---- */}
+        {s.kind === 'lead-cta' && (
+          <section class="hlead" id={s.id || undefined}>
+            <div class="container hlead__inner">
+              {s.eyebrow && <p class="hsection__eyebrow">{s.eyebrow}</p>}
+              <h2 class="section-title">{s.title}</h2>
+              {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
+              <a class="btn-orange" href={heroLink(s.href || '#callback')} data-quiz={s.quiz ? quizId : undefined}>{s.cta || 'Получить консультацию'}</a>
+            </div>
+          </section>
+        )}
+
         {/* ---- список преимуществ карточками ---- */}
         {s.kind === 'features' && (
           <section class="qfeat">
             <div class="container">
+              {s.eyebrow && <p class="hsection__eyebrow">{s.eyebrow}</p>}
               {s.title && <h2 class="section-title qfeat__title">{s.title}</h2>}
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
             </div>
@@ -261,6 +277,7 @@ const preload = hero.bg
         {s.kind === 'stats' && (
           <section class="hstats">
             <div class="container">
+              {s.eyebrow && <p class="hsection__eyebrow">{s.eyebrow}</p>}
               {s.title && <h2 class="section-title">{s.title}</h2>}
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <ul class="hstats__row">
@@ -290,8 +307,9 @@ const preload = hero.bg
              вкладки переключаются радиокнопками и CSS: весь текст всех пакетов лежит
              в разметке сразу, поэтому его видит поиск, а страница обходится без JS */}
         {s.kind === 'packages' && s.groups && (
-          <section class="hpack" id="pakety">
+          <section class="hpack" id={s.id || 'pakety'}>
             <div class="container">
+              {s.eyebrow && <p class="hsection__eyebrow">{s.eyebrow}</p>}
               {s.title && <h2 class="section-title">{s.title}</h2>}
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <div class="hpack__tabs">
@@ -353,8 +371,9 @@ const preload = hero.bg
 
         {/* ---- пакеты одним списком ---- */}
         {s.kind === 'packages' && !s.groups && (
-          <section class="hpack" id="pakety">
+          <section class="hpack" id={s.id || 'pakety'}>
             <div class="container">
+              {s.eyebrow && <p class="hsection__eyebrow">{s.eyebrow}</p>}
               {s.title && <h2 class="section-title">{s.title}</h2>}
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <ul class="hpack__grid">
@@ -400,6 +419,7 @@ const preload = hero.bg
         {s.kind === 'timeline' && (
           <section class="htime">
             <div class="container">
+              {s.eyebrow && <p class="hsection__eyebrow">{s.eyebrow}</p>}
               {s.title && <h2 class="section-title">{s.title}</h2>}
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <ol class="htime__list">
@@ -427,6 +447,7 @@ const preload = hero.bg
         {s.kind === 'tiles' && (
           <section class="htiles">
             <div class="container">
+              {s.eyebrow && <p class="hsection__eyebrow">{s.eyebrow}</p>}
               {s.title && <h2 class="section-title">{s.title}</h2>}
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <ul class="htiles__grid">
@@ -438,6 +459,8 @@ const preload = hero.bg
                       : <span class="htile__img htile__img--empty" aria-hidden="true"></span>}
                     <span class="htile__name">{it.t}</span>
                     {it.sub && <span class="htile__sub">{it.sub}</span>}
+                    {it.video && <a class="htile__video" href={heroLink(it.video)}>Видео</a>}
+                    {it.cta && <a class="htile__video" href={heroLink(it.href || '#callback')}>{it.cta}</a>}
                   </li>
                 ))}
               </ul>
@@ -475,6 +498,7 @@ const preload = hero.bg
         {s.kind === 'halls' && (
           <section class="hhalls">
             <div class="container">
+              {s.eyebrow && <p class="hsection__eyebrow">{s.eyebrow}</p>}
               {s.title && <h2 class="section-title">{s.title}</h2>}
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <ul class="hhalls__grid">
@@ -537,6 +561,7 @@ const preload = hero.bg
         {s.kind === 'gallery' && (
           <section class="qextra">
             <div class="container">
+              {s.eyebrow && <p class="hsection__eyebrow">{s.eyebrow}</p>}
               {s.title && <h2 class="section-title">{s.title}</h2>}
               {s.subtitle && <p class="section-sub">{s.subtitle}</p>}
               <div class="qextra__photos qextra__photos--grid">
@@ -549,6 +574,25 @@ const preload = hero.bg
             </div>
           </section>
         )}
+
+        {/* ---- local media is intentionally inserted only after a click ---- */}
+        {s.kind === 'video' && s.poster && (
+          <section class="qvideo" id={s.id || 'video'}>
+            <div class="container">
+              <h2 class="section-title qvideo__title">{s.title || 'Как у нас проходят праздники'}</h2>
+              <figure class="qvideo__frame" data-video={s.src ? asset(s.src) : undefined}>
+                <img class="qvideo__poster" src={asset(s.poster)} alt={s.caption || s.title || seo.h1}
+                     loading="lazy" decoding="async" width="1120" height="630" />
+                {s.src && <button class="qvideo__play" type="button" aria-label="Воспроизвести видео">
+                  <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path fill="#fff" d="M8 5.5v13l11-6.5z"/></svg>
+                </button>}
+                {s.caption && <figcaption class="qvideo__cap">{s.caption}</figcaption>}
+              </figure>
+            </div>
+          </section>
+        )}
+
+        {s.kind === 'reviews' && <Reviews title={s.title || 'Отзывы наших гостей'} limit={s.limit || 8} />}
 
         {/* ---- вопросы и ответы ---- */}
         {s.kind === 'faq' && (
@@ -572,20 +616,11 @@ const preload = hero.bg
       </>
     ))}
 
+    {!reviewSection && page.showReviews && <Reviews title={page.reviewsTitle || 'Отзывы наших гостей'} limit={8} />}
+
     <!-- ============ ПЛОЩАДКИ КОМПАНИИ ============ -->
-    {listedVenues.length > 0 && (
-      <section class="cvenues">
-        <div class="container">
-          <h2 class="section-title">Наши площадки</h2>
-          <p class="section-sub">{venuesSubtitle}</p>
-          <ul class="cvenues__list">
-            {listedVenues.map((v) => (
-              <li><a href={link('/' + v.slug)}>{v.address}</a></li>
-            ))}
-          </ul>
-        </div>
-      </section>
-    )}
+    {listedVenues.length > 0 && <VenuesSection id={`venues-${page.slug}`} base={base}
+      title="Наши площадки" subtitle={venuesSubtitle} />}
 
     <CallbackForm id="h" />
   </main>

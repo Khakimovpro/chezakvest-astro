@@ -10,6 +10,11 @@ import {
 const CORE_REQUIRED_PATHS = [
   '/',
   '/privacy',
+  '/minecraft-lend',
+  '/roblox-land',
+  '/amongus-land',
+  '/igra-v-kalmara-lend',
+  '/new-year',
 ];
 const REDIRECT_STATUS_CODES = new Set([301, 302, 307, 308]);
 const PERMANENT_REDIRECT_STATUS_CODES = new Set([301, 308]);

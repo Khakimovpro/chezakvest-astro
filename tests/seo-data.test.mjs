@@ -9,7 +9,7 @@ import { auditSeoData } from '../scripts/seo-data-audit.mjs';
 test('keeps every indexable page and static route within the SEO metadata contract', async () => {
   const report = await auditSeoData();
 
-  assert.equal(report.indexablePageCount, 60);
+  assert.equal(report.indexablePageCount, 65);
   assert.deepEqual(report.staticRouteSlugs, ['home', 'kvesty-v-rostove-na-donu']);
   assert.deepEqual(report.errors, []);
 });

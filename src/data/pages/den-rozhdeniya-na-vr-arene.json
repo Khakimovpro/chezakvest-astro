@@ -1,6 +1,8 @@
 {
  "slug": "den-rozhdeniya-na-vr-arene",
  "type": "holiday",
+ "showReviews": true,
+ "reviewsTitle": "Отзывы о наших праздниках на VR-арене",
  "serviceType": "День рождения на VR-арене",
  "seo": {
   "title": "День рождения на VR-арене в Ростове-на-Дону",
@@ -149,13 +151,11 @@
    ]
   },
   {
-   "kind": "gallery",
+   "kind": "video",
    "title": "Как у нас проходят праздники",
-   "photos": [
-    "/assets/q/3a0d767dbb.webp",
-    "/assets/q/9357da7ab1.webp",
-    "/assets/q/b10b71e115.webp"
-   ]
+   "poster": "/assets/q/3a0d767dbb.webp",
+   "src": "/assets/video/kubok.mov",
+   "caption": "Праздник на VR-арене «Чё за Квест?»"
   },
   {
    "kind": "text",
@@ -199,7 +199,8 @@
     "/assets/q/52f6289aee.webp",
     "/assets/q/67e44eb0a1.webp",
     "/assets/q/befb2cb8fb.webp",
-    "/assets/q/4583af93a2.webp"
+    "/assets/q/4583af93a2.webp",
+    "/assets/q/327e55e11a.webp"
    ]
   }
  ]

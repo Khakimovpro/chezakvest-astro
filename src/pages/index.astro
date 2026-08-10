@@ -6,7 +6,7 @@ import QuestCard from '../components/QuestCard.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import QuizPop from '../components/QuizPop.astro';
 import Reviews from '../components/Reviews.astro';
-import VenueChips from '../components/VenueChips.astro';
+import VenuesSection from '../components/VenuesSection.astro';
 import ZoomImg from '../components/ZoomImg.astro';
 import site from '../data/site.json';
 import venues from '../data/venues.json';
@@ -248,18 +248,8 @@ const jsonld = [{
     </section>
 
     <!-- ============ НАШИ ПЛОЩАДКИ ============ -->
-    <section class="venues" id="contacts">
-      <div class="container">
-        <h2 class="section-title">{venues.title}</h2>
-        <p class="venues__sub">{venues.subtitle}</p>
-        <VenueChips chips={venues.chips} base={base} />
-        <div class="venues__map" data-map-embed={venues.mapEmbed}>
-          <img src={asset('/assets/_static/map.webp')} alt="Карта площадок «Чё за Квест» в Ростове-на-Дону"
-               width="1160" height="428" loading="lazy" decoding="async" />
-          <button class="venues__map-load" type="button" data-map-load aria-pressed="false">Показать карту</button>
-        </div>
-      </div>
-    </section>
+    <VenuesSection id="contacts" base={base} title={venues.title} subtitle={venues.subtitle}
+                   chips={venues.chips} mapEmbed={venues.mapEmbed} />
   </main>
 
   <Footer />

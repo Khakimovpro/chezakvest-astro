@@ -45,7 +45,7 @@ artifact.
 | `/alias-block` | `/` | 301 | Retired Tilda alias-block utility page returns visitors to the homepage. |
 | `/alkatraz-hunter` | `/kvesty-v-rostove-na-donu/` | 301 | Retired Alcatraz quest has no matching migrated page; send visitors to the catalog. |
 | `/alkatraz-kvesttam` | `/kvesty-v-rostove-na-donu/` | 301 | Retired Alcatraz quest has no matching migrated page; send visitors to the catalog. |
-| `/amongus-land` | `/among_us/` | 301 + fallback | Legacy Among Us landing with a static noindex fallback. |
+| `/amongus-land` | `/amongus-land/` | 200 | Published Among Us campaign landing owns its canonical URL. |
 | `/annabel-hunter` | `/kvesty-v-rostove-na-donu/` | 301 | Retired Annabelle quest has no matching migrated page; send visitors to the catalog. |
 | `/annabel-kvesttam` | `/kvesty-v-rostove-na-donu/` | 301 | Retired Annabelle quest has no matching migrated page; send visitors to the catalog. |
 | `/bank-hunter` | `/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom/` | 301 | KvestHunter alias for the matching Bank Heist quest. |
@@ -59,14 +59,14 @@ artifact.
 | `/garri-hunter` | `/kvest_v_realnosti_garri_potter_/` | 301 | KvestHunter alias for the matching Harry Potter quest. |
 | `/garri-kvesttam` | `/kvest_v_realnosti_garri_potter_/` | 301 | KvestTam alias for the matching Harry Potter quest. |
 | `/header` | `/` | 301 | Retired Tilda header utility page returns visitors to the homepage. |
-| `/igra-v-kalmara-lend` | `/igra_v_kalmara/` | 301 + fallback | Legacy Squid Game landing with a static noindex fallback. |
+| `/igra-v-kalmara-lend` | `/igra-v-kalmara-lend/` | 200 | Published Squid Game campaign landing owns its canonical URL. |
 | `/kids_spasibo` | `/kids/` | 301 | Retired children's thank-you page returns to the party landing. |
 | `/krestrazh-hunter` | `/kvest_v_realnosti_harry_potter_i_krestrazh/` | 301 | KvestHunter alias for the matching Harry Potter Horcrux quest. |
 | `/krestrazh-kvesttam` | `/kvest_v_realnosti_harry_potter_i_krestrazh/` | 301 | KvestTam alias for the matching Harry Potter Horcrux quest. |
 | `/madagaskar-hunter` | `/kvesty-v-rostove-na-donu/` | 301 | Retired Madagascar quest has no matching migrated page; send visitors to the catalog. |
 | `/madagaskar-kvesttam` | `/kvesty-v-rostove-na-donu/` | 301 | Retired Madagascar quest has no matching migrated page; send visitors to the catalog. |
-| `/minecraft-lend` | `/minecraft/` | 301 + fallback | Legacy Minecraft landing with a static noindex fallback. |
-| `/new-year` | `/new-year-2025/` | 301 | Older New Year landing consolidates on the published current route. |
+| `/minecraft-lend` | `/minecraft-lend/` | 200 | Published Minecraft campaign landing owns its canonical URL. |
+| `/new-year` | `/new-year/` | 200 | Published current New Year campaign owns its canonical URL. |
 | `/new-year-2025` | `/new-year-2025/` | 200 | Captured New Year landing is published at its canonical path. |
 | `/noch-hunter` | `/kvest_v_realnosti_noch_v_museum_ograblenie/` | 301 | KvestHunter alias for the matching Night at the Museum quest. |
 | `/noch-kvesttam` | `/kvest_v_realnosti_noch_v_museum_ograblenie/` | 301 | KvestTam alias for the matching Night at the Museum quest. |
@@ -134,7 +134,7 @@ artifact.
 | `/prizrak-kvesttam` | `/kvest_v_realnosti_dom_prizrakov/` | 301 | KvestTam alias for the matching Ghost House quest. |
 | `/psihbolnica-kvesttam` | `/kvest_v_realnosti_psihbolnitsa/` | 301 | KvestTam alias for the matching Psychiatric Hospital quest. |
 | `/psihbolniza-hunter` | `/kvest_v_realnosti_psihbolnitsa/` | 301 | KvestHunter alias for the matching Psychiatric Hospital quest. |
-| `/roblox-land` | `/roblox/` | 301 + fallback | Legacy Roblox landing with a static noindex fallback. |
+| `/roblox-land` | `/roblox-land/` | 200 | Published Roblox campaign landing owns its canonical URL. |
 | `/sherlok-hunter` | `/kvest_v_realnosti_sherlock_holms/` | 301 | KvestHunter alias for the matching Sherlock Holmes quest. |
 | `/sherlok-kvesttam` | `/kvest_v_realnosti_sherlock_holms/` | 301 | KvestTam alias for the matching Sherlock Holmes quest. |
 | `/spasibo` | `/` | 301 | Retired thank-you page returns visitors to the homepage. |

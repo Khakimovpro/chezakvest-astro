@@ -1,0 +1,19 @@
+---
+// A local poster preserves layout and privacy; the map iframe exists only after
+// an explicit activation. It is shared by the home, venue and contact pages.
+const {
+  embedUrl,
+  poster,
+  alt = 'Карта площадок «Чё за Квест» в Ростове-на-Дону',
+  title = 'Карта площадок «Чё за Квест» в Ростове-на-Дону',
+  width = 1160,
+  height = 428,
+  className = 'venues__map',
+} = Astro.props;
+---
+{embedUrl && poster && (
+  <div class={className} data-map-embed={embedUrl} data-map-title={title}>
+    <img src={poster} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
+    <button class="venues__map-load" type="button" data-map-load aria-pressed="false">Показать карту</button>
+  </div>
+)}

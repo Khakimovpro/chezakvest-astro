@@ -39,7 +39,8 @@
   "routeUrl": "https://yandex.ru/maps/39/rostov-na-donu/?ll=39.719228%2C47.224520&mode=routes&rtext=~47.224481%2C39.719570&rtt=auto&ruri=~&z=21"
  },
  "map": {
-  "img": "/assets/q/map-sokolova23.webp"
+  "img": "/assets/q/map-sokolova23.webp",
+  "embedUrl": "https://yandex.ru/map-widget/v1/?lang=ru_RU&scroll=false&source=constructor-api&um=constructor%3A0f7671706d296f53c7c56d340e3e26877d0afce78fff121df7eb1445fdcbbf49"
  },
  "games": {
   "title": "Доступные квесты на локации",

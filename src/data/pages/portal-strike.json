@@ -1,6 +1,7 @@
 {
  "slug": "portal-strike",
  "type": "quest",
+ "difficulty": 3,
  "venueSlug": "40letpobedy216",
  "seo": {
   "title": "VR-игра Portal Strike в Ростове-на-Дону",
@@ -81,6 +82,7 @@
  },
  "booking": {
   "title": "Онлайн бронирование",
+  "calendarId": 91,
   "lines": [
    "Точная стоимость – в форме бронирования",
    "Оплатить участие в квесте можно наличными или переводом в день игры"

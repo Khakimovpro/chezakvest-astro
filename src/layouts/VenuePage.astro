@@ -10,12 +10,15 @@ import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import ZoomImg from '../components/ZoomImg.astro';
+import LazyMap from '../components/LazyMap.astro';
+import Reviews from '../components/Reviews.astro';
+import VenuesSection from '../components/VenuesSection.astro';
 import site from '../data/site.json';
 import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import '../styles/page.css';
 import '../styles/quest.css';
 
-const { page, index = [] } = Astro.props;
+const { page, index = [], venues = [] } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '');
 
@@ -101,15 +104,13 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
       </div>
     </section>
 
-    <!-- ============ КАРТА (снимок оригинала + ссылка в Яндекс.Карты) ============ -->
+    <!-- ============ КАРТА: local poster first, external iframe only after a click ============ -->
     {page.map?.img && (
       <section class="vmap">
         <div class="container">
-          <a class="vmap__link" href={mapsUrl} target="_blank" rel="noopener">
-            <img src={asset(page.map.img)} alt={`«Чё за Квест» на карте: ${address}`}
-                 width="1400" height="400" loading="lazy" decoding="async" />
-            <span class="vmap__badge">Открыть в Яндекс.Картах</span>
-          </a>
+          <LazyMap embedUrl={page.map.embedUrl} poster={asset(page.map.img)}
+                   alt={`«Чё за Квест» на карте: ${address}`} title={`Карта площадки «Чё за Квест» — ${address}`}
+                   width={1400} height={400} className="venues__map vmap__embed" />
         </div>
       </section>
     )}
@@ -146,6 +147,10 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
         </div>
       </section>
     )}
+
+    {page.showReviews !== false && <Reviews title={`Отзывы о «Чё за Квест» — ${address}`} limit={8} />}
+
+    <VenuesSection id={`venues-${page.slug}`} base={base} />
 
     <CallbackForm id="v" />
   </main>

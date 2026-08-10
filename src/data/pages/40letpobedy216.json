@@ -39,7 +39,8 @@
   "routeUrl": "https://yandex.ru/maps/-/CHwdYOlA"
  },
  "map": {
-  "img": "/assets/q/map-40letpobedy216.webp"
+  "img": "/assets/q/map-40letpobedy216.webp",
+  "embedUrl": "https://yandex.ru/map-widget/v1/?lang=ru_RU&scroll=true&source=constructor-api&um=constructor%3A372a0efee4d5468ada5960e737d373f5815cebec034d1d932fbcaff2083839c6"
  },
  "games": {
   "title": "Доступные квесты на локации",

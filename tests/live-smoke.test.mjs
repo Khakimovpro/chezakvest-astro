@@ -36,6 +36,11 @@ function createFetch({
     [`${ORIGIN}/`, page('/', { slashlessCanonical })],
     [`${ORIGIN}/quest/`, page('/quest', { slashlessCanonical })],
     [`${ORIGIN}/privacy/`, page('/privacy', { noindex: true, slashlessCanonical })],
+    [`${ORIGIN}/minecraft-lend/`, page('/minecraft-lend', { slashlessCanonical })],
+    [`${ORIGIN}/roblox-land/`, page('/roblox-land', { slashlessCanonical })],
+    [`${ORIGIN}/amongus-land/`, page('/amongus-land', { slashlessCanonical })],
+    [`${ORIGIN}/igra-v-kalmara-lend/`, page('/igra-v-kalmara-lend', { slashlessCanonical })],
+    [`${ORIGIN}/new-year/`, page('/new-year', { slashlessCanonical })],
   ]);
   return async (input) => {
     const url = String(input);
@@ -85,7 +90,7 @@ test('checks every generated 301 source against the deployed host', async () => 
 });
 
 test('rejects a missing required P0 endpoint after deployment', async () => {
-  const report = await verifyLiveSite({ origin: ORIGIN, fetchImpl: createFetch({ missingPath: '/roblox-land' }) });
+  const report = await verifyLiveSite({ origin: ORIGIN, fetchImpl: createFetch({ missingPath: '/roblox-land/' }) });
 
   assert.ok(report.errors.some((error) => error.includes('/roblox-land') && error.includes('status 404')));
 });

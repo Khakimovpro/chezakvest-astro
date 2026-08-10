@@ -41,7 +41,8 @@
   "routeUrl": "https://yandex.ru/maps/-/CHwKEL8H"
  },
  "map": {
-  "img": "/assets/q/map-magnitogorskaya1.webp"
+  "img": "/assets/q/map-magnitogorskaya1.webp",
+  "embedUrl": "https://yandex.ru/map-widget/v1/?lang=ru_RU&scroll=true&source=constructor-api&um=constructor%3A89d4d9c789e536e7f797e2fa76f036f687a974c5e2a5dee447317e4e3d6103de"
  },
  "games": {
   "title": "Доступные квесты на локации",
@@ -75,6 +76,38 @@
     "t": "Прятки в темноте",
     "href": "/pryatki_v_temnote",
     "img": "/assets/q/2fd4cbb580.webp"
+   },
+   {
+    "t": "Роблокс. Радужные друзья",
+    "href": "/roblox"
+   },
+   {
+    "t": "Роблокс. Дорс",
+    "href": "/roblox-dors"
+   },
+   {
+    "t": "Бегущий в лабиринте",
+    "href": "/beguschij_v_labirinte"
+   },
+   {
+    "t": "Игра в Кальмара",
+    "href": "/igra_v_kalmara"
+   },
+   {
+    "t": "Гарри Поттер и Кубок огня",
+    "href": "/garri-potter-i-kubok-ognya"
+   },
+   {
+    "t": "Амонг Ас",
+    "href": "/among_us"
+   },
+   {
+    "t": "Уэнсдей. Потерянная душа",
+    "href": "/wednesday-poteryannaya-dusha"
+   },
+   {
+    "t": "Майнкрафт",
+    "href": "/minecraft"
    }
   ]
  },

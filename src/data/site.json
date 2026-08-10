@@ -122,7 +122,7 @@
      ]
     },
     { "title": "ВЫПУСКНОЙ 2026", "href": "/vypusknoj-kalmar", "accent": true },
-    { "title": "НОВЫЙ ГОД 2027", "href": "/new-year-2025", "accent": true }
+    { "title": "НОВЫЙ ГОД 2027", "href": "/new-year", "accent": true }
    ]
   },
   "contacts": {
@@ -785,7 +785,7 @@
      { "t": "День Рождения в VR", "href": "https://нереально.рф/kids", "ext": true },
      { "t": "Выпускной 2026", "href": "/vypusknoj-kalmar" },
      { "t": "Корпоратив | Тимбилдинг", "href": null },
-     { "t": "Новый год 2027", "href": "/new-year-2025" }
+     { "t": "Новый год 2027", "href": "/new-year" }
     ]
    },
    {

@@ -16,7 +16,7 @@ test('keeps the full verified navigation data and only real destinations', () =>
   assert.equal(catalogLinks.length, 36);
   assert.equal(partyLinks.length, 8);
   assert.equal(venueLinks.length, 9);
-  assert.equal(site.megamenu.party.cols.at(-1).href, '/new-year-2025');
+  assert.equal(site.megamenu.party.cols.at(-1).href, '/new-year');
   assert.ok([...catalogLinks, ...partyLinks, ...venueLinks].every((link) => link.href));
 });
 

@@ -40,3 +40,16 @@ document.querySelectorAll('.qvideo__frame[data-video]').forEach((frame) => {
     frame.prepend(v);
   }, { once: true });
 });
+
+// The hero play control is a real opt-in activation too: jump to the local
+// video and start it without ever loading media during the initial render.
+document.querySelectorAll('[data-video-trigger]').forEach((trigger) => {
+  trigger.addEventListener('click', (event) => {
+    const frame = document.querySelector('#video .qvideo__frame[data-video]');
+    const play = frame?.querySelector('.qvideo__play');
+    if (!frame || !play) return;
+    event.preventDefault();
+    frame.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    play.click();
+  });
+});

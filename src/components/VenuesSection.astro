@@ -1,0 +1,24 @@
+---
+import venueData from '../data/venues.json';
+import VenueChips from './VenueChips.astro';
+import LazyMap from './LazyMap.astro';
+
+const {
+  id,
+  title = venueData.title,
+  subtitle = venueData.subtitle,
+  chips = venueData.chips,
+  mapEmbed = venueData.mapEmbed,
+  poster = '/assets/_static/map.webp',
+  base = '',
+} = Astro.props;
+const mapPoster = poster ? `${base}${poster}` : '';
+---
+<section class="venues" id={id}>
+  <div class="container">
+    <h2 class="section-title">{title}</h2>
+    {subtitle && <p class="venues__sub">{subtitle}</p>}
+    <VenueChips chips={chips} base={base} />
+    <LazyMap embedUrl={mapEmbed} poster={mapPoster} />
+  </div>
+</section>

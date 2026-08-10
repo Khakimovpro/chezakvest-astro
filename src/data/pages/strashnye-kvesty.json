@@ -1,6 +1,9 @@
 {
  "slug": "strashnye-kvesty",
  "type": "category",
+ "theme": "dark",
+ "showReviews": true,
+ "reviewsTitle": "Отзывы о страшных квестах",
  "seo": {
   "title": "Страшные квесты в Ростове",
   "description": "Страшные квесты в Ростове-на-Дону от компании «Чё за Квест»: 13 программ на выбор, 9 площадок в городе. Бронирование игры по телефону, работаем ежедневно.",
@@ -26,11 +29,11 @@
   "sub": "Испытай свои нервы на прочность в страшных квестах в Ростове-на-Дону.",
   "buttons": [
    {
-    "t": "Рассчитать стоимость праздника",
-    "href": "#callback"
+    "t": "Подобрать квест",
+    "href": "#kvesty"
    },
    {
-    "t": "Подобрать квест",
+    "t": "Рассчитать стоимость праздника",
     "href": "#callback"
    }
   ],
@@ -45,19 +48,19 @@
   "title": "Выберите свой страшный квест",
   "items": [
    {
-    "t": "Психбольница",
-    "href": "/kvest_v_realnosti_psihbolnitsa",
-    "img": null
+    "t": "Шизофрения. Тени правды",
+    "href": "/shizofreniya",
+    "img": "/assets/q/d621abd216.webp"
    },
    {
-    "t": "Уэнсдей. Новая битва",
-    "href": "/kvest_v_realnosti_wednesday",
-    "img": "/assets/q/abb318ccb1.webp"
+    "t": "Хостел. Подвал пыток",
+    "href": "/hostel-podval-pytok",
+    "img": "/assets/q/3838632926.webp"
    },
    {
-    "t": "Коралина в Стране Кошмаров",
-    "href": "/kvest_v_realnosti_koralina",
-    "img": "/assets/q/e6b87ab45d.webp"
+    "t": "Патология",
+    "href": "/patologiya",
+    "img": "/assets/q/ce2fec6888.webp"
    },
    {
     "t": "Техасская резня бензопилой",
@@ -65,14 +68,14 @@
     "img": "/assets/q/c3181340e6.webp"
    },
    {
-    "t": "Звонок",
-    "href": "/zvonok",
-    "img": "/assets/q/51c67323e2.webp"
+    "t": "ОНО",
+    "href": "/ono",
+    "img": "/assets/q/ab71a7cd83.webp"
    },
    {
-    "t": "Бегущий в лабиринте",
-    "href": "/beguschij_v_labirinte",
-    "img": "/assets/q/2950393a90.webp"
+    "t": "Коралина в Стране Кошмаров",
+    "href": "/kvest_v_realnosti_koralina",
+    "img": "/assets/q/e6b87ab45d.webp"
    },
    {
     "t": "Дом призраков",
@@ -80,13 +83,13 @@
     "img": null
    },
    {
-    "t": "ОНО",
-    "href": "/ono",
-    "img": "/assets/q/ab71a7cd83.webp"
+    "t": "Звонок",
+    "href": "/zvonok",
+    "img": "/assets/q/51c67323e2.webp"
    },
    {
-    "t": "Игра в Кальмара",
-    "href": "/igra_v_kalmara",
+    "t": "Психбольница",
+    "href": "/kvest_v_realnosti_psihbolnitsa",
     "img": null
    },
    {
@@ -95,19 +98,19 @@
     "img": "/assets/q/f4196df202.webp"
    },
    {
-    "t": "Патология",
-    "href": "/patologiya",
-    "img": "/assets/q/ce2fec6888.webp"
+    "t": "Уэнсдей. Новая битва",
+    "href": "/kvest_v_realnosti_wednesday",
+    "img": "/assets/q/abb318ccb1.webp"
    },
    {
-    "t": "Хостел. Подвал пыток",
-    "href": "/hostel-podval-pytok",
-    "img": "/assets/q/3838632926.webp"
+    "t": "Бегущий в лабиринте",
+    "href": "/beguschij_v_labirinte",
+    "img": "/assets/q/2950393a90.webp"
    },
    {
-    "t": "Шизофрения. Тени правды",
-    "href": "/shizofreniya",
-    "img": "/assets/q/d621abd216.webp"
+    "t": "Игра в Кальмара",
+    "href": "/igra_v_kalmara",
+    "img": null
    }
   ]
  },

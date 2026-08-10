@@ -37,7 +37,8 @@
   "routeUrl": "https://yandex.ru/maps/-/CHw2uPjQ"
  },
  "map": {
-  "img": "/assets/q/map-nansena107.webp"
+  "img": "/assets/q/map-nansena107.webp",
+  "embedUrl": "https://yandex.ru/map-widget/v1/?lang=ru_RU&scroll=true&source=constructor-api&um=mymaps%3A19CsiYncJ1ZzlL8Q2VI8Sy1EZK_F4CVy"
  },
  "games": {
   "title": "Доступные квесты на локации",

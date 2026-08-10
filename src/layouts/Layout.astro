@@ -21,6 +21,7 @@ const {
   ogType = 'website',
   noindex = false,
   jsonld = [],                // массив объектов Schema.org — по одному <script> на каждый
+  bodyClass = '',
   // LCP-картинка страницы: {href, srcset, sizes}. По умолчанию — фон героя главной.
   preloadImage = {
     href: asset('/assets/_static/hero_dungeon_1200.webp'),
@@ -86,7 +87,7 @@ const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1
       <script type="application/ld+json" set:html={JSON.stringify(data)} />
     ))}
   </head>
-  <body>
+  <body class={bodyClass}>
     <slot />
     <Lightbox />
   </body>

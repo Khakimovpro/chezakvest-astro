@@ -8,6 +8,8 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CardsRow from '../components/CardsRow.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import ZoomImg from '../components/ZoomImg.astro';
+import Reviews from '../components/Reviews.astro';
+import VenuesSection from '../components/VenuesSection.astro';
 import site from '../data/site.json';
 import { absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
@@ -38,6 +40,7 @@ const games = (page.games?.items || []).map((g) => {
     age: pills.find((p) => /\+$/.test(p)) || '',
     people: pills.find((p) => /^\d+\s*[-–]\s*\d+$/.test(p)) || '',
     time: pills.find((p) => /мин|час/i.test(p)) || '',
+    difficulty: Number.isInteger(info.difficulty) ? info.difficulty : null,
     venue,
     addr: venue?.address || '',
   };
@@ -85,6 +88,7 @@ const preload = hero.bg
   ogImage={hero.bg}
   jsonld={jsonld}
   preloadImage={preload}
+  bodyClass={page.theme === 'dark' ? 'theme-dark' : ''}
 >
   <Header />
 
@@ -132,6 +136,9 @@ const preload = hero.bg
                   <span class="ccard__body">
                     <span class="ccard__name">{g.t}</span>
                   </span>
+                  {g.difficulty && <span class="ccard__keys" aria-label={`Сложность ${g.difficulty} из 5`}>
+                    {Array.from({ length: 5 }, (_, i) => <span class:list={['ccard__key', { 'ccard__key--active': i < g.difficulty }]} aria-hidden="true">◆</span>)}
+                  </span>}
                   {(g.people || g.time) && (
                     <span class="ccard__meta">
                       {g.people && <span class="ccard__chip">{g.people} чел.</span>}
@@ -181,22 +188,13 @@ const preload = hero.bg
       </section>
     )}
 
+    {page.showReviews && <Reviews title={page.reviewsTitle || 'Отзывы о «Чё за Квест?»'} limit={8} />}
+
     <CallbackForm id="c" />
 
     <!-- ============ ПЛОЩАДКИ ============ -->
-    {page.venues?.items?.length > 0 && (
-      <section class="cvenues">
-        <div class="container">
-          <h2 class="section-title">{page.venues.title}</h2>
-          {page.venues.subtitle && <p class="section-sub">{page.venues.subtitle}</p>}
-          <ul class="cvenues__list">
-            {page.venues.items.map((v) => (
-              <li><a href={link(v.href)}>{v.t}</a></li>
-            ))}
-          </ul>
-        </div>
-      </section>
-    )}
+    <VenuesSection id={`venues-${page.slug}`} base={base}
+      title={page.venues?.title || 'Наши площадки'} subtitle={page.venues?.subtitle} />
   </main>
 
   <Footer />

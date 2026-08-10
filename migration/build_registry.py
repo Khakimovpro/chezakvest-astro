@@ -30,8 +30,8 @@ VENUES = {
 VR = {"portal-strike", "portal-strike-kids", "portal-zombie", "party-games"}
 HOLIDAY = {
     "kids", "prazdnik-maxi", "den-rozhdeniya-uznik-azkabana",
-    "den-rozhdeniya-na-vr-arene", "vypusknoj-kalmar", "new-year-2025",
-    "prazdniki-pod-kluch",
+    "den-rozhdeniya-na-vr-arene", "vypusknoj-kalmar", "new-year-2025", "new-year",
+    "prazdniki-pod-kluch", "minecraft-lend", "roblox-land", "amongus-land", "igra-v-kalmara-lend",
 }
 CATEGORY = {"strashnye-kvesty"}
 INFO = {"contacts"}

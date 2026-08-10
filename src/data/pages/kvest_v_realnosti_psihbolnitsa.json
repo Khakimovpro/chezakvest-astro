@@ -1,6 +1,7 @@
 {
  "slug": "kvest_v_realnosti_psihbolnitsa",
  "type": "quest",
+ "difficulty": 3,
  "venueSlug": "guardeskypereulog61",
  "seo": {
   "title": "Хоррор квест Психбольница в Ростове-на-Дону",
@@ -96,10 +97,17 @@
  },
  "booking": {
   "title": "Онлайн бронирование",
+  "calendarId": 8,
   "lines": [
    "Точная стоимость – в форме бронирования",
    "Оплатить участие в квесте можно наличными или переводом в день игры"
   ]
+ },
+ "video": {
+  "title": "Как проходит квест",
+  "caption": "Квест Психбольница от \"Чё за Квест?\"",
+  "poster": "/assets/q/25027ab56f.webp",
+  "src": "/assets/video/psihbolnitsa.mp4"
  },
  "related": {
   "title": "Другие страшные квесты от «Чё за Квест?»",

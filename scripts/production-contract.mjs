@@ -9,6 +9,11 @@ const DEFAULT_ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
 const CORE_REQUIRED_PATHS = [
   '/',
   '/privacy',
+  '/minecraft-lend',
+  '/roblox-land',
+  '/amongus-land',
+  '/igra-v-kalmara-lend',
+  '/new-year',
 ];
 const FORBIDDEN_PUBLIC_PATHS = ['/tilda'];
 
@@ -315,6 +320,9 @@ function validatePage({ html, pagePath, origin, errors, legacyRedirectTargets, n
   const noindex = isNoindex(html);
   if (noindexPaths.has(pagePath) && !noindex) {
     errors.push(`${pagePath}: migration or privacy page must be noindex`);
+  }
+  if (noindex && !noindexPaths.has(pagePath) && pagePath !== '/404') {
+    errors.push(`${pagePath}: published route must not be noindex`);
   }
 
   if (!noindex) {

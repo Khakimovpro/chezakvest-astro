@@ -38,7 +38,8 @@
   "routeUrl": "https://yandex.ru/maps/39/rostov-na-donu/?ll=39.736596%2C47.224761&mode=routes&rtext=~47.224905%2C39.736779&rtt=auto&ruri=~ymapsbm1%3A%2F%2Fgeo%3Fll%3D39.737%252C47.225%26spn%3D0.001%252C0.001%26text%3D%25D0%25A0%25D0%25BE%25D1%2581%25D1%2581%25D0%25B8%25D1%258F%252C%2520%25D0%25A0%25D0%25BE%25D1%2581%25D1%2582%25D0%25BE%25D0%25B2-%25D0%25BD%25D0%25B0-%25D0%2594%25D0%25BE%25D0%25BD%25D1%2583%252C%2520%25D0%25A1%25D0%25BE%25D1%2586%25D0%25B8%25D0%25B0%25D0%25BB%25D0%25B8%25D1%2581%25D1%2582%25D0%25B8%25D1%2587%25D0%25B5%25D1%2581%25D0%25BA%25D0%25B0%25D1%258F%2520%25D1%2583%25D0%25BB%25D0%25B8%25D1%2586%25D0%25B0%252C%2520186%252F59&utm_source=main_stripe_big&z=20.89"
  },
  "map": {
-  "img": "/assets/q/map-socialicheskaya186.webp"
+  "img": "/assets/q/map-socialicheskaya186.webp",
+  "embedUrl": "https://yandex.ru/map-widget/v1/?lang=ru_RU&scroll=false&source=constructor-api&um=constructor%3Ac3a2aab29345687020e66ecf2fe1e8dc1cf728344f31375710473f5cd9d07a05"
  },
  "games": {
   "title": "Доступные квесты на локации",

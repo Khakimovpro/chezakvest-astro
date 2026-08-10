@@ -131,6 +131,34 @@
   height delta 3106px), chiefly because the source includes the third-party widget and old
   page composition. Mobile Lighthouse on the current home: Performance 97, Accessibility 93,
   Best Practices 100, SEO 100, CLS 0, LCP 2.45s.
+- **10.08.2026 — Wave 4 quest parity.** The six source-proven difficulty values are now rendered
+  as five visual keys in the quest hero (`among_us`/`portal-strike`/`zvonok`/`psihbolnitsa`: 3;
+  `igra_v_kalmara`: 4; `sherlock_holms`: 5). The obsolete static slot calendars remain excluded,
+  but each audited page now has an honest preliminary-booking fallback with its verified calendar
+  identifier (84, 91, 84, 8, 87, 9). The three multi-venue celebrations render both real halls
+  in full. Four supplied source videos were copied locally and stay click-started; Portal Strike
+  deliberately has no invented video.
+- **10.08.2026 — Wave 4 shared location and content parity.** Every venue map uses its captured
+  public Yandex constructor URL only after the visitor activates the local poster; no initial HTML
+  contains an iframe. Magnitogorskaya now contains all 14 source games. Quest, holiday, category,
+  venue and contact layouts reuse the local review/venue/map components. The horror category has
+  its page-wide dark theme, source card order and difficulty marks. Missing source-specific
+  campaign art was simplified to existing local thematic assets, and the absent VR birthday video
+  was represented with the locally available celebration video; this is deliberate rather than a
+  remote dependency. The source's special call-tracking header on `/vypusknoj-kalmar` remains
+  simplified to the shared header because no approved tracking number is configured.
+- **10.08.2026 — Wave 4 campaign routing.** `/minecraft-lend`, `/roblox-land`,
+  `/amongus-land`, `/igra-v-kalmara-lend` and `/new-year` are ordinary, indexable holiday routes,
+  included in the sitemap and registry instead of redirect stubs. Their legacy-map rows are `200`
+  self routes, so all three redirect artifacts are regenerated without self redirects. Navigation
+  now points to `/new-year`; the archival `/new-year-2025` stays outside navigation. The new
+  seasonal page is intentionally labelled 2027 while its older source capture says 2026, to avoid
+  publishing an already stale campaign year.
+- **10.08.2026 — Wave 4 verification.** `npm run ci` passed after the route, SEO and production
+  contracts were extended to 65 indexable pages. Fresh affected-page captures at 1440 and 390 are
+  retained under ignored `_capture/shots/wave4/` with side-by-side diffs against all available
+  original captures. Those historical captures have mixed viewport/DPR and old third-party blocks,
+  so their aggregate pixel scores are diagnostic only rather than a false release threshold.
 
 ## Шаблоны: 57 страниц сводятся к 6 макетам
 

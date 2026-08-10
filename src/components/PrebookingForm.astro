@@ -1,0 +1,47 @@
+---
+// Schedule widgets are intentionally not copied. This lightweight fallback
+// collects a preliminary request for the selected quest through the common lead
+// form path, keeping the source calendar id available to a future integration.
+import site from '../data/site.json';
+import { siteHref } from '../lib/urls.js';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (href) => siteHref(base, href);
+const { id = 'booking-form', quest = '', calendarId = '' } = Astro.props;
+---
+<section class="prebook" aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <div class="prebook__card">
+      <h3 id={`${id}-title`} class="prebook__title">Расписание не загрузилось</h3>
+      <p class="prebook__sub">Оставьте предварительную заявку — перезвоним и подберём удобное время для квеста «{quest}».</p>
+      <form class="prebook__form" data-lead-form data-lead-kind="booking" data-lead-quest={quest}
+            data-lead-calendar-id={String(calendarId)} data-lead-target={site.header.wa}
+            aria-describedby={`${id}-status`}>
+        <div class="prebook__grid">
+          <label class="prebook__field" for={`${id}-date`}>
+            <span>Желаемая дата</span>
+            <input id={`${id}-date`} name="date" type="date" autocomplete="off" required />
+          </label>
+          <label class="prebook__field" for={`${id}-name`}>
+            <span>Ваше имя</span>
+            <input id={`${id}-name`} name="name" type="text" autocomplete="name" minlength="2" maxlength="80" required />
+          </label>
+          <label class="prebook__field" for={`${id}-phone`}>
+            <span>Телефон</span>
+            <input id={`${id}-phone`} name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="24" placeholder="+7 (000) 000-00-00" required />
+          </label>
+        </div>
+        <label class="prebook__consent">
+          <input name="consent" type="checkbox" required />
+          <span>Даю согласие на обработку персональных данных по <a href={link('/privacy')}>Политике обработки персональных данных</a>.</span>
+        </label>
+        <button class="btn-orange prebook__submit" type="button" data-lead-submit>Отправить предварительную заявку</button>
+        <p class="lead-form__status" id={`${id}-status`} data-lead-status role="status" aria-live="polite" hidden></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/lead-form.js';
+</script>

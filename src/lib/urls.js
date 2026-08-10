@@ -1,12 +1,9 @@
 export const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
 
 const EXTERNAL_LINK = /^(?:https?:|mailto:|tel:)/i;
-const LEGACY_INTERNAL_PATHS = new Map([
-  ['/amongus-land', '/among_us'],
-  ['/igra-v-kalmara-lend', '/igra_v_kalmara'],
-  ['/minecraft-lend', '/minecraft'],
-  ['/roblox-land', '/roblox'],
-]);
+// Campaign pages are now first-class, indexable routes. Keep this map for any
+// future retired path aliases, but do not collapse current campaign traffic.
+const LEGACY_INTERNAL_PATHS = new Map();
 const HARRY_POTTER_CAMPAIGN_HOST = 'xn----7sbikn1bgfafua.xn--80aehcht5ci1b.xn--p1ai';
 
 function splitPathAndSuffix(value) {

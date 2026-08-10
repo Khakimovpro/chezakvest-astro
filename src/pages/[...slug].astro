@@ -43,7 +43,7 @@ export async function getStaticPaths() {
 const { page, index, venues } = Astro.props;
 ---
 {page.type === 'quest' && <QuestPage page={page} index={index} venues={venues} />}
-{page.type === 'venue' && <VenuePage page={page} index={index} />}
+{page.type === 'venue' && <VenuePage page={page} index={index} venues={venues} />}
 {page.type === 'category' && <CategoryPage page={page} index={index} venues={venues} />}
 {page.type === 'info' && <InfoPage page={page} venues={venues} />}
 {page.type === 'holiday' && <HolidayPage page={page} index={index} venues={venues} />}

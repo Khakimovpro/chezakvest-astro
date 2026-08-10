@@ -1,6 +1,6 @@
 source,target,status,reason
 /page57307963.html,/minecraft,301,Legacy numeric alias for the Minecraft landing.
-/minecraft-lend,/minecraft,301 + fallback,Legacy Minecraft landing with a static noindex fallback.
+/minecraft-lend,/minecraft-lend,200,Published Minecraft campaign landing owns its canonical URL.
 /page48687287.html,/,301,Retired thank-you page returns visitors to the homepage.
 /spasibo,/,301,Retired thank-you page returns visitors to the homepage.
 /page62529067.html,/kids,301,Retired children's thank-you page returns to the party landing.
@@ -15,16 +15,16 @@ source,target,status,reason
 /agent,/contacts,301,Retired agency request form returns visitors to contacts.
 /page56207935.html,/kvesty-v-rostove-na-donu,301,Retired quest-cart utility page returns visitors to the catalog.
 /page63266477.html,/igra_v_kalmara,301,Legacy numeric alias for the Squid Game landing.
-/igra-v-kalmara-lend,/igra_v_kalmara,301 + fallback,Legacy Squid Game landing with a static noindex fallback.
+/igra-v-kalmara-lend,/igra-v-kalmara-lend,200,Published Squid Game campaign landing owns its canonical URL.
 /page64505705.html,/roblox,301,Legacy numeric alias for the Roblox landing.
-/roblox-land,/roblox,301 + fallback,Legacy Roblox landing with a static noindex fallback.
+/roblox-land,/roblox-land,200,Published Roblox campaign landing owns its canonical URL.
 /page69116991.html,/among_us,301,Legacy numeric alias for the Among Us landing.
-/amongus-land,/among_us,301 + fallback,Legacy Among Us landing with a static noindex fallback.
+/amongus-land,/amongus-land,200,Published Among Us campaign landing owns its canonical URL.
 /page40355277.html,/,301,Retired Tilda block archive returns visitors to the homepage.
 /page71881007.html,/,301,Retired Tilda alias-block utility page returns visitors to the homepage.
 /alias-block,/,301,Retired Tilda alias-block utility page returns visitors to the homepage.
 /page87839976.html,/new-year-2025,301,Legacy numeric alias for the published New Year landing.
-/new-year,/new-year-2025,301,Older New Year landing consolidates on the published current route.
+/new-year,/new-year,200,Published current New Year campaign owns its canonical URL.
 /page131787606.html,/,301,Retired image utility page returns visitors to the homepage.
 /aimg,/,301,Retired image utility page returns visitors to the homepage.
 /page7266054.html,/,301,Retired Tilda header utility page returns visitors to the homepage.

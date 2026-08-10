@@ -14,13 +14,10 @@ const REQUIRED_PATHS = [
   '/minecraft-lend',
   '/roblox-land',
   '/amongus-land',
+  '/new-year',
   '/wednesday_ukradennaya_vesch',
 ];
 const LEGACY_TARGETS = new Map([
-  ['/igra-v-kalmara-lend', '/igra_v_kalmara'],
-  ['/minecraft-lend', '/minecraft'],
-  ['/roblox-land', '/roblox'],
-  ['/amongus-land', '/among_us'],
   ['/wednesday_ukradennaya_vesch', '/wednesday-poteryannaya-dusha'],
 ]);
 
@@ -32,7 +29,7 @@ function pageHtml(pathname, {
   noindex = false,
   leadForms = 0,
   extraBody = '',
-  jsonLd = '{"@context":"https://schema.org","@type":"WebSite"}',
+  jsonLd = '{"@context":"https://schema.org","@type":["WebSite","BreadcrumbList"]}',
 } = {}) {
   const leadLabels = hiddenLeadLabels
     ? `<label class="visually-hidden" for="lead-name">Ваше имя</label>
@@ -155,7 +152,9 @@ test('rejects empty or type-less JSON-LD', async () => {
 
 test('requires breadcrumb schema on indexable inner pages', async () => {
   const distDir = await createValidDist();
-  await writePage(distDir, '/quest', pageHtml('/quest'));
+  await writePage(distDir, '/quest', pageHtml('/quest', {
+    jsonLd: '{"@context":"https://schema.org","@type":"WebSite"}',
+  }));
   const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
 
   assert.ok(report.errors.some((error) => error.includes('/quest') && error.includes('missing BreadcrumbList')));
@@ -176,12 +175,12 @@ test('rejects slashless canonical URLs that would redirect on a static-directory
   assert.ok(report.errors.some((error) => error.includes('canonical does not match the published URL')));
 });
 
-test('rejects a legacy fallback that canonicals to its old URL instead of its migrated target', async () => {
+test('rejects a published campaign route that is accidentally marked noindex', async () => {
   const distDir = await createValidDist();
   await writePage(distDir, '/minecraft-lend', pageHtml('/minecraft-lend', { noindex: true }));
   const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
 
-  assert.ok(report.errors.some((error) => error.includes('/minecraft-lend') && error.includes('canonical does not match')));
+  assert.ok(report.errors.some((error) => error.includes('/minecraft-lend') && error.includes('must not be noindex')));
 });
 
 test('rejects the Wednesday duplicate fallback when it canonicals to its legacy URL', async () => {

@@ -1,6 +1,7 @@
 {
  "slug": "kvest_v_realnosti_sherlock_holms",
  "type": "quest",
+ "difficulty": 5,
  "venueSlug": "guardeskypereulog61",
  "seo": {
   "title": "Ты детектив? Приходи на квест Шерлок Холмс в Ростове-на-Дону",
@@ -81,10 +82,17 @@
  },
  "booking": {
   "title": "Онлайн бронирование",
+  "calendarId": 9,
   "lines": [
    "Точная стоимость – в форме бронирования",
    "Оплатить участие в квесте можно наличными или переводом в день игры"
   ]
+ },
+ "video": {
+  "title": "Как проходит квест",
+  "caption": "Квест Шерлок Холмс от \"Чё за Квест?\"",
+  "poster": "/assets/q/bd10282503.webp",
+  "src": "/assets/video/sherlock.mp4"
  },
  "related": {
   "title": "Другие квесты от «Чё за Квест?»",
