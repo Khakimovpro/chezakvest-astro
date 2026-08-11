@@ -45,6 +45,15 @@
 .crumbs span[aria-current]{color:var(--muted)}
 .crumbs__sep{color:#cfcfcf}
 
+/* The 39 audited generic quest records share the same Tilda cadence: a 90px
+   header, a 550px desktop hero, then 54px of crumbs and a 73px spacer. Scope
+   it to QuestPage so category, holiday, and venue records keep their own
+   measured header rhythm. */
+body.quest-page .hdr__inner{height:80px}
+body.quest-page .mega{top:80px}
+body.quest-page .crumbs{padding-bottom:90px}
+@media (min-width:901px){body.quest-page .qhero{padding-top:0}}
+
 /* --- ПРЕДЫСТОРИЯ --- */
 .qstory{padding:56px 0 10px}
 .qstory__cols{margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:0 60px;align-items:start}
@@ -132,38 +141,42 @@
 }
 
 /* --- ФОРМА ПРАЗДНИКА --- */
-.pform{padding:48px 0 8px}
+.pform{padding:0}
+.pform .container{max-width:1200px;padding-inline:0}
 .pform__card{
   position:relative;background:#fff;border-radius:24px;overflow:hidden;
-  padding:46px 40px 210px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.06);
+  height:551px;padding:41px 40px 0;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.06);
 }
-.pform__title{font-size:32px;font-weight:700;color:var(--dark)}
-.pform__sub{margin-top:12px;font-size:16px;color:var(--muted);line-height:1.5}
-.pform__form{position:relative;z-index:2;margin-top:26px}
+.pform__title{font-size:32px;font-weight:700;line-height:1.4;color:var(--dark)}
+.pform__sub{margin-top:10px;font-size:16px;color:var(--muted);line-height:1.5}
+.pform__form{position:relative;z-index:2;margin-top:16px}
 .pform__grid{
   display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:
     '. date'
     'name phone';
-  gap:16px;align-items:end;max-width:700px;margin:0 auto;
+  gap:5px 14px;align-items:end;max-width:560px;margin:0 auto;
 }
-.pform__field{position:relative;display:flex;flex-direction:column;gap:6px;text-align:left}
+.pform__field{position:relative;display:flex;flex-direction:column;gap:0;text-align:left}
 .pform__field--date{grid-area:date}
 .pform__field--name{grid-area:name}
 .pform__field--phone{grid-area:phone}
-.pform__label{font-size:13px;color:var(--muted)}
+.pform__label{font-size:15px;line-height:1.2;color:#555}
+.pform__label--date{position:absolute;right:calc(100% + 112px);bottom:15px;width:180px;white-space:nowrap}
+.pform__label--inside{position:absolute;z-index:1;left:14px;top:50%;transform:translateY(-50%);color:#a3a3a3;font-weight:600;pointer-events:none}
+.pform__label--phone{left:44px}
 .pform__field input{
-  height:48px;min-width:250px;border:1px solid #e0e0e0;border-radius:8px;padding:0 14px;
+  height:50px;min-width:0;border:1px solid #e0e0e0;border-radius:8px;padding:0 14px;
   font-family:inherit;font-size:15px;color:var(--ink);background:#fff;
 }
 .pform__field--phone input{padding-left:44px}
 .pform__flag{position:absolute;left:14px;bottom:13px;font-size:16px}
 .pform__consent{
   display:flex;gap:10px;align-items:flex-start;justify-content:center;
-  max-width:560px;margin:18px auto 0;font-size:12px;color:var(--muted);text-align:left;line-height:1.4;
+  min-height:25px;max-width:560px;margin:10px auto 0;font-size:12px;color:var(--muted);text-align:left;line-height:1.2;
 }
 .pform__consent a{color:var(--orange-text);text-decoration:underline;text-underline-offset:2px}
-.pform__consent input{width:24px;height:24px;margin:0;accent-color:var(--orange);flex:0 0 auto}
-.pform__submit{margin-top:18px;text-transform:uppercase;font-size:15px}
+.pform__consent input{width:13px;height:13px;margin:0;accent-color:var(--orange);flex:0 0 auto}
+.pform__submit{width:180px;height:50px;margin-top:10px;padding:0;text-transform:uppercase;font-size:14px}
 .pform .lead-form__status{position:relative;z-index:2;color:var(--dark)}
 .pform__wave{position:absolute;left:0;right:0;bottom:0;height:190px;z-index:1}
 .pform__wave svg{width:100%;height:100%;display:block}
@@ -179,6 +192,10 @@
 .qvenue__stack .qvenue__card{margin-top:0}
 .qvenue__photos{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;min-width:0}
 .qvenue__photo{width:100%;height:100%;object-fit:cover;min-height:260px}
+.qvenue__photos--rail{display:flex;gap:0;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:none}
+.qvenue__photos--rail::-webkit-scrollbar{display:none}
+.qvenue__photos--rail .zoomable{flex:0 0 100%;min-width:0;aspect-ratio:3/2;scroll-snap-align:start}
+.qvenue__photos--rail .qvenue__photo{min-height:0;height:100%;aspect-ratio:auto}
 .qvenue__card:not(:has(.qvenue__photo)){grid-template-columns:1fr}
 .qvenue__card:not(:has(.qvenue__photo)) .qvenue__info{padding:34px}
 .qvenue__info{padding:34px 34px 34px 0}
@@ -209,13 +226,22 @@
   .qhero__key svg{width:21px;height:21px}
   .qpill{font-size:13px;padding:6px 12px}
   .qhero__age{top:14px;right:16px;width:40px;height:40px;font-size:13px}
-  .qhero__panel{aspect-ratio:auto;min-height:420px}
+  .qhero__panel{aspect-ratio:auto;min-height:516px}
+  .qvenue__photos--rail{width:calc(100% + 90px);margin-left:-45px}
+  .qvenue__photos--rail .zoomable{aspect-ratio:8/5}
   .qhero__cta{gap:10px}
   .qhero__btn-ghost,.qhero__cta .btn-orange{height:48px;padding:0 22px;font-size:15px}
-  .pform__card{padding:32px 20px 170px}
-  .pform__title{font-size:24px}
+  .pform__card{height:523px;padding:25px 30px 0}
+  .pform__title{font-size:20px;line-height:1.15}
+  .pform__sub{max-width:235px;margin:5px auto 0;font-size:14px;line-height:16px}
+  .pform__form{margin-top:10px}
   .pform__field input{min-width:0;width:100%}
-  .pform__grid{grid-template-columns:1fr;grid-template-areas:'date' 'name' 'phone';align-items:stretch}
+  .pform__grid{grid-template-columns:1fr;grid-template-areas:'date' 'name' 'phone';gap:5px;align-items:stretch;padding-top:0}
+  .pform__label--date{position:static;display:block;width:auto;margin:0 0 10px;font-size:15px}
+  .pform__field input{height:46px}
+  .pform__consent{min-height:47px;max-width:300px;margin-top:12px;font-size:10px;line-height:1.2}
+  .pform__submit{width:260px;height:50px;margin-top:12px}
+  .pform__wave{height:162px}
   .prebook__card{padding:24px 18px}
   .prebook__grid{grid-template-columns:1fr}
   .cards__arrow{display:none}
@@ -252,20 +278,25 @@
 .qextra__photos--row{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 .qextra__photos--grid{grid-template-columns:repeat(3,1fr)}
 .qextra__photos img{width:100%;height:100%;object-fit:cover;border-radius:16px;aspect-ratio:3/2}
+.qextra__photos--rail{display:flex;max-width:640px;gap:0;margin-inline:auto;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:none}
+.qextra__photos--rail::-webkit-scrollbar{display:none}
+.qextra__photos--rail .zoomable{flex:0 0 100%;min-width:0;scroll-snap-align:start}
 @media (max-width:900px){.qextra__photos--grid{grid-template-columns:repeat(2,1fr)}}
 
 /* ===== Страница площадки ===== */
-.vhow{padding:22px 0 6px}
+.vhow{padding:86px 0 0}
+.vhow .container{max-width:1200px;padding-inline:0}
+.vhow__heading{height:153px;padding:40px 20px 0;background:#fff;border-radius:20px 20px 0 0}
 .vhow__card{
-  background:#fff;border-radius:24px;padding:38px 40px;display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,560px);gap:40px;align-items:center;
-  box-shadow:0 10px 30px rgba(0,0,0,.05);
+  position:relative;height:440px;background:#fff;border-radius:0 0 20px 20px;box-shadow:none;
 }
-.vhow__up{font-size:15px;color:var(--muted)}
-.vhow__title{margin-top:10px;font-size:34px;font-weight:700;line-height:1.15;color:var(--dark)}
-.vhow__var{margin-top:18px;font-size:16px;line-height:1.55;color:var(--muted)}
+.vhow__up{font-size:20px;line-height:1.55;color:var(--muted)}
+.vhow__title{margin:0;font-size:40px;font-weight:700;line-height:1.55;color:var(--dark)}
+.vhow__text{position:absolute;top:20px;left:20px;width:500px}
+.vhow__var{margin:0;font-size:16px;line-height:1.55;color:var(--muted)}
+.vhow__var+.vhow__var{margin-top:18px}
 .vhow__cta{
-  display:inline-flex;align-items:center;justify-content:center;margin-top:26px;height:48px;padding:0 26px;
+  position:absolute;bottom:20px;left:20px;display:inline-flex;align-items:center;justify-content:center;height:50px;width:180px;padding:0;
   background:var(--dark);color:#fff;border-radius:8px;font-size:15px;font-weight:600;
 }
 .vhow__cta:hover{background:#444}
@@ -273,21 +304,93 @@
 .vhow__photos img{width:100%;height:100%;object-fit:cover;border-radius:14px;aspect-ratio:4/3}
 .vhow__photos .zoomable:only-child{grid-column:span 2}
 .vhow__photos .zoomable:only-child img{aspect-ratio:3/2}
-.vmap{padding:22px 0 6px}
+.vhow__photos--rail{position:absolute;top:20px;right:80px;width:300px;height:400px;display:flex;gap:0;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:none}
+.vhow__photos--rail::-webkit-scrollbar{display:none}
+.vhow__photos--rail .zoomable{flex:0 0 100%;min-width:0;scroll-snap-align:start}
+.vhow__photos--rail img{aspect-ratio:3/4;border-radius:0}
+.vmap{height:400px;padding:0;overflow:hidden}
 .vmap__link{position:relative;display:block;border-radius:20px;overflow:hidden}
 .vmap__link img{width:100%;height:auto;display:block}
-.vmap__embed{aspect-ratio:1400/400}
+.vmap__embed{height:400px;aspect-ratio:auto}
 .vmap__badge{
   position:absolute;left:18px;bottom:18px;background:#fff;color:var(--dark);
   border-radius:8px;padding:10px 16px;font-size:14px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.18);
 }
 @media (max-width:900px){
-  .vhow__card{grid-template-columns:1fr;padding:26px 20px;gap:24px}
-  .vhow__title{font-size:26px}
+  .vhow__heading{min-height:133px;height:auto;padding:40px 31px 0}
+  .vhow__up{font-size:14px;line-height:22px}
+  .vhow__title{font-size:20px;line-height:31px}
+  .vhow__card{height:600px}
+  .vhow__text{top:20px;left:20px;width:calc(100% - 40px)}
+  .vhow__var{font-size:14px;line-height:1.55}
+  .vhow__var+.vhow__var{margin-top:8px}
+  .vhow__photos--rail{top:96px;right:auto;left:50%;width:245px;height:327px;transform:translateX(-50%)}
+  .vhow__cta{bottom:107px;left:50%;transform:translateX(-50%)}
+}
+
+/* The live address pages use fixed 360px T121 tiles, arranged as records
+   rather than a scroll rail. A 320px single column is the corresponding
+   390px composition. Keep this scoped to VenuePage: related-quest rails on
+   generic quest pages retain their independent source geometry. */
+.venue-page .cards__row{display:grid;grid-template-columns:repeat(3,360px);justify-content:start;gap:20px;overflow:visible;padding-bottom:0;scroll-snap-type:none}
+.venue-page .cards--poster .card{width:360px}
+.venue-page .cards--poster .card__img{width:360px;height:360px}
+.venue-page .cards__arrow{display:none}
+.venue-page .cards + .cards{padding-top:0}
+.venue-page .card__up{white-space:pre-line}
+@media (max-width:900px){
+  .venue-page .vmap{height:400px}
+  .venue-page .vmap__embed{height:400px}
+  .venue-page .cards__row{grid-template-columns:320px;justify-content:center;gap:16px}
+  .venue-page .cards--poster .card{width:320px}
+  .venue-page .cards--poster .card__img{width:320px;height:320px}
 }
 
 /* ===== Категория и контакты ===== */
 .qhero__sub{margin:-14px 0 22px;color:#f0f0f0;font-size:19px;max-width:640px}
+
+/* A small number of source quests use a page-wide dark art direction rather
+   than the shared light paper background. Keep the structural template, but
+   carry its contrast, cards and form surfaces through the full page. */
+body.theme-dark .qstory__lead{color:#b9b9b9}
+body.theme-dark .qfeat__card,
+body.theme-dark .qvenue__card,
+body.theme-dark .pform__card,
+body.theme-dark .prebook__card{background:#2b2b2b;border-color:#454545;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+body.theme-dark .qfeat__cardtitle,
+body.theme-dark .qvenue__addr,
+body.theme-dark .pform__title,
+body.theme-dark .prebook__title{color:#fff}
+body.theme-dark .qfeat__cardsub,
+body.theme-dark .qvenue__list,
+body.theme-dark .pform__sub,
+body.theme-dark .prebook__sub{color:#d0d0d0}
+body.theme-dark .pform__field input,
+body.theme-dark .prebook__field input{background:#fff;color:#222}
+
+/* R10 live horror quests use the shared paper grain beneath a dark wash, not
+   the flat light callback and canvas inherited by ordinary pages. */
+body.theme-dark{
+  background-color:#121212;
+  background-image:linear-gradient(180deg,rgba(18,18,18,.91),rgba(8,8,8,.91)),url('/assets/optim.tildacdn.com/tild3463-3931-4833-b565-346437376365/-/format/webp/_GPT_light.png.webp');
+  background-position:top center;
+  background-repeat:repeat-y;
+  background-size:100% auto;
+}
+body.theme-dark .cbform{
+  background:linear-gradient(36.72deg,rgba(0,0,0,.55) 37%,rgba(255,105,0,.18) 73%,rgba(0,0,0,.55) 100%);
+  border:1px solid rgba(255,255,255,.55);
+}
+body.theme-dark .cbform__title{color:#fff}
+body.theme-dark .cbform__sub,
+body.theme-dark .cbform__label,
+body.theme-dark .cbform__consent{color:#bcbcbc}
+
+/* T396 callback artboards: 480px desktop and 630px at the 390px capture.
+   The body marker prevents this source-specific height from affecting
+   Holiday/Category replacements that happen to use CallbackForm. */
+.quest-page .cbform{min-height:480px;box-sizing:border-box}
+@media (max-width:640px){.quest-page .cbform{min-height:630px}}
 .ccert{padding:50px 0 8px}
 .ccert__inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,500px);gap:40px;align-items:center}
 .ccert__line{margin-top:14px;font-size:16px;line-height:1.55;color:var(--muted)}

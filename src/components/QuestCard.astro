@@ -13,6 +13,11 @@ const overlay = asset(card.overlay);
 const href = siteHref(base, card.href);
 const venue = card.venue || null;
 const venueHref = venue?.slug ? siteHref(base, '/' + venue.slug) : '';
+const venueAddressLines = venue && venue.addressLines ? venue.addressLines.filter(Boolean) : [];
+const titleLines = card.titleLines?.length ? card.titleLines : [card.title];
+const titleStyle = card.titleWidth
+  ? `--qcard-title-width:${card.titleWidth}px;--qcard-title-width-mobile:${card.titleWidthMobile || card.titleWidth}px`
+  : undefined;
 const loading = eager ? 'eager' : 'lazy';
 // A quest and its venue are distinct destinations. Keeping their links as
 // siblings avoids invalid nested anchors while preserving both routes.
@@ -22,13 +27,14 @@ const loading = eager ? 'eager' : 'lazy';
     {photo && <img class="qcard__img" src={photo} srcset={photoSrcset || undefined}
                    sizes="(max-width:640px) calc(100vw - 40px), 360px"
                    alt="" width="360" height="360" loading={loading} decoding="async" />}
+    {card.baked && <h3 class="visually-hidden">{card.title}</h3>}
     {!card.baked && (
       <>
         <span class="qcard__scrim" aria-hidden="true"></span>
         {overlay && <img class="qcard__badges" src={overlay} alt="" width="322" height="322" loading={loading} decoding="async" />}
         {card.new && <span class="qcard__new" aria-hidden="true"><svg viewBox="0 0 24 24" width="11" height="11"><path fill="currentColor" d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg>Новинка</span>}
         <span class="qcard__body">
-          <h3 class="qcard__title">{card.title}</h3>
+          <h3 class="qcard__title" style={titleStyle}>{titleLines.map((line, index) => <>{index > 0 && <br />}{line}</>)}</h3>
         </span>
       </>
     )}
@@ -36,7 +42,7 @@ const loading = eager ? 'eager' : 'lazy';
   {venueHref && (
     <a class="qcard__venue" href={venueHref}>
       <svg class="qcard__pin" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 2c-3.87 0-7 3.13-7 7 0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1112 6.5a2.5 2.5 0 010 5z"/></svg>
-      <span>{venue.address}</span>
+      <span>{venueAddressLines.length ? venueAddressLines.map((line, index) => <>{index > 0 && <br />}{line}</>) : venue.address}</span>
     </a>
   )}
 </article>
@@ -58,13 +64,13 @@ const loading = eager ? 'eager' : 'lazy';
   .qcard__new{position:absolute;top:5.3%;left:50%;transform:translateX(-50%);z-index:3;
     display:inline-flex;align-items:center;gap:4px;background:var(--orange);color:var(--cta-ink);
     font-weight:700;font-size:12px;line-height:1;padding:5px 11px;border-radius:20px;white-space:nowrap}
-  .qcard__title{display:block;font-weight:700;font-size:18px;line-height:1.16;text-transform:uppercase;max-width:64%}
+  .qcard__title{display:block;font-weight:700;font-size:18px;line-height:var(--qcard-title-line-height,1.16);text-transform:uppercase;max-width:var(--qcard-title-width,64%)}
   .qcard__venue{position:absolute;z-index:4;left:20px;right:20px;bottom:8px;display:flex;align-items:center;gap:5px;min-height:44px;color:#fff;font-weight:300;font-size:14px;line-height:1.2;max-width:64%}
   .qcard__venue:hover{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
   .qcard__pin{flex:0 0 auto;margin-top:1px}
 
   @media (max-width:640px){
-    .qcard__title{font-size:17px;max-width:60%}
+    .qcard__title{font-size:17px;max-width:var(--qcard-title-width-mobile,var(--qcard-title-width,60%))}
     .qcard__venue{font-size:13px}
   }
 </style>

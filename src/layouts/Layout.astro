@@ -21,6 +21,10 @@ const {
   ogImage = m.ogimage,
   ogType = 'website',
   noindex = false,
+  // Live legacy pages occasionally use `noindex` without the generic
+  // follow-directive. A route can opt into that exact source value while the
+  // default remains the safer `noindex, follow` used by local fallbacks.
+  robots = noindex ? 'noindex, follow' : '',
   jsonld = [],                // массив объектов Schema.org — по одному <script> на каждый
   bodyClass = '',
   // LCP-картинка страницы: {href, srcset, sizes}. По умолчанию — фон героя главной.
@@ -49,7 +53,7 @@ const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
     <link rel="canonical" href={canonical} />
-    {noindex && <meta name="robots" content="noindex, follow" />}
+    {noindex && <meta name="robots" content={robots} />}
     <meta name="format-detection" content="telephone=no" />
     <meta name="yandex-verification" content={m.yandex} />
 

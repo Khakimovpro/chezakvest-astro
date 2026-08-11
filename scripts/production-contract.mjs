@@ -16,6 +16,22 @@ const CORE_REQUIRED_PATHS = [
   '/new-year',
 ];
 const FORBIDDEN_PUBLIC_PATHS = ['/tilda'];
+// Two current live Tilda pages intentionally publish a blank description.
+// Keep expected raw values path-scoped: every other generated page still
+// requires meaningful description metadata, and even these routes must emit
+// the precise source value rather than any arbitrary empty string.
+const LIVE_BLANK_DESCRIPTION_VALUES = new Map([
+  ['/strashnye-kvesty', ' '],
+  ['/privacy', ''],
+]);
+// `/privacy` is a live noindex legal page, not a migration fallback. It must
+// retain that source directive without permitting noindex on normal pages.
+const LIVE_NOINDEX_PATHS = new Set(['/privacy']);
+// The same live noindex policy has no social preview image tags. Omission is
+// allowed only for that exact route and only for image fields.
+const LIVE_OMITTED_META = new Map([
+  ['/privacy', new Set(['og:image', 'twitter:image'])],
+]);
 
 function normalizeOrigin(origin) {
   return origin.replace(/\/$/, '');
@@ -30,14 +46,26 @@ function getAttribute(tag, name) {
   return match?.[2]?.trim() ?? '';
 }
 
+function getRawAttribute(tag, name) {
+  const match = tag.match(new RegExp(`\\b${name}\\s*=\\s*(["'])(.*?)\\1`, 'i'));
+  return match?.[2] ?? '';
+}
+
 function getMeta(html, attribute, value) {
   const matcher = /<meta\b[^>]*>/gi;
   for (const tag of html.match(matcher) ?? []) {
     if (getAttribute(tag, attribute).toLowerCase() === value.toLowerCase()) {
-      return getAttribute(tag, 'content');
+      return getRawAttribute(tag, 'content');
     }
   }
   return '';
+}
+
+function hasRequiredMetaValue(value, pagePath, name) {
+  if (value.trim()) return true;
+  if (LIVE_BLANK_DESCRIPTION_VALUES.get(pagePath) === value
+    && (name === 'description' || name === 'og:description' || name === 'twitter:description')) return true;
+  return LIVE_OMITTED_META.get(pagePath)?.has(name) ?? false;
 }
 
 function getCanonical(html) {
@@ -283,7 +311,7 @@ function validatePage({ html, pagePath, origin, errors, legacyRedirectTargets, n
   if (!title) errors.push(`${pagePath}: missing title`);
 
   const description = getMeta(html, 'name', 'description');
-  if (!description) errors.push(`${pagePath}: missing meta description`);
+  if (!hasRequiredMetaValue(description, pagePath, 'description')) errors.push(`${pagePath}: missing meta description`);
 
   const ogUrl = getMeta(html, 'property', 'og:url');
   const ogImage = getMeta(html, 'property', 'og:image');
@@ -293,7 +321,7 @@ function validatePage({ html, pagePath, origin, errors, legacyRedirectTargets, n
     ['og:url', ogUrl],
     ['og:image', ogImage],
   ]) {
-    if (!value) errors.push(`${pagePath}: missing ${name}`);
+    if (!hasRequiredMetaValue(value, pagePath, name)) errors.push(`${pagePath}: missing ${name}`);
   }
   if (ogUrl && !isAbsoluteOriginUrl(ogUrl, origin)) {
     errors.push(`${pagePath}: og:url is not an absolute URL on ${origin}`);
@@ -306,7 +334,7 @@ function validatePage({ html, pagePath, origin, errors, legacyRedirectTargets, n
 
   for (const name of ['twitter:card', 'twitter:title', 'twitter:description', 'twitter:image']) {
     const value = getMeta(html, 'name', name);
-    if (!value) errors.push(`${pagePath}: missing ${name}`);
+    if (!hasRequiredMetaValue(value, pagePath, name)) errors.push(`${pagePath}: missing ${name}`);
     if (name === 'twitter:image' && value && !isAbsoluteOriginUrl(value, origin)) {
       errors.push(`${pagePath}: twitter:image is not an absolute URL on ${origin}`);
     }
@@ -350,7 +378,7 @@ export async function verifyProductionContract({
   const legacyRedirectTargets = new Map(
     legacyUrlMap.filter(isStaticFallback).map(({ source, target }) => [source, target]),
   );
-  const noindexPaths = new Set(legacyRedirectTargets.keys());
+  const noindexPaths = new Set([...legacyRedirectTargets.keys(), ...LIVE_NOINDEX_PATHS]);
   const resolvedRequiredPaths = requiredPaths ?? [...CORE_REQUIRED_PATHS, ...legacyRedirectTargets.keys()];
 
   if (!await exists(resolvedDistDir)) {

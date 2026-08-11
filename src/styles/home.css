@@ -1,0 +1,78 @@
+/* Exact live-home geometry.  This file is imported only by index.astro so
+   venue, quest, category, and holiday templates retain their own layout. */
+.home-page .hdr{padding:15px 0}
+.home-page .hero{padding-top:0}
+
+/* Tilda centres the 1010×375 artwork in a 1160px-wide slider track. */
+.home-page .promo{margin-top:50px}
+.home-page .slider{max-width:1160px}
+.home-page .slider__arrow{width:60px;height:60px}
+.home-page .slider__pause{display:none}
+
+/* The source leaves 108px below the desktop banner before its tab bar. */
+.home-page .catalog{margin-top:108px}
+.home-page .catblock:first-of-type{margin-top:40px}
+.home-page .catblock__title{line-height:1.55}
+/* These are the source artboard gaps between the previous card rail and the
+   next heading, not a generic catalogue rhythm. */
+.home-page .catblock[data-cat="Страшные квесты в Ростове"]{margin-top:95px}
+.home-page .catblock[data-cat="Прятки в лабиринте 200м²"]{margin-top:62px}
+.home-page .catblock[data-cat="Квест-шоу на площадке 200м²"]{margin-top:58px}
+.home-page .catblock[data-cat="VR-игры на арене 300м²"]{margin-top:78px}
+.home-page .qcard__title{--qcard-title-line-height:22px}
+
+@media (max-width:640px){
+  .home-page .promo{margin-top:24px}
+  .home-page .promo__wrap.container{max-width:none;padding-inline:0}
+  .home-page .slider{max-width:none}
+  .home-page .slider__arrow{width:30px;height:30px}
+  .home-page .slider__arrow--prev{left:5px}
+  .home-page .slider__arrow--next{right:5px}
+  .home-page .catalog{margin-top:118px}
+  .home-page .catblock.container{max-width:320px;padding-inline:0}
+  .home-page .catblock:first-of-type{margin-top:40px}
+  .home-page .catblock[data-cat="Страшные квесты в Ростове"]{margin-top:86px}
+  .home-page .catblock[data-cat="Страшные квесты в Ростове"] .catblock__title{margin-bottom:62px}
+  .home-page .catblock[data-cat="Прятки в лабиринте 200м²"]{margin-top:80px}
+  .home-page .catblock[data-cat="Квест-шоу на площадке 200м²"]{margin-top:53px}
+  .home-page .catblock[data-cat="Квест-шоу на площадке 200м²"] .catblock__title{margin-bottom:22px}
+  .home-page .catblock[data-cat="VR-игры на арене 300м²"]{margin-top:52px}
+  .home-page .grid{gap:20px}
+  .home-page .catblock__title{font-size:20px}
+  .home-page .qcard__title{font-size:16px;--qcard-title-line-height:19px}
+  .home-page .qcard__venue{font-size:14px}
+}
+
+/* At 390px the live Tilda block is a 173px title artboard followed by a
+   910px visual artboard. It deliberately differs from the compact shared
+   party variant: all five source stat cards sit over the lower photo panel. */
+@media (max-width:479px){
+  .home-page .party{margin-top:22px}
+  .home-page .party>.container{box-sizing:border-box;width:min(320px,calc(100% - 30px));height:173px;padding:40px 0 0 20px}
+  .home-page .party .section-title{max-width:301px;font-size:20px;line-height:1.55}
+  .home-page .party .section-sub{width:221px;margin:10px 0 0;font-size:14px;line-height:1.55}
+  .home-page .party>.container-wide{width:min(360px,calc(100% - 30px));padding:0}
+  .home-page .party__card{width:360px;max-width:100%;height:910px;min-height:0;aspect-ratio:auto}
+  .home-page .party__bg{object-position:center center}
+  .home-page .party__stats{position:absolute;top:455px;right:0;bottom:auto;left:0;display:block;height:455px;padding:0;background:linear-gradient(36.72deg,rgba(0,0,0,.15) 37%,rgba(255,105,0,.15) 73%,rgba(0,0,0,.15) 100%);border:1px solid rgba(255,255,255,.15);border-radius:20px;box-shadow:3px 3px 8px rgba(51,51,51,.2);backdrop-filter:blur(5px)}
+  .home-page .pstat{position:absolute;z-index:1;display:block;min-height:0;padding:0;background:rgba(51,51,51,.2);border:1px solid rgba(255,255,255,.2);border-radius:10px;box-shadow:2px 2px 5px #000;backdrop-filter:blur(15px)}
+  .home-page .pstat__num,.home-page .pstat__icon{position:absolute;z-index:2;max-width:none}
+  .home-page .pstat__t{position:absolute;z-index:2;display:block;color:#fff;font-size:16px;font-weight:700;line-height:1.55;text-align:center}
+  .home-page .pstat:nth-child(1){left:12px;top:21px;width:154px;height:80px}
+  .home-page .pstat:nth-child(1) .pstat__num{left:33px;top:-41px;width:88px;height:75px}
+  .home-page .pstat:nth-child(1) .pstat__t{left:38px;top:41px;white-space:nowrap}
+  .home-page .pstat:nth-child(2){left:176px;top:21px;width:169px;height:80px}
+  .home-page .pstat:nth-child(2) .pstat__icon{left:49px;top:-56px;width:72px;height:89px}
+  .home-page .pstat:nth-child(2) .pstat__t{left:17px;top:20px;width:136px}
+  .home-page .pstat:nth-child(3){left:12px;top:161px;width:154px;height:80px}
+  .home-page .pstat:nth-child(3) .pstat__icon{left:42px;top:-53px;width:70px;height:76px}
+  .home-page .pstat:nth-child(3) .pstat__t{left:7px;top:32px;width:140px}
+  .home-page .pstat:nth-child(4){left:176px;top:161px;width:169px;height:80px}
+  .home-page .pstat:nth-child(4) .pstat__icon{left:59px;top:-59px;width:75px;height:87px}
+  .home-page .pstat:nth-child(4) .pstat__t{left:21px;top:19px;width:128px}
+  .home-page .pstat:nth-child(5){left:91px;top:284px;width:175px;height:80px}
+  .home-page .pstat:nth-child(5) .pstat__icon{left:47px;top:-35px;width:80px;height:69px}
+  .home-page .pstat:nth-child(5) .pstat__t{left:17px;top:32px;width:140px}
+  .home-page .party__btnrow{top:839px;right:auto;bottom:auto;left:80px}
+  .home-page .party__btnimg{width:200px;height:61px;max-width:none}
+}

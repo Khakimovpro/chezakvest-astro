@@ -1,7 +1,7 @@
 {
  "meta": {
   "title": "Че За Квест – квесты в Ростове-на-Дону",
-  "description": "Официальный сайт «Чё за Квест» — сети квест-румов в Ростове-на-Дону. Квесты, VR-игры, шоу, адреса площадок, отзывы и запись на игру.",
+  "description": "Официальный сайт организации Чё за Квест – сети квест-румов в Ростове-на-Дону. Приключения, шоу, интересные квесты, их адреса, часы работы, отзывы, цены на квесты.",
   "keywords": "че За квест, квесты в ростове на дону, квест комната, сайт квестов",
   "canonical": "https://xn--80aehcht5ci1b.xn--p1ai",
   "ogimage": "/assets/static.tildacdn.com/tild3066-6334-4736-b130-393264666133/__2026-04-01_122430.webp",
@@ -152,7 +152,7 @@
   }
  },
  "hero": {
-  "bg": "/assets/static.tildacdn.com/tild3561-3266-4662-a539-313732383839/noroot.webp",
+  "bg": "/assets/static.tildacdn.com/tild3561-3266-4662-a539-313732383839/noroot.png",
   "ghost": "/assets/optim.tildacdn.com/tild6334-3964-4363-a662-316332656634/-/cover/432x493/center/center/-/format/webp/_3D.png.webp",
   "h1line1": "Чё за Квест —",
   "h1line2": "незабываемые квесты в Ростове-на-Дону",
@@ -164,24 +164,14 @@
  },
  "slider": [
   {
-   "img": "/assets/q/dcaea49c7e.webp",
-   "source": "https://static.tildacdn.com/tild3030-3032-4366-b139-373938643134/_005.png",
-   "alt": "День рождения в стиле Minecraft"
-  },
-  {
-   "img": "/assets/q/b2fa9a5245.webp",
-   "source": "https://static.tildacdn.com/tild6638-6235-4436-a164-646337663663/_15.png",
-   "alt": "Новинка — квест Фантастический угон"
+   "img": "/assets/q/c758969e30.webp",
+   "source": "https://static.tildacdn.com/tild6234-3833-4032-b939-313666333364/_17.png",
+   "alt": "День рождения в квесте Узник Азкабана"
   },
   {
    "img": "/assets/q/53c847a5f5.webp",
    "source": "https://static.tildacdn.com/tild3362-6333-4631-a435-656361646166/_14.png",
    "alt": "Закажите детский праздник в Хижине чудес"
-  },
-  {
-   "img": "/assets/q/c758969e30.webp",
-   "source": "https://static.tildacdn.com/tild6234-3833-4032-b939-313666333364/_17.png",
-   "alt": "День рождения в квесте Узник Азкабана"
   },
   {
    "img": "/assets/q/0dcafce563.webp",
@@ -197,6 +187,16 @@
    "img": "/assets/q/2fd07df71b.webp",
    "source": "https://static.tildacdn.com/tild6565-6238-4866-a236-623966613864/_003.png",
    "alt": "Незабываемый день рождения на VR-арене"
+  },
+  {
+   "img": "/assets/q/dcaea49c7e.webp",
+   "source": "https://static.tildacdn.com/tild3030-3032-4366-b139-373938643134/_005.png",
+   "alt": "День рождения в стиле Minecraft"
+  },
+  {
+   "img": "/assets/q/b2fa9a5245.webp",
+   "source": "https://static.tildacdn.com/tild6638-6235-4436-a164-646337663663/_15.png",
+   "alt": "Новинка — квест Фантастический угон"
   }
  ],
  "tabs": [
@@ -234,7 +234,7 @@
    "title": "Гарри Поттер И последний крестраж",
    "addr": "пр-т Соколова, 23",
    "href": "/kvest_v_realnosti_harry_potter_i_krestrazh",
-   "photo": "/assets/optim.tildacdn.com/tild6337-3661-4238-a665-343134353038/-/cover/432x432/center/center/-/format/webp/image-3-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild6337-3661-4238-a665-343134353038/-/cover/720x720/center/center/-/format/webp/image-3-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild6338-3962-4435-a336-616335336265/-/cover/385x386/center/center/-/format/webp/_____.png.webp",
    "baked": false,
    "addrLines": [
@@ -247,7 +247,7 @@
    "title": "Ночь в музее. Ограбление",
    "addr": "пр-т Соколова, 23",
    "href": "/kvest_v_realnosti_noch_v_museum_ograblenie",
-   "photo": "/assets/optim.tildacdn.com/tild3564-3234-4635-b733-396466643433/-/cover/432x432/center/center/-/format/webp/image-4-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3564-3234-4635-b733-396466643433/-/cover/720x720/center/center/-/format/webp/image-4-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3961-3061-4231-a636-326561336230/-/cover/385x386/center/center/-/format/webp/___.png.webp",
    "baked": false,
    "addrLines": [
@@ -273,7 +273,7 @@
    "title": "Ограбление банка. Бумажный дом",
    "addr": "Социалистическая, 186",
    "href": "/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom",
-   "photo": "/assets/optim.tildacdn.com/tild3436-6537-4738-a333-343966386138/-/cover/432x432/center/center/-/format/webp/__1-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3436-6537-4738-a333-343966386138/-/cover/720x720/center/center/-/format/webp/__1-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild6232-3739-4336-b561-363038306565/-/cover/385x386/center/center/-/format/webp/Group_96-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -286,7 +286,7 @@
    "title": "Уэнсдей. Новая битва",
    "addr": "Красноармейская, 103",
    "href": "/kvest_v_realnosti_wednesday",
-   "photo": "/assets/optim.tildacdn.com/tild3832-6137-4765-b131-376533323262/-/cover/432x432/center/center/-/format/webp/image-6-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3832-6137-4765-b131-376533323262/-/cover/720x720/center/center/-/format/webp/image-6-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3363-3735-4236-a431-326334383233/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -299,7 +299,7 @@
    "title": "Психбольница",
    "addr": "пер.Гвардейский, 61",
    "href": "/kvest_v_realnosti_psihbolnitsa",
-   "photo": "/assets/optim.tildacdn.com/tild6465-3164-4436-b864-653863373334/-/cover/432x432/center/center/-/format/webp/image-7-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild6465-3164-4436-b864-653863373334/-/cover/720x720/center/center/-/format/webp/image-7-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3566-3064-4133-b831-356261366238/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -312,7 +312,7 @@
    "title": "Шерлок холмс",
    "addr": "пер.Гвардейский, 61",
    "href": "/kvest_v_realnosti_sherlock_holms",
-   "photo": "/assets/optim.tildacdn.com/tild3166-3333-4830-b366-646430366531/-/cover/432x432/center/center/-/format/webp/image-8-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3166-3333-4830-b366-646430366531/-/cover/720x720/center/center/-/format/webp/image-8-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3134-3736-4464-b265-346165653161/-/cover/385x386/center/center/-/format/webp/-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -325,7 +325,7 @@
    "title": "Коралина в стране кошмаров",
    "addr": "Красноармейская, 103",
    "href": "/kvest_v_realnosti_koralina",
-   "photo": "/assets/optim.tildacdn.com/tild6436-6164-4962-b433-383664396435/-/cover/432x432/center/center/-/format/webp/image-9-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild6436-6164-4962-b433-383664396435/-/cover/720x720/center/center/-/format/webp/image-9-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3164-6630-4362-a561-313134366163/-/cover/385x386/center/center/-/format/webp/-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -338,7 +338,7 @@
    "title": "Замок Графа Дракулы",
    "addr": "Красноармейская, 103",
    "href": "/kvest_v_realnosti_zamok_drakuly",
-   "photo": "/assets/optim.tildacdn.com/tild3033-3665-4639-b938-343337306263/-/cover/432x432/center/center/-/format/webp/image-10-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3033-3665-4639-b938-343337306263/-/cover/720x720/center/center/-/format/webp/image-10-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild6535-3634-4833-a166-333861643434/-/cover/385x386/center/center/-/format/webp/-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -351,7 +351,7 @@
    "title": "Путешествие во времени",
    "addr": "пр-т Нагибина, 14а",
    "href": "/puteshestvie",
-   "photo": "/assets/optim.tildacdn.com/tild6130-3765-4638-a331-663839636436/-/cover/432x432/center/center/-/format/webp/image-7-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild6130-3765-4638-a331-663839636436/-/cover/720x720/center/center/-/format/webp/image-7-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3335-3365-4131-b130-663135343131/-/cover/385x386/center/center/-/format/webp/__.png.webp",
    "baked": false,
    "addrLines": [
@@ -365,7 +365,7 @@
    "title": "Пираты",
    "addr": "пр-т Нагибина, 14а",
    "href": "/pirati",
-   "photo": "/assets/optim.tildacdn.com/tild3739-3838-4330-b533-626330363832/-/cover/432x432/center/center/-/format/webp/image-9-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3739-3838-4330-b533-626330363832/-/cover/720x720/center/center/-/format/webp/image-9-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3061-6232-4831-b031-613363616162/-/cover/385x386/center/center/-/format/webp/photo.png.webp",
    "baked": false,
    "addrLines": [
@@ -393,7 +393,7 @@
    "title": "Хижина Чудес",
    "addr": "пр-т Нагибина, 14а",
    "href": "/mystery_shack",
-   "photo": "/assets/optim.tildacdn.com/tild3436-3664-4361-b363-363263316463/-/cover/432x432/center/center/-/format/webp/image-8-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3436-3664-4361-b363-363263316463/-/cover/720x720/center/center/-/format/webp/image-8-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3331-6262-4230-b339-303765306337/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -421,7 +421,7 @@
    "title": "Фантастический угон",
    "addr": "пр-т Нагибина, 14а",
    "href": "/ugon",
-   "photo": "/assets/optim.tildacdn.com/tild3634-3037-4639-b762-303561396361/-/cover/432x432/center/center/-/format/webp/_.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3634-3037-4639-b762-303561396361/-/cover/720x720/center/center/-/format/webp/_.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3762-3731-4234-a334-633439373735/-/cover/385x386/center/center/-/format/webp/_.png.webp",
    "baked": false,
    "addrLines": [
@@ -435,7 +435,7 @@
    "title": "Шизофрения. Тени правды",
    "addr": "пр-т Мира, д. 27",
    "href": "/shizofreniya",
-   "photo": "/assets/optim.tildacdn.com/tild3738-3139-4135-a466-653532396362/-/cover/432x432/center/center/-/format/webp/image-13-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3738-3139-4135-a466-653532396362/-/cover/720x720/center/center/-/format/webp/image-13-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild6561-3830-4437-b965-383432663633/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -448,7 +448,7 @@
    "title": "Хостел. Подвал пыток",
    "addr": "ул. Нансена, д. 107/1",
    "href": "/hostel-podval-pytok",
-   "photo": "/assets/optim.tildacdn.com/tild3062-3933-4561-b132-373762666335/-/cover/432x432/center/center/-/format/webp/image-12-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3062-3933-4561-b132-373762666335/-/cover/720x720/center/center/-/format/webp/image-12-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3535-6637-4238-b435-386537363864/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -461,7 +461,7 @@
    "title": "Патология",
    "addr": "ул. Нансена, д. 107/1",
    "href": "/patologiya",
-   "photo": "/assets/optim.tildacdn.com/tild6538-3038-4930-b235-343733356161/-/cover/432x432/center/center/-/format/webp/image-11-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild6538-3038-4930-b235-343733356161/-/cover/720x720/center/center/-/format/webp/image-11-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild6339-3665-4163-a163-383763373035/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -474,7 +474,7 @@
    "title": "Прятки в темноте",
    "addr": "Магнитогорская, 1 40-летия Победы, 216",
    "href": "/pryatki_v_temnote",
-   "photo": "/assets/optim.tildacdn.com/tild3532-3133-4462-b232-626435626664/-/cover/432x432/center/center/-/format/webp/image-7.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3532-3133-4462-b232-626435626664/-/cover/720x720/center/center/-/format/webp/image-7.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3730-6236-4162-b032-663630336533/-/cover/385x386/center/center/-/format/webp/___-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -488,7 +488,7 @@
    "title": "Прятки kids",
    "addr": "Магнитогорская, 1 40-летия Победы, 216",
    "href": "/pryatki_kids",
-   "photo": "/assets/optim.tildacdn.com/tild3131-3962-4737-a563-333063653761/-/cover/432x432/center/center/-/format/webp/image-2-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3131-3962-4737-a563-333063653761/-/cover/720x720/center/center/-/format/webp/image-2-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild6365-3366-4534-a164-663862636461/-/cover/385x386/center/center/-/format/webp/__-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -516,7 +516,7 @@
    "title": "Оно",
    "addr": "Магнитогорская, 1 40-летия Победы, 216",
    "href": "/ono",
-   "photo": "/assets/optim.tildacdn.com/tild6635-3664-4862-b263-323663376233/-/cover/432x432/center/center/-/format/webp/image-4-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild6635-3664-4862-b263-323663376233/-/cover/720x720/center/center/-/format/webp/image-4-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3436-6365-4665-a465-343439316163/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -544,7 +544,7 @@
    "title": "Звонок",
    "addr": "Магнитогорская, 1 40-летия Победы, 216",
    "href": "/zvonok",
-   "photo": "/assets/optim.tildacdn.com/tild6433-3430-4737-b262-306565313663/-/cover/432x432/center/center/-/format/webp/image-6-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild6433-3430-4737-b262-306565313663/-/cover/720x720/center/center/-/format/webp/image-6-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild6466-3866-4230-b832-386635663734/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -558,7 +558,7 @@
    "title": "Майнкрафт",
    "addr": "Магнитогорская, 1 40-летия Победы, 216",
    "href": "/minecraft",
-   "photo": "/assets/optim.tildacdn.com/tild6539-3736-4630-a434-346232323632/-/cover/432x432/center/center/-/format/webp/image-9.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild6539-3736-4630-a434-346232323632/-/cover/720x720/center/center/-/format/webp/image-9.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3063-6235-4639-b163-326639613230/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -600,7 +600,7 @@
    "title": "Гарри Поттер и Кубок Огня",
    "addr": "Магнитогорская, 1 40-летия Победы, 216",
    "href": "/garri-potter-i-kubok-ognya",
-   "photo": "/assets/optim.tildacdn.com/tild3263-3064-4561-b762-373933613562/-/cover/432x432/center/center/-/format/webp/image-4-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3263-3064-4561-b762-373933613562/-/cover/720x720/center/center/-/format/webp/image-4-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild6338-3234-4638-b232-633463663337/-/cover/385x386/center/center/-/format/webp/__-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -614,7 +614,7 @@
    "title": "Игра в Кальмара",
    "addr": "Магнитогорская, 1 40-летия Победы, 216",
    "href": "/igra_v_kalmara",
-   "photo": "/assets/optim.tildacdn.com/tild3262-6235-4464-b131-613734346230/-/cover/432x432/center/center/-/format/webp/image-5-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3262-6235-4464-b131-613734346230/-/cover/720x720/center/center/-/format/webp/image-5-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild6131-3865-4339-b236-626563623766/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -628,7 +628,7 @@
    "title": "Бегущий в лабиринте",
    "addr": "Магнитогорская, 1 40-летия Победы, 216",
    "href": "/beguschij_v_labirinte",
-   "photo": "/assets/optim.tildacdn.com/tild3233-3264-4466-a466-623635663661/-/cover/432x432/center/center/-/format/webp/image-6-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3233-3264-4466-a466-623635663661/-/cover/720x720/center/center/-/format/webp/image-6-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3733-6162-4939-a131-326461653038/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -642,7 +642,7 @@
    "title": "Роблокс. Дорс",
    "addr": "Магнитогорская, 1 40-летия Победы, 216",
    "href": "/roblox-dors",
-   "photo": "/assets/optim.tildacdn.com/tild3139-6432-4739-b835-623732366663/-/cover/432x432/center/center/-/format/webp/_.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild3139-6432-4739-b835-623732366663/-/cover/720x720/center/center/-/format/webp/_.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3066-3235-4635-b363-383631386464/-/cover/385x386/center/center/-/format/webp/_.png.webp",
    "baked": false,
    "addrLines": [
@@ -656,7 +656,7 @@
    "title": "Роблокс. Радужные друзья",
    "addr": "Магнитогорская, 1",
    "href": "/roblox",
-   "photo": "/assets/optim.tildacdn.com/tild6538-6634-4866-a663-653938636437/-/cover/432x432/center/center/-/format/webp/image-8-2.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild6538-6634-4866-a663-653938636437/-/cover/720x720/center/center/-/format/webp/image-8-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3263-6436-4134-a466-383565363962/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -669,7 +669,7 @@
    "title": "Portal strike",
    "addr": "40-летия Победы, 216",
    "href": "/portal-strike",
-   "photo": "/assets/optim.tildacdn.com/tild6666-3637-4461-a232-313266316431/-/cover/432x432/center/center/-/format/webp/image-4.jpg.webp",
+   "photo": "/assets/optim.tildacdn.com/tild6666-3637-4461-a232-313266316431/-/cover/720x720/center/center/-/format/webp/image-4.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3164-3962-4934-b037-333861616434/-/cover/385x386/center/center/-/format/webp/Portal_strike_ik-2.png.webp",
    "baked": false,
    "addrLines": [
@@ -731,7 +731,9 @@
     "icon": "/assets/static.tildacdn.com/tild6365-3035-4132-b937-633933653033/Gift_BoxH032kn.webp"
    }
   ],
-  "btn": "Узнать подробнее"
+  "btn": "Узнать подробнее",
+  "buttonHref": "/kids",
+  "buttonImg": "/assets/static.tildacdn.com/tild3861-3135-4930-b932-383731343136/5.webp"
  },
  "gift": {
   "title": "Подарите незабываемое приключение!",

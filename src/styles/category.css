@@ -1,0 +1,19 @@
+/* Source-specific artboard layers for category pages.  The horror category
+   uses a separate transparent actor over the cellar bitmap; it is not part of
+   the background raster and therefore must stay an independent local image. */
+.category-theme--dark .qhero__foreground{
+  position:absolute;
+  z-index:1;
+  top:18px;left:700px;width:380px;height:532px;
+  object-fit:contain;
+  pointer-events:none;
+}
+
+/* These values are the 320px Tilda artboard coordinates used by the required
+   390px capture.  The panel clips the oversize transparent raster exactly as the
+   live artboard does. */
+@media (max-width:479px){
+  .category-theme--dark .qhero__foreground{
+    top:138px;left:106px;width:234px;height:332px;
+  }
+}

@@ -26,7 +26,7 @@ test('keeps lead delivery and analytics inert until an owner configures them', a
   assert.match(layout, /<Analytics\s*\/>/);
 });
 
-test('keeps privacy indexable and retires the duplicate New Year landing as a fallback', async () => {
+test('mirrors the live noindex privacy page and retires the duplicate New Year landing as a fallback', async () => {
   const [privacy, sitemap, fallback, map] = await Promise.all([
     read('src/pages/privacy.astro'),
     read('src/pages/sitemap.xml.js'),
@@ -34,9 +34,9 @@ test('keeps privacy indexable and retires the duplicate New Year landing as a fa
     read('migration/legacy-url-map.csv'),
   ]);
 
-  assert.doesNotMatch(privacy, /noindex=\{true\}/);
-  assert.match(privacy, /<Breadcrumbs/);
-  assert.match(sitemap, /canonicalUrl\('\/privacy'\)/);
+  assert.match(privacy, /noindex=\{true\}/);
+  assert.doesNotMatch(privacy, /<Breadcrumbs/);
+  assert.doesNotMatch(sitemap, /canonicalUrl\('\/privacy'\)/);
   assert.match(fallback, /target="\/new-year"/);
   assert.match(map, /^\/new-year-2025,\/new-year,301 \+ fallback,/m);
 });

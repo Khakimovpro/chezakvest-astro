@@ -23,7 +23,51 @@
 }
 .lhero__btn-ghost:hover{background:var(--orange);color:#fff}
 .lhero__img{width:100%;height:auto;justify-self:end}
+.lhero--source-fullbleed{min-height:var(--holiday-hero-height,900px);padding:0}
+.lhero--source-fullbleed .lhero__inner{min-height:var(--holiday-hero-height,900px)}
+
+/* The campaign captures use two documented hero geometries: a contained
+   1200px card and a full-width artboard.  Keep this separate from the normal
+   quest/card hero so ordinary holiday pages retain their own source layout. */
+.qhero--source-sized .qhero__panel{
+  height:var(--holiday-hero-height,550px);
+  aspect-ratio:auto;
+}
+.qhero--source-fullbleed{padding:0}
+.qhero--source-fullbleed .container-wide{max-width:none;padding-inline:0}
+.qhero--source-fullbleed .qhero__panel{border-radius:0}
+.qhero--source-fullbleed .qhero__pills{display:none}
+.qhero--source-fullbleed .qhero__body{left:max(88px,calc((100vw - 1264px)/2 + 48px))}
+.qhero--source-top-copy .qhero__body{top:156px;bottom:auto;max-width:560px}
+.qhero--source-top-copy .qhero__title{font-size:42px;margin-bottom:18px}
+.qhero--source-top-copy .qhero__sub{margin:-4px 0 24px;font-size:18px;line-height:1.42}
+
+/* A handful of campaign heroes are Tilda artboards, not a single cover image.
+   Their transparent source layers and both viewport coordinate sets live in
+   page data, so this renderer remains reusable without route-specific CSS. */
+.qhero--campaign-layered .qhero__panel{isolation:isolate}
+.qhero--campaign-layered .qhero__panel::after{display:none}
+.qhero--campaign-layered .qhero__body{z-index:3}
+.campaign-hero__layers{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.campaign-hero__layer{
+  position:absolute;top:var(--campaign-layer-top);left:var(--campaign-layer-left);
+  width:var(--campaign-layer-width);height:var(--campaign-layer-height,auto);max-width:none;
+  z-index:var(--campaign-layer-z,1);object-fit:contain;object-position:center;pointer-events:none;
+}
+.campaign-hero__layer--cover{object-fit:cover}
 @media (max-width:900px){
+  .lhero--source-fullbleed,.lhero--source-fullbleed .lhero__inner{min-height:var(--holiday-hero-height-mobile,var(--holiday-hero-height,620px))}
+  .qhero--source-sized .qhero__panel{height:var(--holiday-hero-height-mobile,var(--holiday-hero-height,420px));min-height:0}
+  .qhero--source-fullbleed .qhero__body{left:20px;right:20px}
+  .qhero--source-top-copy .qhero__body{top:112px;bottom:auto}
+  .qhero--source-top-copy .qhero__title{font-size:30px;line-height:1.08}
+  .qhero--source-top-copy .qhero__sub{font-size:16px}
+  .campaign-hero__layer{
+    top:var(--campaign-layer-top-mobile,var(--campaign-layer-top));
+    left:var(--campaign-layer-left-mobile,var(--campaign-layer-left));
+    width:var(--campaign-layer-width-mobile,var(--campaign-layer-width));
+    height:var(--campaign-layer-height-mobile,var(--campaign-layer-height,auto));
+  }
   .lhero__inner{grid-template-columns:1fr;gap:18px}
   .lhero__title{font-size:30px}
   .lhero__sub{font-size:16px}
@@ -128,6 +172,20 @@
 .hhalls__grid > .hhall:only-child .hhall__img{height:100%;min-height:300px}
 .hhalls__grid > .hhall:only-child .hhall__body{padding:30px 34px}
 
+/* These records are captured as a one-card Tilda carousel on both viewport
+   sizes. The remaining source items stay in data but must not be stacked
+   below the first slide in the initial parity frame. */
+.hhalls--source-first-frame .hhalls__grid{grid-template-columns:1fr}
+.hhalls--source-first-frame .hhall:nth-child(n + 2){display:none}
+.hhalls--source-first-frame .hhall:first-child{display:grid;grid-template-columns:minmax(0,460px) minmax(0,1fr)}
+.hhalls--source-first-frame .hhall:first-child .hhall__img{height:100%;min-height:300px}
+.hhalls--source-first-frame .hhall:first-child .hhall__body{padding:30px 34px}
+
+/* The second conversion record on /kids is a short native lead form, not the
+   tall generic wave used for the preceding quiz replacement. */
+.pform--compact .pform__card{height:auto;min-height:360px;padding:30px 40px 140px}
+.pform--compact .pform__wave{height:118px}
+
 /* --- шаги --- */
 .hsteps{padding:48px 0 6px}
 .hsteps__list{margin-top:24px;list-style:none;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
@@ -175,6 +233,110 @@
 .hfaq__q{font-size:18px;font-weight:700;color:var(--dark)}
 .hfaq__a{margin-top:10px;font-size:15px;line-height:1.6;color:var(--muted)}
 
+/* Live campaign landings are not the shared light-paper holiday template:
+   their screenshots use page-wide dark canvases, light typography and dark
+   content cards. The palette remains data-selected so the ordinary campaign
+   pages retain their source light treatment. */
+body.holiday-theme{
+  --cta-ink:#fff;
+  --holiday-surface:#262626;
+  --holiday-surface-strong:#171717;
+  --holiday-line:rgba(255,255,255,.16);
+  --holiday-copy:rgba(255,255,255,.82);
+}
+body.holiday-theme .crumbs{display:none}
+body.holiday-theme .section-title,
+body.holiday-theme .htext__p,
+body.holiday-theme .cards__sub,
+body.holiday-theme .hfaq__q{color:#fff}
+body.holiday-theme .section-sub,
+body.holiday-theme .htext__p,
+body.holiday-theme .hfaq__a,
+body.holiday-theme .htile__sub{color:var(--holiday-copy)}
+body.holiday-theme .qfeat__card,
+body.holiday-theme .hhall,
+body.holiday-theme .hstep,
+body.holiday-theme .htime__item,
+body.holiday-theme .hfaq__item,
+body.holiday-theme .hnote{background:var(--holiday-surface);box-shadow:0 8px 24px rgba(0,0,0,.26)}
+body.holiday-theme .qfeat__cardtitle,
+body.holiday-theme .hhall__t,
+body.holiday-theme .hstep__t,
+body.holiday-theme .htime__t,
+body.holiday-theme .hnote__t{color:#fff}
+body.holiday-theme .qfeat__cardsub,
+body.holiday-theme .hhall__cap,
+body.holiday-theme .hhall__format,
+body.holiday-theme .hhall__eq,
+body.holiday-theme .hstep__sub,
+body.holiday-theme .htime__sub,
+body.holiday-theme .hnote__sub{color:var(--holiday-copy)}
+body.holiday-theme .hpack__card{
+  background:linear-gradient(180deg,var(--holiday-pack-start,var(--orange-2)) 0%,var(--holiday-pack-end,var(--orange)) 100%);
+  box-shadow:0 10px 28px color-mix(in srgb,var(--orange) 32%,transparent);
+}
+body.holiday-theme .hpack__list li{background:rgba(0,0,0,.2)}
+body.holiday-theme .hpack__bullets{background:rgba(16,16,16,.84);color:#fff}
+body.holiday-theme .hpack__tab{background:transparent;border-color:var(--orange);color:var(--orange)}
+body.holiday-theme .hpack__tab:hover{background:color-mix(in srgb,var(--orange) 16%,transparent)}
+body.holiday-theme .hpack__radio:checked ~ .hpack__labels .hpack__tab{background:var(--orange);color:#fff}
+body.holiday-theme .hstats__row .hstat{background:var(--holiday-surface-strong)}
+body.holiday-theme .htext__gift::after{background:linear-gradient(90deg,rgba(0,0,0,.9) 0%,rgba(0,0,0,.68) 56%,rgba(0,0,0,.12) 100%)}
+body.holiday-theme .pform__card,
+body.holiday-theme .prebook__card{background:var(--holiday-surface);border-color:var(--holiday-line);box-shadow:0 8px 24px rgba(0,0,0,.28)}
+body.holiday-theme .pform__title,
+body.holiday-theme .prebook__title{color:#fff}
+body.holiday-theme .pform__sub,
+body.holiday-theme .prebook__sub,
+body.holiday-theme .pform__label{color:var(--holiday-copy)}
+body.holiday-theme .pform__field input,
+body.holiday-theme .prebook__field input{background:#fff;color:#222}
+body.holiday-theme .venues__map-load{color:#222}
+
+/* Palettes sampled from the corresponding source captures, not invented per
+   route: pink/black premium, red Roblox, blue-violet Among Us, Minecraft
+   charcoal/yellow and the teal/pink Squid Game campaigns. */
+body.holiday-theme--maxi{--orange:#ff147b;--orange-2:#ff559e;--orange-text:#ff5eaa;--holiday-surface:#202024;--holiday-surface-strong:#101011;--holiday-pack-start:#ff438f;--holiday-pack-end:#b7005a}
+body.holiday-theme--roblox{--orange:#e33434;--orange-2:#ff5b42;--orange-text:#ff6255;--holiday-surface:#292929;--holiday-surface-strong:#202020;--holiday-pack-start:#ee3d31;--holiday-pack-end:#b21e26}
+body.holiday-theme--amongus{--orange:#2089f1;--orange-2:#d72dd6;--orange-text:#73b8ff;--holiday-surface:#292842;--holiday-surface-strong:#1e1d34;--holiday-pack-start:#d92bd2;--holiday-pack-end:#5e4ee8}
+body.holiday-theme--minecraft{--orange:#ffbd1c;--orange-2:#ffd84a;--orange-text:#ffcc43;--holiday-surface:#3a3a3a;--holiday-surface-strong:#292929;--holiday-pack-start:#ff951c;--holiday-pack-end:#f55d00}
+body.holiday-theme--squid{--orange:#f43c80;--orange-2:#ff659c;--orange-text:#ff73a7;--holiday-surface:#00423e;--holiday-surface-strong:#002d2c;--holiday-pack-start:#78bb1d;--holiday-pack-end:#139321}
+body.holiday-theme--graduate{--orange:#f33e7d;--orange-2:#ff6599;--orange-text:#ff73a7;--holiday-surface:#003c39;--holiday-surface-strong:#002b2a;--holiday-pack-start:#fa4c89;--holiday-pack-end:#c92064}
+/* Both source party pages use the same charcoal canvas as the campaign
+   landings, but their accents are route-specific: neon VR and Azkaban gold. */
+body.holiday-theme--vr{--orange:#ff4d9c;--orange-2:#ff8a24;--orange-text:#ff5aa9;--holiday-surface:#242424;--holiday-surface-strong:#151515;--holiday-pack-start:#ff941f;--holiday-pack-end:#ff4c9d}
+body.holiday-theme--azkaban{--orange:#f8bf16;--orange-2:#ffcf25;--orange-text:#ffc825;--holiday-surface:#1d1d1d;--holiday-surface-strong:#111;--holiday-pack-start:#ff8c18;--holiday-pack-end:#ee6519}
+body.holiday-theme--vr .btn-orange{background:linear-gradient(90deg,#ff0c73 0%,#ff8725 100%)}
+
+/* The live horror category opens its gallery as a three-card carousel rather
+   than growing a full ten-image grid.  All images remain keyboard-accessible
+   in the native scroll rail; only the first frame now matches the source. */
+.qextra__photos--category-carousel{max-width:none;margin-inline:0;gap:20px}
+.qextra__photos--category-carousel .zoomable{flex:0 0 calc((100% - 40px) / 3);min-width:0}
+.cgrid--source-portrait .ccard__link{aspect-ratio:10/9}
+
+/* `/strashnye-kvesty/` is a category page, but its live Tilda hero has a
+   different reading order from the ordinary category card: copy and the two
+   vertically stacked actions start near the top-left.  Keeping this scoped
+   class here prevents that correction leaking into the rest of the catalog. */
+body.category-theme--dark{
+  --cta-ink:#fff;
+  background-color:#252525;
+  background-image:
+    radial-gradient(circle at 20% 15%,rgba(255,255,255,.045) 0 1px,transparent 1.5px),
+    linear-gradient(180deg,#2a2a2a 0%,#121212 100%);
+  background-size:19px 19px,100% 100%;
+}
+body.category-theme--dark .qhero{padding-top:90px}
+body.category-theme--dark .qhero__panel{height:550px;aspect-ratio:auto}
+body.category-theme--dark .qhero--source-top-copy .qhero__body{top:38px;bottom:auto;left:60px;max-width:470px}
+body.category-theme--dark .qhero--source-top-copy .qhero__title{font-size:40px;line-height:1.08;margin-bottom:36px}
+body.category-theme--dark .qhero--source-top-copy .qhero__sub{font-size:20px;line-height:1.35;margin:0 0 38px}
+body.category-theme--dark .qhero--source-top-copy .qhero__cta{flex-direction:column;align-items:flex-start;gap:14px}
+body.category-theme--dark .qhero--source-top-copy .qhero__cta .btn-orange,
+body.category-theme--dark .qhero--source-top-copy .qhero__btn-ghost{min-width:280px}
+body.category-theme--dark .qhero--source-top-copy .qhero__btn-ghost{border-style:dotted}
+
 @media (max-width:1100px){
   .htiles__grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .hfeat__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -184,13 +346,29 @@
   .hsteps__list{grid-template-columns:1fr}
 }
 @media (max-width:900px){
+  /* Tilda exposes these venue cards as a first-frame carousel on mobile.
+     Rendering the second frame underneath doubles the captured section. */
+  .hhalls--first-frame-mobile .hhall:nth-child(n + 2){display:none}
+  body.category-theme--dark .qhero__panel{height:470px;min-height:0}
+  body.category-theme--dark .qhero--source-top-copy .qhero__body{top:28px;left:20px;right:20px}
+  body.category-theme--dark .qhero--source-top-copy .qhero__title{font-size:30px;margin-bottom:24px}
+  body.category-theme--dark .qhero--source-top-copy .qhero__sub{font-size:16px;margin-bottom:24px}
+  body.category-theme--dark .qhero--source-top-copy .qhero__cta{gap:10px}
+  body.category-theme--dark .qhero--source-top-copy .qhero__cta .btn-orange,
+  body.category-theme--dark .qhero--source-top-copy .qhero__btn-ghost{min-width:0}
   .hpack__grid,.hpack__grid:has(> :only-child){grid-template-columns:1fr}
   .hpack__grid > .hpack__card:only-child .hpack__list,
   .hpack__grid > .hpack__card:only-child .hpack__bullets{grid-template-columns:1fr}
   .hhalls__grid,.hhalls__grid:has(> :last-child:nth-child(2)),
   .hhalls__grid:has(> :only-child){grid-template-columns:1fr}
   .hhalls__grid > .hhall:only-child{grid-template-columns:1fr}
+  .hhalls--source-first-frame .hhall:first-child{grid-template-columns:1fr}
+  .hhalls--source-first-frame .hhall:first-child .hhall__img{min-height:0;height:220px}
+  .hhalls--source-first-frame .hhall:first-child .hhall__body{padding:22px 24px 26px}
+  .pform--compact .pform__card{height:auto;min-height:487px;padding:25px 30px 140px}
+  .pform--compact .pform__wave{height:128px}
   .hpack__tab{padding:11px 18px;font-size:13px}
+  .qextra__photos--category-carousel .zoomable{flex-basis:100%}
   .hstats__row{grid-template-columns:1fr}
   .hnotes{grid-template-columns:1fr}
   .htiles__grid{grid-template-columns:repeat(2,minmax(0,1fr))}

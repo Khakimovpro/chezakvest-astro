@@ -30,11 +30,6 @@ export async function GET() {
         ...inner.filter(({ slug }) => !['contacts', 'strashnye-kvesty'].includes(slug)).map(({ source }) => source),
       ]),
     },
-    {
-      loc: canonicalUrl('/privacy'),
-      priority: '0.2',
-      lastmod: lastModifiedForSources(['src/pages/privacy.astro']),
-    },
     ...inner.sort((a, b) => a.slug.localeCompare(b.slug, 'ru')).map(({ slug, source }) => ({
       loc: canonicalUrl(`/${slug}`),
       priority: '0.8',

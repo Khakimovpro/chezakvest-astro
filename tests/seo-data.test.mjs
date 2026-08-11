@@ -9,15 +9,15 @@ import { auditSeoData } from '../scripts/seo-data-audit.mjs';
 test('keeps every indexable page and static route within the SEO metadata contract', async () => {
   const report = await auditSeoData();
 
-  assert.equal(report.indexablePageCount, 65);
+  assert.equal(report.indexablePageCount, 64);
   assert.deepEqual(report.staticRouteSlugs, ['home', 'kvesty-v-rostove-na-donu', 'privacy']);
   assert.deepEqual(report.errors, []);
 });
 
-test('excludes only the noindex Wednesday fallback from the indexable metadata contract', async () => {
+test('excludes only source-verified noindex routes from the indexable metadata contract', async () => {
   const report = await auditSeoData();
 
-  assert.deepEqual(report.excludedSlugs, ['wednesday_ukradennaya_vesch']);
+  assert.deepEqual(report.excludedSlugs, ['privacy', 'wednesday_ukradennaya_vesch']);
 });
 
 test('reports invalid geographic metadata and copied keyword clusters', async () => {

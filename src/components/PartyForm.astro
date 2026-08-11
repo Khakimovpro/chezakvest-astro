@@ -5,35 +5,49 @@ import site from '../data/site.json';
 import { siteHref } from '../lib/urls.js';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const link = (h) => siteHref(base, h);
-const { id = 'party' } = Astro.props;
+// A few Tilda holiday landings use the same local lead fields but label the
+// conversion record differently. Keep the renderer shared while taking the
+// captured copy and measured density from page data.
+const {
+  id = 'party',
+  title = 'У нас вы можете отметить День рождения!',
+  subtitle = '',
+  cta = 'Отправить',
+  variant = '',
+  sectionId = 'prazdnik',
+} = Astro.props;
 const s = site;
 ---
-<section class="pform" id="prazdnik">
+<section class:list={['pform', variant && `pform--${variant}`]} id={sectionId}>
   <div class="container">
     <div class="pform__card">
-      <h2 class="pform__title">У нас вы можете отметить День рождения!</h2>
-      <p class="pform__sub">Отправьте заявку, узнайте свободна ли ваша дата.<br />Поможем подобрать программу праздника.</p>
+      <h2 class="pform__title">{title}</h2>
+      {subtitle ? (
+        <p class="pform__sub">{subtitle}</p>
+      ) : (
+        <p class="pform__sub">Отправьте заявку, узнайте свободна ли ваша дата.<br />Поможем подобрать программу праздника.</p>
+      )}
       <form class="pform__form" data-lead-form data-lead-kind="party" data-lead-target={s.header.wa} data-lead-recipient={s.leads?.recipient || ''} aria-describedby={`${id}-status`}>
         <div class="pform__grid">
           <div class="pform__field pform__field--date">
-            <label class="pform__label" for={`${id}-date`}>Выберите дату</label>
+            <label class="pform__label pform__label--date" for={`${id}-date`}>Выберите дату</label>
             <input id={`${id}-date`} name="date" type="date" autocomplete="off" required />
           </div>
           <div class="pform__field pform__field--name">
-            <label class="pform__label" for={`${id}-name`}>Ваше имя</label>
-            <input id={`${id}-name`} name="name" type="text" placeholder="Ваше имя" autocomplete="name" minlength="2" maxlength="80" required />
+            <label class="pform__label pform__label--inside" for={`${id}-name`}>Ваше имя</label>
+            <input id={`${id}-name`} name="name" type="text" autocomplete="name" minlength="2" maxlength="80" required />
           </div>
           <div class="pform__field pform__field--phone">
-            <label class="pform__label" for={`${id}-phone`}>Телефон</label>
+            <label class="pform__label pform__label--inside pform__label--phone" for={`${id}-phone`}>+7 (000) 000-00-00</label>
             <span class="pform__flag" aria-hidden="true">🇷🇺</span>
-            <input id={`${id}-phone`} name="phone" type="tel" placeholder="+7 (000) 000-00-00" inputmode="tel" autocomplete="tel" maxlength="24" required />
+            <input id={`${id}-phone`} name="phone" type="tel" aria-label="Телефон" inputmode="tel" autocomplete="tel" maxlength="24" required />
           </div>
         </div>
         <label class="pform__consent">
           <input name="consent" type="checkbox" required />
           <span>Даю согласие на обработку моих персональных данных в соответствии с <a href={link('/privacy')}>Политикой обработки персональных данных</a></span>
         </label>
-        <button class="btn-orange pform__submit" type="button" data-lead-submit>Отправить</button>
+        <button class="btn-orange pform__submit" type="button" data-lead-submit>{cta}</button>
         <p class="lead-form__status" id={`${id}-status`} data-lead-status role="status" aria-live="polite" hidden></p>
         <noscript><p class="lead-form__status">Чтобы оставить заявку, включите JavaScript или позвоните нам по телефону на сайте.</p></noscript>
       </form>

@@ -83,3 +83,26 @@ test('adds the local review and shared venue sections to audited parity template
   for (const template of [holiday, category, venue, info]) assert.match(template, /VenuesSection/);
   for (const template of [holiday, category, venue]) assert.match(template, /Reviews/);
 });
+
+test('keeps audited quest art direction and every source related card', async () => {
+  const [patologiya, shizofreniya, quest] = await Promise.all([
+    json('src/data/pages/patologiya.json'),
+    json('src/data/pages/shizofreniya.json'),
+    read('src/layouts/QuestPage.astro'),
+  ]);
+  assert.equal(patologiya.theme, 'dark');
+  assert.equal(shizofreniya.theme, 'dark');
+  assert.match(quest, /canonicalizeCardItems\(relatedItems\)/);
+  assert.doesNotMatch(quest, /filteredRelatedItems/);
+
+  const sharedRail = ['puteshestvie', 'pirati', 'pobeg', 'mystery_shack', 'indiana'];
+  const pages = await Promise.all(sharedRail.map((slug) => json(`src/data/pages/${slug}.json`)));
+  for (const page of pages) {
+    assert.deepEqual(page.related.items.at(-1), {
+      t: 'Фантастический угон',
+      href: '/ugon',
+      img: '/assets/q/c2245d4825.webp',
+    });
+    assert.ok(page.related.items.some((item) => item.href === `/${page.slug}`));
+  }
+});

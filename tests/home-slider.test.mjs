@@ -92,27 +92,82 @@ test('homepage slider uses locally optimized copies of traceable original Tilda 
   }
 });
 
-test('slider never expands the 1010px-wide original banner artwork', async () => {
-  const styles = await readFile(new URL('../src/styles/page.css', import.meta.url), 'utf8');
+test('homepage keeps the live slider footprint and removes the clone-only pause control', async () => {
+  const styles = await readFile(new URL('../src/styles/home.css', import.meta.url), 'utf8');
 
-  assert.match(styles, /\.slider\{position:relative;max-width:1010px;margin-inline:auto\}/u);
-  assert.match(styles, /\.slider__pause\{[^}]*width:44px;height:44px/u);
+  assert.match(styles, /\.home-page \.slider\{max-width:1160px\}/u);
+  assert.match(styles, /\.home-page \.slider__pause\{display:none\}/u);
+  assert.match(styles, /@media \(max-width:640px\)\{[\s\S]*\.home-page \.slider\{max-width:none\}/u);
 });
 
-test('homepage loads responsive mobile hero candidates and does not prefetch a hidden slide on startup', async () => {
-  const [mobileHero, retinaMobileHero, desktopHero, index, main] = await Promise.all([
-    sharp(resolve(process.cwd(), 'public/assets/_static/hero_dungeon_760.webp')).metadata(),
-    sharp(resolve(process.cwd(), 'public/assets/_static/hero_dungeon_900.webp')).metadata(),
-    sharp(resolve(process.cwd(), 'public/assets/_static/hero_dungeon_1200.webp')).metadata(),
+test('homepage catalog preserves the live card sequence, grouping, and source addresses', async () => {
+  const [site, home, card] = await Promise.all([
+    readFile(new URL('../src/data/site.json', import.meta.url), 'utf8').then(JSON.parse),
     readFile(new URL('../src/pages/index.astro', import.meta.url), 'utf8'),
-    readFile(new URL('../src/scripts/main.js', import.meta.url), 'utf8'),
+    readFile(new URL('../src/components/QuestCard.astro', import.meta.url), 'utf8'),
   ]);
 
-  assert.equal(mobileHero.width, 760);
-  assert.equal(retinaMobileHero.width, 900);
-  assert.ok(mobileHero.width < desktopHero.width);
-  assert.ok(retinaMobileHero.width < desktopHero.width);
-  assert.match(index, /hero_dungeon_760\.webp.*760w, .*hero_dungeon_900\.webp.*900w/u);
-  assert.equal((main.match(/loadSlide\(\(i \+ 1\) % slides\.length\);/gu) || []).length, 1,
-    'only a user-visible slide transition may prefetch the following artwork');
+  assert.deepEqual(site.cards.slice(0, 3).map((item) => item.href), [
+    '/kvest_v_realnosti_harry_potter_i_krestrazh',
+    '/kvest_v_realnosti_noch_v_museum_ograblenie',
+    '/kvest_v_realnosti_dom_prizrakov',
+  ]);
+  for (const href of ['/ono', '/tekhasskaya-reznya-benzopiloj', '/zvonok']) {
+    assert.equal(site.cards.find((item) => item.href === href)?.cat, 'Прятки в лабиринте 200м²');
+  }
+  assert.doesNotMatch(home, /liveHomeOrder/u);
+  assert.match(home, /address: card\.addr/u);
+  assert.match(card, /venue\.addressLines/u);
+});
+
+test('homepage uses the exact live hero and DPR-two catalogue derivatives', async () => {
+  const [site, index] = await Promise.all([
+    readFile(new URL('../src/data/site.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../src/pages/index.astro', import.meta.url), 'utf8'),
+  ]);
+  const optimizedCards = site.cards.filter((card) => card.photo.includes('/assets/optim.tildacdn.com/'));
+
+  assert.equal(site.hero.bg, '/assets/static.tildacdn.com/tild3561-3266-4662-a539-313732383839/noroot.png');
+  await access(resolve(process.cwd(), 'public', site.hero.bg.slice(1)));
+  assert.equal(optimizedCards.length, 26);
+  for (const card of optimizedCards) {
+    assert.match(card.photo, /\/cover\/720x720\/center\/center\/-\/format\/webp\//u);
+    await access(resolve(process.cwd(), 'public', card.photo.slice(1)));
+  }
+  assert.match(index, /src=\{asset\(s\.hero\.bg\)\}/u);
+  assert.doesNotMatch(index, /hero_dungeon_760/u);
+});
+
+test('homepage card copy keeps the source-specific widths and forced title lines', async () => {
+  const [home, card, homeStyles] = await Promise.all([
+    readFile(new URL('../src/pages/index.astro', import.meta.url), 'utf8'),
+    readFile(new URL('../src/components/QuestCard.astro', import.meta.url), 'utf8'),
+    readFile(new URL('../src/styles/home.css', import.meta.url), 'utf8'),
+  ]);
+
+  assert.match(home, /const homeCardTilda/u);
+  assert.match(home, /'\/kvest_v_realnosti_harry_potter_i_krestrazh':\{titleWidth:166,titleWidthMobile:166/u);
+  assert.match(home, /'\/kvest_v_realnosti_koralina':\{titleWidth:232,titleWidthMobile:203,titleLines:/u);
+  assert.match(card, /const titleLines = card\.titleLines/u);
+  assert.match(card, /--qcard-title-width-mobile/u);
+  assert.match(card, /--qcard-title-line-height/u);
+  assert.match(homeStyles, /--qcard-title-line-height:22px/u);
+  assert.match(homeStyles, /--qcard-title-line-height:19px/u);
+});
+
+test('homepage restores the measured 390px party-statistics artboard', async () => {
+  const [site, home, styles] = await Promise.all([
+    readFile(new URL('../src/data/site.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../src/pages/index.astro', import.meta.url), 'utf8'),
+    readFile(new URL('../src/styles/home.css', import.meta.url), 'utf8'),
+  ]);
+
+  assert.equal(site.stats.buttonHref, '/kids');
+  assert.equal(site.stats.buttonImg, '/assets/static.tildacdn.com/tild3861-3135-4930-b932-383731343136/5.webp');
+  await access(resolve(process.cwd(), 'public', site.stats.buttonImg.slice(1)));
+  assert.match(home, /class="party__btnimg"/u);
+  assert.match(home, /href=\{link\(s\.stats\.buttonHref\)\}/u);
+  assert.match(styles, /\.home-page \.party__card\{width:360px;max-width:100%;height:910px/u);
+  assert.match(styles, /\.home-page \.party__stats\{position:absolute;top:455px/u);
+  assert.match(styles, /\.home-page \.pstat:nth-child\(5\)\{left:91px;top:284px/u);
 });

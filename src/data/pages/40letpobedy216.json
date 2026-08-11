@@ -28,9 +28,9 @@
    "Справа от двери «Красное и белое», оранжевая дверь \"Чё за Квест?\", спуск по лестнице вниз"
   ],
   "photos": [
+   "/assets/q/7f30fa4ea5.webp",
    "/assets/q/04ec668dde.webp",
    "/assets/q/cd64e615e0.webp",
-   "/assets/q/7f30fa4ea5.webp",
    "/assets/q/7a2f49dedb.webp",
    "/assets/q/b41bda647e.webp",
    "/assets/q/3073a6cbfd.webp"
@@ -44,6 +44,20 @@
  },
  "games": {
   "title": "Доступные квесты на локации",
+  "groups": [
+   {
+    "size": 6,
+    "uptitle": "Магнитогорская, 1\n40-летия Победы, 216"
+   },
+   {
+    "size": 7,
+    "uptitle": "Магнитогорская, 1\n40-летия Победы, 216"
+   },
+   {
+    "size": 3,
+    "uptitle": "40-летия Победы, 216"
+   }
+  ],
   "items": [
    {
     "t": "Звонок",
@@ -56,7 +70,7 @@
     "img": "/assets/q/a6277b4d3b.webp"
    },
    {
-    "t": "ОНО",
+    "t": "Оно",
     "href": "/ono",
     "img": "/assets/q/3caf34a9ab.webp"
    },
@@ -66,7 +80,7 @@
     "img": "/assets/q/fdc02aaa6f.webp"
    },
    {
-    "t": "Прятки KIDS",
+    "t": "Прятки kids",
     "href": "/pryatki_kids",
     "img": "/assets/q/2019d89462.webp"
    },
@@ -74,6 +88,56 @@
     "t": "Прятки в темноте",
     "href": "/pryatki_v_temnote",
     "img": "/assets/q/2fd4cbb580.webp"
+   },
+   {
+    "t": "Роблокс. Дорс",
+    "href": "/roblox-dors",
+    "img": "/assets/optim.tildacdn.com/tild3139-6432-4739-b835-623732366663/-/cover/432x432/center/center/-/format/webp/_.jpg.webp"
+   },
+   {
+    "t": "Бегущий в лабиринте",
+    "href": "/beguschij_v_labirinte",
+    "img": "/assets/optim.tildacdn.com/tild3233-3264-4466-a466-623635663661/-/cover/432x432/center/center/-/format/webp/image-6-2.jpg.webp"
+   },
+   {
+    "t": "Игра в Кальмара",
+    "href": "/igra_v_kalmara",
+    "img": "/assets/optim.tildacdn.com/tild3262-6235-4464-b131-613734346230/-/cover/432x432/center/center/-/format/webp/image-5-2.jpg.webp"
+   },
+   {
+    "t": "Гарри Поттер и Кубок Огня",
+    "href": "/garri-potter-i-kubok-ognya",
+    "img": "/assets/optim.tildacdn.com/tild3263-3064-4561-b762-373933613562/-/cover/432x432/center/center/-/format/webp/image-4-2.jpg.webp"
+   },
+   {
+    "t": "Амонг Ас",
+    "href": "/among_us",
+    "img": "/assets/q/80d439303c.webp"
+   },
+   {
+    "t": "Уэнсдей. Потерянная душа",
+    "href": "/wednesday-poteryannaya-dusha",
+    "img": "/assets/q/aa88f8ca34.webp"
+   },
+   {
+    "t": "Майнкрафт",
+    "href": "/minecraft",
+    "img": "/assets/optim.tildacdn.com/tild6539-3736-4630-a434-346232323632/-/cover/432x432/center/center/-/format/webp/image-9.jpg.webp"
+   },
+   {
+    "t": "Portal strike kids",
+    "href": "/portal-strike-kids",
+    "img": "/assets/q/5587b4bf9b.webp"
+   },
+   {
+    "t": "party games",
+    "href": "/party-games",
+    "img": "/assets/optim.tildacdn.com/tild3337-3334-4564-b733-663864376532/-/cover/432x432/center/center/-/format/webp/noroot.png.webp"
+   },
+   {
+    "t": "Portal strike",
+    "href": "/portal-strike",
+    "img": "/assets/optim.tildacdn.com/tild6666-3637-4461-a232-313266316431/-/cover/432x432/center/center/-/format/webp/image-4.jpg.webp"
    }
   ]
  },

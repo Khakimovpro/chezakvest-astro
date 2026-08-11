@@ -2,11 +2,11 @@
  "slug": "strashnye-kvesty",
  "type": "category",
  "theme": "dark",
- "showReviews": true,
+ "showReviews": false,
  "reviewsTitle": "Отзывы о страшных квестах",
  "seo": {
   "title": "Страшные квесты в Ростове",
-  "description": "Страшные квесты в Ростове-на-Дону от компании «Чё за Квест»: 13 программ на выбор, 9 площадок в городе. Бронирование игры по телефону, работаем ежедневно.",
+  "description": " ",
   "keywords": "страшные квесты Ростов-на-Дону, хоррор квесты Ростов, квесты с актёром, Чё за Квест",
   "h1": "Страшные квесты в Ростове-на-Дону"
  },
@@ -27,14 +27,17 @@
  "hero": {
   "h1": "Страшные квесты в Ростове-на-Дону",
   "sub": "Испытай свои нервы на прочность в страшных квестах в Ростове-на-Дону.",
+  "copyPosition": "top",
+  "hideSharedHeader": true,
   "buttons": [
-   {
-    "t": "Подобрать квест",
-    "href": "#kvesty"
-   },
    {
     "t": "Рассчитать стоимость праздника",
     "href": "#callback"
+   },
+   {
+    "t": "Подобрать квест",
+    "href": "#kvesty",
+    "primary": true
    }
   ],
   "bg": "/assets/q/40b9b2eb4d.webp",
@@ -42,10 +45,16 @@
    "760": "/assets/q/db5bf4845c.webp",
    "1200": "/assets/q/f5a8ebae63.webp",
    "1600": "/assets/q/40b9b2eb4d.webp"
+  },
+  "foreground": {
+   "src": "/assets/static.tildacdn.com/tild3337-3537-4933-a532-356335333533/photo.webp",
+   "width": 731,
+   "height": 1034
   }
  },
  "games": {
   "title": "Выберите свой страшный квест",
+  "sourcePortraitCards": true,
   "items": [
    {
     "t": "Шизофрения. Тени правды",
@@ -53,7 +62,7 @@
     "img": "/assets/q/d621abd216.webp"
    },
    {
-    "t": "Хостел. Подвал пыток",
+    "t": "Хостел. Подвал выток",
     "href": "/hostel-podval-pytok",
     "img": "/assets/q/3838632926.webp"
    },
@@ -61,36 +70,6 @@
     "t": "Патология",
     "href": "/patologiya",
     "img": "/assets/q/ce2fec6888.webp"
-   },
-   {
-    "t": "Техасская резня бензопилой",
-    "href": "/tekhasskaya-reznya-benzopiloj",
-    "img": "/assets/q/c3181340e6.webp"
-   },
-   {
-    "t": "ОНО",
-    "href": "/ono",
-    "img": "/assets/q/ab71a7cd83.webp"
-   },
-   {
-    "t": "Коралина в Стране Кошмаров",
-    "href": "/kvest_v_realnosti_koralina",
-    "img": "/assets/q/e6b87ab45d.webp"
-   },
-   {
-    "t": "Дом призраков",
-    "href": "/kvest_v_realnosti_dom_prizrakov",
-    "img": null
-   },
-   {
-    "t": "Звонок",
-    "href": "/zvonok",
-    "img": "/assets/q/51c67323e2.webp"
-   },
-   {
-    "t": "Психбольница",
-    "href": "/kvest_v_realnosti_psihbolnitsa",
-    "img": null
    },
    {
     "t": "Замок Графа Дракулы",
@@ -103,19 +82,50 @@
     "img": "/assets/q/abb318ccb1.webp"
    },
    {
-    "t": "Бегущий в лабиринте",
-    "href": "/beguschij_v_labirinte",
-    "img": "/assets/q/2950393a90.webp"
+    "t": "Психбольница",
+    "href": "/kvest_v_realnosti_psihbolnitsa",
+    "img": null
    },
    {
     "t": "Игра в Кальмара",
     "href": "/igra_v_kalmara",
     "img": null
+   },
+   {
+    "t": "ОНО",
+    "href": "/ono",
+    "img": "/assets/q/ab71a7cd83.webp"
+   },
+   {
+    "t": "Дом призраков",
+    "href": "/kvest_v_realnosti_dom_prizrakov",
+    "img": null
+   },
+   {
+    "t": "Бегущий в лабиринте",
+    "href": "/beguschij_v_labirinte",
+    "img": "/assets/q/2950393a90.webp"
+   },
+   {
+    "t": "Звонок",
+    "href": "/zvonok",
+    "img": "/assets/q/51c67323e2.webp"
+   },
+   {
+    "t": "Техасская резня бензопилой",
+    "href": "/tekhasskaya-reznya-benzopiloj",
+    "img": "/assets/q/c3181340e6.webp"
+   },
+   {
+    "t": "Коралина в Стране Кошмаров",
+    "href": "/kvest_v_realnosti_koralina",
+    "img": "/assets/q/e6b87ab45d.webp"
    }
   ]
  },
  "gallery": {
   "title": "Фотографии со страшных квестов в Ростове",
+  "carousel": true,
   "photos": [
    "/assets/q/300565b5c5.webp",
    "/assets/q/22ab0a737a.webp",

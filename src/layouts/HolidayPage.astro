@@ -108,6 +108,43 @@ const heroSrcset = hero.bgset
     .map(([w, p]) => `${asset(p)} ${w}w`).join(', ')
   : '';
 const heroSource = hero.bgset?.['1600'] || hero.bgset?.['1200'] || hero.bg;
+const hasExplicitHeroPrimary = (hero.buttons || []).some((button) => button.primary);
+const sourceArtboard = hero.composition === 'tilda-artboard';
+const backgroundLayer = sourceArtboard && hero.artboard?.background && hero.bg
+  ? { ...hero.artboard.background, src: heroSource, fit: 'cover', role: 'background' }
+  : null;
+const campaignLayers = [
+  ...(backgroundLayer ? [backgroundLayer] : []),
+  ...((hero.layers || []).filter((layer) => layer?.src)),
+];
+const cssLength = (value) => Number.isFinite(value) ? `${value}px` : String(value || '');
+const campaignLayerStyle = (layer) => {
+  const desktop = layer.desktop || {};
+  const mobile = layer.mobile || {};
+  return [
+    ['--campaign-layer-top', desktop.top],
+    ['--campaign-layer-left', desktop.left],
+    ['--campaign-layer-width', desktop.width],
+    ['--campaign-layer-height', desktop.height],
+    ['--campaign-layer-z', layer.z],
+    ['--campaign-layer-top-mobile', mobile.top],
+    ['--campaign-layer-left-mobile', mobile.left],
+    ['--campaign-layer-width-mobile', mobile.width],
+    ['--campaign-layer-height-mobile', mobile.height],
+  ].filter(([, value]) => value !== undefined && value !== null && value !== '')
+    .map(([name, value]) => `${name}:${cssLength(value)}`).join(';');
+};
+// Several campaign landings are bespoke Tilda canvases rather than the shared
+// card hero.  The values live with the captured page data so the common
+// template can keep their documented desktop/mobile geometry without turning
+// a route name into a styling switch.
+const campaignHero = Boolean(hero.fullBleed || hero.heightDesktop || hero.heightMobile);
+const heroStyle = campaignHero
+  ? [
+    hero.heightDesktop && `--holiday-hero-height:${Number(hero.heightDesktop)}px`,
+    hero.heightMobile && `--holiday-hero-height-mobile:${Number(hero.heightMobile)}px`,
+  ].filter(Boolean).join(';')
+  : undefined;
 const quizKeyBySlug = {
   kids: 'kids',
   'prazdnik-maxi': 'kids',
@@ -122,6 +159,10 @@ const quizId = site.quiz[quizKeyBySlug[page.slug] || 'main'];
 const preload = hero.bg
   ? { href: asset(heroSource), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
   : null;
+// A small group of campaign landings use a complete dark art direction in the
+// live source. Keep the ordinary holiday pages on the paper background, but
+// carry that documented art direction through the shared Astro template.
+const bodyClass = page.theme ? `theme-dark holiday-theme holiday-theme--${page.theme}` : '';
 ---
 <Layout
   title={seo.title}
@@ -132,14 +173,15 @@ const preload = hero.bg
   ogType="article"
   jsonld={jsonld}
   preloadImage={preload}
+  bodyClass={bodyClass}
 >
-  <Header />
+  {!hero.hideSharedHeader && <Header />}
 
   <main>
     <!-- ============ ГЕРОЙ ============ -->
     {/* светлый вариант: фото-вырезка справа на фирменном фоне (как /kids на оригинале) */}
     {hero.variant === 'light' ? (
-      <section class="lhero">
+      <section class:list={['lhero', { 'lhero--source-fullbleed': hero.fullBleed }]} style={heroStyle}>
         <div class="container lhero__inner">
           <div class="lhero__text">
             {hero.up && <p class="lhero__up">{hero.up}</p>}
@@ -159,26 +201,48 @@ const preload = hero.bg
         </div>
       </section>
     ) : (
-      <section class="qhero">
+      <section class:list={[
+        'qhero',
+        {
+          'qhero--source-sized': campaignHero,
+          'qhero--source-fullbleed': hero.fullBleed,
+          'qhero--source-top-copy': hero.copyPosition === 'top',
+          'qhero--campaign-layered': sourceArtboard && campaignLayers.length > 0,
+        },
+      ]} style={heroStyle}>
         <div class="container-wide">
           <div class="qhero__panel">
-            {hero.bg && (
+            {hero.bg && !backgroundLayer && (
               <img class="qhero__bg" src={asset(heroSource)} srcset={heroSrcset}
                    sizes="(max-width:700px) 100vw, 1200px" alt={seo.h1}
                    width="1200" height="550" fetchpriority="high" decoding="async" />
             )}
-            {(hero.pills || []).length > 0 && (
+            {campaignLayers.length > 0 && (
+              <div class="campaign-hero__layers" aria-hidden="true">
+                {campaignLayers.map((layer) => (
+                  <img class:list={[
+                    'campaign-hero__layer',
+                    { 'campaign-hero__layer--cover': layer.fit === 'cover' },
+                  ]}
+                    src={asset(layer.src)} alt="" style={campaignLayerStyle(layer)}
+                    width={layer.intrinsic?.width || 1} height={layer.intrinsic?.height || 1}
+                    decoding="async" />
+                ))}
+              </div>
+            )}
+            {!hero.hidePills && (hero.pills || []).length > 0 && (
               <div class="qhero__pills">
                 {hero.pills.map((p) => (<span class="qpill">{p}</span>))}
               </div>
             )}
             <div class="qhero__body">
-              {hero.up && <p class="hhero__up">{hero.up}</p>}
+              {hero.up && !hero.hideUp && <p class="hhero__up">{hero.up}</p>}
               <h1 class="qhero__title">{hero.h1 || seo.h1}</h1>
               {hero.sub && <p class="qhero__sub hhero__sub">{hero.sub}</p>}
               <div class="qhero__cta">
                 {(hero.buttons || []).map((b, i) => (
-                  <a class={i === 0 ? 'btn-orange' : 'qhero__btn-ghost'} href={heroLink(b.href)} data-quiz={i === 0 ? quizId : undefined}>{b.t}</a>
+                  <a class={(hasExplicitHeroPrimary ? b.primary : i === 0) ? 'btn-orange' : 'qhero__btn-ghost'}
+                     href={heroLink(b.href)} data-quiz={(hasExplicitHeroPrimary ? b.primary : i === 0) ? quizId : undefined}>{b.t}</a>
                 ))}
               </div>
             </div>
@@ -495,7 +559,7 @@ const preload = hero.bg
 
         {/* ---- залы: на Tilda карусель, здесь все карточки сразу ---- */}
         {s.kind === 'halls' && (
-          <section class="hhalls">
+          <section class={`hhalls${s.mobileFirstHallOnly ? ' hhalls--first-frame-mobile' : ''}${s.sourceFirstHallOnly ? ' hhalls--source-first-frame' : ''}`}>
             <div class="container">
               {s.eyebrow && <p class="hsection__eyebrow">{s.eyebrow}</p>}
               {s.title && <h2 class="section-title">{s.title}</h2>}
@@ -611,17 +675,19 @@ const preload = hero.bg
         )}
 
         {/* ---- форма заявки на праздник ---- */}
-        {s.kind === 'party-form' && <PartyForm id={`p${s.n || ''}`} />}
+        {s.kind === 'party-form' && <PartyForm id={`p${s.n || ''}`} sectionId={s.id || 'prazdnik'} title={s.title} subtitle={s.subtitle} cta={s.cta} variant={s.variant} />}
       </>
     ))}
 
     {!reviewSection && page.showReviews && <Reviews title={page.reviewsTitle || 'Отзывы наших гостей'} limit={8} />}
 
-    <!-- ============ ПЛОЩАДКИ КОМПАНИИ ============ -->
+    {page.showCallback !== false && <CallbackForm id="h" />}
+
+    <!-- The source landing pages place the contact hand-off before the address
+         strip.  Keeping the shared components in that order restores the
+         visible record sequence without duplicating either block. -->
     {listedVenues.length > 0 && <VenuesSection id={`venues-${page.slug}`} base={base}
       title="Наши площадки" subtitle={venuesSubtitle} />}
-
-    <CallbackForm id="h" />
   </main>
 
   <Footer />

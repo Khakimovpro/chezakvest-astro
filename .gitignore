@@ -36,6 +36,17 @@ dist-enc/
 migration/qa-*/_work/
 migration/qa-*/raw/
 
+# Full-resolution original/clone parity pairs are reproducible but too heavy for Git.
+migration/parity/shots/
+# Per-round crop diagnostics and the portable data-URI report are generated
+# evidence; the concise CSV/Markdown audit artefacts remain versioned.
+migration/parity/round-*/
+migration/parity/parity-report.html
+migration/parity/lighthouse/
+# Split-process matrices are intermediate capture products.  The merged
+# visual-matrix.csv is the reviewable final artefact and remains tracked.
+migration/parity/visual-matrix-*.csv
+
 # local browser previews and Lazyweb source screenshots
 .run/
 .lazyweb/

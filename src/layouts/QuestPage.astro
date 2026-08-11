@@ -12,7 +12,7 @@ import PrebookingForm from '../components/PrebookingForm.astro';
 import VenuesSection from '../components/VenuesSection.astro';
 import ZoomImg from '../components/ZoomImg.astro';
 import site from '../data/site.json';
-import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, isCurrentRoute, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
@@ -36,6 +36,10 @@ const celebrationVenues = (page.celebrationVenues?.length
     ? [{ ...venueContent, venueSlug: page.venueSlug }]
     : []));
 const visiblePrice = Number(page.priceFrom) || null;
+// The generic quest source has its own body marker in addition to the dark
+// variant. It lets the measured callback artboard remain local to QuestPage
+// instead of changing the callback used by unrelated page families.
+const questBodyClass = ['quest-page', page.theme === 'dark' ? 'theme-dark' : ''].filter(Boolean).join(' ');
 
 // возраст («12+») в оригинале стоит отдельным кружком справа, остальное — пилюли слева
 const age = (hero.pills || []).find((p) => /\+$/.test(p));
@@ -103,7 +107,6 @@ const relatedItems = page.related?.items?.length
       .sort((a, b) => a.slug.localeCompare(b.slug))
       .slice(0, 8)
       .map((p) => ({ t: p.t.replace(/^Квест\s+/i, ''), href: '/' + p.slug, img: p.img }));
-const filteredRelatedItems = relatedItems.filter((item) => !isCurrentRoute(item.href, path));
 const pagesBySlug = new Map(index.map((item) => [item.slug, item]));
 const canonicalizeCardItems = (items = []) => items.map((item) => {
   const slug = String(item.href || '').split(/[?#]/, 1)[0].replace(/^\/+|\/+$/g, '');
@@ -115,7 +118,7 @@ const canonicalizeCardItems = (items = []) => items.map((item) => {
     imgSet: pagesBySlug.get(slug)?.imgSet || null,
   };
 });
-const canonicalCardItems = canonicalizeCardItems(filteredRelatedItems);
+const canonicalCardItems = canonicalizeCardItems(relatedItems);
 const relatedTitle = page.related?.title || 'Другие квесты от «Чё за Квест?»';
 const relatedSub = page.related?.subtitle || 'У нас есть из чего выбрать';
 
@@ -132,6 +135,7 @@ const preload = hero.bg
   ogType="article"
   jsonld={jsonld}
   preloadImage={preload}
+  bodyClass={questBodyClass}
 >
   <Header />
 
@@ -244,12 +248,12 @@ const preload = hero.bg
 
     {page.booking?.calendarId && <PrebookingForm id={`booking-${page.slug}`} quest={hero.h1 || seo.h1} calendarId={page.booking.calendarId} />}
 
-    {filteredRelatedItems.length > 0 && (
+    {relatedItems.length > 0 && (
       <CardsRow title={relatedTitle} subtitle={relatedSub}
                 items={canonicalCardItems} variant="poster" id="drugie" />
     )}
 
-    <PartyForm />
+    {page.showPartyForm !== false && <PartyForm />}
 
     <!-- ============ ПЛОЩАДКА ============ -->
     {celebrationVenues.length > 0 && (
@@ -263,7 +267,7 @@ const preload = hero.bg
               const hallAddress = hall.address || hallVenue?.address || '';
               return (
                 <div class="qvenue__card">
-                  <div class="qvenue__photos">
+                  <div class="qvenue__photos qvenue__photos--rail" aria-label={`Фотографии зала: ${hallAddress}`}>
                     {(hall.photos || []).map((ph) => (
                       <ZoomImg src={asset(ph)} group={`quest-venue-${page.slug}-${hallIndex}`} imageClass="qvenue__photo"
                                alt={`Зал «Чё за Квест» — ${hallAddress}`}
@@ -296,7 +300,10 @@ const preload = hero.bg
           {e.title && <h2 class="section-title">{e.title}</h2>}
           {e.lines.map((l) => (<p class="qextra__line">{l}</p>))}
           {e.photos.length > 0 && (
-            <div class={`qextra__photos qextra__photos--${e.photos.length > 3 ? 'grid' : 'row'}`}>
+            <div class:list={[
+              'qextra__photos',
+              e.photos.length > 1 ? 'qextra__photos--rail' : 'qextra__photos--row',
+            ]} aria-label={e.title ? `Фотографии: ${e.title}` : 'Фотографии квеста'}>
               {e.photos.map((ph) => (
                 <ZoomImg src={asset(ph)} group={`quest-extra-${page.slug}-${sectionIndex}`}
                          alt={e.title || `Фото квеста «${seo.h1}»`}
@@ -332,9 +339,9 @@ const preload = hero.bg
                 items={canonicalizeCardItems(page.scenarios.items)} variant="square" uptitle="День рождения в стиле" />
     )}
 
-    <VenuesSection id={`venues-${page.slug}`} base={base} />
+    <CallbackForm id={page.showPartyForm === false ? 'prazdnik' : 'q'} sectionId={page.showPartyForm === false ? 'prazdnik' : 'callback'} />
 
-    <CallbackForm id="q" />
+    <VenuesSection id={`venues-${page.slug}`} base={base} />
   </main>
 
   <Footer />

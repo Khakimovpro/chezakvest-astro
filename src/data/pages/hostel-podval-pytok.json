@@ -1,6 +1,8 @@
 {
  "slug": "hostel-podval-pytok",
  "type": "quest",
+ "theme": "dark",
+ "showPartyForm": false,
  "venueSlug": "nansena107",
  "seo": {
   "title": "Хостел. Подвал пыток - хоррор-квест в Ростове-на-Дону",
@@ -135,8 +137,8 @@
    "title": "Как у нас проходит квест",
    "lines": [],
    "photos": [
-    "/assets/q/f2055922af.webp",
     "/assets/q/e6807a8721.webp",
+    "/assets/q/f2055922af.webp",
     "/assets/q/2594e8aaf9.webp",
     "/assets/q/b13b68ec3d.webp",
     "/assets/q/1a90d16bfe.webp",

@@ -256,6 +256,42 @@ def catalog_record(weights):
     }
 
 
+def privacy_record(weights):
+    """Keep the static noindex privacy route visible beside data-driven pages."""
+    source = os.path.join(CLONE, "src", "pages", "privacy.astro")
+    if not os.path.exists(source):
+        return None
+    text = open(source, encoding="utf-8").read()
+
+    def literal(name):
+        found = re.search(rf"const {name} = '([^']*)';", text)
+        return found.group(1) if found else ""
+
+    path = "/privacy"
+    weight = weights.get(path, {"freq": 0, "prio": set()})
+    title, description = literal("title"), literal("description")
+    policy_path = os.path.join(CLONE, "src", "data", "privacy-policy.html")
+    policy = open(policy_path, encoding="utf-8").read() if os.path.exists(policy_path) else ""
+    policy_text = re.sub(r"<[^>]+>", " ", policy)
+    return {
+        "slug": "privacy",
+        "path": path,
+        "type": "info",
+        "template_cluster": "static",
+        "status": "done",
+        "kw_freq": weight["freq"],
+        "kw_priority": ",".join(sorted(p for p in weight["prio"] if p)),
+        "words": word_count([title, description, policy_text]),
+        "title": title,
+        "title_len": len(title),
+        "description": description,
+        "description_len": len(description),
+        "h1": "",
+        "url": f"{CANONICAL_ORIGIN}{path}",
+        "snapshot": "",
+    }
+
+
 def main():
     inv = list(csv.DictReader(open(os.path.join(WORK, "inventory.csv"), encoding="utf-8-sig")))
     pages = [r for r in inv if "sitemap" in r["source"] and r["status"] == "200"]
@@ -301,6 +337,9 @@ def main():
     catalog = catalog_record(weights)
     if catalog:
         out.append(catalog)
+    privacy = privacy_record(weights)
+    if privacy:
+        out.append(privacy)
 
     # порядок: сначала перенесённые, потом по весу семантики и объёму
     order = {"home": 0, "category": 1, "holiday": 2, "venue": 3, "vr": 4, "quest": 5, "info": 6}

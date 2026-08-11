@@ -1,12 +1,13 @@
 {
   "slug": "amongus-land",
   "type": "holiday",
+  "theme": "amongus",
   "serviceType": "Детский праздник в стиле Амонг Ас",
   "seo": {
-    "title": "Амонг Ас: день рождения в Ростове | Чё за Квест",
-    "description": "Детский праздник в стиле Амонг Ас в Ростове-на-Дону: квест-шоу, тематические программы, банкетная комната, актёры и подарки гостям.",
+    "title": "Детский день рождения в стиле игры ROBLOX в Ростове-на-Дону | Скидки и Акции",
+    "description": "День рождения под ключ в Ростове-на-Дону. Квест-шоу РОБЛОКС на детский праздник.",
     "keywords": "день рождения амонг ас ростов-на-дону, праздник among us ростов, квест амонг ас день рождения, шоу амонг ас детям",
-    "h1": "День рождения в стиле Амонг Ас в Ростове-на-Дону"
+    "h1": "КВЕСТ-ШОУ по мотивам популярной игры для вашего праздника"
   },
   "breadcrumbs": [
     { "t": "Главная", "href": "/" },
@@ -18,24 +19,54 @@
     {
       "kind": "hero",
       "variant": "dark",
+      "fullBleed": true,
+      "hideSharedHeader": true,
+      "copyPosition": "top",
+      "heightDesktop": 900,
+      "heightMobile": 844,
+      "composition": "tilda-artboard",
+      "hidePills": true,
+      "artboard": {
+        "desktop": { "width": 1200, "height": 835 },
+        "mobile": { "width": 320, "height": 756 },
+        "background": {
+          "intrinsic": { "width": 1058, "height": 583 },
+          "desktop": { "top": "calc(100vh - 490px)", "left": "calc(100% - 906px + 130px)", "width": 906, "height": 490 },
+          "mobile": { "top": "calc(835px - 490px)", "left": "calc(100% - 906px + 194px)", "width": 360, "height": 211 }
+        }
+      },
+      "layers": [
+        {
+          "src": "/assets/static.tildacdn.com/tild6566-3834-4033-b630-393963303866/dmitriy-leongff2ovic.png",
+          "fit": "cover",
+          "intrinsic": { "width": 583, "height": 419 },
+          "desktop": { "top": "calc(100vh - 835px + 80px)", "left": "calc(50% - 600px + 825px)", "width": 482, "height": 281 },
+          "mobile": { "top": 445, "left": "calc(50% - 160px + 59px)", "width": 240, "height": 139 }
+        },
+        {
+          "src": "/assets/static.tildacdn.com/tild6463-6166-4865-b731-396333373962/snapedit_17474129053.png",
+          "fit": "cover",
+          "intrinsic": { "width": 569, "height": 911 },
+          "desktop": { "top": "calc(100vh - 489px + 7px)", "left": -110, "width": 364, "height": 489 },
+          "mobile": { "top": "calc(835px - 489px + 4px)", "left": -31, "width": 163, "height": 220 }
+        }
+      ],
       "up": "Квест-шоу по мотивам популярной игры",
-      "h1": "День рождения в стиле Амонг Ас",
+      "h1": "КВЕСТ-ШОУ по мотивам популярной игры для вашего праздника",
       "sub": "Идеальный подарок для всех фанатов серии видеоигр: найдите предателя, выполните задания и проведите праздник в роли героев игры.",
       "pills": ["6+", "2–24 участника", "Праздник под ключ"],
       "buttons": [
         { "t": "Рассчитать стоимость", "href": "#prazdnik" },
         { "t": "Выбрать программу", "href": "#program" }
       ],
-      "bg": "/assets/q/80d439303c.webp",
+      "bg": "/assets/static.tildacdn.com/tild3733-3266-4434-b933-636336313937/photo_20325-05-13_11.png",
       "bgset": {
-        "760": "/assets/q/7bb867c371.webp",
-        "1200": "/assets/q/9271a526ca.webp",
-        "1600": "/assets/q/80d439303c.webp"
+        "1600": "/assets/static.tildacdn.com/tild3733-3266-4434-b933-636336313937/photo_20325-05-13_11.png"
       }
     },
     {
       "kind": "text",
-      "title": "Чё за Квест — мир приключений и веселья",
+      "title": "Че за Квест — мир приключений и веселья",
       "lines": [
         "Место, где каждый сможет почувствовать себя главным героем игры, объединиться с друзьями, пройти испытания и вычислить предателя.",
         "Подберём сценарий, продолжительность и дополнения так, чтобы праздник подошёл именно вашей компании."

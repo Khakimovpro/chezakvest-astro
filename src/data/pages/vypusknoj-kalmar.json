@@ -1,15 +1,17 @@
 {
  "slug": "vypusknoj-kalmar",
  "type": "holiday",
- "showReviews": true,
+ "theme": "graduate",
+ "showCallback": false,
+ "showReviews": false,
  "reviewsTitle": "Что говорят гости о нас",
  "serviceType": "Организация выпускного",
  "priceFrom": 2700,
  "seo": {
-  "title": "Выпускной 2026 в Ростове-на-Дону — «Игра в кальмара»",
-  "description": "Выпускной в стиле «Игры в кальмара» в Ростове-на-Дону: лабиринт 150 кв. м, шоу-программы, актёры-ведущие и комната отдыха на 20 мест.",
+  "title": "Выпускной 2026 в стиле сериала \"Игра в кальмара\" в Ростове-на-Дону | от 2700 руб. за ребенка",
+  "description": "Выпускной под ключ в Ростове-на-Дону. Квест \"Игра в кальмара\" на детский выпускной.",
   "keywords": "где отметить выпускной в ростове на дону, выпускной 9 класса ростов, выпускной 11 класса ростов, выпускной под ключ, квест на выпускной",
-  "h1": "Выпускные 2026 в стиле «Игры в кальмара»"
+  "h1": "Выпускные 2026"
  },
  "breadcrumbs": [
   { "t": "Главная", "href": "/" },
@@ -20,24 +22,59 @@
   {
    "kind": "hero",
    "variant": "dark",
-   "h1": "Выпускные 2026 в стиле «Игры в кальмара»",
-   "up": "В Ростове-на-Дону",
+   "heightDesktop": 834,
+   "heightMobile": 748,
+   "composition": "tilda-artboard",
+   "hidePills": true,
+   "artboard": {
+    "desktop": { "width": 1200, "height": 856 },
+    "mobile": { "width": 320, "height": 770 }
+   },
+   "layers": [
+    {
+     "src": "/assets/static.tildacdn.com/tild6162-3633-4565-b664-393366366236/--_mini.png",
+     "fit": "cover",
+     "intrinsic": { "width": 1012, "height": 675 },
+     "desktop": { "top": 94, "left": "calc(50% - 600px + 404px)", "width": 1012, "height": 675 },
+     "mobile": { "top": 353, "left": "calc(50% - 160px + -143px)", "width": 606, "height": 405 }
+    },
+    {
+     "src": "/assets/static.tildacdn.com/tild3165-3161-4339-a166-353666616432/____mini.png",
+     "fit": "cover",
+     "intrinsic": { "width": 733, "height": 518 },
+     "desktop": { "top": 243, "left": "calc(50% - 600px + 550px)", "width": 733, "height": 518 },
+     "mobile": { "top": 434, "left": "calc(50% - 160px + -60px)", "width": 440, "height": 312 }
+    },
+    {
+     "src": "/assets/static.tildacdn.com/tild6364-6337-4137-b135-616333396265/_mini.png",
+     "intrinsic": { "width": 1920, "height": 524 },
+     "desktop": { "top": 331, "left": "calc(50% - 600px + -680px)", "width": 2560, "height": 699 },
+     "mobile": { "top": 602, "left": "calc(50% - 160px + -240px)", "width": 800, "height": 218 }
+    },
+    {
+     "src": "/assets/static.tildacdn.com/tild3035-3661-4434-b462-333032353334/efea3ecc-785e-42ad-9.png",
+     "fit": "cover",
+     "intrinsic": { "width": 772, "height": 772 },
+     "desktop": { "top": 333, "left": "calc(50% - 600px + -18px)", "width": 55, "height": 55 },
+     "mobile": { "top": 210, "left": "calc(50% - 160px + -13px)", "width": 40, "height": 41 }
+    }
+   ],
+   "h1": "Выпускные 2026",
+   "up": "Ответьте на 3 вопроса и получите подарок",
    "sub": "Выпускной под ключ: лабиринт, испытания из сериала и шоу-программы. От 2700 ₽ за ребёнка",
    "buttons": [
     { "t": "Забронировать дату", "href": "#prazdnik" },
     { "t": "Об игре", "href": "#ob-igre" }
    ],
-   "bg": "/assets/q/11abe7c1ad.webp",
+   "bg": "/assets/static.tildacdn.com/tild3130-3432-4231-a166-333333343932/__.jpg",
    "bgset": {
-    "760": "/assets/q/9f221c0dcf.webp",
-    "1200": "/assets/q/e49e00f181.webp",
-    "1600": "/assets/q/11abe7c1ad.webp"
+    "1600": "/assets/static.tildacdn.com/tild3130-3432-4231-a166-333333343932/__.jpg"
    }
   },
   {
    "kind": "text",
    "id": "ob-igre",
-   "title": "«Чё за Квест» — мир приключений и веселья",
+   "title": "«Че за Квест» — мир приключений и веселья",
    "lines": [
     "Место, где каждый сможет почувствовать себя участником игры, сыграть в известные игры, объединиться с друзьями в команду и заполучить главный приз."
    ]
@@ -104,7 +141,8 @@
    ]
   },
   {
-   "kind": "halls",
+  "kind": "halls",
+  "mobileFirstHallOnly": true,
    "title": "Подберём зал, который подходит вам",
    "subtitle": "4 оборудованных зала со всем необходимым для выпускного или любого другого праздника",
    "cta": "Забронировать дату",
@@ -161,7 +199,7 @@
    "title": "Гарантированно получите 1 из 3 памятных подарков",
    "subtitle": "Ответьте на несколько вопросов — подготовим расчёт выпускного и расскажем о подарках для класса.",
    "cta": "Рассчитать стоимость",
-   "href": "#callback"
+   "href": "#prazdnik"
   },
   {
    "kind": "faq",

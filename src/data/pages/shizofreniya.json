@@ -1,6 +1,8 @@
 {
  "slug": "shizofreniya",
  "type": "quest",
+ "theme": "dark",
+ "showPartyForm": false,
  "venueSlug": "mira27",
  "seo": {
   "title": "Страшный квест Шизофрения в Ростове-на-Дону",

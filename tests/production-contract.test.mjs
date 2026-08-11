@@ -30,6 +30,8 @@ function pageHtml(pathname, {
   leadForms = 0,
   extraBody = '',
   jsonLd = '{"@context":"https://schema.org","@type":["WebSite","BreadcrumbList"]}',
+  blankDescription = null,
+  omitSocialImages = false,
 } = {}) {
   const leadLabels = hiddenLeadLabels
     ? `<label class="visually-hidden" for="lead-name">Ваше имя</label>
@@ -46,22 +48,23 @@ function pageHtml(pathname, {
   const canonical = canonicalPath === '/'
     ? `${ORIGIN}/`
     : `${ORIGIN}${canonicalPath}${slashlessCanonical ? '' : '/'}`;
+  const description = blankDescription === null ? 'Квесты в Ростове-на-Дону' : blankDescription;
 
   return `<!doctype html>
   <html lang="ru">
     <head>
       <title>Чё за Квест</title>
-      <meta name="description" content="Квесты в Ростове-на-Дону">
+      <meta name="description" content="${description}">
       <link rel="canonical" href="${canonical}">
       ${noindex ? '<meta name="robots" content="noindex, follow">' : ''}
       <meta property="og:title" content="Чё за Квест">
-      <meta property="og:description" content="Квесты в Ростове-на-Дону">
+      <meta property="og:description" content="${description}">
       <meta property="og:url" content="${canonical}">
-      <meta property="og:image" content="${ORIGIN}/assets/og.webp">
+      ${omitSocialImages ? '' : `<meta property="og:image" content="${ORIGIN}/assets/og.webp">`}
       <meta name="twitter:card" content="summary_large_image">
       <meta name="twitter:title" content="Чё за Квест">
-      <meta name="twitter:description" content="Квесты в Ростове-на-Дону">
-      <meta name="twitter:image" content="${ORIGIN}/assets/og.webp">
+      <meta name="twitter:description" content="${description}">
+      ${omitSocialImages ? '' : `<meta name="twitter:image" content="${ORIGIN}/assets/og.webp">`}
       <script type="application/ld+json">${jsonLd}</script>
     </head>
     <body>${Array.from({ length: leadForms }, () => form).join('')}${extraBody}</body>
@@ -83,7 +86,7 @@ async function createValidDist({ inertForm = false, hiddenLeadLabels = false, sl
     hiddenLeadLabels,
     slashlessCanonical,
     canonicalPath: LEGACY_TARGETS.get(pathname) || pathname,
-    noindex: LEGACY_TARGETS.has(pathname),
+    noindex: LEGACY_TARGETS.has(pathname) || pathname === '/privacy',
     leadForms: pathname === '/' ? 1 : 0,
   }))));
   return distDir;
@@ -117,6 +120,23 @@ test('rejects a build that drops the primary lead forms', async () => {
   const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
 
   assert.ok(report.errors.some((error) => error.includes('expected a primary lead form')));
+});
+
+test('allows only the two exact source-verified blank live descriptions', async () => {
+  const distDir = await createValidDist();
+  await writePage(distDir, '/strashnye-kvesty', pageHtml('/strashnye-kvesty', { blankDescription: ' ' }));
+  await writePage(distDir, '/privacy', pageHtml('/privacy', { blankDescription: '', noindex: true, omitSocialImages: true }));
+  await writePage(distDir, '/new-year', pageHtml('/new-year', { blankDescription: '' }));
+
+  const report = await verifyProductionContract({
+    distDir,
+    origin: ORIGIN,
+    requiredPaths: [...REQUIRED_PATHS, '/strashnye-kvesty'],
+  });
+
+  assert.ok(!report.errors.some((error) => error.includes('/strashnye-kvesty') && error.includes('description')));
+  assert.ok(!report.errors.some((error) => error.includes('/privacy') && error.includes('description')));
+  assert.ok(report.errors.some((error) => error.includes('/new-year') && error.includes('description')));
 });
 
 test('rejects lead forms whose name or phone label is visually hidden', async () => {

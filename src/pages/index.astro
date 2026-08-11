@@ -12,6 +12,7 @@ import site from '../data/site.json';
 import venues from '../data/venues.json';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
+import '../styles/home.css';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '#');
@@ -31,17 +32,67 @@ const venuesBySlug = Object.fromEntries(pages
     slug: page.slug,
     address: (page.breadcrumbs || []).slice(-1)[0]?.t || page.hall?.address || page.seo?.h1 || '',
   }]));
+// Tilda gives every catalogue card its own text artboard.  These measured
+// widths deliberately belong to the homepage rather than to the reusable card:
+// the same quests have different crops/copy boxes on route pages.
+const homeCardTilda = {
+  '/kvest_v_realnosti_harry_potter_i_krestrazh':{titleWidth:166,titleWidthMobile:166,title:'Гарри Поттер И\u00a0последний крестраж'},
+  '/kvest_v_realnosti_noch_v_museum_ograblenie':{titleWidth:175,titleWidthMobile:175,title:'Ночь в\u00a0музее. Ограбление'},
+  '/kvest_v_realnosti_dom_prizrakov':{titleWidth:175,titleWidthMobile:175},
+  '/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom':{titleWidth:221,titleWidthMobile:202},
+  '/kvest_v_realnosti_wednesday':{titleWidth:175,titleWidthMobile:153},
+  '/kvest_v_realnosti_psihbolnitsa':{titleWidth:175,titleWidthMobile:175},
+  '/kvest_v_realnosti_sherlock_holms':{titleWidth:182,titleWidthMobile:202},
+  '/kvest_v_realnosti_koralina':{titleWidth:232,titleWidthMobile:203,titleLines:['Коралина','в стране кошмаров']},
+  '/kvest_v_realnosti_zamok_drakuly':{titleWidth:175,titleWidthMobile:152},
+  '/puteshestvie':{titleWidth:166,titleWidthMobile:166,title:'Путешествие во\u00a0времени'},
+  '/pirati':{titleWidth:175,titleWidthMobile:175},
+  '/pobeg':{titleWidth:217,titleWidthMobile:137,title:'Побег из\u00a0Шоушенка'},
+  '/mystery_shack':{titleWidth:182,titleWidthMobile:202},
+  '/indiana':{titleWidth:210,titleWidthMobile:153},
+  '/ugon':{titleWidth:191,titleWidthMobile:170},
+  '/shizofreniya':{titleWidth:182,titleWidthMobile:202,titleLines:['Шизофрения.','Тени правды']},
+  '/hostel-podval-pytok':{titleWidth:232,titleWidthMobile:203,titleLines:['Хостел.','Подвал пыток']},
+  '/patologiya':{titleWidth:175,titleWidthMobile:152},
+  '/pryatki_v_temnote':{titleWidth:166,titleWidthMobile:166,title:'Прятки в\u00a0темноте'},
+  '/pryatki_kids':{titleWidth:175,titleWidthMobile:175},
+  '/pryatki_portal':{titleWidth:217,titleWidthMobile:175,title:'Прятки. Портал в\u00a0другое измерение'},
+  '/ono':{titleWidth:182,titleWidthMobile:202},
+  '/tekhasskaya-reznya-benzopiloj':{titleWidth:210,titleWidthMobile:153},
+  '/zvonok':{titleWidth:175,titleWidthMobile:175},
+  '/minecraft':{titleWidth:166,titleWidthMobile:166},
+  '/wednesday-poteryannaya-dusha':{titleWidth:221,titleWidthMobile:183},
+  '/among_us':{titleWidth:175,titleWidthMobile:175},
+  '/garri-potter-i-kubok-ognya':{titleWidth:182,titleWidthMobile:202,titleLines:['Гарри Поттер','и Кубок Огня']},
+  '/igra_v_kalmara':{titleWidth:218,titleWidthMobile:153,title:'Игра в\u00a0Кальмара'},
+  '/beguschij_v_labirinte':{titleWidth:167,titleWidthMobile:175,title:'Бегущий в\u00a0лабиринте'},
+  '/roblox-dors':{titleWidth:182,titleWidthMobile:202},
+  '/roblox':{titleWidth:232,titleWidthMobile:203,titleLines:['Роблокс.','Радужные друзья']},
+  '/portal-strike':{titleWidth:166,titleWidthMobile:166},
+  '/party-games':{titleWidth:221,titleWidthMobile:183},
+  '/portal-strike-kids':{titleWidth:175,titleWidthMobile:175},
+};
 const homeCards = site.cards.map((card) => {
   const canonicalHref = link(card.href);
   const quest = questsBySlug[canonicalHref.replace(/^\/+|\/+$/g, '')];
-  // Tilda catalog thumbnails were often 359px delivery derivatives. Reuse the
-  // linked quest's local hero, which is the canonical first-party image and is
-  // already available at the responsive source size.
+  const venue = venuesBySlug[quest?.venueSlug];
+  const tilda = homeCardTilda[card.href] || {};
+  // The homepage record uses its own Tilda card crop.  It is already mirrored
+  // locally in `site.cards`, and differs from a quest's hero artwork; using the
+  // latter broke the source card sequence visually even when the route data
+  // itself was correct.
   return {
     ...card,
-    photo: quest?.hero?.bg || card.photo,
-    photoSet: quest?.hero?.bgset || null,
-    venue: venuesBySlug[quest?.venueSlug],
+    ...tilda,
+    photo: card.photo,
+    photoSet: null,
+    venue: venue ? {
+      ...venue,
+      // The catalogue carries the live card's abbreviated address and its
+      // intentional line breaks; venue pages use a separate, fuller label.
+      address: card.addr || venue.address,
+      addressLines: card.addrLines || [],
+    } : null,
   };
 });
 
@@ -64,11 +115,8 @@ const tabs = s.tabs.map((tab, index) => ({
 }));
 const panelIdByCategory = new Map(tabs.map((tab) => [tab.cat, tab.panelId]));
 const origin = 'https://xn--80aehcht5ci1b.xn--p1ai';
-const homeHeroSrcset = `${asset('/assets/_static/hero_dungeon_760.webp')} 760w, ${asset('/assets/_static/hero_dungeon_900.webp')} 900w, ${asset('/assets/_static/hero_dungeon_1200.webp')} 1479w`;
 const homeHeroPreload = {
-  href: asset('/assets/_static/hero_dungeon_760.webp'),
-  srcset: homeHeroSrcset,
-  sizes: '(max-width:700px) 100vw, 1200px',
+  href: asset(s.hero.bg),
 };
 const jsonld = [{
   '@context': 'https://schema.org',
@@ -94,7 +142,7 @@ const jsonld = [{
 }];
 ---
 
-<Layout jsonld={jsonld} preloadImage={homeHeroPreload}>
+<Layout bodyClass="home-page" jsonld={jsonld} preloadImage={homeHeroPreload}>
   <Header />
 
   <main>
@@ -102,12 +150,10 @@ const jsonld = [{
     <section class="hero">
       <div class="container-wide">
       <div class="hero__panel">
-        <img class="hero__bg" src={asset('/assets/_static/hero_dungeon_1200.webp')}
-             srcset={homeHeroSrcset}
-             sizes="(max-width:700px) 100vw, 1200px"
+        <img class="hero__bg" src={asset(s.hero.bg)}
              alt="" fetchpriority="high" width="1479" height="891" />
         <div class="hero__content">
-          <h1 class="hero__title"><span>{s.hero.h1line1}</span><br />{s.hero.h1line2}</h1>
+          <h1 class="hero__title"><span>{s.hero.h1line1}</span><span class="hero__title-line">{s.hero.h1line2}</span></h1>
           <p class="hero__sub">{s.hero.subtitle}</p>
         </div>
         <img class="hero__ghost" src={asset(s.hero.ghost)} alt="Привидение — талисман «Чё за Квест»" width="665" height="773" fetchpriority="low" decoding="async" />
@@ -208,7 +254,11 @@ const jsonld = [{
               </div>
             ))}
           </div>
-          <div class="party__btnrow"><a class="btn-grad" href="#callback">{s.stats.btn}</a></div>
+          <div class="party__btnrow">
+            <a href={link(s.stats.buttonHref)} aria-label={s.stats.btn}>
+              <img class="party__btnimg" src={asset(s.stats.buttonImg)} alt="" width="240" height="73" loading="lazy" decoding="async" />
+            </a>
+          </div>
         </div>
       </div>
     </section>

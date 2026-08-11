@@ -1,12 +1,13 @@
 {
   "slug": "roblox-land",
   "type": "holiday",
+  "theme": "roblox",
   "serviceType": "Детский праздник в стиле Roblox",
   "seo": {
-    "title": "Роблокс: день рождения в Ростове | Чё за Квест",
-    "description": "Детский день рождения в стиле Roblox в Ростове-на-Дону: квест-шоу, программа Макси, тематические шоу, банкетная комната и подарки гостям.",
+    "title": "Детский день рождения в стиле игры ROBLOX в Ростове-на-Дону | Скидки и Акции",
+    "description": "День рождения под ключ в Ростове-на-Дону. Квест-шоу РОБЛОКС на детский праздник.",
     "keywords": "день рождения роблокс ростов-на-дону, праздник roblox ростов, квест роблокс день рождения, радужные друзья праздник",
-    "h1": "День рождения в стиле Роблокс в Ростове-на-Дону"
+    "h1": "КВЕСТ-ШОУ по мотивам популярной игры для вашего праздника"
   },
   "breadcrumbs": [
     { "t": "Главная", "href": "/" },
@@ -18,24 +19,72 @@
     {
       "kind": "hero",
       "variant": "dark",
+      "fullBleed": true,
+      "hideSharedHeader": true,
+      "copyPosition": "top",
+      "heightDesktop": 938,
+      "heightMobile": 918,
+      "composition": "tilda-artboard",
+      "hidePills": true,
+      "artboard": {
+        "desktop": { "width": 1200, "height": 938 },
+        "mobile": { "width": 320, "height": 918 },
+        "background": {
+          "intrinsic": { "width": 1680, "height": 1061 },
+          "desktop": { "top": 0, "left": "calc(50% - 600px + -343px)", "width": 1485, "height": 939 },
+          "mobile": { "top": 0, "left": "calc(50% - 160px + -351px)", "width": 1485, "height": 939 }
+        }
+      },
+      "layers": [
+        {
+          "src": "/assets/static.tildacdn.com/tild3166-6133-4265-b736-666331333162/caed1ab0-dd5c-4e39-a.png",
+          "fit": "cover",
+          "intrinsic": { "width": 1680, "height": 1680 },
+          "desktop": { "top": -260, "left": "calc(50% - 600px + 709px)", "width": 1277, "height": 1277 },
+          "mobile": { "top": 524, "left": "calc(50% - 160px + -478px)", "width": 1277, "height": 1277 }
+        },
+        {
+          "src": "/assets/static.tildacdn.com/tild3062-3833-4637-a365-653838626563/ROBLOX.svg",
+          "intrinsic": { "width": 124, "height": 711 },
+          "desktop": { "top": 165, "left": "calc(50% - 600px + 1173px)", "width": 128, "height": 734 },
+          "mobile": { "top": 486, "left": "calc(50% - 160px + 245px)", "width": 75, "height": 430 }
+        },
+        {
+          "src": "/assets/static.tildacdn.com/tild6633-3333-4139-a330-663635636135/1_.png",
+          "fit": "cover",
+          "intrinsic": { "width": 996, "height": 1492 },
+          "desktop": { "top": 192, "left": "calc(50% - 600px + 707px)", "width": 499, "height": 747 },
+          "mobile": { "top": 450, "left": "calc(50% - 160px + -16px)", "width": 499, "height": 747 }
+        },
+        {
+          "src": "/assets/static.tildacdn.com/tild6266-3432-4137-a538-646265633432/decor__.svg",
+          "intrinsic": { "width": 132, "height": 131 },
+          "desktop": { "top": 136, "left": "calc(50% - 600px + 647px)", "width": 117, "height": 116 },
+          "mobile": { "top": 520, "left": "calc(50% - 160px + -73px)", "width": 117, "height": 116 }
+        },
+        {
+          "src": "/assets/static.tildacdn.com/tild3561-6366-4337-a637-363764333531/decor___blur.svg",
+          "intrinsic": { "width": 201, "height": 201 },
+          "desktop": { "top": 740, "left": "calc(50% - 600px + 1353px)", "width": 199, "height": 199 },
+          "mobile": { "top": 779, "left": "calc(50% - 160px + 313px)", "width": 199, "height": 199 }
+        }
+      ],
       "up": "Квест-шоу по мотивам популярной игры",
-      "h1": "День рождения в стиле Роблокс",
+      "h1": "КВЕСТ-ШОУ по мотивам популярной игры для вашего праздника",
       "sub": "Идеальный подарок для всех фанатов серии видеоигр и кубической вселенной.",
       "pills": ["6+", "2–24 участника", "Праздник под ключ"],
       "buttons": [
         { "t": "Рассчитать стоимость", "href": "#prazdnik" },
         { "t": "Посмотреть программу", "href": "#program" }
       ],
-      "bg": "/assets/q/ccb3695169.webp",
+      "bg": "/assets/static.tildacdn.com/tild6366-3466-4664-a338-633938366530/7ad3c0ee-a35c-444c-9.png",
       "bgset": {
-        "760": "/assets/q/940557c291.webp",
-        "1200": "/assets/q/c3aa7b636e.webp",
-        "1600": "/assets/q/ccb3695169.webp"
+        "1600": "/assets/static.tildacdn.com/tild6366-3466-4664-a338-633938366530/7ad3c0ee-a35c-444c-9.png"
       }
     },
     {
       "kind": "text",
-      "title": "Чё за Квест — мир приключений и веселья",
+      "title": "Че за Квест — мир приключений и веселья",
       "lines": [
         "Место, где каждый сможет почувствовать себя главным героем игры, пройти испытания и получить яркие впечатления вместе с друзьями.",
         "Мы берём организацию на себя: помогаем выбрать сценарий, зал, шоу и время для праздничного стола."

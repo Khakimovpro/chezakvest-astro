@@ -8,7 +8,6 @@ import Footer from '../components/Footer.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
-import CallbackForm from '../components/CallbackForm.astro';
 import ZoomImg from '../components/ZoomImg.astro';
 import LazyMap from '../components/LazyMap.astro';
 import Reviews from '../components/Reviews.astro';
@@ -30,14 +29,29 @@ const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
 const mapsUrl = howto.routeUrl
   || `https://yandex.ru/maps/?text=${encodeURIComponent('Ростов-на-Дону, ' + address)}`;
 const pagesBySlug = new Map(index.map((item) => [item.slug, item]));
-const canonicalGameItems = (page.games?.items || []).map((item) => {
+const canonicalGameItems = (items = []) => items.map((item) => {
   const slug = String(item.href || '').split(/[?#]/, 1)[0].replace(/^\/+|\/+$/g, '');
   return {
     ...item,
-    img: pagesBySlug.get(slug)?.img || item.img,
+    // Venue grids in the source use bespoke square card art. Preserve an
+    // explicitly captured local thumbnail and use the page hero only as a
+    // fallback for older data records that do not have one.
+    img: item.img || pagesBySlug.get(slug)?.img,
     imgSet: pagesBySlug.get(slug)?.imgSet || null,
   };
 });
+const gameItems = page.games?.items || [];
+const gameGroups = [];
+let gameOffset = 0;
+for (const group of page.games?.groups || []) {
+  const size = Number(group.size);
+  if (!Number.isInteger(size) || size < 1) continue;
+  const items = gameItems.slice(gameOffset, gameOffset + size);
+  gameOffset += size;
+  if (items.length > 0) gameGroups.push({ ...group, items });
+}
+if (gameGroups.length === 0 && gameItems.length > 0) gameGroups.push({ items: gameItems });
+if (gameOffset < gameItems.length) gameGroups.push({ items: gameItems.slice(gameOffset) });
 
 // ---- Schema.org: площадка как заведение + хлебные крошки ----
 const jsonld = [
@@ -77,21 +91,23 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
 >
   <Header />
 
-  <main>
+  <main class="venue-page">
     <Breadcrumbs items={breadcrumbs} />
 
     <!-- ============ КАК НАС НАЙТИ ============ -->
     <section class="vhow">
       <div class="container">
+        <div class="vhow__heading">
+          <p class="vhow__up">{howto.uptitle}</p>
+          <h1 class="vhow__title">{howto.title || seo.h1}</h1>
+        </div>
         <div class="vhow__card">
           <div class="vhow__text">
-            <p class="vhow__up">{howto.uptitle}</p>
-            <h1 class="vhow__title">{howto.title || seo.h1}</h1>
             {(howto.variants || []).map((v) => (<p class="vhow__var">{v}</p>))}
             <a class="vhow__cta" href={mapsUrl} target="_blank" rel="noopener">{howto.cta || 'Построить маршрут'}</a>
           </div>
           {howto.photos?.length > 0 && (
-            <div class="vhow__photos">
+            <div class="vhow__photos vhow__photos--rail" aria-label={`Фотографии маршрута: ${address}`}>
               {howto.photos.map((p, i) => (
                 <ZoomImg src={asset(p)} group={`venue-how-${page.slug}`} buttonClass="zoomable--vhow"
                          alt={`Как найти «Чё за Квест» — ${address}`}
@@ -115,12 +131,14 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
       </section>
     )}
 
-    {page.games?.items?.length > 0 && (
-      <CardsRow title={page.games.title} subtitle={`Адрес: ${address}`}
-                items={canonicalGameItems} variant="poster" id="kvesty" />
-    )}
+    {gameGroups.map((group, groupIndex) => (
+      <CardsRow title={groupIndex === 0 ? page.games.title : ''}
+                uptitle={group.uptitle || ''}
+                items={canonicalGameItems(group.items)} variant="poster"
+                id={groupIndex === 0 ? 'kvesty' : ''} />
+    ))}
 
-    <PartyForm />
+    {page.showPartyForm !== false && <PartyForm />}
 
     <!-- ============ ЗАЛ ДЛЯ ПРАЗДНИКА ============ -->
     {page.hall && (
@@ -129,7 +147,7 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
           {page.hall.title && <h2 class="section-title">{page.hall.title}</h2>}
           {page.hall.subtitle && <p class="section-sub">{page.hall.subtitle}</p>}
           <div class="qvenue__card">
-            <div class="qvenue__photos">
+            <div class="qvenue__photos qvenue__photos--rail" aria-label={`Фотографии зала: ${address}`}>
               {(page.hall.photos || []).map((ph) => (
                 <ZoomImg src={asset(ph)} group={`venue-hall-${page.slug}`} imageClass="qvenue__photo"
                          alt={`Зал для праздника — ${address}`}
@@ -152,7 +170,6 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
 
     <VenuesSection id={`venues-${page.slug}`} base={base} />
 
-    <CallbackForm id="v" />
   </main>
 
   <Footer />

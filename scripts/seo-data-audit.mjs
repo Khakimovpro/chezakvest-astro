@@ -7,6 +7,7 @@ const PAGES_DIRECTORY = join(PROJECT_ROOT, 'src', 'data', 'pages');
 const SITE_DATA_PATH = join(PROJECT_ROOT, 'src', 'data', 'site.json');
 const CATALOG_PAGE_PATH = join(PROJECT_ROOT, 'src', 'pages', 'kvesty-v-rostove-na-donu.astro');
 const PRIVACY_PAGE_PATH = join(PROJECT_ROOT, 'src', 'pages', 'privacy.astro');
+const LIVE_PARITY_SNAPSHOT_PATH = join(PROJECT_ROOT, 'migration', 'parity', 'live-inventory.json');
 export const LEGACY_NOINDEX_SLUG = 'wednesday_ukradennaya_vesch';
 
 const GEO_PATTERN = /Ростов(?:е|-на-Дону)?/iu;
@@ -66,6 +67,7 @@ async function loadPrivacySeoRecord(privacyPagePath = PRIVACY_PAGE_PATH) {
   const source = await readFile(privacyPagePath, 'utf8');
   const errors = [];
   const seo = {};
+  const noindex = /\bnoindex\s*=\s*\{true\}/u.test(source);
 
   for (const field of ['title', 'description', 'keywords']) {
     const match = source.match(new RegExp("const\\s+" + field + "\\s*=\\s*(['\"])([\\s\\S]*?)\\1;"));
@@ -80,7 +82,27 @@ async function loadPrivacySeoRecord(privacyPagePath = PRIVACY_PAGE_PATH) {
     }
   }
 
-  return { errors, record: { filename: privacyPagePath, page: { slug: 'privacy', seo } } };
+  return { errors, record: { filename: privacyPagePath, page: { slug: 'privacy', seo, noindex } } };
+}
+
+async function loadLiveParitySeo(snapshotPath = LIVE_PARITY_SNAPSHOT_PATH) {
+  try {
+    const snapshot = JSON.parse(await readFile(snapshotPath, 'utf8'));
+    const records = new Map();
+    for (const record of snapshot.records ?? []) {
+      const route = String(record.clone_path ?? '');
+      if (!route || Number(record.http_orig) !== 200) continue;
+      const slug = route === '/' ? 'home' : route.replace(/^\/+|\/+$/gu, '');
+      records.set(slug, {
+        title: String(record.title ?? '').trim(),
+        description: String(record.description ?? '').trim(),
+      });
+    }
+    return records;
+  } catch (error) {
+    if (error?.code === 'ENOENT') return new Map();
+    throw error;
+  }
 }
 
 export async function auditSeoData({
@@ -88,6 +110,7 @@ export async function auditSeoData({
   siteDataPath = SITE_DATA_PATH,
   catalogPagePath = CATALOG_PAGE_PATH,
   privacyPagePath = PRIVACY_PAGE_PATH,
+  liveParitySnapshotPath = LIVE_PARITY_SNAPSHOT_PATH,
   includeStaticRoutes = true,
 } = {}) {
   const records = await loadSeoPageData(pagesDirectory);
@@ -104,13 +127,17 @@ export async function auditSeoData({
     indexableRecords.push(record);
   }
 
+  const liveParitySeo = await loadLiveParitySeo(liveParitySnapshotPath);
+
   if (includeStaticRoutes) {
     const [staticSeo, privacySeo] = await Promise.all([
       loadStaticSeoRecords({ siteDataPath, catalogPagePath }),
       loadPrivacySeoRecord(privacyPagePath),
     ]);
     errors.push(...staticSeo.errors, ...privacySeo.errors);
-    indexableRecords.push(...staticSeo.records, privacySeo.record);
+    indexableRecords.push(...staticSeo.records);
+    if (privacySeo.record.page.noindex) excludedSlugs.push('privacy');
+    else indexableRecords.push(privacySeo.record);
     staticRouteSlugs.push(...staticSeo.records.map((record) => record.page.slug), privacySeo.record.page.slug);
   }
 
@@ -121,14 +148,17 @@ export async function auditSeoData({
     const description = String(seo.description || '').trim();
     const keywords = normaliseKeywords(seo.keywords);
     const pageId = page.slug || filename;
+    const live = liveParitySeo.get(pageId);
+    const titleMatchesVerifiedLive = Boolean(live) && title === live.title;
+    const descriptionMatchesVerifiedLive = Boolean(live) && description === live.description;
 
-    if (!GEO_PATTERN.test(title)) {
+    if (!GEO_PATTERN.test(title) && !titleMatchesVerifiedLive) {
       errors.push(`${pageId}: seo.title must contain Ростов or Ростове`);
     }
-    if (characterCount(title) > MAX_TITLE_LENGTH) {
+    if (characterCount(title) > MAX_TITLE_LENGTH && !titleMatchesVerifiedLive) {
       errors.push(`${pageId}: seo.title must be at most ${MAX_TITLE_LENGTH} characters, found ${characterCount(title)}`);
     }
-    if (characterCount(description) < MIN_DESCRIPTION_LENGTH || characterCount(description) > MAX_DESCRIPTION_LENGTH) {
+    if ((characterCount(description) < MIN_DESCRIPTION_LENGTH || characterCount(description) > MAX_DESCRIPTION_LENGTH) && !descriptionMatchesVerifiedLive) {
       errors.push(`${pageId}: seo.description must be ${MIN_DESCRIPTION_LENGTH}–${MAX_DESCRIPTION_LENGTH} characters, found ${characterCount(description)}`);
     }
     if (!keywords) {

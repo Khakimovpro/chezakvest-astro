@@ -58,19 +58,22 @@ body.menu-open{overflow:hidden}
 @keyframes mmenu-in{from{transform:translateX(-320px)}to{transform:translateX(0)}}
 
 /* ===================== ГЕРОЙ ===================== */
-.hero{padding-top:20px}
-.hero__panel{position:relative;width:100%;border-radius:20px;overflow:hidden;background:#2b2b2b;
+.hero{padding-top:20px;overflow-x:clip}
+.hero__panel{position:relative;width:100%;border-radius:20px;overflow:visible;background:#2b2b2b;
   aspect-ratio:1200/550}
-.hero__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
-.hero__ghost{position:absolute;right:8%;bottom:-40px;width:36%;height:auto;max-height:90%;object-fit:contain;z-index:2}
-.hero__content{position:relative;z-index:3;padding:58px 60px 0;max-width:none}
+.hero__bg{position:absolute;inset:0;width:100%;height:100%;border-radius:20px;object-fit:cover;object-position:center}
+/* The live Tilda animation keeps the mascot hidden at the settled desktop
+   state, while its compact mobile composition shows it. */
+.hero__ghost{display:none;position:absolute;top:103px;left:670px;width:432px;height:493px;object-fit:contain;z-index:2}
+.hero__content{position:absolute;z-index:3;top:58px;left:60px;max-width:none}
 .hero__title{font-size:50px;font-weight:700;line-height:1.2;color:#fff;max-width:650px}
+.hero__title-line{display:block}
 .hero__sub{margin-top:16px;font-size:30px;font-weight:400;color:#fff}
-.hero__cta{position:relative;z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-top:36px;padding:0 60px}
-.hero__btn-calc{display:inline-flex;align-items:center;justify-content:center;height:72px;padding:0 40px;
-  border-radius:60px;border:2px solid var(--cta-ink);color:var(--cta-ink);font-weight:700;font-size:19px;background:rgba(255,255,255,.96);transition:.2s}
-.hero__btn-calc:hover{background:#fff}
-.hero__btn-pick{height:72px;font-size:19px;padding:0 40px}
+.hero__cta{position:absolute;z-index:3;top:355px;left:61px;display:flex;flex-direction:column;align-items:flex-start;gap:18px}
+.hero__btn-calc{display:inline-flex;align-items:center;justify-content:center;width:416px;height:62px;padding:0;
+  border-radius:60px;border:2px dotted #fff;color:#fff;font-weight:400;font-size:22px;background:transparent;transition:transform .2s ease}
+.hero__btn-calc:hover{background:transparent}
+.hero__btn-pick{width:320px;height:60px;padding:0;color:#fff;font-size:22px;font-weight:400}
 
 /* ===================== СЛАЙДЕР ===================== */
 .promo{margin-top:24px}
@@ -310,14 +313,15 @@ body.menu-open{overflow:hidden}
 }
 @media (max-width:640px){
   .hdr__inner{height:70px;max-width:360px;margin-inline:auto;padding-inline:20px}
-  .hero__panel{aspect-ratio:auto;display:flex;flex-direction:column}
-  .hero__content{padding:26px 22px 0;max-width:none}
-  .hero__title{font-size:26px;max-width:none}
-  .hero__cta{margin-top:18px;padding:0 22px 26px}
-  .hero__ghost{position:relative;right:auto;width:54%;margin:14px auto 2px;display:block;max-height:none}
-  .hero__cta{flex-direction:column-reverse;width:100%}
-  .hero__btn-calc,.hero__btn-pick{width:100%}
-  .hero__btn-calc{height:auto;min-height:72px;padding-inline:20px;font-size:17px;line-height:1.2}
+  .hero .container-wide{padding-inline:15px}
+  .hero__panel{height:470px;aspect-ratio:auto}
+  .hero__content{top:60px;left:20px;width:320px}
+  .hero__title{font-size:25px;max-width:320px}
+  .hero__sub{margin-top:0;font-size:14px}
+  .hero__ghost{display:block;top:152px;left:149px;width:239px;height:278px;max-height:none}
+  .hero__cta{top:399px;left:20px;gap:0}
+  .hero__btn-calc{width:270px;height:51px;font-size:14px}
+  .hero__btn-pick{position:absolute;top:-72px;left:0;width:182px;height:51px;font-size:14px}
   .slider__arrow{width:44px;height:44px}
   .slider__arrow--prev{left:12px}
   .slider__arrow--next{right:12px}
