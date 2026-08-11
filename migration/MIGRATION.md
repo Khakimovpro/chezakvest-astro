@@ -1,6 +1,6 @@
 # Перенос чезаквест.рф с Tilda на Astro — журнал и правила
 
-Обновлено: **10.08.2026**. Машиночитаемый реестр страниц — `migration/pages.csv`
+Обновлено: **11.08.2026**. Машиночитаемый реестр страниц — `migration/pages.csv`
 (пересобирается `python3 migration/build_registry.py`).
 
 ## Статус одной строкой
@@ -9,6 +9,22 @@
 4 VR-игры, 9 площадок, категория «Страшные квесты», «Контакты» и 5 праздничных страниц.
 Добавлены две снятые с живого Tilda коммерческие страницы вне sitemap, настоящий каталог
 и карта legacy-редиректов. Дубль Уэнсдей остаётся только noindex-фолбэком до 301 на хосте.
+
+## Аудит parity — 11.08.2026 (финальный измеренный статус R15)
+
+Полный R15 охватил все 67 Astro-маршрутов на 1440×900 и 390×844, DPR 2
+(268 пар оригинал/клон). Runtime clone чистый: нулевые overflow, console errors,
+failed/external requests, битые ссылки, нарушения размеров изображений и lazy
+первого экрана. Полнота URL также подтверждена: в `pages-matrix.csv` 181 строка и
+`missing=0`.
+
+Однако это **не приёмка parity**. R15 дал медианы pixel similarity 64,07 % на
+desktop и 62,98 % на mobile при требованиях 90 % и 88 %; 64 обычные страницы
+остались `needs_fix`. Lighthouse mobile также не прошёл на всех обязательных URL:
+Performance равен 73 на `/`, 81 на `/40letpobedy216/`, 77 на `/new-year-2025/`
+и 92 на `/strashnye-kvesty/`; у последнего SEO 92. Детальный и честный журнал,
+включая исторический R8, — [`PARITY_AUDIT_2026-08-11.md`](PARITY_AUDIT_2026-08-11.md).
+Он фиксирует незакрытые пороги и не является сертификатом готовности.
 
 ## Цели переноса (в порядке важности)
 
@@ -220,6 +236,18 @@
   differ materially, so their 20.65%/11.46% catalogue and 36.57%/23.02% quest pixel scores are
   diagnostic only. Fresh mobile Lighthouse: home **100/97/100/100**, catalogue **100/100/100/100**,
   `among_us` **100/100/100/100** (Performance/Accessibility/Best Practices/SEO), all with CLS 0.
+- **11.08.2026 — Full parity audit R8–R15.** Every round captured the complete 67-route
+  set at 1440×900 and 390×844 rather than a sample. The final R15 source includes
+  source-faithful home/party composition, local privacy assets aware of `SITE_BASE`,
+  holiday content and anchors, campaign hero layers, quest cadence, category treatment
+  and visible form labels. A WebP hero experiment in R14 was rejected because it did
+  not preserve the required source-faithful result; its source change was reverted
+  before the final R15 capture. The R15 inventory has no missing routes and no runtime
+  findings, but visual and performance gates remain open: pixel medians are 64.07% /
+  62.98% and only `/ono/` reaches the required mobile Performance 95. See
+  `migration/PARITY_AUDIT_2026-08-11.md`, `migration/parity/visual-matrix.csv` and
+  `migration/parity/known-gaps.csv`; R15 is documented as a measured non-certificate,
+  not as a successful parity acceptance.
 
 ## Шаблоны: 57 страниц сводятся к 6 макетам
 
