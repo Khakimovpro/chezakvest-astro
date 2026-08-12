@@ -13,7 +13,13 @@
 .nav__item{position:static}
 .nav__item>a{display:inline-flex;align-items:center;justify-content:center;height:33px;padding:0 10px;border-radius:5px;
   color:#fff;font-size:14px;font-weight:400;white-space:nowrap;transition:background-color .2s,color .2s}
+.nav__trigger{position:relative;display:inline-flex}
+.nav__trigger>a{display:inline-flex;align-items:center;justify-content:center;height:33px;padding:0 10px;border-radius:5px;
+  color:#fff;font-size:14px;font-weight:400;white-space:nowrap;transition:background-color .2s,color .2s}
+/* Keeps the trigger and the absolutely-positioned panel in one hover path. */
+.nav__trigger::after{position:absolute;top:100%;left:0;width:100%;height:22px;content:""}
 .nav__item>a:hover,.nav__item:focus-within>a{background:#fff;color:var(--dark);text-decoration:none}
+.nav__trigger>a:hover,.nav__item:focus-within .nav__trigger>a{background:#fff;color:var(--dark);text-decoration:none}
 .nav__prefix{width:14px;height:14px;margin-right:0;flex:0 0 auto}
 .mega{position:absolute;top:70px;left:50%;width:100vw;margin-left:-50vw;padding:15px 0 30px;border-radius:0 0 30px 30px;background:#fff;
   opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);transition:opacity .2s ease,transform .2s ease;z-index:890}

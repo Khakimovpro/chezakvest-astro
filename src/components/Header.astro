@@ -22,10 +22,14 @@ const hrefFor = (item) => item.external ? item.href : link(item.href);
       <ul class="nav">
         {s.header.nav.map((item) => (
           <li class:list={['nav__item', { 'has-mega': item.mega }]}>
-            <a href={link(item.href)}>
-              {item.mega && <img class="nav__prefix" src={prefixIcon} width="14" height="14" alt="" aria-hidden="true" />}
-              {item.t}
-            </a>
+            {item.mega ? (
+              <span class="nav__trigger">
+                <a href={link(item.href)}>
+                  <img class="nav__prefix" src={prefixIcon} width="14" height="14" alt="" aria-hidden="true" />
+                  {item.t}
+                </a>
+              </span>
+            ) : <a href={link(item.href)}>{item.t}</a>}
             {item.mega && (
               <div class:list={['mega', `mega--${item.mega}`]}>
                 <div class="mega__inner container">
