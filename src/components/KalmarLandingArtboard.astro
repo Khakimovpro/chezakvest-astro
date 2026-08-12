@@ -14,9 +14,9 @@ const recordStyle = (record = {}) => [
 ].filter(Boolean).join(';');
 const backgroundStyle = (image) => image ? 'background-image:url(' + asset(image) + ')' : '';
 const footerGroups = [
-  ['Детские праздники', 'Выпускные', 'Корпоративы'],
-  ['Квесты', 'VR-арена', 'Шоу-программы'],
-  ['Площадки', 'Подарочные сертификаты', 'Контакты'],
+  ['Детский день рождения', 'Взрослый день рождения', 'День рождения в VR'],
+  ['Активные игры', 'Прятки в темноте', 'Страшные квесты'],
+  ['Наши площадки', 'Подарочные сертификаты', 'Контакты'],
 ];
 ---
 
@@ -144,7 +144,7 @@ const footerGroups = [
   <footer class="kalmar-landing-artboard__footer kalmar-landing-artboard__record" style={recordStyle(records.footer)}>
     <div class="kalmar-landing-artboard__rail"><div class="kalmar-landing-artboard__footer-brand"><img src={asset(source.footerLogo)} alt="Чё за Квест" width="180" height="80" loading="lazy" decoding="async" /><a href={phoneHref}>{phone}</a></div>{footerGroups.map((group) => <ul>{group.map((item) => <li><a href={bookingHref}>{item}</a></li>)}</ul>)}</div>
   </footer>
-  <div class="kalmar-landing-artboard__footer-bottom kalmar-landing-artboard__record" style={recordStyle(records.footerBottom)}><div class="kalmar-landing-artboard__rail"><p>© Чё за Квест, Ростов-на-Дону</p><a href={href('/privacy/')}>Политика конфиденциальности</a><a href={bookingHref}>Оставить заявку</a></div></div>
+  <div class="kalmar-landing-artboard__footer-bottom kalmar-landing-artboard__record" style={recordStyle(records.footerBottom)}><div class="kalmar-landing-artboard__rail"><p>© Чё за Квест, Ростов-на-Дону</p><a href={href('/privacy/')}>Политика обработки персональных данных</a><a href={bookingHref}>Оставить заявку</a></div></div>
 </div>
 
 <style is:global>
