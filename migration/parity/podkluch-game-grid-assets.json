@@ -1,0 +1,63 @@
+{
+  "route": "/prazdniki-pod-kluch/",
+  "source_snapshot": "work/raw/pages/prazdniki-pod-kluch--b12ed32a0d.html",
+  "mirrored_at_utc": "2026-08-11T19:04:25Z",
+  "local_root": "/assets/static.tildacdn.com",
+  "source_root": "https://static.tildacdn.com",
+  "records": {
+    "rec707324259": {
+      "label": "Квест-шоу",
+      "cards": [
+        { "label": "Майнкрафт", "href": "/minecraft", "asset": "tild3132-6661-4631-a163-663638303761/photo.jpg", "cta": "tild6534-3633-4261-b836-653764666561/8.png" },
+        { "label": "Уэнздей. Украденная вещь", "href": "/wednesday_ukradennaya_vesch", "asset": "tild6639-3432-4030-b534-653564653565/photo.png", "cta": "tild6262-3336-4030-b234-633730306564/8.png" },
+        { "label": "Амонг Ас", "href": "/among_us", "asset": "tild3461-3638-4839-b762-326438376439/photo.png", "cta": "tild3836-3363-4263-b364-663639633436/8.png" },
+        { "label": "Гарри Поттер и Кубок огня", "href": "/garri-potter-i-kubok-ognya", "asset": "tild3332-3938-4331-a335-616663393862/_____.jpg", "cta": "tild3435-3464-4339-b730-363863653365/8.png" },
+        { "label": "Бегущий в лабиринте", "href": "/beguschij_v_labirinte", "asset": "tild3537-3932-4835-a238-393030646235/3.png", "cta": "tild3638-6264-4237-b062-646161343632/8.png" },
+        { "label": "Игра в Кальмара", "href": "/igra_v_kalmara", "asset": "tild3739-3861-4237-b434-333732383561/photo.png", "cta": "tild3631-3836-4531-b039-303431663735/8.png" }
+      ]
+    },
+    "rec707324258": {
+      "label": "Прятки",
+      "cards": [
+        { "label": "Прятки KIDS", "href": "/pryatki_kids", "asset": "tild3462-3335-4439-a234-316530653936/photo.png", "cta": "tild6632-3261-4832-a634-613166356430/8.png" },
+        { "label": "Прятки. Портал в другое измерение", "href": "/pryatki_portal", "asset": "tild3536-6331-4565-b461-316465303434/2.png", "cta": "tild3434-3737-4263-a364-616564326139/8.png" },
+        { "label": "Прятки в темноте", "href": "/pryatki_v_temnote", "asset": "tild3631-3837-4233-b766-626566656633/_.jpg", "cta": "tild3837-6538-4232-a237-386166376139/8.png" }
+      ]
+    },
+    "rec677181803": {
+      "label": "Квесты",
+      "cards": [
+        { "label": "Гарри и последний крестраж", "href": "/kvest_v_realnosti_harry_potter_i_krestrazh", "asset": "tild3436-6536-4239-b265-303332356330/image_4.png", "cta": "tild6534-3633-4261-b836-653764666561/8.png" },
+        { "label": "Ночь в музее. Ограбление", "href": "/kvest_v_realnosti_noch_v_museum_ograblenie", "asset": "tild6263-3432-4761-b965-303430336262/_.png", "cta": "tild6262-3336-4030-b234-633730306564/8.png" },
+        { "label": "Дом призраков", "href": "/kvest_v_realnosti_dom_prizrakov", "asset": "tild6664-3836-4961-a538-636136363339/_.jpg", "cta": "tild3836-3363-4263-b364-663639633436/8.png" },
+        { "label": "Ограбление банка. Бумажный дом", "href": "/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom", "asset": "tild6239-6538-4831-b438-393632346634/image_8.png", "cta": "tild6534-3633-4261-b836-653764666561/8.png" },
+        { "label": "Уэнздей. Новая битва", "href": "/kvest_v_realnosti_wednesday", "asset": "tild3863-3062-4336-b566-333335396135/Desktop_-_11.png", "cta": "tild6262-3336-4030-b234-633730306564/8.png" },
+        { "label": "Психбольница", "href": "/kvest_v_realnosti_psihbolnitsa", "asset": "tild3030-6535-4132-b031-643164646536/photo.jpg", "cta": "tild3836-3363-4263-b364-663639633436/8.png" },
+        { "label": "Шерлок Холмс", "href": "/kvest_v_realnosti_sherlock_holms", "asset": "tild3736-3836-4132-b430-653734356133/image_7.png", "cta": "tild3431-3038-4362-b232-386265383466/8.png" },
+        { "label": "Коралина в Стране Кошмаров", "href": "/kvest_v_realnosti_koralina", "asset": "tild3966-6335-4263-b336-613765626566/noroot.jpg", "cta": "tild3631-3836-4531-b039-303431663735/8.png" },
+        { "label": "Замок Графа Дракулы", "href": "/kvest_v_realnosti_zamok_drakuly", "asset": "tild3139-6237-4963-b065-393234363734/photo.png", "cta": "tild6262-3336-4030-b234-633730306564/8.png" },
+        { "label": "Дикий Запад. Ролевой квест.", "href": "/kvest_v_realnosti_zapad", "asset": "tild3164-6665-4035-b662-353137663663/__.png", "cta": "tild3837-6538-4232-a237-386166376139/8.png" },
+        { "label": "Фантом. Квест во сне.", "href": "/kvest_v_realnosti_fantom", "asset": "tild3464-3761-4133-b563-306136346438/__copia2x.png", "cta": "tild6632-3261-4832-a634-613166356430/8.png" },
+        { "label": "Гарри Поттер и чулан для мётел. Квест для двоих.", "href": "/kvest_v_realnosti_garri_potter_", "asset": "tild6538-6534-4665-b733-633935383663/_2x.png", "cta": "tild3434-3737-4263-a364-616564326139/8.png" }
+      ]
+    },
+    "rec748971024": {
+      "label": "Хоррор-прятки",
+      "cards": [
+        { "label": "Оно", "href": "/ono", "asset": "tild6233-3935-4664-a266-306466333135/2.png", "cta": "tild3435-3464-4339-b730-363863653365/8.png" },
+        { "label": "Техасская резня бензопилой", "href": "/tekhasskaya-reznya-benzopiloj", "asset": "tild3131-3839-4239-b362-666536373135/photo.png", "cta": "tild3435-3464-4339-b730-363863653365/8.png" },
+        { "label": "Звонок", "href": "/zvonok", "asset": "tild3563-3231-4235-a638-323266316466/photo.png", "cta": "tild3435-3464-4339-b730-363863653365/8.png" }
+      ]
+    }
+  },
+  "validation": {
+    "primary_assets": 24,
+    "cta_mirror_paths": 10,
+    "checked_local_paths": 34,
+    "unique_sha256": 25,
+    "primary_dimensions": ["390x285", "389x284", "730x535", "777x568", "899x660", "901x660", "1137x853", "1680x1227"],
+    "cta_dimensions": "1047x267 PNG",
+    "cta_sha256": "6f201ad3dc61442b03f7b0820d830cf83d394f52b0abe40a6777cc5386c24726",
+    "local_resolver": "All manifest paths resolve below public/ and are safe for HolidayPage's BASE_URL + asset-path contract."
+  }
+}

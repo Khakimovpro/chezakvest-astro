@@ -4,10 +4,10 @@ import site from '../data/site.json';
 import { siteHref } from '../lib/urls.js';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const link = (h) => siteHref(base, h);
-const { id = 'cb', sectionId = 'callback' } = Astro.props;
+const { id = 'cb', sectionId = 'callback', recordId = undefined } = Astro.props;
 const s = site;
 ---
-<section class="callback" id={sectionId}>
+<section class="callback" id={sectionId} data-parity-record={recordId}>
   <div class="container">
     <form class="cbform" data-lead-form data-lead-kind="callback" data-lead-target={s.header.wa} data-lead-recipient={s.leads?.recipient || ''} aria-describedby={`${id}-status`}>
       <h2 class="cbform__title">{s.callback.title}</h2>

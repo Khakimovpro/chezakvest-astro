@@ -1,0 +1,232 @@
+---
+// T396 records rec866472834, rec866472835 and rec866472838 from the
+// Igra v Kalmara landing.  The package artwork already contains the complete
+// source copy; this renderer keeps its measured artboard out of shared hpack.
+const { programs = {}, asset = (value) => value, href = (value) => value } = Astro.props;
+const heading = programs.heading || {};
+const titleId = `${programs.id || 'kalmar-program'}-title`;
+---
+
+{programs?.items?.length > 0 && (
+  <section class="kalmar-programs" id={programs.id || undefined} aria-labelledby={titleId}>
+    <header class="kalmar-programs__heading">
+      <h2 id={titleId}>
+        <span class="kalmar-programs__heading-prefix">{heading.prefix}</span>{' '}{heading.accent}
+      </h2>
+    </header>
+
+    <div class="kalmar-programs__artboard">
+      {programs.background?.src && (
+        <div class="kalmar-programs__backdrop" aria-hidden="true" style={`background-image:url(${asset(programs.background.src)})`}></div>
+      )}
+      <div class="kalmar-programs__filter" aria-hidden="true"></div>
+      <ul class="kalmar-programs__cards">
+        {programs.items.map((item) => (
+          <li class="kalmar-programs__card">
+            <a href={href(programs.href)} aria-label={`${item.name}: ${programs.cta}`}>
+              <img
+                src={asset(item.src)}
+                alt=""
+                width={item.frame?.width || item.intrinsic?.width || 1}
+                height={item.frame?.height || item.intrinsic?.height || 1}
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a class="kalmar-programs__button" href={href(programs.href)}>{programs.cta}</a>
+    </div>
+
+    {programs.decoration?.src && (
+      <div class="kalmar-programs__separator" aria-hidden="true">
+        <img
+          src={asset(programs.decoration.src)}
+          alt=""
+          width={programs.decoration.intrinsic?.width || 1}
+          height={programs.decoration.intrinsic?.height || 1}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+    )}
+  </section>
+)}
+
+<style>
+  .kalmar-programs{
+    position:relative;
+    z-index:0;
+    overflow:visible;
+    color:#fff;
+    background:#031818;
+  }
+  .kalmar-programs__heading{
+    position:relative;
+    box-sizing:border-box;
+    height:140px;
+    overflow:hidden;
+    background:#031818;
+  }
+  .kalmar-programs__heading h2{
+    position:absolute;
+    top:47px;
+    left:50%;
+    box-sizing:border-box;
+    width:960px;
+    margin:0;
+    transform:translateX(-50%);
+    color:#ec406b;
+    font:700 45px/54px Montserrat,Arial,sans-serif;
+    text-align:center;
+    text-transform:uppercase;
+  }
+  .kalmar-programs__heading-prefix{color:#fff}
+
+  .kalmar-programs__artboard{
+    position:relative;
+    isolation:isolate;
+    height:638px;
+    overflow:visible;
+    background:#031818;
+  }
+  .kalmar-programs__backdrop,
+  .kalmar-programs__filter{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+  }
+  .kalmar-programs__backdrop{
+    z-index:-2;
+    background-position:center top;
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+  }
+  .kalmar-programs__filter{
+    z-index:-1;
+    background:linear-gradient(to bottom,rgba(3,24,24,1),rgba(51,51,51,.4));
+  }
+  .kalmar-programs__cards{
+    position:absolute;
+    top:48px;
+    left:50%;
+    display:grid;
+    grid-template-columns:repeat(3,360px);
+    gap:30px;
+    width:1140px;
+    margin:0;
+    padding:0;
+    transform:translateX(-50%);
+    list-style:none;
+  }
+  .kalmar-programs__card,
+  .kalmar-programs__card a,
+  .kalmar-programs__card img{
+    display:block;
+    width:360px;
+    height:443px;
+  }
+  .kalmar-programs__card a{
+    overflow:visible;
+    transition:transform .2s ease-out;
+  }
+  .kalmar-programs__card img{max-width:none}
+  @media (hover:hover){
+    .kalmar-programs__card a:hover{transform:scale(1.15)}
+  }
+  .kalmar-programs__button{
+    position:absolute;
+    z-index:3;
+    top:529px;
+    left:50%;
+    display:inline-flex;
+    box-sizing:border-box;
+    width:260px;
+    height:64px;
+    align-items:center;
+    justify-content:center;
+    transform:translateX(-50%);
+    border-radius:12px;
+    background:#ec406b;
+    box-shadow:2px 2px 3px rgba(71,71,71,.3);
+    color:#fff;
+    font:600 18px/27.9px Nunito,Arial,sans-serif;
+    text-align:center;
+    text-decoration:none;
+    text-transform:uppercase;
+    transition:background-color .2s ease-in-out,color .2s ease-in-out;
+  }
+  .kalmar-programs__button:hover{background:#fff;color:#333}
+  .kalmar-programs__artboard::after{
+    position:absolute;
+    z-index:1;
+    right:0;
+    bottom:calc(-4vw + 1px);
+    left:0;
+    height:4vw;
+    min-height:1px;
+    background:#031818;
+    clip-path:polygon(0 0,50% 97.75%,100% 0,100% 100%,0 100%);
+    content:'';
+    pointer-events:none;
+  }
+  .kalmar-programs__separator{
+    position:relative;
+    z-index:4;
+    height:30px;
+    overflow:visible;
+    background:#031818;
+  }
+  .kalmar-programs__separator img{
+    position:absolute;
+    top:2px;
+    left:calc(50% - 600px);
+    display:block;
+    width:121px;
+    height:121px;
+    max-width:none;
+  }
+
+  @media (max-width:479px){
+    .kalmar-programs__heading{height:150px}
+    .kalmar-programs__heading h2{
+      top:28px;
+      left:calc(50% - 149px);
+      width:299px;
+      transform:none;
+      font-size:29px;
+      line-height:35px;
+    }
+    .kalmar-programs__artboard{height:1549px}
+    .kalmar-programs__backdrop{background-attachment:scroll}
+    .kalmar-programs__cards{
+      top:0;
+      left:0;
+      display:block;
+      width:100%;
+      height:100%;
+      transform:none;
+    }
+    .kalmar-programs__card{
+      position:absolute;
+      left:50%;
+      transform:translateX(-50%);
+    }
+    .kalmar-programs__card:nth-child(1){top:48px}
+    .kalmar-programs__card:nth-child(2){top:511px}
+    .kalmar-programs__card:nth-child(3){top:974px}
+    .kalmar-programs__button{
+      top:1447px;
+      height:56px;
+      font-size:15px;
+      line-height:23.25px;
+    }
+    .kalmar-programs__separator img{
+      left:calc(50% - 180px);
+      width:82px;
+      height:82px;
+    }
+  }
+</style>

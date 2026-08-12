@@ -1,0 +1,426 @@
+---
+// The source page is a measured black/yellow Tilda composition, not a shared
+// holiday-card layout.  Its per-record dimensions stay in the route JSON so
+// this renderer remains route-specific and cannot alter other holiday pages.
+import site from '../data/site.json';
+
+const { source = {}, page = {}, asset = (value) => value, href = (value) => value } = Astro.props;
+const records = source.records || {};
+const sections = page.sections || [];
+const section = (kind, id = '') => sections.find((item) => item.kind === kind && (!id || item.id === id)) || {};
+const hero = section('hero');
+const packages = section('packages');
+const shows = section('tiles');
+const halls = section('halls');
+const hall = halls.items?.[0] || {};
+const quiz = section('party-form', 'quiz');
+const reviews = section('reviews');
+const story = section('text');
+const features = section('features');
+const gallery = section('gallery');
+const stats = section('stats');
+const alternatives = section('cards');
+const booking = section('party-form', 'prazdnik');
+const bookingHref = href(source.bookingHref || '#prazdnik');
+const sourceVisual = source.visual || {};
+const sourceHero = sourceVisual.hero || {};
+const sourceHall = sourceVisual.hall || {};
+const sourceReviews = sourceVisual.reviews || {};
+const sourceStory = sourceVisual.story || {};
+const sourceFeatures = sourceVisual.features || {};
+const sourceGallery = sourceVisual.gallery || {};
+const sourceTrust = sourceVisual.trust || {};
+const sourceFooter = sourceVisual.footer || {};
+const px = (value) => Number.isFinite(value) ? `${value}px` : String(value || '');
+const recordStyle = (record = {}) => [
+  record.desktop !== undefined && `--azkaban-record-desktop:${px(record.desktop)}`,
+  record.mobile !== undefined && `--azkaban-record-mobile:${px(record.mobile)}`,
+].filter(Boolean).join(';');
+const backgroundStyle = (desktop, mobile = desktop) => [
+  desktop && `--azkaban-background-desktop:url(${asset(desktop)})`,
+  mobile && `--azkaban-background-mobile:url(${asset(mobile)})`,
+].filter(Boolean).join(';');
+const visibleShows = (sourceVisual.shows?.length ? sourceVisual.shows : shows.items || []).map((item, index) => ({
+  ...item,
+  img: item.img || (index === 6 ? '/assets/static.tildacdn.com/tild3865-3132-4864-a630-326531636333/eee8132230613e0ca1d5.jpg' : ''),
+}));
+const venueLinks = sourceVisual.venues?.length ? sourceVisual.venues : source.venues || [];
+const organisation = sourceFooter.organisation || [
+  ['Детский день рождения', '/kids'], ['День рождения в VR', '/den-rozhdeniya-na-vr-arene'],
+  ['Выпускной', '/vypusknoj-kalmar'], ['Корпоратив | Тимбилдинг', '/prazdniki-pod-kluch'],
+];
+const entertainment = sourceFooter.entertainment || [
+  ['Квеструмы', '/kvesty-v-rostove-na-donu'], ['VR-арены', '/den-rozhdeniya-na-vr-arene'],
+  ['Активные игры', '/party-games'], ['Прятки в темноте', '/pryatki_v_temnote'],
+];
+---
+
+<div class="azkaban-artboard" data-source-artboard="azkaban">
+  <header class="azkaban-artboard__record azkaban-artboard__header" data-parity-record="rec2093762261" style={recordStyle(records.header)}>
+    <div class="azkaban-artboard__rail azkaban-artboard__header-inner">
+      <a class="azkaban-artboard__brand" href={href('/')} aria-label="Чё за Квест">ЧЁ<br />ЗА КВЕСТ</a>
+      <nav aria-label="Основная навигация">
+        <a href={href('/kvesty-v-rostove-na-donu')}>Квесты</a>
+        <a href={href('/kids')}>Праздники</a>
+        <a href={href('/strashnye-kvesty')}>Хоррор</a>
+        <a href={href('/contacts')}>Контакты</a>
+      </nav>
+      <a class="azkaban-artboard__header-phone" href={site.header.phoneHref}>{site.header.phone}</a>
+    </div>
+  </header>
+
+  <section class="azkaban-artboard__record azkaban-artboard__hero" data-parity-record="rec2144896401" style={`${recordStyle(records.hero)};${backgroundStyle(hero.bg, hero.bgset?.['760'])}`} aria-labelledby="azkaban-hero-title">
+    <div class="azkaban-artboard__hero-shade"></div>
+    <div class="azkaban-artboard__rail azkaban-artboard__hero-copy">
+      <p class="azkaban-artboard__hero-title" data-source-layer="hero-title"><mark>{sourceHero.title?.[0] || 'ДЕТСКИЙ ПРАЗДНИК'}</mark> <span>{sourceHero.title?.[1] || 'в стиле Узник Азкабана'}</span></p>
+      <h1 id="azkaban-hero-title">{sourceHero.summary || hero.h1 || page.seo?.h1}</h1>
+      <p class="azkaban-artboard__hero-sub">{hero.sub}</p>
+      <div class="azkaban-artboard__hero-actions">
+        {(hero.buttons || []).map((button, index) => <a class:list={['azkaban-artboard__button', { 'azkaban-artboard__button--outline': index !== 0 }]} href={href(button.href)}>{button.t}</a>)}
+      </div>
+      <div class="azkaban-artboard__pills">{(sourceHero.facts || hero.pills || []).map((pill) => <span>{pill}</span>)}</div>
+    </div>
+  </section>
+
+  <nav class="azkaban-artboard__record azkaban-artboard__breadcrumbs" data-parity-record="rec2093762281" style={recordStyle(records.breadcrumbs)} aria-label="Хлебные крошки">
+    <div class="azkaban-artboard__rail"><a href={href('/')}>Главная</a><span>/</span><a href={href('/kids')}>Все праздники</a><span>/</span><b>День рождения в стиле Узник Азкабана</b></div>
+  </nav>
+  <div class="azkaban-artboard__record azkaban-artboard__bread-gap" data-parity-record="rec2093762291" style={recordStyle(records.breadcrumbSpacer)} aria-hidden="true"></div>
+
+  <section class="azkaban-artboard__record azkaban-artboard__heading azkaban-artboard__packages-heading" data-parity-record="rec2094236451" style={recordStyle(records.packagesHeading)} aria-labelledby="azkaban-packages-title">
+    <div class="azkaban-artboard__rail"><h2 id="azkaban-packages-title"><mark>Выберите пакет</mark> праздника</h2><p>Отправьте заявку и наш менеджер уточнит свободную дату и время</p></div>
+  </section>
+  <section class="azkaban-artboard__record azkaban-artboard__packages" data-parity-record="rec2094236461" style={recordStyle(records.packages)} id="pakety" aria-label="Пакеты праздника">
+    <div class="azkaban-artboard__rail azkaban-artboard__package-grid">
+      {(source.packages || []).map((item) => <a href={bookingHref} class="azkaban-artboard__package" data-source-layer="source-package-card"><img src={asset(item.src)} alt={`${item.title}, пакет праздника`} width="368" height="381" loading="lazy" decoding="async" /><span>{item.title}</span></a>)}
+    </div>
+    <a class="azkaban-artboard__button azkaban-artboard__packages-cta" href={bookingHref}>{packages.cta || 'Узнать стоимость'}</a>
+  </section>
+
+  <section class="azkaban-artboard__record azkaban-artboard__heading azkaban-artboard__shows-heading" data-parity-record="rec2094236471" style={recordStyle(records.showsHeading)} aria-labelledby="azkaban-shows-title">
+    <div class="azkaban-artboard__rail"><h2 id="azkaban-shows-title">Увлекательная <mark>шоу-программа</mark> -<br />неотъемлемая часть яркого праздника</h2><p>Подберите ту, что порадует именно вашего ребенка</p></div>
+  </section>
+  <section class="azkaban-artboard__record azkaban-artboard__shows" data-parity-record="rec2094236481" style={recordStyle(records.shows)} aria-label="Шоу-программы">
+    <div class="azkaban-artboard__rail azkaban-artboard__show-grid">
+      {visibleShows.map((item) => <a href={bookingHref} class="azkaban-artboard__show-card"><img src={asset(item.img)} alt={item.t} width="280" height="240" loading="lazy" decoding="async" /><span>{item.t}</span><b>Добавить в праздник</b></a>)}
+    </div>
+  </section>
+
+  <section class="azkaban-artboard__record azkaban-artboard__heading azkaban-artboard__hall-heading" data-parity-record="rec2093762411" style={recordStyle(records.hallHeading)} aria-labelledby="azkaban-hall-title">
+    <div class="azkaban-artboard__rail"><h2 id="azkaban-hall-title">Нужен <mark>банкетный зал?</mark><br />У нас есть комната на 12 человек</h2><p>После игры дети сразу переходят в комнату отдыха - удобно, без переездов и лишней суеты.</p></div>
+  </section>
+  <section class="azkaban-artboard__record azkaban-artboard__hall" data-parity-record="rec2097266521" style={`${recordStyle(records.hall)};${backgroundStyle(sourceHall.image || hall.img)}`} aria-labelledby="azkaban-hall-copy-title">
+    <div class="azkaban-artboard__rail">
+      <div class="azkaban-artboard__hall-image" aria-hidden="true"></div>
+      <div class="azkaban-artboard__hall-copy"><h3 id="azkaban-hall-copy-title">{sourceHall.title || hall.t}</h3><ul>{(sourceHall.equipment || hall.equipment || []).map((item) => <li>{item}</li>)}</ul><a class="azkaban-artboard__button" href={bookingHref}>{halls.cta || 'Узнать свободную дату'}</a></div>
+    </div>
+  </section>
+
+  <section class="azkaban-artboard__record azkaban-artboard__quiz-heading" data-parity-record="rec2094236511" style={recordStyle(records.quizHeading)} aria-labelledby="azkaban-quiz-title">
+    <div class="azkaban-artboard__rail"><h2 id="azkaban-quiz-title">Поможем подобрать<br /><mark>праздничную программу</mark></h2><p>{quiz.subtitle}</p></div>
+  </section>
+  <section class="azkaban-artboard__record azkaban-artboard__quiz" data-parity-record="rec2094236521" style={recordStyle(records.quiz)} id="quiz" aria-label="Заявка на подбор программы">
+    <form data-lead-form data-lead-kind="party" data-lead-target={site.header.wa} data-lead-recipient={site.leads?.recipient || ''} class="azkaban-artboard__lead-form" aria-describedby="azkaban-quiz-status">
+      <p>Расскажите о празднике — пришлём подходящие варианты и стоимость.</p>
+      <div class="azkaban-artboard__form-grid"><label for="azkaban-quiz-name">Ваше имя<input id="azkaban-quiz-name" name="name" type="text" autocomplete="name" minlength="2" maxlength="80" required /></label><label for="azkaban-quiz-phone">Телефон<input id="azkaban-quiz-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="24" required /></label><label for="azkaban-quiz-date">Желаемая дата<input id="azkaban-quiz-date" name="date" type="date" /></label></div>
+      <label class="azkaban-artboard__consent"><input name="consent" type="checkbox" required />Соглашаюсь с <a href={href('/privacy')}>политикой обработки данных</a></label>
+      <button class="azkaban-artboard__button" type="button" data-lead-submit>{quiz.cta || 'Узнать стоимость'}</button><p class="lead-form__status" id="azkaban-quiz-status" data-lead-status role="status" aria-live="polite" hidden></p>
+    </form>
+  </section>
+
+  <div class="azkaban-artboard__record azkaban-artboard__divider" style={recordStyle(records.dividerBeforeReviews)} aria-hidden="true"></div>
+  <section class="azkaban-artboard__record azkaban-artboard__reviews-heading" data-parity-record="rec2097359081" style={recordStyle(records.reviewsHeading)} aria-labelledby="azkaban-reviews-title"><div class="azkaban-artboard__rail"><h2 id="azkaban-reviews-title">Честные <mark>отзывы наших гостей</mark><br />и их родителей</h2><div class="azkaban-artboard__review-badges">{(sourceReviews.badges || []).map((image) => <img src={asset(image)} alt="" width="75" height="127" loading="lazy" decoding="async" />)}</div></div></section>
+  <div class="azkaban-artboard__record azkaban-artboard__divider" style={recordStyle(records.dividerAfterReviews)} aria-hidden="true"></div>
+
+  <section class="azkaban-artboard__record azkaban-artboard__story" data-parity-record="rec2093762301" style={recordStyle(records.story)} aria-labelledby="azkaban-story-title"><div class="azkaban-artboard__rail azkaban-artboard__story-grid"><div class="azkaban-artboard__story-lead"><h2 id="azkaban-story-title">О квесте <mark>"Узник Азкабана"</mark></h2>{(story.lines || []).slice(0, 2).map((line) => <p>{line}</p>)}</div><div class="azkaban-artboard__story-copy">{(story.lines || []).slice(2).map((line) => <p>{line}</p>)}<p class="azkaban-artboard__story-features-title">Особенности:</p><ul>{(sourceStory.features || []).map((item) => <li>{item}</li>)}</ul></div></div></section>
+  <section class="azkaban-artboard__record azkaban-artboard__features" data-parity-record="rec2145126211" style={recordStyle(records.features)} aria-labelledby="azkaban-features-title"><div class="azkaban-artboard__rail"><h2 id="azkaban-features-title">Спокойно родителям, <mark>интересно детям</mark></h2><p class="azkaban-artboard__features-sub">Безопасно, актуально у детей, и организация праздника “без суеты”. За детьми следит инструктор, а программа адаптируется под возраст гостей.</p><div class="azkaban-artboard__feature-grid">{(features.items || []).map((item, index) => <article><img src={asset(sourceFeatures.icons?.[index])} alt="" width="80" height="80" data-source-layer="feature-icon" loading="lazy" decoding="async" /><h3>{item.t}</h3><p>{item.sub}</p></article>)}</div></div></section>
+
+  <div class="azkaban-artboard__record azkaban-artboard__divider" style={recordStyle(records.dividerBeforeGallery)} aria-hidden="true"></div>
+  <section class="azkaban-artboard__record azkaban-artboard__gallery-heading" data-parity-record="rec2093762441" style={recordStyle(records.galleryHeading)} aria-labelledby="azkaban-gallery-title"><div class="azkaban-artboard__rail"><h2 id="azkaban-gallery-title">{gallery.title}</h2></div></section>
+  <section class="azkaban-artboard__record azkaban-artboard__gallery" data-parity-record="rec2093762451" style={recordStyle(records.gallery)} aria-label="Фотографии с квеста"><div class="azkaban-artboard__rail azkaban-artboard__gallery-grid"><img src={asset(sourceGallery.image || gallery.photos?.[1])} alt="Фотография с квеста" width="613" height="463" loading="lazy" decoding="async" /></div></section>
+  <div class="azkaban-artboard__record azkaban-artboard__divider" style={recordStyle(records.dividerAfterGallery)} aria-hidden="true"></div>
+
+  <section class="azkaban-artboard__record azkaban-artboard__trust-heading" data-parity-record="rec2094236411" style={recordStyle(records.trustHeading)} aria-labelledby="azkaban-trust-title"><div class="azkaban-artboard__rail"><h2 id="azkaban-trust-title">Причины <mark>доверить нам</mark> организацию вашего праздника</h2></div></section>
+  <section class="azkaban-artboard__record azkaban-artboard__trust" data-parity-record="rec2094236421" style={recordStyle(records.trust)} aria-label="Причины доверить праздник"><div class="azkaban-artboard__rail azkaban-artboard__trust-grid" data-source-layer="trust-mosaic"><article class="azkaban-artboard__trust-stat"><p>{stats.items?.[0]?.up}</p><b>{stats.items?.[0]?.n}</b><h3>{stats.items?.[0]?.sub}</h3></article><article class="azkaban-artboard__trust-icon"><img src={asset(sourceTrust.icon)} alt="" width="201" height="200" loading="lazy" decoding="async" /></article><article class="azkaban-artboard__trust-stat"><p>{stats.items?.[1]?.up}</p><b>{stats.items?.[1]?.n}</b><h3>{stats.items?.[1]?.sub}</h3></article><article class="azkaban-artboard__trust-stat"><p>{stats.items?.[2]?.up}</p><b>{stats.items?.[2]?.n}</b><h3>{stats.items?.[2]?.sub}</h3></article><img class="azkaban-artboard__trust-photo" src={asset(sourceTrust.leftImage)} alt="" width="260" height="260" loading="lazy" decoding="async" />{(stats.notes || []).map((item) => <article class="azkaban-artboard__trust-note"><h3>{item.t}</h3><p>{item.sub}</p></article>)}<img class="azkaban-artboard__trust-photo" src={asset(sourceTrust.rightImage)} alt="" width="260" height="260" loading="lazy" decoding="async" /></div></section>
+
+  <div class="azkaban-artboard__record azkaban-artboard__divider" style={recordStyle(records.dividerBeforeAlternatives)} aria-hidden="true"></div>
+  <section class="azkaban-artboard__record azkaban-artboard__alternatives" data-parity-record="rec2146068921" style={recordStyle(records.alternatives)} aria-labelledby="azkaban-alternatives-title"><div class="azkaban-artboard__rail"><h2 id="azkaban-alternatives-title"><mark>Альтернативные сценарии</mark> для вашего праздника</h2><p class="azkaban-artboard__alternatives-sub">Вашему ребенку точно понравится такой День рождения!</p><div class="azkaban-artboard__alternative-grid">{(alternatives.items || []).map((item) => <a href={href(item.href)}><img src={asset(item.img)} alt={item.t} width="360" height="360" loading="lazy" decoding="async" /><span><small>День рождения в стиле</small>{item.t}</span></a>)}</div></div></section>
+
+  <div class="azkaban-artboard__record azkaban-artboard__divider" style={recordStyle(records.dividerBeforeBooking)} aria-hidden="true"></div>
+  <section class="azkaban-artboard__record azkaban-artboard__booking" data-parity-record="rec2097407391" style={`${recordStyle(records.booking)};${backgroundStyle(sourceVisual.booking?.background)}`} id="prazdnik" aria-labelledby="azkaban-booking-title">{(sourceVisual.booking?.decorations || []).map((image, index) => <img class:list={['azkaban-artboard__booking-decoration', `azkaban-artboard__booking-decoration--${index + 1}`]} data-source-layer="booking-decoration" src={asset(image)} alt="" width="121" height="121" loading="lazy" decoding="async" />)}<div class="azkaban-artboard__rail"><form data-lead-form data-lead-kind="party" data-lead-target={site.header.wa} data-lead-recipient={site.leads?.recipient || ''} class="azkaban-artboard__lead-form azkaban-artboard__lead-form--booking" aria-describedby="azkaban-booking-status"><div><h2 id="azkaban-booking-title">Забронируйте праздник - мы предложим варианты по дате и времени</h2><p>{booking.subtitle}</p></div><div class="azkaban-artboard__form-grid"><label for="azkaban-booking-name">Ваше имя<input id="azkaban-booking-name" name="name" type="text" autocomplete="name" minlength="2" maxlength="80" required /></label><label for="azkaban-booking-phone">Телефон<input id="azkaban-booking-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="24" required /></label><label for="azkaban-booking-date">Дата праздника<input id="azkaban-booking-date" name="date" type="date" /></label><label class="azkaban-artboard__consent"><input name="consent" type="checkbox" required />Даю согласие на обработку моих персональных данных в соответствии с <a href={href('/privacy')}>Политикой обработки персональных данных</a></label><button class="azkaban-artboard__button" type="button" data-lead-submit>{booking.cta || 'Отправить заявку'}</button><p class="lead-form__status" id="azkaban-booking-status" data-lead-status role="status" aria-live="polite" hidden></p></div></form></div></section>
+  <div class="azkaban-artboard__record azkaban-artboard__divider" style={recordStyle(records.dividerAfterBooking)} aria-hidden="true"></div>
+
+  <section class="azkaban-artboard__record azkaban-artboard__venues-heading" data-parity-record="rec2145881791" style={recordStyle(records.venuesHeading)} aria-labelledby="azkaban-venues-title"><div class="azkaban-artboard__rail"><h2 id="azkaban-venues-title">Наши площадки</h2><p>9 современно оборудованных площадок с квест-комнатами и зонами отдыха в Ростове-на-Дону</p></div></section>
+  <section class="azkaban-artboard__record azkaban-artboard__venues" data-parity-record="rec2145881801" style={recordStyle(records.venues)} aria-label="Адреса площадок"><div class="azkaban-artboard__rail">{venueLinks.map((item) => <a href={href(item.href)}>{item.title}</a>)}</div></section>
+  <div class="azkaban-artboard__record azkaban-artboard__footer-spacer" data-parity-record="rec2145881911" style={recordStyle(records.footerSpacer)} aria-hidden="true"></div>
+
+  <footer class="azkaban-artboard__record azkaban-artboard__footer" data-parity-record="rec2145881921" style={recordStyle(records.footer)}><div class="azkaban-artboard__rail azkaban-artboard__footer-grid"><section><h2>ОРГАНИЗАЦИЯ МЕРОПРИЯТИЙ</h2>{organisation.map(([title, itemHref]) => <a href={href(itemHref)}>{title}</a>)}</section><section><h2>ВИДЫ РАЗВЛЕЧЕНИЙ</h2>{entertainment.map(([title, itemHref]) => <a href={href(itemHref)}>{title}</a>)}</section><section><h2>НАШИ ПЛОЩАДКИ</h2>{venueLinks.map((item) => <a href={href(item.href)}>{item.title}</a>)}</section><section><a class="azkaban-artboard__footer-phone" href={site.header.phoneHref}>{site.header.phone}</a><p>Работаем с 10:00 до 23:30</p><p>ИП Мелешкин Юрий Иванович<br />ИНН 164409771610<br />ОГРНИП 322169000094990</p><a href={href('/privacy')}>Политика обработки персональных данных</a></section></div></footer>
+  <div class="azkaban-artboard__record azkaban-artboard__copyright" data-parity-record="rec2145881931" style={recordStyle(records.copyright)}><div class="azkaban-artboard__rail"><a href={href('/')}>ЧЁ ЗА КВЕСТ</a><span>© 2026 ЧЁ ЗА КВЕСТ. Все права защищены.</span></div></div>
+</div>
+
+<script>
+  import '../scripts/lead-form.js';
+</script>
+
+<style>
+  .azkaban-artboard{--azkaban-yellow:#ffd500;--azkaban-paper:#f1ead8;overflow:hidden;background:#090909;color:#fff;font-family:Montserrat,Arial,sans-serif}.azkaban-artboard *,.azkaban-artboard *::before,.azkaban-artboard *::after{box-sizing:border-box}.azkaban-artboard a{color:inherit;text-decoration:none}.azkaban-artboard__record{position:relative;height:var(--azkaban-record-desktop);overflow:hidden}.azkaban-artboard__rail{position:relative;width:1160px;height:100%;margin:auto}.azkaban-artboard h1,.azkaban-artboard h2,.azkaban-artboard h3,.azkaban-artboard p{margin:0}.azkaban-artboard__kicker{color:var(--azkaban-yellow);font:800 12px/1 Montserrat,Arial,sans-serif;letter-spacing:.15em;text-transform:uppercase}.azkaban-artboard__button{display:inline-flex;min-height:50px;padding:0 29px;align-items:center;justify-content:center;border:2px solid var(--azkaban-yellow);border-radius:2px;background:var(--azkaban-yellow);color:#090909!important;font:800 13px/1 Montserrat,Arial,sans-serif;text-transform:uppercase;transition:background .2s ease,color .2s ease,transform .2s ease}.azkaban-artboard__button:hover,.azkaban-artboard__button:focus-visible{background:#fff;color:#090909!important;transform:translateY(-2px)}.azkaban-artboard__button--outline{background:transparent;color:#fff!important}.azkaban-artboard__header{border-bottom:1px solid #373737;background:#090909}.azkaban-artboard__header-inner{display:flex;align-items:center;justify-content:space-between}.azkaban-artboard__brand{color:var(--azkaban-yellow)!important;font:900 16px/.83 Montserrat,Arial,sans-serif;letter-spacing:-.07em}.azkaban-artboard__header nav{display:flex;gap:30px}.azkaban-artboard__header nav a{color:#ddd;font:700 12px/1 Montserrat,Arial,sans-serif;text-transform:uppercase}.azkaban-artboard__header nav a:hover{color:var(--azkaban-yellow)}.azkaban-artboard__header-phone{color:var(--azkaban-yellow)!important;font:800 16px/1 Montserrat,Arial,sans-serif}.azkaban-artboard__hero{background:#121212 var(--azkaban-background-desktop) center/cover no-repeat}.azkaban-artboard__hero-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.91) 0%,rgba(0,0,0,.7) 38%,rgba(0,0,0,.08) 74%),linear-gradient(0deg,rgba(0,0,0,.48),transparent 60%)}.azkaban-artboard__hero-copy{padding-top:69px}.azkaban-artboard__eyebrow{margin-bottom:15px!important;color:var(--azkaban-yellow);font:800 13px/1 Montserrat,Arial,sans-serif;letter-spacing:.14em}.azkaban-artboard__hero h1{width:660px;font:900 48px/.97 Montserrat,Arial,sans-serif;letter-spacing:-.045em;text-transform:uppercase}.azkaban-artboard__hero-sub{width:515px;margin-top:20px!important;color:#e9e8e3;font:400 19px/1.3 Montserrat,Arial,sans-serif}.azkaban-artboard__pills{display:flex;gap:8px;margin-top:24px}.azkaban-artboard__pills span{padding:8px 11px;border:1px solid rgba(255,213,0,.8);color:#fff;font:700 11px/1 Montserrat,Arial,sans-serif}.azkaban-artboard__hero-actions{display:flex;gap:13px;margin-top:27px}.azkaban-artboard__breadcrumbs{background:#0b0b0b;color:#939393}.azkaban-artboard__breadcrumbs>.azkaban-artboard__rail{display:flex;align-items:center;gap:11px;font:400 12px/1 Montserrat,Arial,sans-serif}.azkaban-artboard__breadcrumbs a:hover{color:var(--azkaban-yellow)}.azkaban-artboard__breadcrumbs b{color:#d4d4d4;font-weight:500}.azkaban-artboard__bread-gap,.azkaban-artboard__divider{background:#090909}.azkaban-artboard__heading{background:#090909}.azkaban-artboard__heading>.azkaban-artboard__rail{padding-top:29px}.azkaban-artboard h2{font:900 38px/.98 Montserrat,Arial,sans-serif;letter-spacing:-.04em;text-transform:uppercase}.azkaban-artboard__heading h2{width:850px;margin-top:11px!important}.azkaban-artboard__heading h2+p{width:700px;margin-top:13px!important;color:#c8c8c8;font:400 15px/1.35 Montserrat,Arial,sans-serif}.azkaban-artboard__packages{background:linear-gradient(120deg,#111 0%,#17150c 100%)}.azkaban-artboard__package-grid{display:grid;grid-template-columns:repeat(3,324px);gap:30px;justify-content:center;padding-top:10px}.azkaban-artboard__package{position:relative;display:block;overflow:hidden;height:424px;border:1px solid #4f492e;background:#161616}.azkaban-artboard__package img{display:block;width:100%;height:100%;object-fit:cover}.azkaban-artboard__package::after{position:absolute;inset:auto 0 0;height:82px;content:'';background:linear-gradient(transparent,rgba(0,0,0,.86))}.azkaban-artboard__package span{position:absolute;z-index:1;bottom:18px;left:19px;color:#fff;font:800 18px/1 Montserrat,Arial,sans-serif;text-transform:uppercase}.azkaban-artboard__packages-cta{position:absolute;bottom:27px;left:50%;transform:translateX(-50%)}.azkaban-artboard__shows{background:#0b0b0b}.azkaban-artboard__show-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;padding-top:4px}.azkaban-artboard__show-card{position:relative;display:block;overflow:hidden;height:266px;border:1px solid #3d3d3d;background:#1c1c1c}.azkaban-artboard__show-card::after{position:absolute;inset:40% 0 0;content:'';background:linear-gradient(transparent,rgba(0,0,0,.88))}.azkaban-artboard__show-card img{width:100%;height:100%;object-fit:cover;opacity:.82}.azkaban-artboard__show-card span,.azkaban-artboard__show-card b{position:absolute;z-index:1;left:17px;right:13px}.azkaban-artboard__show-card span{bottom:39px;font:800 17px/.96 Montserrat,Arial,sans-serif;text-transform:uppercase}.azkaban-artboard__show-card b{bottom:18px;color:var(--azkaban-yellow);font:700 10px/1 Montserrat,Arial,sans-serif;text-transform:uppercase}.azkaban-artboard__hall{background:#0b0b0b}.azkaban-artboard__hall-image{position:absolute;top:0;left:0;width:585px;height:421px;background:var(--azkaban-background-desktop) center/cover no-repeat;filter:saturate(.8)}.azkaban-artboard__hall-copy{position:absolute;top:23px;right:0;width:525px;min-height:435px;padding:32px 35px;border:1px solid #5b541e;background:#121212}.azkaban-artboard__hall-copy h3{color:var(--azkaban-yellow);font:900 27px/.98 Montserrat,Arial,sans-serif;text-transform:uppercase}.azkaban-artboard__hall-copy p{margin-top:17px!important;color:#e7e7e7;font:400 14px/1.32 Montserrat,Arial,sans-serif}.azkaban-artboard__hall-copy ul{margin:16px 0 22px;padding-left:18px;color:#d9d9d9;font:400 13px/1.48 Montserrat,Arial,sans-serif}.azkaban-artboard__quiz-heading{background:#16140c}.azkaban-artboard__quiz-heading>.azkaban-artboard__rail{padding-top:58px;text-align:center}.azkaban-artboard__quiz-heading h2,.azkaban-artboard__quiz-heading h2+p{width:auto}.azkaban-artboard__quiz-heading h2{margin-top:14px!important}.azkaban-artboard__quiz-heading h2+p{max-width:620px;margin:15px auto 0!important}.azkaban-artboard__quiz{background:#16140c}.azkaban-artboard__lead-form{width:850px;margin:0 auto;padding:31px 38px;border:1px solid #6d651f;background:#0e0e0e}.azkaban-artboard__lead-form>p{margin-bottom:21px!important;color:#e1e1e1;font:400 15px/1.3 Montserrat,Arial,sans-serif}.azkaban-artboard__form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.azkaban-artboard__lead-form label{display:flex;flex-direction:column;gap:8px;color:#dcdcdc;font:700 11px/1 Montserrat,Arial,sans-serif;text-transform:uppercase}.azkaban-artboard__lead-form input:not([type="checkbox"]){height:46px;padding:0 12px;border:1px solid #545454;border-radius:0;background:#181818;color:#fff;font:400 14px/1 Montserrat,Arial,sans-serif}.azkaban-artboard__lead-form input:focus{outline:2px solid var(--azkaban-yellow);outline-offset:1px}.azkaban-artboard__consent{grid-column:span 2;display:block!important;padding-top:8px;color:#a4a4a4!important;font:400 11px/1.3 Montserrat,Arial,sans-serif!important;text-transform:none!important}.azkaban-artboard__consent input{margin:0 7px 0 0;accent-color:var(--azkaban-yellow)}.azkaban-artboard__consent a{color:var(--azkaban-yellow)!important;text-decoration:underline}.azkaban-artboard__form-grid>.azkaban-artboard__button{align-self:end}.azkaban-artboard__review-rating{display:flex;align-items:center;gap:12px;margin-top:19px}.azkaban-artboard__review-rating b{font:900 30px/1 Montserrat,Arial,sans-serif}.azkaban-artboard__review-rating span{color:var(--azkaban-yellow);letter-spacing:.15em}.azkaban-artboard__review-rating small{color:#a3a3a3}.azkaban-artboard__reviews-heading{background:#090909}.azkaban-artboard__reviews-heading>.azkaban-artboard__rail{padding-top:27px}.azkaban-artboard__story{background:#121212}.azkaban-artboard__story-grid{display:grid;grid-template-columns:390px 650px;gap:90px;padding-top:70px}.azkaban-artboard__story h2{margin-top:14px!important}.azkaban-artboard__story-copy p{margin-bottom:17px!important;color:#dedede;font:400 15px/1.46 Montserrat,Arial,sans-serif}.azkaban-artboard__story-copy .azkaban-artboard__button{margin-top:8px}.azkaban-artboard__features{background:#0d0d0d}.azkaban-artboard__features>.azkaban-artboard__rail{padding-top:53px;text-align:center}.azkaban-artboard__features h2{margin-top:14px!important}.azkaban-artboard__features-sub{margin-top:13px!important;color:#c9c9c9;font:400 15px/1.3 Montserrat,Arial,sans-serif}.azkaban-artboard__feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:37px;text-align:left}.azkaban-artboard__feature-grid article{min-height:224px;padding:25px 21px;border-top:4px solid var(--azkaban-yellow);background:#171717}.azkaban-artboard__feature-grid b{display:block;color:var(--azkaban-yellow);font:900 28px/1 Montserrat,Arial,sans-serif}.azkaban-artboard__feature-grid h3{margin:21px 0 10px!important;font:800 18px/1.05 Montserrat,Arial,sans-serif;text-transform:uppercase}.azkaban-artboard__feature-grid p{color:#c9c9c9;font:400 13px/1.35 Montserrat,Arial,sans-serif}.azkaban-artboard__gallery-heading{background:#0d0d0d}.azkaban-artboard__gallery-heading>.azkaban-artboard__rail{padding-top:25px;text-align:center}.azkaban-artboard__gallery-heading h2{margin-top:10px!important}.azkaban-artboard__gallery{background:#0d0d0d}.azkaban-artboard__gallery-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;grid-template-rows:200px 200px;gap:12px;padding-top:5px}.azkaban-artboard__gallery img{width:100%;height:100%;object-fit:cover;filter:saturate(.82)}.azkaban-artboard__gallery img:first-child{grid-row:span 2}.azkaban-artboard__trust-heading{background:var(--azkaban-yellow);color:#111}.azkaban-artboard__trust-heading>.azkaban-artboard__rail{padding-top:39px}.azkaban-artboard__trust-heading .azkaban-artboard__kicker{color:#3c3513}.azkaban-artboard__trust-heading h2{margin-top:12px!important}.azkaban-artboard__trust-heading h2 span{font-weight:400}.azkaban-artboard__trust{background:var(--azkaban-yellow);color:#111}.azkaban-artboard__trust-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding-top:6px}.azkaban-artboard__trust-grid article{min-height:354px;padding:27px 21px;background:#e9c30e}.azkaban-artboard__trust-grid article:nth-child(2n){background:#f7d319}.azkaban-artboard__trust-grid article>p{font:700 14px/1 Montserrat,Arial,sans-serif}.azkaban-artboard__trust-grid b{display:block;margin:16px 0;color:#111;font:900 46px/.88 Montserrat,Arial,sans-serif;letter-spacing:-.08em}.azkaban-artboard__trust-grid h3{font:800 18px/1.03 Montserrat,Arial,sans-serif;text-transform:uppercase}.azkaban-artboard__trust-note{background:#151515!important;color:#fff}.azkaban-artboard__trust-note h3{color:var(--azkaban-yellow)}.azkaban-artboard__trust-note p{margin-top:19px!important;color:#dedede;font:400 13px/1.35 Montserrat,Arial,sans-serif!important}.azkaban-artboard__alternatives{background:#111}.azkaban-artboard__alternatives>.azkaban-artboard__rail{padding-top:31px;text-align:center}.azkaban-artboard__alternatives h2{margin-top:12px!important}.azkaban-artboard__alternatives-sub{margin-top:11px!important;color:#c7c7c7;font:400 14px/1.3 Montserrat,Arial,sans-serif}.azkaban-artboard__alternative-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:27px;text-align:left}.azkaban-artboard__alternative-grid a{position:relative;display:block;overflow:hidden;height:275px;background:#1c1c1c}.azkaban-artboard__alternative-grid a::after{position:absolute;inset:45% 0 0;content:'';background:linear-gradient(transparent,rgba(0,0,0,.92))}.azkaban-artboard__alternative-grid img{display:block;width:100%;height:100%;object-fit:cover}.azkaban-artboard__alternative-grid span{position:absolute;z-index:1;bottom:16px;left:13px;right:10px;font:800 14px/.98 Montserrat,Arial,sans-serif;text-transform:uppercase}.azkaban-artboard__booking{background:#16140c}.azkaban-artboard__booking>.azkaban-artboard__rail{padding-top:38px}.azkaban-artboard__lead-form--booking{display:grid;grid-template-columns:1fr 1fr;gap:36px;width:100%;padding:35px}.azkaban-artboard__lead-form--booking h2{margin:13px 0 18px!important;font-size:31px}.azkaban-artboard__lead-form--booking p:not(.lead-form__status){color:#d9d9d9;font:400 14px/1.35 Montserrat,Arial,sans-serif}.azkaban-artboard__lead-form--booking .azkaban-artboard__form-grid{display:grid;grid-template-columns:1fr 1fr;align-content:start}.azkaban-artboard__lead-form--booking .azkaban-artboard__consent{grid-column:span 2}.azkaban-artboard__lead-form--booking .azkaban-artboard__button{grid-column:span 2;justify-self:start}.azkaban-artboard__venues-heading{background:#0b0b0b}.azkaban-artboard__venues-heading>.azkaban-artboard__rail{padding-top:26px;text-align:center}.azkaban-artboard__venues-heading h2{margin-top:12px!important;font-size:30px}.azkaban-artboard__venues{background:#0b0b0b}.azkaban-artboard__venues>.azkaban-artboard__rail{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;padding-top:5px}.azkaban-artboard__venues a{padding:9px 12px;border:1px solid #7b7127;color:#ddd;font:600 11px/1 Montserrat,Arial,sans-serif}.azkaban-artboard__venues a:hover{background:var(--azkaban-yellow);color:#111}.azkaban-artboard__footer-spacer{background:#111;border-top:3px solid var(--azkaban-yellow)}.azkaban-artboard__footer{background:#111}.azkaban-artboard__footer-grid{display:grid;grid-template-columns:1.2fr 1fr 1.1fr 1fr;gap:40px;padding-top:46px}.azkaban-artboard__footer section{display:flex;flex-direction:column;gap:8px}.azkaban-artboard__footer h2{margin-bottom:4px!important;color:var(--azkaban-yellow);font-size:13px;letter-spacing:0}.azkaban-artboard__footer a,.azkaban-artboard__footer p{color:#d2d2d2;font:400 11px/1.25 Montserrat,Arial,sans-serif}.azkaban-artboard__footer-phone{color:var(--azkaban-yellow)!important;font:800 17px/1 Montserrat,Arial,sans-serif!important}.azkaban-artboard__copyright{background:#111;border-top:1px solid #4a4a4a}.azkaban-artboard__copyright>.azkaban-artboard__rail{display:flex;align-items:center;justify-content:space-between;color:#929292;font:400 11px/1 Montserrat,Arial,sans-serif}.azkaban-artboard__copyright a{color:var(--azkaban-yellow)!important;font:900 16px/.8 Montserrat,Arial,sans-serif}
+  @media (max-width:700px){.azkaban-artboard__record{height:var(--azkaban-record-mobile)}.azkaban-artboard__rail{width:350px}.azkaban-artboard__kicker{font-size:9px}.azkaban-artboard h2{font-size:25px}.azkaban-artboard__button{min-height:39px;padding:0 17px;font-size:10px}.azkaban-artboard__header nav{display:none}.azkaban-artboard__header-inner{padding:0 5px}.azkaban-artboard__brand{font-size:13px}.azkaban-artboard__header-phone{font-size:13px}.azkaban-artboard__hero{background-image:var(--azkaban-background-mobile)}.azkaban-artboard__hero-shade{background:linear-gradient(180deg,rgba(0,0,0,.87) 0%,rgba(0,0,0,.59) 57%,rgba(0,0,0,.31) 100%)}.azkaban-artboard__hero-copy{padding-top:54px}.azkaban-artboard__eyebrow{margin-bottom:12px!important;font-size:10px}.azkaban-artboard__hero h1{width:335px;font-size:32px;line-height:.98}.azkaban-artboard__hero-sub{width:305px;margin-top:18px!important;font-size:15px}.azkaban-artboard__pills{width:280px;flex-wrap:wrap;margin-top:21px}.azkaban-artboard__pills span{padding:6px 8px;font-size:9px}.azkaban-artboard__hero-actions{display:grid;gap:10px;margin-top:24px}.azkaban-artboard__breadcrumbs>.azkaban-artboard__rail{gap:6px;font-size:9px;overflow:hidden;white-space:nowrap}.azkaban-artboard__heading>.azkaban-artboard__rail{padding-top:26px}.azkaban-artboard__heading h2{width:340px;margin-top:10px!important}.azkaban-artboard__heading h2+p{width:320px;margin-top:11px!important;font-size:12px}.azkaban-artboard__package-grid{grid-template-columns:repeat(3,105px);gap:10px;width:350px;padding-top:19px}.azkaban-artboard__package{height:142px}.azkaban-artboard__package span{bottom:9px;left:8px;font-size:10px}.azkaban-artboard__packages-cta{bottom:27px}.azkaban-artboard__show-grid{grid-template-columns:repeat(4,1fr);gap:7px;padding-top:16px}.azkaban-artboard__show-card{height:178px}.azkaban-artboard__show-card span{bottom:27px;left:7px;right:5px;font-size:9px}.azkaban-artboard__show-card b{bottom:10px;left:7px;right:3px;font-size:6px}.azkaban-artboard__hall-heading>.azkaban-artboard__rail{padding-top:39px}.azkaban-artboard__hall-image{top:0;left:0;width:350px;height:196px;background-image:var(--azkaban-background-mobile)}.azkaban-artboard__hall-copy{top:178px;right:0;width:350px;min-height:371px;padding:20px}.azkaban-artboard__hall-copy h3{font-size:20px}.azkaban-artboard__hall-copy p{margin-top:10px!important;font-size:11px}.azkaban-artboard__hall-copy ul{margin:10px 0 13px;padding-left:15px;font-size:10px;line-height:1.36}.azkaban-artboard__quiz-heading>.azkaban-artboard__rail{padding-top:52px}.azkaban-artboard__quiz-heading h2{font-size:26px}.azkaban-artboard__quiz{padding-top:0}.azkaban-artboard__lead-form{width:350px;padding:24px 19px}.azkaban-artboard__lead-form>p{margin-bottom:16px!important;font-size:12px}.azkaban-artboard__form-grid{grid-template-columns:1fr;gap:10px}.azkaban-artboard__lead-form label{font-size:10px}.azkaban-artboard__lead-form input:not([type="checkbox"]){height:38px}.azkaban-artboard__consent{grid-column:auto;padding-top:3px;font-size:10px!important}.azkaban-artboard__form-grid>.azkaban-artboard__button{justify-self:start}.azkaban-artboard__reviews-heading>.azkaban-artboard__rail{padding-top:38px}.azkaban-artboard__review-rating{flex-wrap:wrap;gap:8px;margin-top:15px}.azkaban-artboard__review-rating b{font-size:25px}.azkaban-artboard__story-grid{display:block;padding-top:57px}.azkaban-artboard__story h2{width:300px}.azkaban-artboard__story-copy{margin-top:31px}.azkaban-artboard__story-copy p{margin-bottom:16px!important;font-size:13px;line-height:1.38}.azkaban-artboard__story-copy .azkaban-artboard__button{margin-top:1px}.azkaban-artboard__features>.azkaban-artboard__rail{padding-top:45px;text-align:left}.azkaban-artboard__features h2{font-size:25px}.azkaban-artboard__features-sub{font-size:13px}.azkaban-artboard__feature-grid{grid-template-columns:1fr;gap:9px;margin-top:25px}.azkaban-artboard__feature-grid article{min-height:0;padding:16px 17px}.azkaban-artboard__feature-grid b{float:left;width:45px;font-size:22px}.azkaban-artboard__feature-grid h3{margin:3px 0 7px 45px!important;font-size:15px}.azkaban-artboard__feature-grid p{margin-left:45px;font-size:11px}.azkaban-artboard__gallery-heading>.azkaban-artboard__rail{padding-top:18px;text-align:left}.azkaban-artboard__gallery-grid{display:block;width:350px;padding-top:0}.azkaban-artboard__gallery img{display:none}.azkaban-artboard__gallery img:first-child{display:block;width:350px;height:250px}.azkaban-artboard__trust-heading>.azkaban-artboard__rail{padding-top:43px}.azkaban-artboard__trust-heading h2{font-size:27px}.azkaban-artboard__trust-grid{grid-template-columns:1fr 1fr;gap:4px;padding-top:0}.azkaban-artboard__trust-grid article{min-height:228px;padding:19px 15px}.azkaban-artboard__trust-grid b{margin:11px 0;font-size:36px}.azkaban-artboard__trust-grid h3{font-size:14px}.azkaban-artboard__trust-note p{margin-top:13px!important;font-size:10px!important}.azkaban-artboard__alternatives>.azkaban-artboard__rail{padding-top:37px;text-align:left}.azkaban-artboard__alternatives h2{font-size:25px}.azkaban-artboard__alternatives-sub{font-size:12px}.azkaban-artboard__alternative-grid{grid-template-columns:repeat(5,125px);gap:9px;width:max-content;margin-top:26px}.azkaban-artboard__alternative-grid a{height:182px}.azkaban-artboard__alternative-grid span{bottom:10px;left:8px;font-size:10px}.azkaban-artboard__booking>.azkaban-artboard__rail{padding-top:22px}.azkaban-artboard__lead-form--booking{display:block;padding:23px 19px}.azkaban-artboard__lead-form--booking h2{margin:10px 0 12px!important;font-size:23px}.azkaban-artboard__lead-form--booking p:not(.lead-form__status){font-size:12px}.azkaban-artboard__lead-form--booking .azkaban-artboard__form-grid{display:grid;grid-template-columns:1fr 1fr;margin-top:16px}.azkaban-artboard__lead-form--booking .azkaban-artboard__consent{grid-column:span 2}.azkaban-artboard__lead-form--booking .azkaban-artboard__button{grid-column:span 2}.azkaban-artboard__venues-heading>.azkaban-artboard__rail{padding-top:28px}.azkaban-artboard__venues-heading h2{font-size:21px}.azkaban-artboard__venues>.azkaban-artboard__rail{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding-top:8px}.azkaban-artboard__venues a{padding:9px 8px;font-size:9px}.azkaban-artboard__footer-grid{display:grid;grid-template-columns:1fr;gap:24px;width:300px;padding-top:33px}.azkaban-artboard__footer h2{font-size:11px}.azkaban-artboard__footer a,.azkaban-artboard__footer p{font-size:10px}.azkaban-artboard__copyright>.azkaban-artboard__rail{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:16px;width:300px}.azkaban-artboard__copyright a{font-size:14px}}
+  @media (prefers-reduced-motion:reduce){.azkaban-artboard__button{transition:none}}
+</style>
+
+<style>
+  .azkaban-artboard__gallery-grid{grid-template-columns:repeat(4,1fr);grid-template-rows:400px}
+  .azkaban-artboard__gallery img:first-child{grid-row:auto}
+</style>
+
+<style>
+  .azkaban-artboard{background:#121212;--azkaban-yellow:#ffb400}
+  .azkaban-artboard mark{padding:0 6px;background:#ffb400;color:#080808}
+  .azkaban-artboard h2{font-family:Montserrat,Arial,sans-serif;font-weight:700;text-transform:none;letter-spacing:-.04em}
+
+  .azkaban-artboard__hero{background:#111 var(--azkaban-background-desktop) center top/1200px 550px no-repeat}
+  .azkaban-artboard__hero-shade{display:none}
+  .azkaban-artboard__hero-copy{padding-top:48px}
+  .azkaban-artboard__hero-title{width:540px;font:900 50px/.94 Montserrat,Arial,sans-serif;letter-spacing:-.05em}
+  .azkaban-artboard__hero-title mark{display:inline-block;padding:1px 6px 3px}
+  .azkaban-artboard__hero-title span{display:block;margin-top:3px;color:#fff}
+  .azkaban-artboard__hero h1{width:395px;margin-top:17px!important;font:400 28px/1.16 Montserrat,Arial,sans-serif;letter-spacing:-.025em;text-transform:none}
+  .azkaban-artboard__hero-sub{width:390px;margin-top:20px!important;font:500 16px/1.35 Montserrat,Arial,sans-serif}
+  .azkaban-artboard__hero-actions{gap:20px;margin-top:48px}
+  .azkaban-artboard__hero-actions .azkaban-artboard__button:first-child{width:320px}
+  .azkaban-artboard__hero-actions .azkaban-artboard__button:last-child{width:280px}
+  .azkaban-artboard__pills{position:absolute;right:22px;bottom:33px;margin:0;gap:22px}
+  .azkaban-artboard__pills span{padding:0;border:0;font-size:16px;font-weight:700}
+  .azkaban-artboard__breadcrumbs{background:#121212;color:#bcbcbc}
+  .azkaban-artboard__breadcrumbs>.azkaban-artboard__rail{font-size:16px;font-weight:300}
+  .azkaban-artboard__breadcrumbs b{color:#bcbcbc;font-weight:300}
+  .azkaban-artboard__bread-gap,.azkaban-artboard__divider{background:#121212}
+  .azkaban-artboard__heading{background:#121212}
+  .azkaban-artboard__heading>.azkaban-artboard__rail{padding-top:30px}
+  .azkaban-artboard__heading h2{width:1040px;margin:0!important;font-size:48px;line-height:.96}
+  .azkaban-artboard__heading h2+p{width:900px;margin-top:17px!important;color:#bcbcbc;font-size:28px;line-height:1.13}
+
+  .azkaban-artboard__packages{background:#121212}
+  .azkaban-artboard__package-grid{grid-template-columns:repeat(3,368px);gap:20px;padding-top:20px}
+  .azkaban-artboard__package{width:368px;height:381px;border:0;background:transparent}
+  .azkaban-artboard__package img{object-fit:contain}
+  .azkaban-artboard__package::after{display:none}
+  .azkaban-artboard__package span{display:none}
+  .azkaban-artboard__packages-cta{bottom:31px;border:0;border-radius:7px;padding:0 24px;font:600 16px/1 Montserrat,Arial,sans-serif;text-transform:none}
+
+  .azkaban-artboard__shows{background:#121212}
+  .azkaban-artboard__show-grid{grid-template-columns:repeat(4,276px);gap:20px 19px;padding-top:30px}
+  .azkaban-artboard__show-card{height:275px;border:2px solid rgba(255,180,0,.35);border-radius:20px;background:#161616}
+  .azkaban-artboard__show-card::after{inset:0;background:linear-gradient(180deg,rgba(0,0,0,.58),transparent 55%,rgba(0,0,0,.16))}
+  .azkaban-artboard__show-card img{opacity:1}
+  .azkaban-artboard__show-card span{top:23px;bottom:auto;left:22px;right:18px;font-size:22px;line-height:1.02}
+  .azkaban-artboard__show-card b{display:none}
+
+  .azkaban-artboard__hall{background:#121212}
+  .azkaban-artboard__hall-image{top:15px;left:0;width:660px;height:475px;background-position:center;background-size:cover;filter:none}
+  .azkaban-artboard__hall-copy{top:99px;right:0;width:460px;min-height:0;padding:0;border:0;background:transparent}
+  .azkaban-artboard__hall-copy h3{color:#fff;font-size:28px;text-transform:none}
+  .azkaban-artboard__hall-copy ul{margin:20px 0 29px;padding-left:22px;color:#bcbcbc;font-size:20px;line-height:1.48}
+  .azkaban-artboard__hall-copy .azkaban-artboard__button{border:0;border-radius:7px;font:600 16px/1 Montserrat,Arial,sans-serif;text-transform:none}
+
+  .azkaban-artboard__quiz-heading,.azkaban-artboard__quiz{background:#121212}
+  .azkaban-artboard__quiz-heading>.azkaban-artboard__rail{padding-top:42px;text-align:left}
+  .azkaban-artboard__quiz-heading h2{font-size:48px;line-height:.96}
+  .azkaban-artboard__quiz-heading h2+p{max-width:900px;margin:19px 0 0!important;font-size:28px;line-height:1.13}
+  .azkaban-artboard__quiz{background:#121212}
+  .azkaban-artboard__lead-form{border-color:#5a5a5a;background:#333}
+
+  .azkaban-artboard__reviews-heading{background:#121212}
+  .azkaban-artboard__reviews-heading>.azkaban-artboard__rail{padding-top:30px}
+  .azkaban-artboard__reviews-heading h2{width:770px;font-size:48px;line-height:.97}
+  .azkaban-artboard__review-badges{position:absolute;right:4px;top:16px;display:flex;align-items:center;gap:18px}
+  .azkaban-artboard__review-badges img:first-child{width:75px;height:127px;object-fit:contain}
+  .azkaban-artboard__review-badges img:last-child{width:64px;height:123px;object-fit:contain}
+
+  .azkaban-artboard__story{background:#121212}
+  .azkaban-artboard__story-grid{grid-template-columns:490px 570px;gap:100px;padding-top:45px}
+  .azkaban-artboard__story h2{font-size:48px;line-height:.98}
+  .azkaban-artboard__story-lead>p,.azkaban-artboard__story-copy p{margin-top:28px!important;color:#bcbcbc;font-size:20px;line-height:1.32}
+  .azkaban-artboard__story-copy p{margin:0 0 22px!important}
+  .azkaban-artboard__story-features-title{margin-top:18px!important;color:#fff!important;font-size:18px!important}
+  .azkaban-artboard__story-copy ul{margin:0;padding-left:26px;color:#bcbcbc;font-size:16px;line-height:1.48}
+  .azkaban-artboard__story-copy li::marker{content:'🏆  '}
+
+  .azkaban-artboard__features{background:#121212}
+  .azkaban-artboard__features>.azkaban-artboard__rail{padding-top:29px;text-align:left}
+  .azkaban-artboard__features h2{font-size:48px;line-height:.96}
+  .azkaban-artboard__features-sub{margin-top:18px!important;color:#bcbcbc;font-size:28px;line-height:1.13}
+  .azkaban-artboard__feature-grid{grid-template-columns:repeat(4,1fr);gap:20px;margin-top:38px}
+  .azkaban-artboard__feature-grid article{min-height:0;padding:0;border:0;background:transparent}
+  .azkaban-artboard__feature-grid img{display:block;width:80px;height:80px;object-fit:contain}
+  .azkaban-artboard__feature-grid h3{margin:19px 0 12px!important;font-size:22px;line-height:1.04;text-transform:none}
+  .azkaban-artboard__feature-grid p{color:#bcbcbc;font-size:20px;line-height:1.25}
+
+  .azkaban-artboard__gallery-heading,.azkaban-artboard__gallery{background:#121212}
+  .azkaban-artboard__gallery-heading>.azkaban-artboard__rail{padding-top:24px;text-align:left}
+  .azkaban-artboard__gallery-heading h2{font-size:48px}
+  .azkaban-artboard__gallery-grid{display:flex;align-items:flex-start;justify-content:center;width:1160px;padding-top:28px}
+  .azkaban-artboard__gallery img,.azkaban-artboard__gallery img:first-child{display:block;width:613px;height:463px;object-fit:cover;filter:none}
+
+  .azkaban-artboard__trust-heading{background:#121212;color:#fff}
+  .azkaban-artboard__trust-heading>.azkaban-artboard__rail{padding-top:31px}
+  .azkaban-artboard__trust-heading h2{width:1000px;margin:0!important;font-size:48px;line-height:.96}
+  .azkaban-artboard__trust{background:#151515;color:#fff}
+  .azkaban-artboard__trust-grid{grid-template-columns:repeat(4,260px);grid-template-rows:260px 260px;gap:20px 40px;padding-top:18px}
+  .azkaban-artboard__trust-grid article,.azkaban-artboard__trust-photo{width:260px;height:260px;min-height:0;margin:0;border:0;border-radius:16px;background:#333;overflow:hidden}
+  .azkaban-artboard__trust-stat{padding:24px 20px!important}
+  .azkaban-artboard__trust-stat>p{font-size:20px!important;font-weight:400!important}
+  .azkaban-artboard__trust-stat b{margin:12px 0!important;color:#ff9d00;font-size:76px!important;line-height:.88!important;letter-spacing:-.08em}
+  .azkaban-artboard__trust-stat h3{font-size:20px!important;line-height:1.04!important;text-transform:none!important}
+  .azkaban-artboard__trust-icon{display:grid;place-items:center!important;background:#ffae00!important}
+  .azkaban-artboard__trust-icon img{width:201px;height:200px;object-fit:contain}
+  .azkaban-artboard__trust-photo{display:block;object-fit:cover}
+  .azkaban-artboard__trust-note{padding:22px 20px!important;border-radius:16px!important;background:#333!important;color:#fff}
+  .azkaban-artboard__trust-note h3{color:#ffb400!important;font-size:25px!important;line-height:1.02!important}
+  .azkaban-artboard__trust-note p{margin-top:16px!important;color:#bcbcbc!important;font-size:16px!important;line-height:1.25!important}
+
+  .azkaban-artboard__alternatives{background:#121212}
+  .azkaban-artboard__alternatives>.azkaban-artboard__rail{padding-top:28px;text-align:left}
+  .azkaban-artboard__alternatives h2{width:1050px;margin:0!important;font-size:42px;line-height:.98}
+  .azkaban-artboard__alternatives-sub{margin-top:15px!important;color:#bcbcbc;font-size:24px;line-height:1.2}
+  .azkaban-artboard__alternative-grid{display:flex;gap:40px;width:1160px;margin-top:26px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .azkaban-artboard__alternative-grid::-webkit-scrollbar{display:none}
+  .azkaban-artboard__alternative-grid a{flex:0 0 360px;width:360px;height:360px;border-radius:16px;scroll-snap-align:start}
+  .azkaban-artboard__alternative-grid span{bottom:24px;left:24px;right:20px;font-size:20px;line-height:1.12;text-transform:none}
+  .azkaban-artboard__alternative-grid span small{display:block;margin-bottom:14px;font-size:12px;font-weight:300;letter-spacing:.12em;text-transform:none}
+
+  .azkaban-artboard__booking{background:#e9a61c var(--azkaban-background-desktop) center top/1200px 551px no-repeat}
+  .azkaban-artboard__booking>.azkaban-artboard__rail{padding-top:92px}
+  .azkaban-artboard__booking-decoration{position:absolute;z-index:1;width:auto;height:auto;object-fit:contain;pointer-events:none}
+  .azkaban-artboard__booking-decoration--1{top:305px;right:17%}
+  .azkaban-artboard__booking-decoration--2{bottom:8px;left:15%}
+  .azkaban-artboard__booking-decoration--3{bottom:4px;left:46%}
+  .azkaban-artboard__lead-form--booking{position:relative;z-index:2;grid-template-columns:520px 1fr;gap:34px;width:820px;padding:0;border:0;background:transparent}
+  .azkaban-artboard__lead-form--booking h2{margin:0 0 18px!important;color:#333;font-size:40px;line-height:.94;text-transform:none}
+  .azkaban-artboard__lead-form--booking p:not(.lead-form__status){color:#555;font-size:20px;line-height:1.18}
+  .azkaban-artboard__lead-form--booking .azkaban-artboard__form-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .azkaban-artboard__lead-form--booking label{color:#333;font-size:10px}
+  .azkaban-artboard__lead-form--booking input:not([type="checkbox"]){height:38px;border:0;background:#fff;color:#333}
+  .azkaban-artboard__lead-form--booking .azkaban-artboard__consent{color:#555!important;font-size:10px!important}
+  .azkaban-artboard__lead-form--booking .azkaban-artboard__consent a{color:#333!important}
+  .azkaban-artboard__lead-form--booking .azkaban-artboard__button{border:0;background:#fb7924;color:#fff!important;font-size:12px;text-transform:none}
+
+  .azkaban-artboard__venues-heading,.azkaban-artboard__venues{background:#121212}
+  .azkaban-artboard__venues-heading>.azkaban-artboard__rail{padding-top:20px;text-align:left}
+  .azkaban-artboard__venues-heading h2{margin:0!important;font-size:40px;line-height:1}
+  .azkaban-artboard__venues-heading p{width:900px;margin-top:11px!important;color:#bcbcbc;font-size:20px;line-height:1.2}
+  .azkaban-artboard__venues>.azkaban-artboard__rail{justify-content:flex-start;gap:20px;padding-top:0}
+  .azkaban-artboard__venues a{border:0;border-radius:7px;background:#ffb400;color:#333;font-size:14px;font-weight:700}
+  .azkaban-artboard__footer-spacer{border:0;background:#333}
+  .azkaban-artboard__footer,.azkaban-artboard__copyright{background:#333}
+  .azkaban-artboard__footer-grid{gap:35px;padding-top:35px}
+  .azkaban-artboard__footer h2{color:#ff9d00;font-size:13px}
+  .azkaban-artboard__footer a,.azkaban-artboard__footer p{color:#ddd;font-size:12px}
+  .azkaban-artboard__copyright{border:0}
+
+  @media (max-width:700px){
+    .azkaban-artboard__hero{background-size:390px 680px;background-position:center top}
+    .azkaban-artboard__hero-copy{padding-top:27px}
+    .azkaban-artboard__hero-title{width:210px;font-size:31px;line-height:.93}
+    .azkaban-artboard__hero-title mark{padding:1px 3px 2px}
+    .azkaban-artboard__hero h1{width:225px;margin-top:14px!important;font-size:17px;line-height:1.15}
+    .azkaban-artboard__hero-sub{width:210px;margin-top:15px!important;font-size:12px;line-height:1.35}
+    .azkaban-artboard__hero-actions{display:grid;width:215px;gap:9px;margin-top:18px}
+    .azkaban-artboard__hero-actions .azkaban-artboard__button:first-child,.azkaban-artboard__hero-actions .azkaban-artboard__button:last-child{width:215px}
+    .azkaban-artboard__hero-actions .azkaban-artboard__button{min-height:41px;padding:0;font-size:10px}
+    .azkaban-artboard__pills{right:20px;bottom:18px;width:165px;gap:8px;flex-wrap:wrap}
+    .azkaban-artboard__pills span{font-size:10px}
+    .azkaban-artboard__breadcrumbs>.azkaban-artboard__rail{font-size:9px}
+    .azkaban-artboard__heading>.azkaban-artboard__rail{padding-top:28px}
+    .azkaban-artboard__heading h2{width:320px;font-size:32px;line-height:.93}
+    .azkaban-artboard__heading h2+p{width:320px;margin-top:13px!important;font-size:18px;line-height:1.16}
+
+    .azkaban-artboard__package-grid{display:flex;flex-direction:column;align-items:flex-start;gap:16px;width:320px;padding-top:14px}
+    .azkaban-artboard__package{width:235px;height:244px}
+    .azkaban-artboard__packages-cta{bottom:25px;left:35px;transform:none;min-height:44px;padding:0 15px;font-size:10px}
+    .azkaban-artboard__show-grid{display:flex;gap:16px;width:350px;padding-top:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+    .azkaban-artboard__show-grid::-webkit-scrollbar{display:none}
+    .azkaban-artboard__show-card{flex:0 0 276px;height:275px;scroll-snap-align:start}
+    .azkaban-artboard__show-card span{top:21px;font-size:20px}
+
+    .azkaban-artboard__hall-image{top:0;left:0;width:350px;height:244px}
+    .azkaban-artboard__hall-copy{top:264px;left:0;width:350px;right:auto;padding:0}
+    .azkaban-artboard__hall-copy h3{font-size:19px}
+    .azkaban-artboard__hall-copy ul{margin:13px 0 18px;padding-left:18px;font-size:12px;line-height:1.38}
+    .azkaban-artboard__hall-copy .azkaban-artboard__button{min-height:40px;font-size:10px}
+
+    .azkaban-artboard__quiz-heading>.azkaban-artboard__rail{padding-top:41px}
+    .azkaban-artboard__quiz-heading h2{font-size:32px}
+    .azkaban-artboard__quiz-heading h2+p{max-width:320px;margin-top:14px!important;font-size:18px}
+    .azkaban-artboard__lead-form{background:#404040}
+
+    .azkaban-artboard__reviews-heading>.azkaban-artboard__rail{padding-top:33px}
+    .azkaban-artboard__reviews-heading h2{width:255px;font-size:28px;line-height:.95}
+    .azkaban-artboard__review-badges{right:10px;top:38px;gap:8px}
+    .azkaban-artboard__review-badges img:first-child{width:31px;height:53px}
+    .azkaban-artboard__review-badges img:last-child{width:27px;height:52px}
+
+    .azkaban-artboard__story-grid{display:block;padding-top:33px}
+    .azkaban-artboard__story h2{width:330px;font-size:31px}
+    .azkaban-artboard__story-lead>p,.azkaban-artboard__story-copy p{margin-top:20px!important;font-size:15px;line-height:1.28}
+    .azkaban-artboard__story-copy{margin-top:20px}
+    .azkaban-artboard__story-copy p{margin-bottom:15px!important}
+    .azkaban-artboard__story-copy ul{font-size:12px;line-height:1.35}
+    .azkaban-artboard__story-features-title{font-size:14px!important}
+
+    .azkaban-artboard__features>.azkaban-artboard__rail{padding-top:28px}
+    .azkaban-artboard__features h2{font-size:29px;line-height:.95}
+    .azkaban-artboard__features-sub{margin-top:16px!important;font-size:17px;line-height:1.22}
+    .azkaban-artboard__feature-grid{display:grid;grid-template-columns:1fr;gap:28px;margin-top:30px}
+    .azkaban-artboard__feature-grid article{min-height:0;padding-left:0}
+    .azkaban-artboard__feature-grid img{float:left;width:52px;height:52px;margin-right:15px}
+    .azkaban-artboard__feature-grid h3{min-height:24px;margin:5px 0 6px!important;font-size:17px}
+    .azkaban-artboard__feature-grid p{margin-left:67px;font-size:15px;line-height:1.23}
+
+    .azkaban-artboard__gallery-heading>.azkaban-artboard__rail{padding-top:16px}
+    .azkaban-artboard__gallery-heading h2{font-size:26px}
+    .azkaban-artboard__gallery-grid{display:flex;width:350px;padding-top:0;justify-content:center}
+    .azkaban-artboard__gallery img,.azkaban-artboard__gallery img:first-child{width:350px;height:250px}
+
+    .azkaban-artboard__trust-heading>.azkaban-artboard__rail{padding-top:38px}
+    .azkaban-artboard__trust-heading h2{width:340px;font-size:28px;line-height:.94}
+    .azkaban-artboard__trust-grid{grid-template-columns:repeat(2,165px);grid-template-rows:repeat(4,165px);gap:10px 20px;padding-top:18px}
+    .azkaban-artboard__trust-grid article,.azkaban-artboard__trust-photo{width:165px;height:165px;border-radius:10px}
+    .azkaban-artboard__trust-stat{padding:14px 12px!important}
+    .azkaban-artboard__trust-stat>p{font-size:12px!important}
+    .azkaban-artboard__trust-stat b{margin:8px 0!important;font-size:48px!important}
+    .azkaban-artboard__trust-stat h3{font-size:12px!important}
+    .azkaban-artboard__trust-icon img{width:130px;height:130px}
+    .azkaban-artboard__trust-note{padding:15px 12px!important}
+    .azkaban-artboard__trust-note h3{font-size:16px!important}
+    .azkaban-artboard__trust-note p{margin-top:10px!important;font-size:10px!important}
+
+    .azkaban-artboard__alternatives>.azkaban-artboard__rail{padding-top:31px}
+    .azkaban-artboard__alternatives h2{width:350px;font-size:29px;line-height:.95}
+    .azkaban-artboard__alternatives-sub{margin-top:13px!important;font-size:16px}
+    .azkaban-artboard__alternative-grid{width:350px;gap:18px;margin-top:22px}
+    .azkaban-artboard__alternative-grid a{flex-basis:300px;width:300px;height:300px}
+    .azkaban-artboard__alternative-grid span{bottom:18px;left:18px;font-size:16px}
+    .azkaban-artboard__alternative-grid span small{margin-bottom:10px;font-size:9px}
+
+    .azkaban-artboard__booking{background-size:390px 476px}
+    .azkaban-artboard__booking>.azkaban-artboard__rail{padding-top:35px}
+    .azkaban-artboard__booking-decoration--1{top:275px;right:4%;width:74px}
+    .azkaban-artboard__booking-decoration--2{bottom:2px;left:2%;width:75px}
+    .azkaban-artboard__booking-decoration--3{bottom:0;left:43%;width:82px}
+    .azkaban-artboard__lead-form--booking{display:block;width:300px;padding:0}
+    .azkaban-artboard__lead-form--booking h2{font-size:23px}
+    .azkaban-artboard__lead-form--booking p:not(.lead-form__status){font-size:12px}
+    .azkaban-artboard__lead-form--booking .azkaban-artboard__form-grid{grid-template-columns:1fr 1fr;margin-top:12px}
+    .azkaban-artboard__lead-form--booking input:not([type="checkbox"]){height:31px}
+    .azkaban-artboard__lead-form--booking .azkaban-artboard__button{min-height:33px;font-size:10px}
+
+    .azkaban-artboard__venues-heading>.azkaban-artboard__rail{padding-top:18px}
+    .azkaban-artboard__venues-heading h2{font-size:28px}
+    .azkaban-artboard__venues-heading p{width:330px;font-size:13px}
+    .azkaban-artboard__venues>.azkaban-artboard__rail{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding-top:8px}
+    .azkaban-artboard__venues a{padding:10px 6px;font-size:9px;text-align:center}
+    .azkaban-artboard__footer,.azkaban-artboard__copyright{background:#333}
+    .azkaban-artboard__footer-grid{gap:20px;padding-top:28px}
+  }
+</style>

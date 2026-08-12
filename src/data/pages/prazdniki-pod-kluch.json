@@ -20,165 +20,356 @@
   "sections": [
     {
       "kind": "hero",
-      "variant": "light",
+      "composition": "podkluch-artboard",
       "fullBleed": true,
       "hideSharedHeader": true,
       "heightDesktop": 910,
       "heightMobile": 1100,
       "h1": "Детские праздники и дни рождения",
-      "up": "Детские праздники",
-      "sub": "Дни рождения и праздники «под ключ». Мы развлекаем детей, пока вы отдыхаете.",
+      "city": "В Ростове-на-Дону",
+      "sub": "Дни рождения и праздники «под ключ». Мы развлекаем детей пока вы отдыхаете",
+      "benefit": "Много локаций и квестов: Гарри Поттер, Бумажный дом, Ночь в музее, Дом призраков, Уэнсдей и многое другое",
+      "videoLabel": "Видео",
       "buttons": [
         { "t": "Получить бонус", "href": "#prazdnik" }
       ],
-      "bg": "/assets/q/5dd1d9337f.webp",
-      "bgset": {
-        "760": "/assets/q/3ac267b243.webp",
-        "1200": "/assets/q/70d009d8af.webp",
-        "1600": "/assets/q/5dd1d9337f.webp"
-      }
-    },
-    {
-      "kind": "cards",
-      "id": "igry",
-      "title": "Выберите игры",
-      "subtitle": "Квест-шоу для активного праздника",
-      "variant": "poster",
-      "items": [
-        { "t": "Майнкрафт", "href": "/minecraft", "img": "/assets/q/761e33a998.webp" },
-        { "t": "Уэнсдей. Потерянная душа", "href": "/wednesday-poteryannaya-dusha", "img": "/assets/q/aa88f8ca34.webp" },
-        { "t": "Амонг Ас", "href": "/among_us", "img": "/assets/q/80d439303c.webp" },
-        { "t": "Гарри Поттер и Кубок огня", "href": "/garri-potter-i-kubok-ognya", "img": "/assets/q/c9eeb7134d.webp" },
-        { "t": "Бегущий в лабиринте", "href": "/beguschij_v_labirinte", "img": "/assets/q/da6a813157.webp" },
-        { "t": "Игра в Кальмара", "href": "/igra_v_kalmara", "img": "/assets/q/4d2937e385.webp" }
-      ]
-    },
-    {
-      "kind": "cards",
-      "title": "Прятки и хоррор-прятки",
-      "subtitle": "Программы из живого каталога праздника",
-      "variant": "poster",
-      "items": [
-        { "t": "Прятки KIDS", "href": "/pryatki_kids", "img": "/assets/q/8a5eecd29d.webp" },
-        { "t": "Прятки. Портал в другое измерение", "href": "/pryatki_portal", "img": "/assets/q/17543bb600.webp" },
-        { "t": "Прятки в темноте", "href": "/pryatki_v_temnote", "img": "/assets/q/5e881f14ae.webp" },
-        { "t": "Техасская резня бензопилой", "href": "/tekhasskaya-reznya-benzopiloj", "img": "/assets/q/955f82b378.webp" },
-        { "t": "Оно", "href": "/ono", "img": "/assets/q/e450d8e388.webp" },
-        { "t": "Звонок", "href": "/zvonok", "img": "/assets/q/7e6b2dde60.webp" }
-      ]
-    },
-    {
-      "kind": "cards",
-      "title": "Квесты для праздника",
-      "subtitle": "Выберите сценарий и площадку",
-      "variant": "poster",
-      "items": [
-        { "t": "Психбольница", "href": "/kvest_v_realnosti_psihbolnitsa", "img": "/assets/q/25027ab56f.webp" },
-        { "t": "Шерлок Холмс", "href": "/kvest_v_realnosti_sherlock_holms", "img": "/assets/q/bd10282503.webp" },
-        { "t": "Коралина в Стране Кошмаров", "href": "/kvest_v_realnosti_koralina", "img": "/assets/q/869b04fbdb.webp" },
-        { "t": "Гарри Поттер и Последний Крестраж", "href": "/kvest_v_realnosti_harry_potter_i_krestrazh", "img": "/assets/q/1e958119ed.webp" },
-        { "t": "Ночь в музее. Ограбление", "href": "/kvest_v_realnosti_noch_v_museum_ograblenie", "img": "/assets/q/7d972e47c9.webp" },
-        { "t": "Дом призраков", "href": "/kvest_v_realnosti_dom_prizrakov", "img": "/assets/q/7f1a4a0b91.webp" }
-      ]
-    },
-    {
-      "kind": "tiles",
-      "title": "Шоу-программы",
-      "subtitle": "Дополнительные услуги из оригинальной программы праздника",
-      "items": [
-        { "t": "Нащупал" },
-        { "t": "Мафия" },
-        { "t": "Квиз Баттл" },
-        { "t": "Музыкалити" },
-        { "t": "Распределительная шляпа" },
-        { "t": "Попробуй объяснить" },
-        { "t": "Любимый герой" },
-        { "t": "Ютуб пати" }
-      ]
-    },
-    {
-      "kind": "tiles",
-      "title": "Мастер-классы",
-      "items": [
-        { "t": "Сливочное пиво", "img": "/assets/q/1ffb0a5c31.webp" },
-        { "t": "Волшебные палочки", "img": "/assets/q/58e53e7022.webp" },
-        { "t": "Космос в банке", "img": "/assets/q/c7e518b333.webp" },
-        { "t": "Тай-дай", "img": "/assets/q/36df4d4d68.webp" },
-        { "t": "Роспись", "img": "/assets/q/a9aa910814.webp" }
-      ]
-    },
-    {
-      "kind": "tiles",
-      "title": "Дополнения, которые украсят праздник",
-      "items": [
-        { "t": "Вынос торта любимым героем", "img": "/assets/q/a360040221.webp" },
-        { "t": "Банкетное меню", "img": "/assets/q/1f5120f76e.webp" },
-        { "t": "Тематические торты", "img": "/assets/q/df78826d3a.webp" },
-        { "t": "Профессиональные актёры", "img": "/assets/q/e2ba648872.webp" },
-        { "t": "Профессиональный фотограф", "img": "/assets/q/4067e0cef7.webp" }
-      ]
-    },
-    {
-      "kind": "halls",
-      "title": "Выберите зал для праздника",
-      "items": [
+      "bg": "/assets/static.tildacdn.com/tild6265-6632-4839-b363-653738663762/ea43ee19-50d6-4025-9.png",
+      "layers": [
         {
-          "t": "пр-т Соколова, 23",
-          "href": "/sokolova23",
-          "capacity": "До 12 человек",
-          "equipment": ["Магические уроки", "Шпионское приключение", "Страшные тайны", "Свето-музыка и стереозвук", "Праздничная сервировка стола"],
-          "img": "/assets/q/96302b2fe2.webp"
+          "key": "balloon",
+          "src": "/assets/static.tildacdn.com/tild6436-3538-4636-a461-653734623439/24fe0f2f-ffa8-42ae-8.png",
+          "intrinsic": { "width": 843, "height": 1497 },
+          "desktop": { "top": 59, "left": 1024, "width": 210, "height": 374 },
+          "mobile": { "top": 250, "left": 210, "width": 210, "height": 374 }
         },
         {
-          "t": "Социалистическая, 186",
-          "href": "/socialicheskaya186",
-          "capacity": "До 12 человек",
-          "equipment": ["Квест «Ограбление банка. Бумажный дом»", "Свето-музыка и стереозвук", "Комфортабельная зона ожидания", "Праздничная сервировка"],
-          "img": "/assets/q/d8a336272a.webp"
+          "key": "kids",
+          "src": "/assets/static.tildacdn.com/tild6265-6632-4839-b363-653738663762/ea43ee19-50d6-4025-9.png",
+          "intrinsic": { "width": 1680, "height": 1471 },
+          "desktop": { "top": 83, "left": 355, "width": 944, "height": 827 },
+          "mobile": { "top": 285, "left": -95, "width": 944, "height": 827 }
         },
         {
-          "t": "Красноармейская, 103",
-          "href": "/krasnormerskaya103",
-          "capacity": "До 12 человек",
-          "equipment": ["Таинственное приключение", "Пугающая атмосфера квеста", "Мистические загадки", "Свето-музыка и стереозвук"],
-          "img": "/assets/q/028229a807.webp"
+          "key": "confetti",
+          "src": "/assets/static.tildacdn.com/tild6137-6463-4137-b634-633131623832/833024e9-f82c-42e9-a.png",
+          "intrinsic": { "width": 437, "height": 678 },
+          "desktop": { "top": 137, "left": -97, "width": 101, "height": 161 },
+          "mobile": { "top": 137, "left": -67, "width": 101, "height": 161 }
         },
         {
-          "t": "пер. Гвардейский, 61",
-          "href": "/guardeskypereulog61",
-          "capacity": "До 12 человек",
-          "equipment": ["Квест «Шерлок Холмс»", "Квест «Психбольница»", "Уникальный дизайн комнаты отдыха", "Праздничная сервировка"],
-          "img": "/assets/q/1deeeb06e8.webp"
+          "key": "burst",
+          "src": "/assets/static.tildacdn.com/tild3037-3062-4361-a566-333631623231/447119e8-32a9-4300-b.png",
+          "intrinsic": { "width": 748, "height": 748 },
+          "desktop": { "top": 246, "left": 485, "width": 187, "height": 187 },
+          "mobile": { "top": 326, "left": -9, "width": 115, "height": 115 }
         },
         {
-          "t": "ул. Магнитогорская, 1",
-          "href": "/magnitogorskaya1",
-          "capacity": "До 20 человек",
-          "equipment": ["Лабиринт площадью 150 кв. м", "Девять сценариев", "Две комнаты отдыха", "Свето-музыка и стереозвук"],
-          "img": "/assets/q/83db4ae2f4.webp"
+          "key": "cta-icon",
+          "src": "/assets/static.tildacdn.com/tild3338-6439-4466-b038-303931333530/9f14ec0d-9aa4-437f-9.png",
+          "intrinsic": { "width": 200, "height": 216 },
+          "desktop": { "top": 507, "left": 293, "width": 50, "height": 54 },
+          "mobile": { "top": 782, "left": 265, "width": 50, "height": 54 }
+        },
+        {
+          "key": "standard-video",
+          "type": "video",
+          "label": "Видео о программе Стандарт",
+          "src": "/assets/static.tildacdn.com/tild6362-6131-4236-b636-623238633530/f43d2e7f-e453-4fd0-8.png",
+          "intrinsic": { "width": 732, "height": 1060 },
+          "desktop": { "top": 621, "left": 22, "width": 183, "height": 265 },
+          "mobile": { "top": 893, "left": -10, "width": 110, "height": 182 }
+        },
+        {
+          "key": "super-video",
+          "type": "video",
+          "label": "Видео о программе Супер",
+          "src": "/assets/static.tildacdn.com/tild6534-3438-4338-a632-383730633365/e64f36b3-0c6e-4eb1-a.png",
+          "intrinsic": { "width": 732, "height": 1060 },
+          "desktop": { "top": 621, "left": 217, "width": 183, "height": 265 },
+          "mobile": { "top": 893, "left": 104, "width": 110, "height": 182 }
+        },
+        {
+          "key": "maxi-video",
+          "type": "video",
+          "label": "Видео о программе Макси",
+          "src": "/assets/static.tildacdn.com/tild6431-6463-4730-b234-633931636663/6478939a-9f3f-4d00-9.png",
+          "intrinsic": { "width": 732, "height": 1060 },
+          "desktop": { "top": 621, "left": 412, "width": 183, "height": 265 },
+          "mobile": { "top": 893, "left": 219, "width": 110, "height": 182 }
         }
       ]
     },
-  {
-   "kind": "gallery",
-      "id": "gallery",
-      "title": "Фото с наших мероприятий",
-      "photos": [
-        "/assets/q/cd2e630f54.webp",
-        "/assets/q/04d24a34db.webp",
-        "/assets/q/0d15bc7e16.webp",
-        "/assets/q/20cd23b3c4.webp",
-        "/assets/q/077e819ab0.webp",
-        "/assets/q/66dbe30a34.webp",
-        "/assets/q/16557413bc.webp",
-    "/assets/q/05cc9d9e3f.webp"
-   ]
-  },
-  {
-   "kind": "reviews",
-   "title": "Что говорят о нас",
-   "limit": 8
-  },
+    {
+      "kind": "podkluch-programs",
+      "title": "Выберите программу для вашего праздника",
+      "items": [
+        {
+          "name": "Стандарт",
+          "buttonWidth": "71.84%",
+          "src": "/assets/static.tildacdn.com/tild6464-6161-4364-a339-336563343263/__-2.png",
+          "intrinsic": { "width": 1200, "height": 1481 }
+        },
+        {
+          "name": "Супер",
+          "buttonWidth": "74.71%",
+          "src": "/assets/static.tildacdn.com/tild6639-3434-4262-a365-376339336161/__-2.png",
+          "intrinsic": { "width": 1201, "height": 1481 }
+        },
+        {
+          "name": "Макси",
+          "buttonWidth": "74.71%",
+          "src": "/assets/static.tildacdn.com/tild6338-3765-4164-b038-336430313236/__-2.png",
+          "intrinsic": { "width": 1201, "height": 1481 }
+        }
+      ],
+      "cta": "Узнать свободную дату",
+      "href": "#prazdnik"
+    },
+    {
+      "kind": "podkluch-games",
+      "id": "igry",
+      "sourceRecords": ["rec679968954", "rec677181801", "rec677181811", "rec707324259", "rec677181809", "rec707324258", "rec677181802", "rec677181803", "rec748973726", "rec748971024"],
+      "heading": { "prefix": "Выберите", "accent": "игры" },
+      "tabs": [
+        { "id": "all", "label": "ВСЕ ИГРЫ" },
+        { "id": "quest-show", "label": "КВЕСТ-ШОУ", "mark": "✪" },
+        { "id": "hide", "label": "ПРЯТКИ", "mark": "✪" },
+        { "id": "quest", "label": "КВЕСТЫ" },
+        { "id": "horror", "label": "ХОРРОР" }
+      ],
+      "groups": [
+        {
+          "id": "quest-show",
+          "sourceRecord": "rec707324259",
+          "title": "Квест-шоу",
+          "desktopHeight": 850,
+          "mobileHeight": 1944,
+          "items": [
+            { "t": "Майнкрафт", "href": "/minecraft", "img": "/assets/static.tildacdn.com/tild3132-6661-4631-a163-663638303761/photo.jpg", "ctaImg": "/assets/static.tildacdn.com/tild6534-3633-4261-b836-653764666561/8.png", "duration": "60 мин", "players": "2-24", "age": "6+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 122, "left": 22, "durationTop": 50, "playersTop": 83, "ageTop": 21, "titleTop": 185, "addressTop": 221, "ctaTop": 256 }, "mobile": { "top": 82, "left": 0, "durationTop": 47, "playersTop": 80, "ageTop": 17, "titleTop": 160, "addressTop": 194, "ctaTop": 229 } },
+            { "t": "Уэнздей. Украденная вещь", "href": "/wednesday_ukradennaya_vesch", "img": "/assets/static.tildacdn.com/tild6639-3432-4030-b534-653564653565/photo.png", "ctaImg": "/assets/static.tildacdn.com/tild6262-3336-4030-b234-633730306564/8.png", "duration": "60 мин", "players": "2-24", "age": "9+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 123, "left": 422, "durationTop": 49, "playersTop": 82, "ageTop": 20, "titleTop": 180, "addressTop": 216, "ctaTop": 255 }, "mobile": { "top": 387, "left": 0, "durationTop": 52, "playersTop": 85, "ageTop": 22, "titleTop": 130, "addressTop": 194, "ctaTop": 229 } },
+            { "t": "Амонг Ас", "href": "/among_us", "img": "/assets/static.tildacdn.com/tild3461-3638-4839-b762-326438376439/photo.png", "ctaImg": "/assets/static.tildacdn.com/tild3836-3363-4263-b364-663639633436/8.png", "duration": "60 мин", "players": "2-24", "age": "6+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 123, "left": 821, "durationTop": 49, "playersTop": 82, "ageTop": 20, "titleTop": 180, "addressTop": 216, "ctaTop": 255 }, "mobile": { "top": 695, "left": 0, "durationTop": 50, "playersTop": 83, "ageTop": 20, "titleTop": 160, "addressTop": 192, "ctaTop": 229 } },
+            { "t": "Гарри Поттер и Кубок огня", "href": "/garri-potter-i-kubok-ognya", "img": "/assets/static.tildacdn.com/tild3332-3938-4331-a335-616663393862/_____.jpg", "ctaImg": "/assets/static.tildacdn.com/tild3435-3464-4339-b730-363863653365/8.png", "duration": "60 мин", "players": "2-24", "age": "9+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 480, "left": 23, "durationTop": 52, "playersTop": 85, "ageTop": 23, "titleTop": 183, "addressTop": 219, "ctaTop": 258 }, "mobile": { "top": 1004, "left": 0, "durationTop": 46, "playersTop": 79, "ageTop": 16, "titleTop": 132, "addressTop": 196, "ctaTop": 228 } },
+            { "t": "Бегущий в лабиринте", "href": "/beguschij_v_labirinte", "img": "/assets/static.tildacdn.com/tild3537-3932-4835-a238-393030646235/3.png", "ctaImg": "/assets/static.tildacdn.com/tild3638-6264-4237-b062-646161343632/8.png", "duration": "60 мин", "players": "2-24", "age": "12+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 480, "left": 820, "durationTop": 51, "playersTop": 84, "ageTop": 22, "titleTop": 182, "addressTop": 218, "ctaTop": 257 }, "mobile": { "top": 1309, "left": 0, "durationTop": 51, "playersTop": 84, "ageTop": 21, "titleTop": 152, "addressTop": 183, "ctaTop": 228 } },
+            { "t": "Игра в Кальмара", "href": "/igra_v_kalmara", "img": "/assets/static.tildacdn.com/tild3739-3861-4237-b434-333732383561/photo.png", "ctaImg": "/assets/static.tildacdn.com/tild3631-3836-4531-b039-303431663735/8.png", "duration": "60 мин", "players": "2-24", "age": "9+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 480, "left": 420, "durationTop": 50, "playersTop": 83, "ageTop": 21, "titleTop": 185, "addressTop": 221, "ctaTop": 256 }, "mobile": { "top": 1614, "left": 0, "durationTop": 46, "playersTop": 79, "ageTop": 16, "titleTop": 152, "addressTop": 191, "ctaTop": 228 } }
+          ]
+        },
+        {
+          "id": "hide",
+          "sourceRecord": "rec707324258",
+          "title": "Прятки",
+          "desktopHeight": 490,
+          "mobileHeight": 1034,
+          "items": [
+            { "t": "Прятки KIDS", "href": "/pryatki_kids", "img": "/assets/static.tildacdn.com/tild3462-3335-4439-a234-316530653936/photo.png", "ctaImg": "/assets/static.tildacdn.com/tild6632-3261-4832-a634-613166356430/8.png", "duration": "60 мин", "players": "2-24", "age": "6+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 121, "left": 422, "durationTop": 49, "playersTop": 82, "ageTop": 20, "titleTop": 182, "addressTop": 218, "ctaTop": 256 }, "mobile": { "top": 89, "left": 0, "durationTop": 51, "playersTop": 84, "ageTop": 21, "titleTop": 156, "addressTop": 188, "ctaTop": 228 } },
+            { "t": "Прятки. Портал в другое измерение", "href": "/pryatki_portal", "img": "/assets/static.tildacdn.com/tild3536-6331-4565-b461-316465303434/2.png", "ctaImg": "/assets/static.tildacdn.com/tild3434-3737-4263-a364-616564326139/8.png", "duration": "60 мин", "players": "2-24", "age": "6+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 121, "left": 822, "durationTop": 49, "playersTop": 82, "ageTop": 20, "titleTop": 152, "addressTop": 218, "ctaTop": 255 }, "mobile": { "top": 395, "left": 0, "durationTop": 49, "playersTop": 82, "ageTop": 19, "titleTop": 133, "addressTop": 183, "ctaTop": 227 } },
+            { "t": "Прятки в темноте", "href": "/pryatki_v_temnote", "img": "/assets/static.tildacdn.com/tild3631-3837-4233-b766-626566656633/_.jpg", "ctaImg": "/assets/static.tildacdn.com/tild3837-6538-4232-a237-386166376139/8.png", "duration": "60 мин", "players": "2-24", "age": "9+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 121, "left": 22, "durationTop": 50, "playersTop": 83, "ageTop": 21, "titleTop": 182, "addressTop": 218, "ctaTop": 256 }, "mobile": { "top": 703, "left": 0, "durationTop": 47, "playersTop": 80, "ageTop": 17, "titleTop": 159, "addressTop": 190, "ctaTop": 227 } }
+          ]
+        },
+        {
+          "id": "quest",
+          "sourceRecord": "rec677181803",
+          "title": "Квесты",
+          "desktopHeight": 1640,
+          "mobileHeight": 3960,
+          "subheading": { "t": "Нестандартные квесты", "desktop": { "top": 1179, "left": 349 }, "mobile": { "top": 2943, "left": 14 } },
+          "items": [
+            { "t": "Гарри и последний крестраж", "href": "/kvest_v_realnosti_harry_potter_i_krestrazh", "img": "/assets/static.tildacdn.com/tild3436-6536-4239-b265-303332356330/image_4.png", "ctaImg": "/assets/static.tildacdn.com/tild6534-3633-4261-b836-653764666561/8.png", "duration": "60 мин", "players": "2-10", "age": "6+", "address": "пр-т Соколова, 23", "desktop": { "top": 120, "left": 20, "durationTop": 50, "playersTop": 83, "ageTop": 31, "titleTop": 184, "addressTop": 229, "ctaTop": 251 }, "mobile": { "top": 110, "left": 1, "durationTop": 47, "playersTop": 80, "ageTop": 23, "titleTop": 160, "addressTop": 201, "ctaTop": 226 } },
+            { "t": "Ночь в музее. Ограбление", "href": "/kvest_v_realnosti_noch_v_museum_ograblenie", "img": "/assets/static.tildacdn.com/tild6263-3432-4761-b965-303430336262/_.png", "ctaImg": "/assets/static.tildacdn.com/tild6262-3336-4030-b234-633730306564/8.png", "duration": "60 мин", "players": "2-10", "age": "6+", "address": "пр-т Соколова, 23", "desktop": { "top": 120, "left": 420, "durationTop": 50, "playersTop": 83, "ageTop": 21, "titleTop": 183, "addressTop": 228, "ctaTop": 251 }, "mobile": { "top": 415, "left": 0, "durationTop": 52, "playersTop": 85, "ageTop": 25, "titleTop": 159, "addressTop": 197, "ctaTop": 226 } },
+            { "t": "Дом призраков", "href": "/kvest_v_realnosti_dom_prizrakov", "img": "/assets/static.tildacdn.com/tild6664-3836-4961-a538-636136363339/_.jpg", "ctaImg": "/assets/static.tildacdn.com/tild3836-3363-4263-b364-663639633436/8.png", "duration": "60 мин", "players": "2-10", "age": "12+", "address": "пр-т Соколова, 23", "desktop": { "top": 120, "left": 820, "durationTop": 50, "playersTop": 83, "ageTop": 21, "titleTop": 183, "addressTop": 228, "ctaTop": 251 }, "mobile": { "top": 723, "left": 1, "durationTop": 50, "playersTop": 83, "ageTop": 29, "titleTop": 160, "addressTop": 193, "ctaTop": 226 } },
+            { "t": "Ограбление банка. Бумажный дом", "href": "/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom", "img": "/assets/static.tildacdn.com/tild6239-6538-4831-b438-393632346634/image_8.png", "ctaImg": "/assets/static.tildacdn.com/tild6534-3633-4261-b836-653764666561/8.png", "duration": "60 мин", "players": "2-10", "age": "6+", "address": "Социалистическая, 186", "desktop": { "top": 468, "left": 20, "durationTop": 50, "playersTop": 83, "ageTop": 23, "titleTop": 159, "addressTop": 229, "ctaTop": 256 }, "mobile": { "top": 1342, "left": 1, "durationTop": 47, "playersTop": 80, "ageTop": 23, "titleTop": 134, "addressTop": 201, "ctaTop": 226 } },
+            { "t": "Уэнздей. Новая битва", "href": "/kvest_v_realnosti_wednesday", "img": "/assets/static.tildacdn.com/tild3863-3062-4336-b566-333335396135/Desktop_-_11.png", "ctaImg": "/assets/static.tildacdn.com/tild6262-3336-4030-b234-633730306564/8.png", "duration": "60 мин", "players": "2-10", "age": "9+", "address": "Красноармейская, 103", "desktop": { "top": 469, "left": 420, "durationTop": 49, "playersTop": 82, "ageTop": 22, "titleTop": 180, "addressTop": 227, "ctaTop": 255 }, "mobile": { "top": 1033, "left": 1, "durationTop": 52, "playersTop": 85, "ageTop": 25, "titleTop": 160, "addressTop": 197, "ctaTop": 226 } },
+            { "t": "Психбольница", "href": "/kvest_v_realnosti_psihbolnitsa", "img": "/assets/static.tildacdn.com/tild3030-6535-4132-b031-643164646536/photo.jpg", "ctaImg": "/assets/static.tildacdn.com/tild3836-3363-4263-b364-663639633436/8.png", "duration": "60 мин", "players": "2-10", "age": "12+", "address": "пер. Гвардейский, 61", "desktop": { "top": 469, "left": 820, "durationTop": 49, "playersTop": 82, "ageTop": 22, "titleTop": 180, "addressTop": 227, "ctaTop": 255 }, "mobile": { "top": 1658, "left": 1, "durationTop": 50, "playersTop": 83, "ageTop": 25, "titleTop": 160, "addressTop": 193, "ctaTop": 226 } },
+            { "t": "Шерлок Холмс", "href": "/kvest_v_realnosti_sherlock_holms", "img": "/assets/static.tildacdn.com/tild3736-3836-4132-b430-653734356133/image_7.png", "ctaImg": "/assets/static.tildacdn.com/tild3431-3038-4362-b232-386265383466/8.png", "duration": "60 мин", "players": "2-10", "age": "9+", "address": "пер. Гвардейский, 61", "desktop": { "top": 823, "left": 20, "durationTop": 48, "playersTop": 81, "ageTop": 23, "titleTop": 180, "addressTop": 223, "ctaTop": 255 }, "mobile": { "top": 2627, "left": 0, "durationTop": 48, "playersTop": 81, "ageTop": 25, "titleTop": 153, "addressTop": 188, "ctaTop": 225 } },
+            { "t": "Коралина в Стране Кошмаров", "href": "/kvest_v_realnosti_koralina", "img": "/assets/static.tildacdn.com/tild3966-6335-4263-b336-613765626566/noroot.jpg", "ctaImg": "/assets/static.tildacdn.com/tild3631-3836-4531-b039-303431663735/8.png", "duration": "60 мин", "players": "2-10", "age": "12+", "address": "Красноармейская, 103", "desktop": { "top": 824, "left": 420, "durationTop": 52, "playersTop": 85, "ageTop": 24, "titleTop": 148, "addressTop": 220, "ctaTop": 254 }, "mobile": { "top": 2302, "left": 0, "durationTop": 46, "playersTop": 79, "ageTop": 22, "titleTop": 124, "addressTop": 193, "ctaTop": 227 } },
+            { "t": "Замок Графа Дракулы", "href": "/kvest_v_realnosti_zamok_drakuly", "img": "/assets/static.tildacdn.com/tild3139-6237-4963-b065-393234363734/photo.png", "ctaImg": "/assets/static.tildacdn.com/tild6262-3336-4030-b234-633730306564/8.png", "duration": "60 мин", "players": "2-10", "age": "9+", "address": "Красноармейская, 103", "desktop": { "top": 824, "left": 819, "durationTop": 49, "playersTop": 82, "ageTop": 20, "titleTop": 180, "addressTop": 227, "ctaTop": 254 }, "mobile": { "top": 1977, "left": 0, "durationTop": 52, "playersTop": 85, "ageTop": 25, "titleTop": 160, "addressTop": 197, "ctaTop": 229 } },
+            { "t": "Дикий Запад. Ролевой квест.", "href": "/kvest_v_realnosti_zapad", "img": "/assets/static.tildacdn.com/tild3164-6665-4035-b662-353137663663/__.png", "ctaImg": "/assets/static.tildacdn.com/tild3837-6538-4232-a237-386166376139/8.png", "duration": "90 мин", "players": "4-12", "age": "12+", "address": "пер. Гвардейский, 61", "desktop": { "top": 1279, "left": 20, "durationTop": 50, "playersTop": 83, "ageTop": 21, "titleTop": 153, "addressTop": 224, "ctaTop": 255 }, "mobile": { "top": 3623, "left": 0, "durationTop": 47, "playersTop": 80, "ageTop": 17, "titleTop": 139, "addressTop": 201, "ctaTop": 227 } },
+            { "t": "Фантом. Квест во сне.", "href": "/kvest_v_realnosti_fantom", "img": "/assets/static.tildacdn.com/tild3464-3761-4133-b563-306136346438/__copia2x.png", "ctaImg": "/assets/static.tildacdn.com/tild6632-3261-4832-a634-613166356430/8.png", "duration": "90 мин", "players": "3-7", "age": "12+", "address": "Красноармейская, 103", "desktop": { "top": 1279, "left": 420, "durationTop": 49, "playersTop": 82, "ageTop": 20, "titleTop": 180, "addressTop": 222, "ctaTop": 255 }, "mobile": { "top": 3009, "left": 0, "durationTop": 51, "playersTop": 84, "ageTop": 21, "titleTop": 156, "addressTop": 189, "ctaTop": 228 } },
+            { "t": "Гарри Поттер и чулан для мётел. Квест для двоих.", "href": "/kvest_v_realnosti_garri_potter_", "img": "/assets/static.tildacdn.com/tild6538-6534-4665-b733-633935383663/_2x.png", "ctaImg": "/assets/static.tildacdn.com/tild3434-3737-4263-a364-616564326139/8.png", "duration": "20 мин", "players": "1-2", "age": "6+", "address": "Социалистическая, 186", "desktop": { "top": 1279, "left": 820, "durationTop": 49, "playersTop": 82, "ageTop": 20, "titleTop": 152, "addressTop": 222, "ctaTop": 255 }, "mobile": { "top": 3315, "left": 0, "durationTop": 49, "playersTop": 82, "ageTop": 19, "titleTop": 133, "addressTop": 191, "ctaTop": 227 } }
+          ]
+        },
+        {
+          "id": "horror",
+          "sourceRecord": "rec748971024",
+          "title": "Хоррор-прятки",
+          "desktopHeight": 490,
+          "mobileHeight": 1084,
+          "items": [
+            { "t": "Оно", "href": "/ono", "img": "/assets/static.tildacdn.com/tild6233-3935-4664-a266-306466333135/2.png", "ctaImg": "/assets/static.tildacdn.com/tild3435-3464-4339-b730-363863653365/8.png", "duration": "60 мин", "players": "2-24", "age": "12+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 121, "left": 23, "durationTop": 52, "playersTop": 85, "ageTop": 23, "titleTop": 183, "addressTop": 216, "ctaTop": 258 }, "mobile": { "top": 103, "left": 0, "durationTop": 46, "playersTop": 79, "ageTop": 16, "titleTop": 162, "addressTop": 196, "ctaTop": 228 } },
+            { "t": "Техасская резня бензопилой", "href": "/tekhasskaya-reznya-benzopiloj", "img": "/assets/static.tildacdn.com/tild3131-3839-4239-b362-666536373135/photo.png", "ctaImg": "/assets/static.tildacdn.com/tild3435-3464-4339-b730-363863653365/8.png", "duration": "60 мин", "players": "2-24", "age": "12+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 121, "left": 423, "durationTop": 52, "playersTop": 85, "ageTop": 23, "titleTop": 153, "addressTop": 219, "ctaTop": 258 }, "mobile": { "top": 418, "left": 0, "durationTop": 46, "playersTop": 79, "ageTop": 16, "titleTop": 132, "addressTop": 196, "ctaTop": 228 } },
+            { "t": "Звонок", "href": "/zvonok", "img": "/assets/static.tildacdn.com/tild3563-3231-4235-a638-323266316466/photo.png", "ctaImg": "/assets/static.tildacdn.com/tild3435-3464-4339-b730-363863653365/8.png", "duration": "60 мин", "players": "2-24", "age": "12+", "address": ["Магнитогорская, 1", "ул. 40-летия Победы, 216"], "desktop": { "top": 121, "left": 823, "durationTop": 52, "playersTop": 85, "ageTop": 23, "titleTop": 183, "addressTop": 219, "ctaTop": 258 }, "mobile": { "top": 735, "left": 0, "durationTop": 46, "playersTop": 79, "ageTop": 16, "titleTop": 162, "addressTop": 196, "ctaTop": 228 } }
+          ]
+        }
+      ]
+    },
+    {
+      "kind": "podkluch-services",
+      "sourceRecords": ["rec677119204", "rec678630258"],
+      "heading": {
+        "prefix": "Выберите",
+        "accent": "дополнительные услуги",
+        "subtitle": "Мы заботимся о каждой детали вашего праздника!"
+      },
+      "catalogHeading": { "prefix": "Шоу-", "accent": "программы" },
+      "cta": "Заказать",
+      "href": "#prazdnik",
+      "items": [
+        { "t": "Нащупал", "src": "/assets/static.tildacdn.com/tild6230-6463-4838-b865-386137323461/2_.jpg", "intrinsic": { "width": 600, "height": 600 } },
+        { "t": "Мафия", "src": "/assets/static.tildacdn.com/tild3738-3861-4636-b531-376631326334/_.jpg", "intrinsic": { "width": 600, "height": 600 } },
+        { "t": "Квиз Баттл", "src": "/assets/static.tildacdn.com/tild3266-3862-4736-a538-393232393631/photo.jpg", "intrinsic": { "width": 600, "height": 600 } },
+        { "t": "Музыкалити", "src": "/assets/static.tildacdn.com/tild3262-6430-4635-b532-306233653561/_2.jpg", "intrinsic": { "width": 700, "height": 700 } },
+        { "t": "Распределительная шляпа", "src": "/assets/static.tildacdn.com/tild3261-3365-4262-b463-643735613366/-_.jpg", "intrinsic": { "width": 600, "height": 600 } },
+        { "t": "Попробуй объяснить", "src": "/assets/static.tildacdn.com/tild3666-3363-4430-b737-616439363137/-_.jpg", "intrinsic": { "width": 600, "height": 600 } },
+        { "t": "Любимый герой", "src": "/assets/static.tildacdn.com/tild3764-6439-4433-a266-633336383865/-_.jpg", "intrinsic": { "width": 600, "height": 600 } },
+        { "t": "Ютуб пати", "src": "/assets/static.tildacdn.com/tild6334-3031-4264-a364-633339656539/-__.jpg", "intrinsic": { "width": 600, "height": 600 } }
+      ]
+    },
+    {
+      "kind": "podkluch-closing",
+      "sourceRecords": ["rec685260517", "rec685281002", "rec678379442", "rec678337393", "rec678337395", "rec677119223", "rec677119224", "rec677119229", "rec677119230", "rec677119231"],
+      "collections": [
+        {
+          "record": "rec685260517",
+          "desktopHeight": 554,
+          "mobileHeight": 659,
+          "title": { "prefix": "Мастер-", "accent": "классы" },
+          "items": [
+            { "t": "Сливочное пиво", "src": "/assets/static.tildacdn.com/tild6537-6330-4733-b338-313332316637/noroot.png", "href": "#prazdnik", "cta": "Заказать", "video": "Видео" },
+            { "t": "Волшебные палочки", "src": "/assets/static.tildacdn.com/tild3836-6134-4037-a337-623736643465/_.jpg", "href": "#prazdnik", "cta": "Заказать", "video": "Видео" },
+            { "t": "Космос в банке", "src": "/assets/static.tildacdn.com/tild3231-6564-4735-a239-353165663535/noroot.png", "href": "#prazdnik", "cta": "Заказать" },
+            { "t": "Тай-дай", "src": "/assets/static.tildacdn.com/tild6436-3363-4164-b133-643933383861/noroot.png", "href": "#prazdnik", "cta": "Заказать" },
+            { "t": "Роспись", "src": "/assets/static.tildacdn.com/tild6638-3366-4663-a232-313261333339/noroot.png", "href": "#prazdnik", "cta": "Заказать" }
+          ]
+        },
+        {
+          "record": "rec685281002",
+          "desktopHeight": 581,
+          "mobileHeight": 779,
+          "title": { "prefix": "Дополнения, которые", "accent": "украсят ваш праздник" },
+          "items": [
+            { "t": "Вынос торта любимым героем", "src": "/assets/static.tildacdn.com/tild6538-3631-4730-a232-633036643535/-_.jpg", "href": "#prazdnik", "cta": "Заказать" },
+            { "t": "Банкетное меню", "src": "/assets/static.tildacdn.com/tild3931-3963-4736-a263-653163353463/_.jpg", "href": "#prazdnik", "cta": "Заказать" },
+            { "t": "Тематические торты", "src": "/assets/static.tildacdn.com/tild3635-3962-4134-b738-353735346234/noroot.png", "href": "#prazdnik", "cta": "Заказать" },
+            { "t": "Профессиональные актёры", "src": "/assets/static.tildacdn.com/tild3834-3730-4065-b561-363835313731/noroot.png", "href": "#prazdnik", "cta": "Заказать" },
+            { "t": "Профессиональный фотограф", "src": "/assets/static.tildacdn.com/tild3830-3130-4662-b562-386630333361/noroot.png", "href": "#prazdnik", "cta": "Заказать" }
+          ]
+        }
+      ],
+      "hall": {
+        "headingRecord": "rec678379442",
+        "recordDesktop": "rec678337393",
+        "recordMobile": "rec678337395",
+        "heading": { "prefix": "Выберите", "accent": "зал для праздника" },
+        "headingDesktopHeight": 154,
+        "headingMobileHeight": 176,
+        "desktopHeight": 580,
+        "mobileHeight": 600,
+        "initialIndex": 0,
+        "cta": "Забронировать",
+        "items": [
+          {
+            "t": "пр-т. Соколова 23",
+            "href": "/sokolova23",
+            "img": "/assets/q/96302b2fe2.webp",
+            "capacity": "Вместимость - до 12 человек",
+            "lines": ["Магические уроки; Шпионское приключение; Страшные тайны;", "Свето-музыка и стерео звук;", "Множество настольных игр;", "Праздничная сервировка стола;", "Все самое необходимое для замечательного праздника \"Под ключ\""]
+          },
+          {
+            "t": "Социалистическая 186",
+            "href": "/socialicheskaya186",
+            "img": "/assets/q/d8a336272a.webp",
+            "capacity": "Вместимость - до 12 человек",
+            "lines": ["Огромный двухэтажный квест \"Ограбление банка. Бумажный дом\";", "Свето-музыка и стерео звук;", "Комфортабельная зона ожидания;", "Множество настольных игр;", "Яркая посуда и праздничная сервировка;", "Все самое необходимое для замечательного праздника \"Под ключ\""]
+          },
+          {
+            "t": "Красноармейская 103",
+            "href": "/krasnormerskaya103",
+            "img": "/assets/q/028229a807.webp",
+            "capacity": "Вместимость - до 12 человек",
+            "lines": ["Таинственное приключение;", "Пугающая атмосфера квеста;", "Мистические загадки;", "Свето-музыка и стерео звук;", "Множество настольных игр;", "Яркая посуда и праздничная сервировка;", "Все самое необходимое для замечательного праздника \"Под ключ\""]
+          },
+          {
+            "t": "Гвардейский 61",
+            "href": "/guardeskypereulog61",
+            "img": "/assets/q/1deeeb06e8.webp",
+            "capacity": "Вместимость - до 12 человек",
+            "lines": ["Вызов своей дедукции в квесте \"Шерлок Холмс\";", "Ужасающая атмосфера квеста \"Психбольница\";", "Уникальный дизайн комнаты отдыха;", "Множество настольных игр;", "Яркая посуда и праздничная сервировка;", "Все самое необходимое для замечательного праздника \"Под ключ\""]
+          },
+          {
+            "t": "Магнитогорская 1",
+            "href": "/magnitogorskaya1",
+            "img": "/assets/q/83db4ae2f4.webp",
+            "capacity": "Вместимость - до 20 человек",
+            "lines": ["Уникальная локация для активных игр и пряток \"Лабиринт\" площадью 150 кв.м;", "Девять уникальных сценариев;", "Две комнаты отдыха для вашей компаний;", "Свето-музыка и стерео звук;", "Комфортабельная зона ожидания;", "Множество настольных игр;", "Яркая посуда и праздничная сервировка;", "Все самое необходимое для праздника"]
+          }
+        ]
+      },
+      "gallery": {
+        "headingRecord": "rec677119223",
+        "record": "rec677119224",
+        "heading": { "prefix": "Фото с наших", "accent": "мероприятий" },
+        "headingDesktopHeight": 140,
+        "headingMobileHeight": 130,
+        "desktopHeight": 2555,
+        "mobileHeight": 713,
+        "desktopLayout": [2, 1, 1, 2, 2, 1, 1, 2],
+        "items": [
+          { "src": "/assets/static.tildacdn.com/tild3361-3138-4962-b233-633164663065/LAT_3538.webp" },
+          { "src": "/assets/static.tildacdn.com/tild6430-3930-4633-b861-333864653265/LAT_1165.webp" },
+          { "src": "/assets/static.tildacdn.com/tild6639-3232-4330-b132-333866666566/LAT_3415.webp" },
+          { "src": "/assets/static.tildacdn.com/tild3137-6331-4636-b564-346438323161/LAT_0655.webp" },
+          { "src": "/assets/static.tildacdn.com/tild3665-6436-4665-b563-356139333732/_.webp" },
+          { "src": "/assets/static.tildacdn.com/tild6266-6465-4137-b734-363963626331/LAT_3531.webp" },
+          { "src": "/assets/static.tildacdn.com/tild3265-3038-4238-b365-643839373336/LAT_1323.webp" },
+          { "src": "/assets/static.tildacdn.com/tild3736-6130-4661-a561-366163396461/LAT_3451.webp" }
+        ]
+      },
+      "reviews": {
+        "headingRecord": "rec677119229",
+        "bodyRecord": "rec677119230",
+        "actionRecord": "rec677119231",
+        "headingDesktopHeight": 140,
+        "headingMobileHeight": 110,
+        "bodyDesktopHeight": 1953,
+        "bodyMobileHeight": 1129,
+        "actionDesktopHeight": 60,
+        "actionMobileHeight": 80,
+        "desktopHeight": 2153,
+        "mobileHeight": 1319,
+        "action": "Оставить отзыв",
+        "href": "#prazdnik",
+        "icon": "/assets/static.tildacdn.com/tild3632-6432-4034-a665-666633343761/ic_info_outline_black.svg",
+        "items": [
+          { "src": "/assets/static.tildacdn.com/tild6636-6332-4038-a164-666533363733/IMG_20230620_0717541.jpg", "desktop": { "left": 40, "top": 35, "height": 197 }, "mobile": { "left": 0, "top": 25, "height": 76 } },
+          { "src": "/assets/static.tildacdn.com/tild6361-6464-4336-b561-656362663934/IMG_20230619_232405.jpg", "desktop": { "left": 500, "top": 35, "height": 145 }, "mobile": { "left": 180, "top": 25, "height": 56 } },
+          { "src": "/assets/static.tildacdn.com/tild6265-3464-4237-b536-303837336564/IMG_20230619_225749.jpg", "desktop": { "left": 960, "top": 35, "height": 175 }, "mobile": { "left": 180, "top": 91, "height": 68 } },
+          { "src": "/assets/static.tildacdn.com/tild3362-3333-4035-b466-303137303731/IMG_20230619_225835.jpg", "desktop": { "left": 500, "top": 200, "height": 238 }, "mobile": { "left": 0, "top": 111, "height": 92 } },
+          { "src": "/assets/static.tildacdn.com/tild3336-3930-4237-b936-373031366464/IMG_20230619_225859.jpg", "desktop": { "left": 960, "top": 230, "height": 193 }, "mobile": { "left": 180, "top": 169, "height": 75 } },
+          { "src": "/assets/static.tildacdn.com/tild6661-3336-4335-b161-386235383666/IMG_20230619_225922.jpg", "desktop": { "left": 40, "top": 252, "height": 219 }, "mobile": { "left": 0, "top": 213, "height": 85 } },
+          { "src": "/assets/static.tildacdn.com/tild3734-6332-4632-b631-323466393135/IMG_20230619_232314.jpg", "desktop": { "left": 960, "top": 443, "height": 144 }, "mobile": { "left": 180, "top": 253, "height": 56 } },
+          { "src": "/assets/static.tildacdn.com/tild6535-3566-4838-b836-303239383736/IMG_20230619_225808.jpg", "desktop": { "left": 500, "top": 458, "height": 144 }, "mobile": { "left": 0, "top": 307, "height": 56 } },
+          { "src": "/assets/static.tildacdn.com/tild6130-3038-4262-a664-386234373861/IMG_20230619_232333.jpg", "desktop": { "left": 40, "top": 491, "height": 250 }, "mobile": { "left": 180, "top": 319, "height": 97 } },
+          { "src": "/assets/static.tildacdn.com/tild3263-6637-4530-a436-373065646637/IMG_20230619_232452.jpg", "desktop": { "left": 960, "top": 608, "height": 204 }, "mobile": { "left": 0, "top": 373, "height": 79 } },
+          { "src": "/assets/static.tildacdn.com/tild6439-3239-4433-a161-633431656666/IMG_20230619_232514.jpg", "desktop": { "left": 500, "top": 626, "height": 210 }, "mobile": { "left": 180, "top": 426, "height": 81 } },
+          { "src": "/assets/static.tildacdn.com/tild3863-3430-4430-b763-323731343539/IMG_20230620_071548.jpg", "desktop": { "left": 40, "top": 774, "height": 160 }, "mobile": { "left": 0, "top": 462, "height": 62 } },
+          { "src": "/assets/static.tildacdn.com/tild6435-6463-4536-b639-666265623733/IMG_20230620_071614.jpg", "desktop": { "left": 960, "top": 877, "height": 151 }, "mobile": { "left": 180, "top": 517, "height": 58 } },
+          { "src": "/assets/static.tildacdn.com/tild6631-3032-4661-b431-336634316238/IMG_20230620_071642.jpg", "desktop": { "left": 500, "top": 952, "height": 178 }, "mobile": { "left": 0, "top": 533, "height": 69 } },
+          { "src": "/assets/static.tildacdn.com/tild6262-6235-4763-b963-643864346337/IMG_20230620_071823.jpg", "desktop": { "left": 40, "top": 1041, "height": 160 }, "mobile": { "left": 180, "top": 585, "height": 62 } },
+          { "src": "/assets/static.tildacdn.com/tild6365-3931-4261-b633-363936333632/IMG_20230620_071844.jpg", "desktop": { "left": 960, "top": 1102, "height": 144 }, "mobile": { "left": 0, "top": 612, "height": 56 } },
+          { "src": "/assets/static.tildacdn.com/tild3363-3462-4233-a662-326533643163/IMG_20230620_072334.jpg", "desktop": { "left": 500, "top": 1150, "height": 195 }, "mobile": { "left": 180, "top": 657, "height": 75 } },
+          { "src": "/assets/static.tildacdn.com/tild3039-3635-4437-b865-353334353166/IMG_20230620_072401.jpg", "desktop": { "left": 40, "top": 1221, "height": 173 }, "mobile": { "left": 0, "top": 678, "height": 67 } },
+          { "src": "/assets/static.tildacdn.com/tild3637-6236-4832-b162-363931626431/IMG_20230620_072429.jpg", "desktop": { "left": 960, "top": 1266, "height": 144 }, "mobile": { "left": 180, "top": 742, "height": 56 } },
+          { "src": "/assets/static.tildacdn.com/tild3630-3738-4462-b561-326632646165/_611.jpg", "desktop": { "left": 500, "top": 1365, "height": 144 }, "mobile": { "left": 0, "top": 755, "height": 56 } },
+          { "src": "/assets/static.tildacdn.com/tild6365-3064-4464-b135-393533353035/_61.jpg", "desktop": { "left": 40, "top": 1414, "height": 144 }, "mobile": { "left": 180, "top": 808, "height": 56 } },
+          { "src": "/assets/static.tildacdn.com/tild3732-6337-4561-a263-363062343735/_1031.jpg", "desktop": { "left": 960, "top": 1430, "height": 221 }, "mobile": { "left": 0, "top": 821, "height": 85 } },
+          { "src": "/assets/static.tildacdn.com/tild6364-3337-4065-b736-343231663637/_103.jpg", "desktop": { "left": 500, "top": 1529, "height": 144 }, "mobile": { "left": 180, "top": 874, "height": 56 } },
+          { "src": "/assets/static.tildacdn.com/tild6161-6433-4066-b064-383561336539/_23.jpg", "desktop": { "left": 40, "top": 1578, "height": 156 }, "mobile": { "left": 0, "top": 916, "height": 60 } },
+          { "src": "/assets/static.tildacdn.com/tild6563-3462-4231-a562-613961356462/1.jpg", "desktop": { "left": 960, "top": 1671, "height": 167 }, "mobile": { "left": 180, "top": 939, "height": 65 } },
+          { "src": "/assets/static.tildacdn.com/tild6264-3965-4935-a666-303236643332/2.jpg", "desktop": { "left": 500, "top": 1693, "height": 144 }, "mobile": { "left": 0, "top": 986, "height": 56 } },
+          { "src": "/assets/static.tildacdn.com/tild3636-6463-4332-a131-313030313561/_1861.jpg", "desktop": { "left": 40, "top": 1754, "height": 145 }, "mobile": { "left": 180, "top": 1014, "height": 56 } },
+          { "src": "/assets/static.tildacdn.com/tild3865-6232-4365-a335-666132343633/_186.jpg", "desktop": { "left": 500, "top": 1857, "height": 175 }, "mobile": { "left": 0, "top": 1052, "height": 68 } }
+        ]
+      }
+    },
   {
    "kind": "party-form",
    "id": "prazdnik",

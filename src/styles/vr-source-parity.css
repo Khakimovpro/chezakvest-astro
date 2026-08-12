@@ -1,0 +1,165 @@
+/*
+ * The four VR game pages share one Tilda source artboard family. These values
+ * are measured from R27 records (T1196/T121/T396), so they deliberately live
+ * behind the data-driven `quest-page--vr-source` marker instead of changing
+ * generic quest, holiday, or venue pages.
+ */
+.quest-page--vr-source .qhero__panel::after{background:linear-gradient(90deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,0) 65%)}
+.quest-page--vr-source .qhero__bg{object-position:center 9.304%}
+
+@media (min-width:901px){
+  .quest-page--vr-source .qhero__pills{top:54px;left:194px;gap:20px}
+  .quest-page--vr-source .qhero__keys{top:54px;right:auto;left:60px}
+  .quest-page--vr-source .qhero__body{bottom:61px;left:60px}
+  .quest-page--vr-source .qhero__btn-ghost{border-style:dotted}
+}
+
+/* T176 story records have captured, content-dependent heights. The values
+ * come from each route's sourceParity data, not from a generic height rule. */
+.quest-page--vr-source .qstory--vr-source{height:var(--vr-story-desktop);padding:56px 0 0}
+.quest-page--vr-source .qstory--vr-source .qstory__lead{font-size:26px;line-height:1.45}
+.quest-page--vr-source .qstory--vr-source .qstory__p{font-size:17px;line-height:1.55}
+
+/* T029 divider + T017 title + T1196 feature rail: 192px before a 149px rail. */
+.quest-page--vr-source .qfeat--vr-source{position:relative;height:var(--vr-features-desktop);padding:0}
+.quest-page--vr-source .qfeat--vr-source::before{content:"";position:absolute;top:15px;left:16.667%;width:66.666%;height:1px;background:#ff6900}
+.quest-page--vr-source .qfeat--vr-source .qfeat__title{position:absolute;top:75px;right:0;left:0;font-size:40px;line-height:1.15}
+.quest-page--vr-source .qfeat--vr-source .qfeat__wrap{position:absolute;top:192px;right:0;left:0;margin:0}
+.quest-page--vr-source .qfeat__row{gap:40px;height:149px;padding:0;overflow-x:auto}
+.quest-page--vr-source .qfeat__card{flex:0 0 360px;height:149px;padding:30px 20px;border-radius:20px;box-shadow:2px 2px 3px rgba(0,0,0,.1)}
+.quest-page--vr-source .qfeat__cardtitle{font-size:22px;line-height:1.2}
+.quest-page--vr-source .qfeat__cardsub{margin-top:8px;font-size:18px;line-height:1.25}
+.quest-page--vr-source .qfeat--vr-source .qfeat__wrap::before,
+.quest-page--vr-source .qfeat--vr-source .qfeat__wrap::after{position:absolute;top:52px;z-index:4;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#ff6900;color:#fff;font-size:27px;line-height:1;pointer-events:none}
+.quest-page--vr-source .qfeat--vr-source .qfeat__wrap::before{content:"‹";left:-12px}
+.quest-page--vr-source .qfeat--vr-source .qfeat__wrap::after{content:"›";right:-12px}
+
+/* T396 booking is copy-only in the source; the replacement phone/WhatsApp
+ * pills and fallback prebooking form are intentionally not rendered for this
+ * marked family. */
+.quest-page--vr-source .qbook{height:300px;padding:64px 0 0;text-align:center}
+.quest-page--vr-source .qbook__title{font-size:34px;line-height:1.2}
+.quest-page--vr-source .qbook__line{margin-top:14px;font-size:20px;line-height:1.4}
+.quest-page--vr-source .qbook__line:last-of-type{color:#ff6900;font-weight:700}
+
+/* T121 related-game carousel: four 275×367 cards, 40px desktop spacing and
+ * a translucent caption surface instead of the generic full-width gradient. */
+.quest-page--vr-source #drugie{height:569px;margin-bottom:var(--vr-after-related);padding:52px 0 0}
+.quest-page--vr-source #drugie .cards__wrap{margin-top:40px}
+.quest-page--vr-source #drugie .cards__row{gap:40px}
+.quest-page--vr-source #drugie .card__link{border-radius:20px}
+.quest-page--vr-source #drugie .card__cap{right:10px;bottom:10px;left:10px;padding:20px;border-radius:10px;background:rgba(51,51,51,.3);backdrop-filter:blur(15px)}
+
+/* Source venue records are an image with a frosted information overlay, not
+ * the generic two-column card. */
+.quest-page--vr-source .qvenue--vr-source{position:relative;height:701px;margin-top:40px;padding:0}
+.quest-page--vr-source .qvenue--vr-source>.container{position:relative;height:100%}
+.quest-page--vr-source .qvenue--vr-source>.container>.section-title{position:absolute;top:31px;left:20px;width:1114px;font-size:38px;line-height:1.15}
+.quest-page--vr-source .qvenue--vr-source>.container>.section-sub{position:absolute;top:82px;left:20px;width:672px;margin:0;font-size:20px;line-height:1.15}
+.quest-page--vr-source .qvenue--vr-source .qvenue__stack{position:absolute;top:150px;right:0;left:0;height:536px}
+.quest-page--vr-source .qvenue--vr-source .qvenue__card{position:relative;display:block;height:536px;margin:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.quest-page--vr-source .qvenue--vr-source .qvenue__photos{position:absolute;top:8px;left:80px;width:600px;height:400px;display:flex;overflow:hidden;border-radius:30px}
+.quest-page--vr-source .qvenue--vr-source .qvenue__photos .zoomable{flex:0 0 100%;width:100%;height:100%}
+.quest-page--vr-source .qvenue--vr-source .qvenue__photo{width:100%;height:100%;min-height:0;object-fit:cover}
+.quest-page--vr-source .qvenue--vr-source .qvenue__info{position:absolute;top:138px;left:581px;width:540px;min-height:341px;padding:30px;border-radius:20px;background:rgba(255,255,255,.8);box-shadow:0 0 12px rgba(71,71,71,.3);backdrop-filter:blur(16px)}
+.quest-page--vr-source .qvenue--vr-source .qvenue__addr{position:absolute;top:-111px;left:139px;width:399px;margin:0;font-size:26px;line-height:1.55}
+.quest-page--vr-source .qvenue--vr-source .qvenue__list{gap:4px;margin:0 0 16px;font-size:15px;line-height:1.25}
+.quest-page--vr-source .qvenue--vr-source .qvenue__list li{line-height:1.25}
+.quest-page--vr-source .qvenue--vr-source .btn-orange{height:50px;font-size:15px}
+
+/* T396 party gallery: the heading card and gallery artboard are separate
+ * source records (122 + 550px), while generic QuestPage previously merged
+ * them into one short rail. */
+.quest-page--vr-source .qextra--vr-source{height:672px;margin-top:var(--vr-after-venue);padding:0}
+.quest-page--vr-source .qextra--vr-source>.container{position:relative;height:100%;padding:0;background:#fff;border-radius:20px}
+.quest-page--vr-source .qextra--vr-source .section-title{position:absolute;top:40px;left:20px;font-size:40px;line-height:1.55}
+.quest-page--vr-source .qextra--vr-source .qextra__photos{position:absolute;top:122px;right:20px;left:20px;max-width:none;height:550px;margin:0;display:flex;gap:140px;overflow-x:auto;scroll-snap-type:x mandatory}
+.quest-page--vr-source .qextra--vr-source .qextra__photos .zoomable{flex:0 0 260px;height:463px;scroll-snap-align:start}
+.quest-page--vr-source .qextra--vr-source .qextra__photos .zoomable:nth-child(n+2){flex-basis:663px}
+.quest-page--vr-source .qextra--vr-source .qextra__photos img{width:100%;height:100%;border-radius:20px;object-fit:cover}
+
+/* T121 celebration scenarios retain their actual source card geometry while
+ * their record height comes from the page's captured mobile/desktop values. */
+.quest-page--vr-source .vr-source-scenarios{height:var(--vr-scenarios-desktop)}
+.quest-page--vr-source .vr-source-scenarios .cards--source-t121{height:100%;padding:52px 0 8px}
+.quest-page--vr-source .vr-source-scenarios .cards__wrap{margin-top:40px}
+
+/* T396 callback has a 51px desktop inset and a translucent black/orange
+ * artboard surface; the generic callback remains untouched on other routes. */
+.quest-page--vr-source .callback{position:relative;height:480px;margin-top:0}
+.quest-page--vr-source .callback>.container{position:relative;height:100%}
+.quest-page--vr-source .cbform{position:absolute;top:51px;right:0;left:0;height:376px;min-height:376px;padding:42px 132px;border:1px solid #fff;border-radius:20px;background-color:#ededed;background-image:linear-gradient(0.102turn,rgba(0,0,0,.15) 37%,rgba(255,105,0,.15) 73%,rgba(0,0,0,.15) 100%);box-shadow:3px 3px 8px rgba(51,51,51,.2);backdrop-filter:blur(5px)}
+.quest-page--vr-source .cbform__title{font-size:34px}
+.quest-page--vr-source .cbform__sub{font-size:20px}
+.quest-page--vr-source .cbform input,.quest-page--vr-source .cbform__phone{height:50px;min-height:50px;border-radius:0}
+
+/* The source prefooter starts directly after the callback, then leaves the
+ * measured 60px gap before the shared footer. */
+.quest-page--vr-source .venues{min-height:323px;margin-top:0;margin-bottom:60px}
+
+@media (max-width:900px){
+  .quest-page--vr-source .qhero__pills{top:69px;left:20px;display:grid;gap:12px}
+  .quest-page--vr-source .qhero__keys{top:21px;right:auto;left:20px}
+  .quest-page--vr-source .qpill{padding:0;font-size:16px}
+  .quest-page--vr-source .qhero__body{right:25px;bottom:37px;left:25px}
+  .quest-page--vr-source .qhero__cta{flex-direction:column;align-items:flex-start}
+  .quest-page--vr-source .qhero__btn-ghost,.quest-page--vr-source .qhero__cta .btn-orange{width:270px;padding:0;border-style:dotted;font-size:16px}
+
+  .quest-page--vr-source .qstory--vr-source{height:var(--vr-story-mobile);margin-top:var(--vr-story-mobile-offset);padding:56px 0 0}
+  .quest-page--vr-source .qstory--vr-source .qstory__lead{font-size:22px;line-height:1.45}
+  .quest-page--vr-source .qstory--vr-source .qstory__p{font-size:16px;line-height:1.55}
+
+  .quest-page--vr-source .qfeat--vr-source{height:var(--vr-features-mobile)}
+  .quest-page--vr-source .qfeat--vr-source::before{top:15px;left:10px;width:calc(100% - 20px)}
+  .quest-page--vr-source .qfeat--vr-source .qfeat__title{top:75px;font-size:28px}
+  .quest-page--vr-source .qfeat--vr-source .qfeat__wrap{top:182px}
+  .quest-page--vr-source .qfeat__row{gap:10px;height:231px}
+  .quest-page--vr-source .qfeat__card{flex-basis:280px;height:231px;padding:30px 20px}
+  .quest-page--vr-source .qfeat__cardtitle{font-size:20px}
+  .quest-page--vr-source .qfeat__cardsub{font-size:16px}
+  .quest-page--vr-source .qfeat--vr-source .qfeat__wrap::before,
+  .quest-page--vr-source .qfeat--vr-source .qfeat__wrap::after{display:none}
+
+  .quest-page--vr-source .qbook{height:260px;padding:35px 0 0}
+  .quest-page--vr-source .qbook__title{font-size:25px}
+  .quest-page--vr-source .qbook__line{margin-top:12px;font-size:14px;line-height:1.4}
+
+  .quest-page--vr-source #drugie{height:588px;margin-bottom:var(--vr-after-related);padding:52px 0 0}
+  .quest-page--vr-source #drugie .cards__wrap{margin-top:30px}
+  .quest-page--vr-source #drugie .cards__row{gap:10px}
+  .quest-page--vr-source #drugie .cards--poster .card,.quest-page--vr-source #drugie .cards--poster .card__img{width:280px;height:373px}
+  .quest-page--vr-source #drugie .card__cap{padding:16px}
+
+  .quest-page--vr-source .pform__card{height:526px}
+
+  .quest-page--vr-source .qvenue--vr-source{height:978px;margin-top:40px}
+  .quest-page--vr-source .qvenue--vr-source>.container>.section-title{top:27px;left:0;width:300px;font-size:22px;line-height:1.15}
+  .quest-page--vr-source .qvenue--vr-source>.container>.section-sub{top:112px;left:0;width:300px;font-size:18px;line-height:1.15}
+  .quest-page--vr-source .qvenue--vr-source .qvenue__stack{top:220px;height:758px}
+  .quest-page--vr-source .qvenue--vr-source .qvenue__card{height:758px}
+  .quest-page--vr-source .qvenue--vr-source .qvenue__photos{top:341px;left:-20px;width:360px;height:226px;border-radius:0}
+  .quest-page--vr-source .qvenue--vr-source .qvenue__info{top:122px;left:10px;width:300px;min-height:290px;padding:24px;border-radius:20px}
+  .quest-page--vr-source .qvenue--vr-source .qvenue__addr{top:-71px;left:0;width:300px;font-size:20px;line-height:1.55;text-align:center}
+  .quest-page--vr-source .qvenue--vr-source .qvenue__list{gap:6px;margin:0 0 14px;font-size:15px;line-height:1.2}
+  .quest-page--vr-source .qvenue--vr-source .qvenue__list li{line-height:1.2}
+  .quest-page--vr-source .qvenue--vr-source .btn-orange{height:50px;font-size:15px}
+
+  .quest-page--vr-source .qextra--vr-source{height:783px}
+  .quest-page--vr-source .qextra--vr-source>.container{border-radius:20px}
+  .quest-page--vr-source .qextra--vr-source .section-title{top:40px;left:20px;font-size:25px;line-height:1.55}
+  .quest-page--vr-source .qextra--vr-source .qextra__photos{top:113px;right:20px;left:20px;height:670px;display:grid;grid-template-columns:190px 342px;gap:32px;overflow-x:auto}
+  .quest-page--vr-source .qextra--vr-source .qextra__photos .zoomable{flex:0 0 auto;width:190px;height:338px}
+  .quest-page--vr-source .qextra--vr-source .qextra__photos .zoomable:nth-child(n+2){width:342px;height:234px;flex-basis:auto;align-self:end}
+
+  .quest-page--vr-source .vr-source-scenarios{height:var(--vr-scenarios-mobile)}
+  .quest-page--vr-source .vr-source-scenarios .cards--source-t121{height:100%;padding:52px 0 8px}
+  .quest-page--vr-source .vr-source-scenarios .cards__wrap{margin-top:30px}
+
+  .quest-page--vr-source .callback{height:630px}
+  .quest-page--vr-source .cbform{top:40px;height:561px;min-height:561px;padding:28px 20px}
+  .quest-page--vr-source .cbform__title{font-size:28px}
+  .quest-page--vr-source .cbform__sub{font-size:16px}
+  .quest-page--vr-source .cbform input,.quest-page--vr-source .cbform__phone{height:52px;min-height:52px}
+
+  .quest-page--vr-source .venues{min-height:648px;margin-top:0;margin-bottom:60px}
+}

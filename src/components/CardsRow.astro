@@ -14,40 +14,76 @@ const {
   title = '',
   subtitle = '',
   items = [],
-  variant = 'poster',   // poster — вертикальные 275x367 (квесты); square — 360x360 (сценарии)
+  variant = 'poster',   // poster — вертикальные 275x367; square — базовый ряд сценариев
   uptitle = '',         // мелкая строка над названием (у сценариев «День рождения в стиле»)
   id = '',
+  // A source record can opt into a measured geometry without changing every
+  // page that happens to reuse the generic square-card component.
+  sourceGeometry = '',
 } = Astro.props;
+const isSourceT121 = variant === 'square' && sourceGeometry === 't121';
+const isSourceT774 = variant === 'poster' && sourceGeometry === 't774';
+const squareCardSize = isSourceT121 ? 360 : 216;
+const squareCardSizes = isSourceT121 ? '(max-width:900px) 280px, 360px' : '216px';
+const posterCardSize = isSourceT774 ? 220 : 275;
+const posterCardSizes = isSourceT774 ? '(max-width:900px) 151px, 220px' : '275px';
 ---
 {items.length > 0 && (
-  <section class={`cards cards--${variant}`} id={id || undefined}>
+  <section class:list={[
+    'cards',
+    `cards--${variant}`,
+    { 'cards--source-t121': isSourceT121, 'cards--source-t774': isSourceT774 },
+  ]} id={id || undefined}>
     <div class="container">
-      {title && <h2 class="section-title cards__title" set:html={title.replace('«Чё за Квест?»', '<nobr>«Чё за Квест?»</nobr>')} />}
-      {subtitle && <p class="cards__sub">{subtitle}</p>}
+      {!isSourceT774 && title && <h2 class="section-title cards__title" set:html={title.replace('«Чё за Квест?»', '<nobr>«Чё за Квест?»</nobr>')} />}
+      {!isSourceT774 && subtitle && <p class="cards__sub">{subtitle}</p>}
     </div>
     <div class="cards__wrap container">
-      <button class="cards__arrow cards__arrow--prev" type="button" aria-label="Предыдущие">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
-      </button>
+      {!isSourceT774 && (
+        <button class="cards__arrow cards__arrow--prev" type="button" aria-label="Предыдущие">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+        </button>
+      )}
       <ul class="cards__row">
-        {items.map((it) => (
-          <li class="card" data-reveal>
+        {items.map((it, itemIndex) => (
+          <li class="card" data-reveal style={isSourceT774
+            ? `--source-desktop-order:${it.sourceOrder?.desktop || itemIndex + 1};--source-mobile-order:${it.sourceOrder?.mobile || itemIndex + 1}`
+            : undefined}>
             <a class="card__link" href={link(it.href)}>
               {it.img && <img class="card__img" src={asset(it.imgSet?.['760'] || it.img)} srcset={responsiveSrcset(it.imgSet) || undefined}
-                              sizes={variant === 'square' ? '216px' : '275px'} alt={it.t}
-                              width={variant === 'square' ? 216 : 275} height={variant === 'square' ? 216 : 367}
+                              sizes={variant === 'square' ? squareCardSizes : posterCardSizes} alt={it.t}
+                              width={variant === 'square' ? squareCardSize : posterCardSize} height={variant === 'square' ? squareCardSize : (isSourceT774 ? 220 : 367)}
                               loading="lazy" decoding="async" />}
-              <span class="card__cap">
-                {uptitle && <span class="card__up">{uptitle}</span>}
-                <span class="card__name">{it.t}</span>
-              </span>
+              {isSourceT774 ? (
+                <span class="card__t774-overlay">
+                  <span class="card__t774-keys" aria-hidden="true">
+                    {Array.from({ length: 5 }, () => (
+                      <svg viewBox="0 0 12 12" focusable="false"><path fill="currentColor" d="M4.3 1a3.3 3.3 0 1 0 2.3 5.7l1.2 1.2v1h1v1h1.7V8.3L7.8 5.6A3.3 3.3 0 0 0 4.3 1Zm0 1.9a1.4 1.4 0 1 1 0 2.8 1.4 1.4 0 0 1 0-2.8Z"/></svg>
+                    ))}
+                  </span>
+                  {it.age && <span class="card__t774-age">{it.age}</span>}
+                  <span class="card__t774-meta">
+                    {it.duration && <span><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 4.6V8l2.4 1.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>{it.duration}</span>}
+                    {it.players && <span><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5.4" r="2.2" fill="currentColor"/><path d="M3.5 13c0-2.5 2-4.1 4.5-4.1s4.5 1.6 4.5 4.1" fill="currentColor"/></svg>{it.players}</span>}
+                  </span>
+                  <span class="card__t774-title">{it.t}</span>
+                  {it.address && <span class="card__t774-address"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.6a4.4 4.4 0 0 0-4.4 4.4C3.6 9.3 8 14.4 8 14.4S12.4 9.3 12.4 6A4.4 4.4 0 0 0 8 1.6Zm0 6.1A1.7 1.7 0 1 1 8 4.3a1.7 1.7 0 0 1 0 3.4Z" fill="currentColor"/></svg>{it.address}</span>}
+                </span>
+              ) : (
+                <span class="card__cap">
+                  {uptitle && <span class="card__up">{uptitle}</span>}
+                  <span class="card__name">{it.t}</span>
+                </span>
+              )}
             </a>
           </li>
         ))}
       </ul>
-      <button class="cards__arrow cards__arrow--next" type="button" aria-label="Следующие">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
-      </button>
+      {!isSourceT774 && (
+        <button class="cards__arrow cards__arrow--next" type="button" aria-label="Следующие">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+        </button>
+      )}
     </div>
   </section>
 )}

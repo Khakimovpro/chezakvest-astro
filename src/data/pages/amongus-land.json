@@ -15,6 +15,7 @@
     { "t": "День рождения в стиле Амонг Ас", "href": null }
   ],
   "reviewsTitle": "Что говорят гости о нас",
+  "showCallback": false,
   "sections": [
     {
       "kind": "hero",
@@ -24,7 +25,7 @@
       "copyPosition": "top",
       "heightDesktop": 900,
       "heightMobile": 844,
-      "composition": "tilda-artboard",
+      "composition": "amongus-artboard",
       "hidePills": true,
       "artboard": {
         "desktop": { "width": 1200, "height": 835 },
@@ -167,5 +168,172 @@
       "ctaHref": "#prazdnik"
     },
     { "kind": "party-form" }
-  ]
+  ],
+  "sourceParity": {
+    "kind": "amongus-artboard",
+    "bookingHref": "#prazdnik",
+    "records": {
+      "hero": { "desktop": 900, "mobile": 844 },
+      "intro": { "desktop": 706, "mobile": 1146 },
+      "video": { "desktop": 712, "mobile": 492 },
+      "packages": { "desktop": 1242, "mobile": 2433 },
+      "shows": { "desktop": 590, "mobile": 1874 },
+      "showDivider": { "desktop": 40, "mobile": 40 },
+      "additions": { "desktop": 690, "mobile": 743 },
+      "additionsGap": { "desktop": 0, "mobile": 1 },
+      "trustHeading": { "desktop": 155, "mobile": 165 },
+      "trust": { "desktop": 707, "mobile": 1926 },
+      "galleryHeading": { "desktop": 130, "mobile": 130 },
+      "gallery": { "desktop": 551, "mobile": 590 },
+      "bonus": { "desktop": 754, "mobile": 834 },
+      "venuesHeading": { "desktop": 210, "mobile": 230 },
+      "venues": { "desktop": 164, "mobile": 595 },
+      "footerSpacer": { "desktop": 84, "mobile": 85 },
+      "footer": { "desktop": 277, "mobile": 777 },
+      "footerBottom": { "desktop": 194, "mobile": 360 }
+    },
+    "recordIds": {
+      "hero": "rec1049626221",
+      "intro": "rec1036403466",
+      "video": "rec1037984321",
+      "packages": "rec1036403486",
+      "shows": "rec1036403496",
+      "showDivider": "rec1036403506",
+      "additions": "rec1036403511",
+      "trustHeading": "rec1036403556",
+      "trust": "rec1036403561",
+      "galleryHeading": "rec1043693181",
+      "gallery": "rec1038440301",
+      "bonus": "rec1036403611",
+      "venuesHeading": "rec1036403621",
+      "venues": "rec1036403626",
+      "footerSpacer": "rec1043705606",
+      "footer": "rec1036403681",
+      "footerBottom": "rec1036403686"
+    },
+    "hero": {
+      "background": "/assets/static.tildacdn.com/tild3733-3266-4434-b933-636336313937/photo_20325-05-13_11.png",
+      "ship": "/assets/static.tildacdn.com/tild6566-3834-4033-b630-393963303866/dmitriy-leongff2ovic.png",
+      "crewmate": "/assets/static.tildacdn.com/tild6463-6166-4865-b731-396333373962/snapedit_17474129053.png",
+      "logo": "/assets/static.tildacdn.com/tild3630-3365-4161-b439-353039346262/2_4_1.svg",
+      "label": "MONG US",
+      "title": "КВЕСТ-ШОУ ПО МОТИВАМ ПОПУЛЯРНОЙ ИГРЫ ДЛЯ ВАШЕГО ПРАЗДНИКА",
+      "text": "Идеальный подарок для всех фанатов серии видеоигр и кубической вселенной",
+      "cta": "Рассчитать стоимость"
+    },
+    "intro": {
+      "title": "ЧЕ ЗА КВЕСТ МИР ПРИКЛЮЧЕНИЙ И ВЕСЕЛЬЯ",
+      "text": "Место, где каждый сможет почувствовать себя главным героем игры, изучить руды, встретиться с главными противниками, скрафтить меч и броню и заполучить алмазы!",
+      "photo": "/assets/static.tildacdn.com/tild3933-3866-4436-b233-626265633332/DSC_4533_1.jpg",
+      "decor": "/assets/static.tildacdn.com/tild6338-3931-4234-b532-393636656537/33_1__1.svg",
+      "items": [
+        "Огромный лабиринт 150 м2;",
+        "Профессиональные актеры-ведущие;",
+        "Уникальные задания и испытания;",
+        "Изучение мира Among Us;",
+        "Встреча со знаковыми персонажами;",
+        "Уроки крафта, изучение руд и алмазов;",
+        "Возможность стать главным героем видеоигры в реальной жизни;",
+        "Большие комнаты отдыха на 20 посадочных мест;",
+        "Шоу-программы и мастер-классы на выбор;"
+      ]
+    },
+    "video": {
+      "title": "ПОСМОТРИТЕ, КАК ПРОХОДЯТ НАШИ ПРАЗДНИКИ",
+      "poster": "/assets/static.tildacdn.com/tild3439-3036-4166-a237-633766626637/image-3-2.png",
+      "decor": "/assets/static.tildacdn.com/tild3861-6638-4136-b362-326232326266/221_3_2.svg"
+    },
+    "packages": [
+      {
+        "title": "Стандарт", "duration": "2 часа", "tone": "standard",
+        "program": ["Квест на выбор — 60 мин.", "Банкет — 15 мин.", "Шоу-программа на выбор — 30 мин.", "Торжественный вынос торта — 15 мин."],
+        "includes": ["Костюмированный ведущий шоу-программ", "Украшение комнаты", "Сервировка стола праздничной посудой", "Чай/кофе без ограничений", "Электронные пригласительные", "Подарочные сувениры всем участникам"]
+      },
+      {
+        "title": "Супер", "duration": "2,5 часа", "tone": "super", "badge": "ХИТ ПРОДАЖ",
+        "program": ["Квест на выбор — 60 мин.", "Банкет — 15 мин.", "Шоу-программа на выбор №1 — 30 мин.", "Шоу-программа на выбор №2 — 30 мин.", "Торжественный вынос торта — 15 мин."],
+        "includes": ["Костюмированный ведущий шоу-программ", "Украшение комнаты", "Сервировка стола праздничной посудой", "Чай/кофе без ограничений", "Электронные пригласительные", "Подарочные сувениры всем участникам"]
+      },
+      {
+        "title": "Макси", "duration": "3 часа", "tone": "maxi",
+        "program": ["Квест на выбор — 60 мин.", "Банкет — 15 мин.", "Шоу-программа на выбор №1 — 30 мин.", "Шоу-программа на выбор №2 — 30 мин.", "Шоу-программа на выбор №3 — 30 мин.", "Торжественный вынос торта — 15 мин."],
+        "includes": ["Костюмированный ведущий шоу-программ", "Украшение комнаты", "Сервировка стола праздничной посудой", "Чай/кофе без ограничений", "Электронные пригласительные", "Подарочные сувениры всем участникам"]
+      }
+    ],
+    "shows": [
+      { "title": "Шоу любимый герой", "src": "/assets/static.tildacdn.com/tild6633-6163-4630-a331-333135643135/_.jpg" },
+      { "title": "Шоу Квиз Амонг Ас", "src": "/assets/static.tildacdn.com/tild3532-3434-4664-a464-366335343238/-.jpg" },
+      { "title": "Шоу Кажется нащупал", "src": "/assets/static.tildacdn.com/tild3366-6365-4762-b665-633666363431/_2.jpg" },
+      { "title": "Шоу мафия. Найди предателя", "src": "/assets/static.tildacdn.com/tild6531-3663-4361-b138-333865356332/Mafia.jpg" }
+    ],
+    "showDivider": "/assets/static.tildacdn.com/tild6636-6135-4335-a434-366364626139/amongas_mini.png",
+    "additions": [
+      { "title": "Фотограф на мероприятие", "src": "/assets/static.tildacdn.com/tild3434-6236-4666-b730-653163336530/_VR.jpg" },
+      { "title": "Вынос торта ведущим", "src": "/assets/static.tildacdn.com/tild3332-3062-4631-a564-336364316163/_mini.jpg" },
+      { "title": "Тематические торты", "src": "/assets/static.tildacdn.com/tild3636-3835-4665-b338-666330336136/_.jpg" },
+      { "title": "Профессиональные актеры", "src": "/assets/static.tildacdn.com/tild3434-3462-4665-b535-383435633563/image-15-2.png" }
+    ],
+    "trust": {
+      "cards": [
+        { "kind": "years", "mobileOrder": 1, "eyebrow": "Уже", "value": "8 ЛЕТ", "text": "создаем волшебные дни рождения", "frame": "/assets/static.tildacdn.com/tild6530-6239-4337-a561-653733613865/Frame_1328-2.png", "art": "/assets/static.tildacdn.com/tild6266-3662-4865-a461-393234393663/1_1_1.png" },
+        { "kind": "celebration", "mobileOrder": 2, "src": "/assets/static.tildacdn.com/tild3666-3063-4234-b666-333334363733/Dw9p2Cs30WY-2_1-2-2.png" },
+        { "kind": "reviews", "mobileOrder": 3, "eyebrow": "Более", "value": "10 000", "text": "восторженных отзывов", "frame": "/assets/static.tildacdn.com/tild6635-6664-4336-b964-613336356363/Frame_1328-2.png", "art": "/assets/static.tildacdn.com/tild6163-3530-4132-b930-323438633866/205467036_6306483_1.png" },
+        { "kind": "venues", "mobileOrder": 4, "value": "9", "text": "современно оборудованных площадок с комнатами отдыха", "art": "/assets/static.tildacdn.com/tild3033-6165-4230-a138-623138663761/image_24.png" },
+        { "kind": "cartoon", "mobileOrder": 6, "src": "/assets/static.tildacdn.com/tild6136-3565-4363-b866-316530326163/image-10-2.png" },
+        { "kind": "safety", "mobileOrder": 5, "title": "БЕЗОПАСНО", "text": "На каждом празднике присутствует инструктор, который следит за безопасностью всех участников", "label": "ДЕТИ ВСЕГДА ПОД ПРИСМОТРОМ", "frame": "/assets/static.tildacdn.com/tild3265-6366-4766-b836-626631383035/Frame_1328-2.png", "art": "/assets/static.tildacdn.com/tild3561-3934-4231-b639-323164653634/4090969693_a35cdc26-.png" },
+        { "kind": "age", "mobileOrder": 7, "title": "ДЛЯ ВСЕХ ВОЗРАСТОВ", "text": "Каждый сценарий адаптируется под любой возраст участников" },
+        { "kind": "party", "mobileOrder": 8, "src": "/assets/static.tildacdn.com/tild3538-6338-4039-b662-323163633930/image-5-2.png", "art": "/assets/static.tildacdn.com/tild3933-3136-4735-a430-346635383439/_1_2.png" }
+      ]
+    },
+    "gallery": [
+      "/assets/static.tildacdn.com/tild3437-3336-4535-a431-396335396138/_DSC3759.jpg",
+      "/assets/static.tildacdn.com/tild3032-3730-4137-a662-303536393730/_DSC3628.jpg",
+      "/assets/static.tildacdn.com/tild3561-3036-4763-a633-393338336536/_DSC3787.jpg",
+      "/assets/static.tildacdn.com/tild6365-6436-4333-a632-383764356661/_DSC3704.jpg",
+      "/assets/static.tildacdn.com/tild6538-3863-4466-b434-396638393135/_DSC3751.jpg",
+      "/assets/static.tildacdn.com/tild3938-6532-4162-a530-396538653433/_DSC3701.jpg",
+      "/assets/static.tildacdn.com/tild6533-6538-4762-b163-343935306431/_DSC3658.jpg",
+      "/assets/static.tildacdn.com/tild3938-6339-4465-b631-356437313865/photo_2024-09-28_14-.jpg"
+    ],
+    "bonus": {
+      "title": "УЗНАЙТЕ СТОИМОСТЬ И ПОЛУЧИТЕ ОДИН ИЗ ТРЁХ БОНУСОВ",
+      "items": ["Пригласительные для всех гостей", "Памятные сувениры всем участникам", "Фотографии с персонажем игры"],
+      "art": [
+        "/assets/static.tildacdn.com/tild6265-3065-4132-b332-613131376261/3_2_1.png",
+        "/assets/static.tildacdn.com/tild3961-3561-4235-b139-373362323530/331_4_1.png",
+        "/assets/static.tildacdn.com/tild3162-3766-4966-a530-363963316434/_5_1.png",
+        "/assets/static.tildacdn.com/tild3137-3130-4165-a539-356562656339/33_1__1_1.png",
+        "/assets/static.tildacdn.com/tild3836-6461-4436-b238-323766353839/102832617_1.png"
+      ]
+    },
+    "venues": [
+      { "title": "Гвардейский пер., 61", "href": "/guardeskypereulog61" },
+      { "title": "ул. Социалистическая, 186", "href": "/socialicheskaya186" },
+      { "title": "ул. Красноармейская, 103", "href": "/krasnormerskaya103" },
+      { "title": "пр-т Соколова, 23", "href": "/sokolova23" },
+      { "title": "пр-т Мира, д. 27", "href": "/mira27" },
+      { "title": "ул. Нансена, 107/1", "href": "/nansena107" },
+      { "title": "ул. Магнитогорская, 1", "href": "/magnitogorskaya1" },
+      { "title": "ул. 40-летия Победы, 216", "href": "/40letpobedy216" },
+      { "title": "пр-т Нагибина, 14а", "href": "/nagibina14" }
+    ],
+    "footer": {
+      "logo": "/assets/static.tildacdn.com/tild6337-6561-4434-a631-626137386564/-_.png",
+      "venues": [
+        { "title": "ПЕР. ГВАРДЕЙСКИЙ, 61", "href": "/guardeskypereulog61" },
+        { "title": "УЛ. СОЦИАЛИСТИЧЕСКАЯ, 186", "href": "/socialicheskaya186" },
+        { "title": "УЛ. КРАСНОАРМЕЙСКАЯ, 103", "href": "/krasnormerskaya103" },
+        { "title": "ПР-Т СОКОЛОВА, 23", "href": "/sokolova23" },
+        { "title": "УЛ. МАГНИТОГОРСКАЯ, 1", "href": "/magnitogorskaya1" },
+        { "title": "УЛИЦА 40-ЛЕТИЯ ПОБЕДЫ, 216", "href": "/40letpobedy216" },
+        { "title": "УЛ. НАГИБИНА, 14А", "href": "/nagibina14" }
+      ],
+      "phoneDesktop": "+7 (958) 405 54 34",
+      "phoneDesktopHref": "tel:+79584055434",
+      "phoneMobile": "+7 (863) 204 43 25",
+      "phoneMobileHref": "tel:+78632044325",
+      "email": "marketing.chezaquest@yandex.ru",
+      "emailHref": "mailto:marketing.chezaquest@yandex.ru"
+    }
+  }
 }

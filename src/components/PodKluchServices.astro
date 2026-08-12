@@ -1,0 +1,186 @@
+---
+// The source Additional Services block is two coupled native Tilda records:
+// T017 intro followed by a T774 card catalog. Keep its geometry out of shared
+// holiday tiles so this opt-in renderer cannot change other campaign routes.
+const { services = {}, asset = (value) => value, href = (value) => value } = Astro.props;
+const heading = services.heading || {};
+const catalogHeading = services.catalogHeading || {};
+---
+
+{services?.items?.length > 0 && (
+  <section class="podkluch-services" aria-labelledby="podkluch-services-title">
+    <div class="podkluch-services__intro">
+      <h2 id="podkluch-services-title">
+        <span>{heading.prefix}</span>{' '}<span class="podkluch-services__accent">{heading.accent}</span>
+      </h2>
+      {heading.subtitle && <p>{heading.subtitle}</p>}
+    </div>
+
+    <div class="podkluch-services__catalog" aria-labelledby="podkluch-services-catalog-title">
+      <h3 id="podkluch-services-catalog-title">
+        <span>{catalogHeading.prefix}</span><span class="podkluch-services__accent">{catalogHeading.accent}</span>
+      </h3>
+      <ul class="podkluch-services__grid">
+        {services.items.map((item) => (
+          <li class="podkluch-services__card">
+            <article class="podkluch-services__surface">
+              <a class="podkluch-services__media" href={href(services.href)} aria-label={`${item.t}: ${services.cta}`}>
+                <img
+                  src={asset(item.src)}
+                  alt=""
+                  width={item.intrinsic?.width || 1}
+                  height={item.intrinsic?.height || 1}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <div class="podkluch-services__body">
+                <div class="podkluch-services__text">
+                  <a href={href(services.href)}>{item.t}</a>
+                </div>
+                <div class="podkluch-services__action">
+                  <a href={href(services.href)}>{services.cta}</a>
+                </div>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .podkluch-services{background:#fff;color:#474747;overflow:hidden}
+  .podkluch-services__intro{
+    box-sizing:border-box;
+    padding:60px 20px 0;
+    text-align:center;
+  }
+  .podkluch-services__intro h2{
+    max-width:1160px;
+    margin:0 auto;
+    padding-top:2px;
+    color:#474747;
+    font:700 38px/46.74px Montserrat,Arial,sans-serif;
+  }
+  .podkluch-services__accent{color:#ff6900}
+  .podkluch-services__intro p{
+    max-width:1160px;
+    margin:0 auto;
+    padding-top:21px;
+    color:#474747;
+    font:600 22px/34.1px Nunito,Arial,sans-serif;
+  }
+  .podkluch-services__catalog{
+    box-sizing:border-box;
+    padding:45px 0 30px;
+  }
+  .podkluch-services__catalog h3{
+    width:min(1160px,calc(100% - 40px));
+    height:41.8125px;
+    margin:0 auto 90px;
+    color:#474747;
+    font:700 34px/41.8125px Montserrat,Arial,sans-serif;
+    text-align:center;
+  }
+  .podkluch-services__grid{
+    display:grid;
+    grid-template-columns:repeat(4,260px);
+    gap:40px;
+    box-sizing:border-box;
+    width:1200px;
+    max-width:100%;
+    margin:0 auto;
+    padding:0 20px;
+    list-style:none;
+  }
+  .podkluch-services__card{min-width:0}
+  .podkluch-services__surface{
+    display:flex;
+    height:100%;
+    flex-direction:column;
+    overflow:hidden;
+    border-radius:30px;
+    background:#fff;
+    box-shadow:0 0 8px rgba(0,0,0,.1);
+  }
+  .podkluch-services__media{
+    position:relative;
+    display:block;
+    overflow:hidden;
+    padding-bottom:96.153846153846%;
+  }
+  .podkluch-services__media img{
+    position:absolute;
+    inset:0;
+    display:block;
+    width:100%;
+    height:100%;
+    max-width:none;
+    object-fit:cover;
+  }
+  .podkluch-services__body{
+    display:flex;
+    flex:1;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .podkluch-services__text{
+    box-sizing:border-box;
+    padding:18px 20px;
+    color:#474747;
+    font:600 18px/21.6px Nunito,Arial,sans-serif;
+    text-transform:uppercase;
+  }
+  .podkluch-services__text a{color:inherit}
+  .podkluch-services__action{
+    box-sizing:border-box;
+    padding:0 20px 14px;
+    text-align:center;
+  }
+  .podkluch-services__action a{
+    display:inline-flex;
+    width:85.40625px;
+    height:34.96875px;
+    align-items:center;
+    justify-content:center;
+    border-radius:30px;
+    color:#fff;
+    background-image:linear-gradient(0deg,#ff9415 0%,#ffc709 100%);
+    font:400 13px/18.2px Nunito,Arial,sans-serif;
+    text-decoration:none;
+  }
+  .podkluch-services__surface:hover{box-shadow:0 0 10px rgba(0,0,0,.3)}
+
+  @media (max-width:639px){
+    .podkluch-services__intro{padding-inline:20px}
+    .podkluch-services__intro h2{
+      width:350px;
+      max-width:100%;
+      font-size:38px;
+      line-height:46.74px;
+    }
+    .podkluch-services__intro p{
+      width:350px;
+      max-width:100%;
+      line-height:31.9px;
+    }
+    .podkluch-services__catalog h3{
+      width:350px;
+      max-width:calc(100% - 40px);
+      height:41.8125px;
+      margin-bottom:60px;
+      font-size:34px;
+      line-height:41.8125px;
+    }
+    .podkluch-services__grid{
+      grid-template-columns:1fr;
+      gap:20px;
+      width:390px;
+      padding:0 10px;
+    }
+    .podkluch-services__card{padding:0 10px}
+    .podkluch-services__action a{height:39.96875px}
+  }
+</style>

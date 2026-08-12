@@ -10,19 +10,71 @@
  },
  "hero": {
   "h1": "Квест Дикий Запад",
-  "pills": [
-   "90 мин",
-   "6-12",
-   "12+"
-  ],
-  "buttons": [],
+    "pills": [
+      "90 мин",
+      "6-12",
+      "12+"
+    ],
+    "buttons": [
+      {
+        "t": "Бронировать",
+        "href": "#booking"
+      },
+      {
+        "t": "Купить в подарок",
+        "href": "#booking"
+      }
+    ],
   "bg": "/assets/q/51690ff31e.webp",
   "bgset": {
-   "760": "/assets/q/e7728cb416.webp",
-   "1200": "/assets/q/896e922dbd.webp",
-   "1600": "/assets/q/51690ff31e.webp"
-  }
- },
+      "760": "/assets/q/e7728cb416.webp",
+      "1200": "/assets/q/896e922dbd.webp",
+      "1600": "/assets/q/51690ff31e.webp"
+    }
+  },
+  "sourceParity": {
+    "kind": "zapad-source",
+    "records": {
+      "hero": "rec223203317",
+      "breadcrumbs": "rec1127416181",
+      "breadcrumbSpacer": "rec1127416341",
+      "aliasBeforeStory": "rec222654580",
+      "story": "rec222017391",
+      "gallery": "rec222017392",
+      "storySpacer": "rec306093018",
+      "information": "rec222017394",
+      "booking": "rec222017396",
+      "callback": "rec1144740346",
+      "aliasBeforeVenues": "rec222205461",
+      "venuesHeading": "rec1100733926",
+      "venues": "rec1100733931",
+      "footerSpacer": "rec1100733986"
+    },
+    "hero": {
+      "desktop": 900,
+      "mobile": 760
+    },
+    "story": {
+      "desktop": 350,
+      "mobile": 480
+    },
+    "gallery": {
+      "desktop": 626,
+      "mobile": 325
+    },
+    "information": {
+      "desktop": 980,
+      "mobile": 900
+    },
+    "booking": {
+      "desktop": 290,
+      "mobile": 330
+    },
+    "callback": {
+      "desktop": 480,
+      "mobile": 630
+    }
+  },
  "breadcrumbs": [
   {
    "t": "Главная",
@@ -41,9 +93,10 @@
  "booking": {
   "title": "Онлайн бронирование",
   "lines": [
-   "Мы не берём комиссию за бронирование игры на сайте с игроков",
-   "Точная стоимость – в форме бронирования",
-   "Оплатить участие в квесте можно наличными в день игры — предоплата не требуется"
+      "Мы не берём комиссию за бронирование игры на сайте с игроков",
+      "Точная стоимость – в форме бронирования",
+      "Оплатить участие в квесте можно наличными в день игры — предоплата не требуется",
+      "Выберите и забронируйте свободное время, кликнув по нему"
   ]
  },
  "extra": [

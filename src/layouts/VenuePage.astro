@@ -9,11 +9,14 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
 import ZoomImg from '../components/ZoomImg.astro';
+import MagnitVenueHall from '../components/MagnitVenueHall.astro';
 import LazyMap from '../components/LazyMap.astro';
 import Reviews from '../components/Reviews.astro';
 import VenuesSection from '../components/VenuesSection.astro';
 import site from '../data/site.json';
 import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { canonicalizeCardItems } from '../lib/card-items.js';
+import { groupVenueGameItems } from '../lib/venue-games.js';
 import '../styles/page.css';
 import '../styles/quest.css';
 
@@ -29,29 +32,8 @@ const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
 const mapsUrl = howto.routeUrl
   || `https://yandex.ru/maps/?text=${encodeURIComponent('Ростов-на-Дону, ' + address)}`;
 const pagesBySlug = new Map(index.map((item) => [item.slug, item]));
-const canonicalGameItems = (items = []) => items.map((item) => {
-  const slug = String(item.href || '').split(/[?#]/, 1)[0].replace(/^\/+|\/+$/g, '');
-  return {
-    ...item,
-    // Venue grids in the source use bespoke square card art. Preserve an
-    // explicitly captured local thumbnail and use the page hero only as a
-    // fallback for older data records that do not have one.
-    img: item.img || pagesBySlug.get(slug)?.img,
-    imgSet: pagesBySlug.get(slug)?.imgSet || null,
-  };
-});
-const gameItems = page.games?.items || [];
-const gameGroups = [];
-let gameOffset = 0;
-for (const group of page.games?.groups || []) {
-  const size = Number(group.size);
-  if (!Number.isInteger(size) || size < 1) continue;
-  const items = gameItems.slice(gameOffset, gameOffset + size);
-  gameOffset += size;
-  if (items.length > 0) gameGroups.push({ ...group, items });
-}
-if (gameGroups.length === 0 && gameItems.length > 0) gameGroups.push({ items: gameItems });
-if (gameOffset < gameItems.length) gameGroups.push({ items: gameItems.slice(gameOffset) });
+const canonicalGameItems = (items = []) => canonicalizeCardItems(items, pagesBySlug);
+const gameGroups = groupVenueGameItems(page.games?.items, page.games?.groups);
 
 // ---- Schema.org: площадка как заведение + хлебные крошки ----
 const jsonld = [
@@ -141,7 +123,9 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
     {page.showPartyForm !== false && <PartyForm />}
 
     <!-- ============ ЗАЛ ДЛЯ ПРАЗДНИКА ============ -->
-    {page.hall && (
+    {page.hall?.layout === 'magnit-t396' ? (
+      <MagnitVenueHall hall={page.hall} address={address} asset={asset} ctaHref="#prazdnik" />
+    ) : page.hall && (
       <section class="qvenue">
         <div class="container">
           {page.hall.title && <h2 class="section-title">{page.hall.title}</h2>}

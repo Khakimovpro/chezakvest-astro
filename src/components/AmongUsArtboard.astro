@@ -1,0 +1,199 @@
+---
+// `/amongus-land/` is a complete Tilda campaign composition rather than a
+// collection of shared holiday sections.  Its record dimensions are captured
+// in route data so this renderer cannot leak onto another landing page.
+import SourceArtboardRailControls from './SourceArtboardRailControls.astro';
+
+const { source = {}, asset = (value) => value, href = (value) => value, phoneHref = '#', phone = '' } = Astro.props;
+const records = source.records || {};
+const recordIds = source.recordIds || {};
+const hero = source.hero || {};
+const intro = source.intro || {};
+const video = source.video || {};
+const bonus = source.bonus || {};
+const trust = source.trust || {};
+const footer = source.footer || {};
+const footerVenues = footer.venues || source.venues || [];
+const bookingHref = href(source.bookingHref || '#prazdnik');
+const px = (value) => Number.isFinite(value) ? `${value}px` : String(value || '');
+const recordStyle = (record = {}) => [
+  record.desktop !== undefined && `--amongus-record-desktop:${px(record.desktop)}`,
+  record.mobile !== undefined && `--amongus-record-mobile:${px(record.mobile)}`,
+].filter(Boolean).join(';');
+const organisation = [
+  ['Детский День рождения', '/kids'], ['Взрослый День рождения', '/prazdniki-pod-kluch'],
+  ['День Рождения в VR', '/den-rozhdeniya-na-vr-arene'], ['Выпускной', '/vypusknoj-kalmar'],
+  ['Корпоратив | Тимбилдинг', '/prazdniki-pod-kluch'],
+];
+const entertainment = [
+  ['Квеструмы', '/kvesty-v-rostove-na-donu'], ['VR-арены', '/den-rozhdeniya-na-vr-arene'],
+  ['Активные игры', '/party-games'], ['Прятки в темноте', '/pryatki_v_temnote'],
+  ['Страшные квесты', '/strashnye-kvesty'],
+];
+---
+
+<div class="amongus-artboard" id="about" data-source-artboard="amongus">
+  <section class="amongus-artboard__hero" data-parity-record={recordIds.hero} style={recordStyle(records.hero)} aria-labelledby="amongus-hero-title">
+    <div class="amongus-artboard__rail amongus-artboard__hero-canvas">
+      {hero.background && <img class="amongus-artboard__hero-world" src={asset(hero.background)} alt="" aria-hidden="true" width="1058" height="583" fetchpriority="high" decoding="async" />}
+      {hero.ship && <img class="amongus-artboard__hero-ship" src={asset(hero.ship)} alt="" aria-hidden="true" width="583" height="419" fetchpriority="high" decoding="async" />}
+      {hero.crewmate && <img class="amongus-artboard__hero-crewmate" src={asset(hero.crewmate)} alt="" aria-hidden="true" width="569" height="911" fetchpriority="high" decoding="async" />}
+      <div class="amongus-artboard__hero-copy">
+        <p class="amongus-artboard__hero-label">{hero.logo && <img src={asset(hero.logo)} alt="" aria-hidden="true" width="22" height="28" decoding="async" />}{hero.label}</p>
+        <h1 id="amongus-hero-title">{hero.title}</h1>
+        <p>{hero.text}</p>
+        <a class="amongus-artboard__blue-button" href={bookingHref}>{hero.cta}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="amongus-artboard__intro" data-parity-record={recordIds.intro} style={recordStyle(records.intro)} aria-labelledby="amongus-intro-title">
+    <div class="amongus-artboard__rail amongus-artboard__intro-canvas">
+      <h2 id="amongus-intro-title">{intro.title}</h2>
+      <p class="amongus-artboard__intro-text">{intro.text}</p>
+      <p class="amongus-artboard__intro-label">Для вас:</p>
+      <ul>{(intro.items || []).map((item) => (<li>{item}</li>))}</ul>
+      {intro.photo && <img class="amongus-artboard__intro-photo" src={asset(intro.photo)} alt="Праздник в стиле Амонг Ас" width="700" height="470" loading="lazy" decoding="async" />}
+      {intro.decor && <img class="amongus-artboard__intro-decor" src={asset(intro.decor)} alt="" aria-hidden="true" width="131" height="158" loading="lazy" decoding="async" />}
+    </div>
+  </section>
+
+  <section class="amongus-artboard__video" data-parity-record={recordIds.video} style={recordStyle(records.video)} aria-labelledby="amongus-video-title">
+    <div class="amongus-artboard__rail amongus-artboard__video-canvas">
+      <h2 id="amongus-video-title">{video.title}</h2>
+      {video.poster && <a class="amongus-artboard__video-poster" href={bookingHref}><img src={asset(video.poster)} alt="Посмотрите, как проходят праздники" width="650" height="380" loading="lazy" decoding="async" /><span aria-hidden="true">▶</span></a>}
+      {video.decor && <img class="amongus-artboard__video-decor" src={asset(video.decor)} alt="" aria-hidden="true" width="159" height="181" loading="lazy" decoding="async" />}
+    </div>
+  </section>
+
+  <section class="amongus-artboard__packages" data-parity-record={recordIds.packages} style={recordStyle(records.packages)} aria-labelledby="amongus-packages-title">
+    <div class="amongus-artboard__rail amongus-artboard__packages-canvas">
+      <h2 id="amongus-packages-title">ПАКЕТНЫЕ ПРЕДЛОЖЕНИЯ</h2>
+      <div class="amongus-artboard__package-grid">
+        {(source.packages || []).map((pack) => (
+          <article class={`amongus-artboard__package amongus-artboard__package--${pack.tone}`}>
+            {pack.badge && <span class="amongus-artboard__package-badge">{pack.badge}</span>}
+            <div class="amongus-artboard__package-head"><h3>{pack.title}</h3><span>{pack.duration}</span></div>
+            <h4>В программу входит:</h4>
+            <ul class="amongus-artboard__package-program">{(pack.program || []).map((item) => (<li>{item}</li>))}</ul>
+            <h4>В пакет включено:</h4>
+            <ul class="amongus-artboard__package-includes">{(pack.includes || []).map((item) => (<li>{item}</li>))}</ul>
+          </article>
+        ))}
+      </div>
+      <a class="amongus-artboard__blue-button amongus-artboard__packages-cta" href={bookingHref}>Узнать стоимость</a>
+    </div>
+  </section>
+
+  <section class="amongus-artboard__shows" data-parity-record={recordIds.shows} style={recordStyle(records.shows)} aria-labelledby="amongus-shows-title">
+    <div class="amongus-artboard__rail">
+      <h2 id="amongus-shows-title">ШОУ-ПРОГРАММЫ И МАСТЕР-КЛАССЫ</h2>
+      <div class="amongus-artboard__show-grid">
+        {(source.shows || []).map((item) => (
+          <a class="amongus-artboard__show-card" href={bookingHref}>
+            <img src={asset(item.src)} alt={item.title} width="700" height="467" loading="lazy" decoding="async" />
+            <span>{item.title}</span><b>Заказать</b>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+  <div class="amongus-artboard__show-divider" data-parity-record={recordIds.showDivider} style={recordStyle(records.showDivider)} aria-hidden="true">{source.showDivider && <img src={asset(source.showDivider)} alt="" width="90" height="120" loading="lazy" decoding="async" />}</div>
+
+  <section class="amongus-artboard__additions" data-parity-record={recordIds.additions} style={recordStyle(records.additions)} aria-labelledby="amongus-additions-title" data-source-artboard-rail data-source-artboard-rail-id="amongus-additions">
+    <div class="amongus-artboard__rail">
+      <h2 id="amongus-additions-title">ДОПОЛНЕНИЯ, КОТОРЫЕ УКРАСЯТ ВАШ ПРАЗДНИК</h2>
+      <div class="amongus-artboard__addition-window" id="amongus-additions-viewport" data-source-artboard-rail-viewport tabindex="0" role="region" aria-roledescription="carousel" aria-label="Дополнения к празднику">
+        <div class="amongus-artboard__addition-track">
+          {(source.additions || []).map((item, index) => (
+            <a class="amongus-artboard__addition-card" href={bookingHref} id={`amongus-additions-slide-${index + 1}`} data-source-artboard-rail-slide>
+              <img src={asset(item.src)} alt={item.title} width="700" height="467" loading="lazy" decoding="async" />
+              <span>{item.title}</span><b>Заказать</b>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+    <SourceArtboardRailControls railId="amongus-additions" label="Дополнения к празднику" items={source.additions || []} />
+  </section>
+  <div class="amongus-artboard__additions-gap" style={recordStyle(records.additionsGap)} aria-hidden="true"></div>
+
+  <section class="amongus-artboard__trust-heading" data-parity-record={recordIds.trustHeading} style={recordStyle(records.trustHeading)} aria-labelledby="amongus-trust-title"><h2 id="amongus-trust-title">ПРИЧИНЫ <em>ДОВЕРИТЬ</em> НАМ<br />ОРГАНИЗАЦИЮ ВАШЕГО ПРАЗДНИКА</h2></section>
+  <section class="amongus-artboard__trust" data-parity-record={recordIds.trust} style={recordStyle(records.trust)} aria-label="Причины доверить праздник">
+    <div class="amongus-artboard__trust-grid">
+      {(trust.cards || []).map((card) => (
+        <article class={`amongus-artboard__trust-card amongus-artboard__trust-card--${card.kind}`} style={`--amongus-trust-mobile-order:${card.mobileOrder || 0}`}>
+          {card.frame && <img class="amongus-artboard__trust-card-frame" src={asset(card.frame)} alt="" aria-hidden="true" width="300" height="285" loading="lazy" decoding="async" />}
+          {card.src && <img class="amongus-artboard__trust-card-scene" src={asset(card.src)} alt="" aria-hidden="true" width="300" height="285" loading="lazy" decoding="async" />}
+          {card.art && <img class="amongus-artboard__trust-card-art" src={asset(card.art)} alt="" aria-hidden="true" width="190" height="190" loading="lazy" decoding="async" />}
+          {card.eyebrow && <span class="amongus-artboard__trust-card-eyebrow">{card.eyebrow}</span>}
+          {card.value && <strong>{card.value}</strong>}
+          {card.title && <h3>{card.title}</h3>}
+          <p>{card.text}</p>
+          {card.label && <b class="amongus-artboard__trust-card-label">{card.label}</b>}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="amongus-artboard__gallery-heading" data-parity-record={recordIds.galleryHeading} style={recordStyle(records.galleryHeading)} aria-labelledby="amongus-gallery-title"><h2 id="amongus-gallery-title">ФОТОГАЛЕРЕЯ</h2></section>
+  <section class="amongus-artboard__gallery" data-parity-record={recordIds.gallery} style={recordStyle(records.gallery)} aria-label="Фотогалерея праздников">
+    <div>{(source.gallery || []).map((image, index) => (<img src={asset(image)} alt={`Фотография праздника ${index + 1}`} width="600" height="400" loading="lazy" decoding="async" />))}</div>
+  </section>
+
+  <section class="amongus-artboard__bonus" data-parity-record={recordIds.bonus} style={recordStyle(records.bonus)} aria-labelledby="amongus-bonus-title">
+    <div class="amongus-artboard__rail amongus-artboard__bonus-canvas">
+      <h2 id="amongus-bonus-title">{bonus.title}</h2>
+      <ul>{(bonus.items || []).map((item) => (<li>{item}</li>))}</ul>
+      <a class="amongus-artboard__blue-button" href={bookingHref}>Рассчитать стоимость</a>
+      <div class="amongus-artboard__bonus-art" aria-hidden="true">{(bonus.art || []).map((image) => (<img src={asset(image)} alt="" width="264" height="330" loading="lazy" decoding="async" />))}</div>
+    </div>
+  </section>
+
+  <section class="amongus-artboard__venues-heading" data-parity-record={recordIds.venuesHeading} style={recordStyle(records.venuesHeading)} aria-labelledby="amongus-venues-title"><h2 id="amongus-venues-title">НАШИ ПЛОЩАДКИ</h2><p>Выбери одну из 9 современно оборудованных площадок с комнатами отдыха в Ростове-на-Дону</p><div class="amongus-artboard__venues-desktop" aria-label="Площадки">{(source.venues || []).map((item) => (<a href={href(item.href)}>{item.title}</a>))}</div></section>
+  <section class="amongus-artboard__venues" data-parity-record={recordIds.venues} style={recordStyle(records.venues)} aria-label="Площадки"><div>{(source.venues || []).map((item) => (<a href={href(item.href)}>{item.title}</a>))}</div></section>
+
+  <div class="amongus-artboard__footer-spacer" data-parity-record={recordIds.footerSpacer} style={recordStyle(records.footerSpacer)} aria-hidden="true"></div>
+  <footer class="amongus-artboard__footer" data-parity-record={recordIds.footer} style={recordStyle(records.footer)}>
+    <div class="amongus-artboard__footer-grid">
+      <section><h2>ОРГАНИЗАЦИЯ МЕРОПРИЯТИЙ</h2>{organisation.map(([title, itemHref]) => (<a href={href(itemHref)}>{title}</a>))}</section>
+      <section><h2>ВИДЫ РАЗВЛЕЧЕНИЙ</h2>{entertainment.map(([title, itemHref]) => (<a href={href(itemHref)}>{title}</a>))}</section>
+      <section><h2>НАШИ ПЛОЩАДКИ</h2>{footerVenues.map((item) => (<a href={href(item.href)}>{item.title}</a>))}</section>
+      <section class="amongus-artboard__footer-legal"><a href={href('/privacy')}>Политика обработки персональных данных</a><p>ИП Мелешкин Юрий Иванович<br />ОГРНИП: 322169000094990</p></section>
+    </div>
+  </footer>
+  <div class="amongus-artboard__footer-bottom" data-parity-record={recordIds.footerBottom} style={recordStyle(records.footerBottom)}><a class="amongus-artboard__footer-logo" href={href('/')}><img src={asset(footer.logo)} alt="Чё за Квест" width="251" height="113" loading="lazy" decoding="async" /></a><span class="amongus-artboard__footer-copyright">© 2025 ЧЁ ЗА КВЕСТ</span><div class="amongus-artboard__footer-contact"><a class="amongus-artboard__footer-phone amongus-artboard__footer-phone--desktop" href={footer.phoneDesktopHref || phoneHref}>{footer.phoneDesktop || phone}</a><a class="amongus-artboard__footer-phone amongus-artboard__footer-phone--mobile" href={footer.phoneMobileHref || phoneHref}>{footer.phoneMobile || phone}</a><p>Работаем c 10:00 до 23:30</p>{footer.email && <a class="amongus-artboard__footer-email" href={footer.emailHref}>{footer.email}</a>}</div></div>
+</div>
+
+<style is:global>
+  .amongus-artboard__booking .pform{display:none}
+  .amongus-artboard__booking .pform:target{display:block}
+</style>
+
+<style>
+  .amongus-artboard{overflow:hidden;background:#242137;color:#fff;font-family:Montserrat,Arial,sans-serif}
+  .amongus-artboard a{color:inherit;text-decoration:none}.amongus-artboard__rail{position:relative;width:1200px;height:100%;margin:auto}
+  .amongus-artboard__hero{height:var(--amongus-record-desktop,900px);overflow:hidden;background:#000}.amongus-artboard__hero-canvas{overflow:visible}.amongus-artboard__hero-world{position:absolute;right:-250px;bottom:20px;width:906px;height:490px;object-fit:cover}.amongus-artboard__hero-ship{position:absolute;top:145px;right:-107px;width:482px;height:281px;object-fit:cover}.amongus-artboard__hero-crewmate{position:absolute;bottom:-7px;left:-230px;width:364px;height:489px;object-fit:cover}.amongus-artboard__hero-copy{position:absolute;top:188px;left:60px;width:650px}.amongus-artboard__hero-label{display:flex;align-items:center;gap:7px;margin:0 0 11px;color:#e4e2e6;font:400 16px/1 Montserrat,Arial,sans-serif}.amongus-artboard__hero-label img{width:23px;height:31px}.amongus-artboard__hero-copy h1{width:650px;margin:0;color:#1188ff;font:800 37px/.95 Montserrat,Arial,sans-serif;letter-spacing:-.036em}.amongus-artboard__hero-copy>p:not(.amongus-artboard__hero-label){width:447px;margin:22px 0 34px;color:#fff;font:400 19px/1.27 Montserrat,Arial,sans-serif}.amongus-artboard__blue-button{display:inline-flex;box-sizing:border-box;min-width:230px;min-height:47px;align-items:center;justify-content:center;border-radius:28px;background:#128aff;color:#fff!important;font:700 12px/1 Montserrat,Arial,sans-serif;transition:filter .2s ease,transform .2s ease}.amongus-artboard__blue-button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+  .amongus-artboard__intro{height:var(--amongus-record-desktop,706px);overflow:hidden;background:#28243d}.amongus-artboard__intro-canvas h2{position:absolute;top:96px;left:207px;width:790px;margin:0;color:#1b93ff;text-align:center;font:800 32px/.96 Montserrat,Arial,sans-serif}.amongus-artboard__intro-text{position:absolute;top:208px;left:115px;width:970px;margin:0;color:#dedce6;text-align:center;font:400 12px/1.35 Montserrat,Arial,sans-serif}.amongus-artboard__intro-label{position:absolute;top:295px;left:0;margin:0;font:700 14px/1 Montserrat,Arial,sans-serif}.amongus-artboard__intro ul{position:absolute;top:330px;left:0;width:600px;margin:0;padding:0;list-style:none}.amongus-artboard__intro li{position:relative;margin-bottom:10px;padding-left:24px;color:#dddbe3;font:400 12px/1.15 Montserrat,Arial,sans-serif}.amongus-artboard__intro li::before{position:absolute;top:3px;left:0;width:10px;height:10px;border:2px solid #3d91ff;border-radius:50%;content:''}.amongus-artboard__intro-photo{position:absolute;top:300px;right:0;width:521px;height:337px;object-fit:cover;border-radius:12px}.amongus-artboard__intro-decor{position:absolute;right:-55px;bottom:-55px;width:131px;height:158px;object-fit:contain}
+  .amongus-artboard__video{height:var(--amongus-record-desktop,712px);overflow:hidden;background:#242137}.amongus-artboard__video-canvas h2,.amongus-artboard__packages h2,.amongus-artboard__shows h2,.amongus-artboard__additions h2,.amongus-artboard__trust-heading h2,.amongus-artboard__gallery-heading h2,.amongus-artboard__venues-heading h2{margin:0;color:#fff;text-align:center;font:800 28px/1.05 Montserrat,Arial,sans-serif}.amongus-artboard__video-canvas h2{position:absolute;top:99px;left:206px;width:790px}.amongus-artboard__video-poster{position:absolute;top:232px;left:275px;display:block;overflow:hidden;width:651px;height:358px;border-radius:12px}.amongus-artboard__video-poster img{width:100%;height:100%;object-fit:cover}.amongus-artboard__video-poster span{position:absolute;top:50%;left:50%;display:grid;width:57px;height:57px;place-items:center;border-radius:50%;background:#168eff;color:#fff;font-size:24px;transform:translate(-50%,-50%)}.amongus-artboard__video-decor{position:absolute;top:255px;left:-125px;width:159px;height:181px}
+  .amongus-artboard__packages{height:var(--amongus-record-desktop,1242px);overflow:hidden;background:#181628}.amongus-artboard__packages-canvas h2{position:absolute;top:150px;left:205px;width:790px}.amongus-artboard__package-grid{position:absolute;top:279px;left:0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:1200px}.amongus-artboard__package{position:relative;box-sizing:border-box;min-height:795px;padding:31px 27px 25px;border-radius:4px;color:#fff;overflow:hidden}.amongus-artboard__package--standard{background:#c731ee}.amongus-artboard__package--super{background:#e53963}.amongus-artboard__package--maxi{background:#2a47e6}.amongus-artboard__package-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}.amongus-artboard__package h3{margin:0;font:800 24px/1 Montserrat,Arial,sans-serif;text-transform:uppercase}.amongus-artboard__package-head span{padding:7px 13px;border-radius:4px;background:rgba(16,16,43,.78);font:700 11px/1 Montserrat,Arial,sans-serif}.amongus-artboard__package h4{margin:17px 0 10px;font:800 14px/1 Montserrat,Arial,sans-serif}.amongus-artboard__package ul{margin:0;padding:0;list-style:none}.amongus-artboard__package li{position:relative;margin:0 0 9px;padding-left:18px;font:400 12px/1.2 Montserrat,Arial,sans-serif}.amongus-artboard__package li::before{position:absolute;left:0;content:'✓';font-weight:800}.amongus-artboard__package-program li::before{content:'•'}.amongus-artboard__package-badge{position:absolute;top:-3px;left:50%;padding:8px 20px;border-radius:0 0 7px 7px;background:#ff2770;font:800 10px/1 Montserrat,Arial,sans-serif;transform:translateX(-50%);white-space:nowrap}.amongus-artboard__packages-cta{position:absolute;bottom:35px;left:430px;min-width:340px;min-height:62px}
+  .amongus-artboard__shows{height:var(--amongus-record-desktop,590px);overflow:hidden;background:#242137}.amongus-artboard__shows h2{padding-top:46px}.amongus-artboard__show-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:38px}.amongus-artboard__show-card,.amongus-artboard__addition-card{color:#fff!important}.amongus-artboard__show-card img{display:block;width:100%;height:150px;object-fit:cover;border-radius:8px}.amongus-artboard__show-card span,.amongus-artboard__addition-card span{display:block;margin-top:10px;font:700 11px/1.18 Montserrat,Arial,sans-serif}.amongus-artboard__show-card b,.amongus-artboard__addition-card b{display:block;margin-top:10px;color:#399dff;font:700 10px/1 Montserrat,Arial,sans-serif}.amongus-artboard__show-divider{position:relative;height:var(--amongus-record-desktop,40px);overflow:visible;background:#242137}.amongus-artboard__show-divider img{position:absolute;bottom:-75px;left:calc(50% - 40px);width:90px;height:120px;object-fit:contain;z-index:1}
+  .amongus-artboard__additions{position:relative;height:var(--amongus-record-desktop,690px);overflow:hidden;background:#242137;--source-artboard-rail-control-bg:rgba(20,17,39,.88);--source-artboard-rail-control-color:#fff;--source-artboard-rail-control-border:#399dff;--source-artboard-rail-control-active:#168eff;--source-artboard-rail-dot:#706d82;--source-artboard-rail-dot-active:#399dff;--source-artboard-rail-focus:#fff}.amongus-artboard__additions h2{padding-top:88px}.amongus-artboard__addition-window{width:1200px;margin:50px auto 0;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x}.amongus-artboard__addition-window::-webkit-scrollbar{display:none}.amongus-artboard__addition-track{display:flex;gap:20px;width:max-content}.amongus-artboard__addition-card{display:block;flex:0 0 285px;scroll-snap-align:start}.amongus-artboard__addition-card img{display:block;width:285px;height:190px;object-fit:cover;border-radius:8px}.amongus-artboard__additions-gap{height:var(--amongus-record-desktop,0px);background:#242137}
+  .amongus-artboard__trust-heading{display:flex;height:var(--amongus-record-desktop,155px);align-items:center;justify-content:center;background:#242137}.amongus-artboard__trust-heading em{color:#1696ff;font-style:normal}.amongus-artboard__trust{height:var(--amongus-record-desktop,707px);overflow:hidden;background:#242137}.amongus-artboard__trust-grid{display:grid;grid-template-columns:repeat(4,300px);grid-auto-rows:285px;width:1200px;margin:37px auto 0}.amongus-artboard__trust-card{position:relative;box-sizing:border-box;overflow:hidden;padding:30px 20px;background:#2d86e6}.amongus-artboard__trust-card-frame,.amongus-artboard__trust-card-scene,.amongus-artboard__trust-card-art{position:absolute;display:block;pointer-events:none}.amongus-artboard__trust-card-frame{z-index:0;inset:0;width:100%;height:100%;object-fit:cover}.amongus-artboard__trust-card-scene{z-index:1;inset:0;width:100%;height:100%;object-fit:cover}.amongus-artboard__trust-card-art{z-index:2;object-fit:contain}.amongus-artboard__trust-card-eyebrow,.amongus-artboard__trust-card strong,.amongus-artboard__trust-card h3,.amongus-artboard__trust-card p,.amongus-artboard__trust-card-label{position:relative;z-index:3;display:block}.amongus-artboard__trust-card-eyebrow{margin:0 0 13px;text-align:center;font:800 18px/1 Montserrat,Arial,sans-serif}.amongus-artboard__trust-card strong{margin-bottom:18px;font:800 72px/.9 Montserrat,Arial,sans-serif}.amongus-artboard__trust-card h3{max-width:255px;margin:0 0 15px;font:800 26px/.95 Montserrat,Arial,sans-serif}.amongus-artboard__trust-card p{max-width:250px;margin:0;font:400 17px/1.24 Montserrat,Arial,sans-serif}.amongus-artboard__trust-card-label{max-width:180px;margin:13px 0 0 120px;font:800 18px/.92 Montserrat,Arial,sans-serif}.amongus-artboard__trust-card--years,.amongus-artboard__trust-card--reviews,.amongus-artboard__trust-card--safety,.amongus-artboard__trust-card--party{background:#21223b}.amongus-artboard__trust-card--celebration{padding:0}.amongus-artboard__trust-card--celebration .amongus-artboard__trust-card-scene{top:-76px;left:-28px;width:361px;height:361px;object-fit:contain}.amongus-artboard__trust-card--years .amongus-artboard__trust-card-art{top:-38px;left:-26px;width:123px;height:148px}.amongus-artboard__trust-card--years .amongus-artboard__trust-card-eyebrow{margin-left:80px}.amongus-artboard__trust-card--years strong{margin-left:102px;margin-top:77px}.amongus-artboard__trust-card--years p{max-width:250px;text-align:center}.amongus-artboard__trust-card--reviews .amongus-artboard__trust-card-art{top:120px;left:159px;width:149px;height:149px}.amongus-artboard__trust-card--reviews .amongus-artboard__trust-card-eyebrow{text-align:right;margin-right:65px}.amongus-artboard__trust-card--reviews strong{margin-left:17px}.amongus-artboard__trust-card--reviews p{max-width:170px;margin-left:22px}.amongus-artboard__trust-card--venues .amongus-artboard__trust-card-art{top:-68px;left:177px;width:187px;height:137px}.amongus-artboard__trust-card--venues strong{margin:78px 0 21px 70px}.amongus-artboard__trust-card--venues p{max-width:260px;text-align:center}.amongus-artboard__trust-card--cartoon{padding:20px;background:#2d86e6}.amongus-artboard__trust-card--cartoon .amongus-artboard__trust-card-scene{inset:20px;width:260px;height:245px}.amongus-artboard__trust-card--safety .amongus-artboard__trust-card-art{top:177px;left:17px;width:95px;height:109px}.amongus-artboard__trust-card--safety h3{margin-left:5px}.amongus-artboard__trust-card--safety p{max-width:260px;text-align:center}.amongus-artboard__trust-card--age h3{max-width:260px;font-size:38px}.amongus-artboard__trust-card--age p{max-width:270px;text-align:center}.amongus-artboard__trust-card--party{padding:20px}.amongus-artboard__trust-card--party .amongus-artboard__trust-card-scene{inset:20px;width:260px;height:245px}.amongus-artboard__trust-card--party .amongus-artboard__trust-card-art{top:139px;left:186px;width:187px;height:208px}
+  .amongus-artboard__gallery-heading{display:flex;height:var(--amongus-record-desktop,130px);align-items:center;justify-content:center;background:#242137}.amongus-artboard__gallery{height:var(--amongus-record-desktop,551px);overflow:hidden;background:#242137}.amongus-artboard__gallery>div{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:1200px;margin:auto}.amongus-artboard__gallery img{width:100%;height:198px;object-fit:cover;border-radius:8px}
+  .amongus-artboard__bonus{height:var(--amongus-record-desktop,754px);overflow:hidden;background:#242137}.amongus-artboard__bonus-canvas{box-sizing:border-box;height:100%;margin-top:0;padding:178px 60px 0;border-radius:10px;background:#1f1b31}.amongus-artboard__bonus h2{width:630px;margin:0;color:#fff;font:800 31px/1.05 Montserrat,Arial,sans-serif}.amongus-artboard__bonus ul{margin:23px 0 32px;padding:0;list-style:none}.amongus-artboard__bonus li{position:relative;margin-bottom:10px;padding-left:25px;color:#dddce5;font:400 13px/1.25 Montserrat,Arial,sans-serif}.amongus-artboard__bonus li::before{position:absolute;left:0;color:#1d9bff;content:'✓';font-weight:800}.amongus-artboard__bonus-art img{position:absolute;bottom:0;object-fit:contain}.amongus-artboard__bonus-art img:nth-child(1){right:435px;width:170px}.amongus-artboard__bonus-art img:nth-child(2){right:265px;width:175px}.amongus-artboard__bonus-art img:nth-child(3){right:0;width:255px}.amongus-artboard__bonus-art img:nth-child(4){bottom:310px;left:-106px;width:145px}.amongus-artboard__bonus-art img:nth-child(5){top:62px;right:-140px;width:310px}
+  .amongus-artboard__venues-heading{position:relative;display:flex;height:var(--amongus-record-desktop,210px);box-sizing:border-box;flex-direction:column;align-items:center;justify-content:flex-end;padding:30px;text-align:center;background:#11101c;overflow:visible}.amongus-artboard__venues-heading p{max-width:650px;margin:14px 0 0;color:#d2d1db;font:400 13px/1.25 Montserrat,Arial,sans-serif}.amongus-artboard__venues-desktop{position:absolute;top:100%;left:0;display:flex;box-sizing:border-box;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:10px;width:100%;height:164px;padding:18px calc((100% - 1100px)/2);background:#11101c}.amongus-artboard__venues{display:none;height:var(--amongus-record-desktop,164px);overflow:hidden;background:#11101c}.amongus-artboard__venues>div{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;width:1100px;margin:18px auto}.amongus-artboard__venues a,.amongus-artboard__venues-desktop a{padding:9px 15px;border:1px solid #8c899d;border-radius:18px;font:400 10px/1 Montserrat,Arial,sans-serif}.amongus-artboard__footer-spacer{position:relative;height:var(--amongus-record-desktop,84px);margin-top:164px;background:#21223b;overflow:hidden}.amongus-artboard__footer-spacer::before{position:absolute;inset:0 0 auto;box-sizing:border-box;height:84px;border-top:4px solid #4695dc;border-radius:52px 52px 0 0;background:linear-gradient(90deg,rgba(52,139,237,.12),rgba(230,210,24,.12));content:''}.amongus-artboard__footer{height:var(--amongus-record-desktop,277px);background:#21223b}.amongus-artboard__footer-grid{display:grid;grid-template-columns:1.1fr 1fr 1.28fr .88fr;gap:38px;width:1160px;margin:auto;padding-top:33px}.amongus-artboard__footer section{display:flex;flex-direction:column;gap:12px}.amongus-artboard__footer h2{margin:0 0 7px;color:#2991ed;font:800 16px/1.18 Montserrat,Arial,sans-serif}.amongus-artboard__footer a,.amongus-artboard__footer p{margin:0;color:#eeedf5;font:400 14px/1.15 Montserrat,Arial,sans-serif}.amongus-artboard__footer-legal>a:first-child{max-width:220px;font-size:14px;text-decoration:underline}.amongus-artboard__footer-legal p{margin-top:37px;color:#8e8c9d}.amongus-artboard__footer-bottom{position:relative;height:var(--amongus-record-desktop,194px);box-sizing:border-box;background:#21223b}.amongus-artboard__footer-logo{position:absolute;top:33px;left:calc(50% - 580px);display:block;width:126px}.amongus-artboard__footer-logo img{display:block;width:100%;height:auto}.amongus-artboard__footer-copyright{position:absolute;bottom:28px;left:calc(50% - 580px);color:#a2a0af;font:400 14px/1 Montserrat,Arial,sans-serif}.amongus-artboard__footer-contact{position:absolute;top:23px;right:calc(50% - 500px);display:flex;width:260px;flex-direction:column;gap:20px}.amongus-artboard__footer-contact a,.amongus-artboard__footer-contact p{margin:0}.amongus-artboard__footer-phone{color:#fff!important;font:800 21px/1.12 Montserrat,Arial,sans-serif}.amongus-artboard__footer-phone--mobile{display:none}.amongus-artboard__footer-contact p,.amongus-artboard__footer-email{color:#f0eff6!important;font:400 14px/1 Montserrat,Arial,sans-serif}
+  @media (max-width:700px){
+    .amongus-artboard__rail{width:320px}.amongus-artboard__hero{height:var(--amongus-record-mobile,844px)}.amongus-artboard__hero-world{right:-134px;bottom:12px;width:360px;height:211px}.amongus-artboard__hero-ship{top:238px;right:-43px;width:240px;height:139px}.amongus-artboard__hero-crewmate{bottom:-3px;left:-31px;width:163px;height:220px}.amongus-artboard__hero-copy{top:44px;left:27px;width:258px}.amongus-artboard__hero-label{gap:4px;margin-bottom:8px;font-size:8px}.amongus-artboard__hero-label img{width:12px;height:16px}.amongus-artboard__hero-copy h1{width:238px;font-size:18px}.amongus-artboard__hero-copy>p:not(.amongus-artboard__hero-label){width:190px;margin:14px 0 20px;font-size:10px}.amongus-artboard__blue-button{min-width:148px;min-height:31px;font-size:7px}
+    .amongus-artboard__intro{height:var(--amongus-record-mobile,1146px)}.amongus-artboard__intro-canvas h2{top:42px;left:24px;width:272px;font-size:19px}.amongus-artboard__intro-text{top:115px;left:21px;width:278px;font-size:8px}.amongus-artboard__intro-label{top:220px;left:20px;font-size:9px}.amongus-artboard__intro ul{top:245px;left:20px;width:274px}.amongus-artboard__intro li{margin-bottom:10px;padding-left:16px;font-size:8px}.amongus-artboard__intro li::before{top:1px;width:7px;height:7px}.amongus-artboard__intro-photo{top:690px;right:0;width:215px;height:140px;border-radius:8px}.amongus-artboard__intro-decor{right:-36px;bottom:-31px;width:117px;height:112px}
+    .amongus-artboard__video{height:var(--amongus-record-mobile,492px)}.amongus-artboard__video-canvas h2,.amongus-artboard__packages h2,.amongus-artboard__shows h2,.amongus-artboard__additions h2,.amongus-artboard__trust-heading h2,.amongus-artboard__gallery-heading h2,.amongus-artboard__venues-heading h2{font-size:16px}.amongus-artboard__video-canvas h2{top:45px;left:27px;width:266px}.amongus-artboard__video-poster{top:181px;left:0;width:323px;height:178px;border-radius:7px}.amongus-artboard__video-poster span{width:34px;height:34px;font-size:14px}.amongus-artboard__video-decor{top:155px;left:-58px;width:135px;height:154px}
+    .amongus-artboard__packages{height:var(--amongus-record-mobile,2433px)}.amongus-artboard__packages-canvas h2{top:39px;left:20px;width:280px}.amongus-artboard__package-grid{top:112px;left:20px;grid-template-columns:280px;gap:18px;width:280px}.amongus-artboard__package{min-height:726px;padding:25px 20px}.amongus-artboard__package h3{font-size:19px}.amongus-artboard__package h4{margin:14px 0 8px;font-size:11px}.amongus-artboard__package li{margin-bottom:7px;padding-left:13px;font-size:9px}.amongus-artboard__package-badge{font-size:8px}.amongus-artboard__packages-cta{bottom:27px;left:86px;min-width:148px;min-height:31px}
+    .amongus-artboard__shows{height:var(--amongus-record-mobile,1874px)}.amongus-artboard__shows h2{padding:48px 24px 0}.amongus-artboard__show-grid{grid-template-columns:280px;gap:33px;margin:42px 20px 0}.amongus-artboard__show-card img{height:186px}.amongus-artboard__show-card span{font-size:11px}.amongus-artboard__show-card b{font-size:9px}.amongus-artboard__show-divider{height:var(--amongus-record-mobile,40px)}.amongus-artboard__show-divider img{bottom:-70px;left:calc(50% - 40px);width:83px;height:112px}
+    .amongus-artboard__additions{height:var(--amongus-record-mobile,743px)}.amongus-artboard__additions h2{padding:65px 28px 0}.amongus-artboard__addition-window{width:320px;margin:42px auto 0}.amongus-artboard__addition-track{gap:16px;width:max-content;padding-left:20px}.amongus-artboard__addition-card{flex-basis:242px}.amongus-artboard__addition-card img{width:242px;height:162px}.amongus-artboard__additions-gap{height:var(--amongus-record-mobile,1px)}
+    .amongus-artboard__trust-heading{height:var(--amongus-record-mobile,165px)}.amongus-artboard__trust{height:var(--amongus-record-mobile,1926px)}.amongus-artboard__trust-grid{grid-template-columns:233px;grid-auto-rows:223px;width:233px;margin:72px auto 0}.amongus-artboard__trust-card{order:var(--amongus-trust-mobile-order);padding:22px 16px}.amongus-artboard__trust-card-eyebrow{margin-bottom:9px;font-size:13px}.amongus-artboard__trust-card strong{font-size:52px}.amongus-artboard__trust-card h3{max-width:200px;margin-bottom:10px;font-size:20px}.amongus-artboard__trust-card p{max-width:200px;font-size:12px}.amongus-artboard__trust-card-label{max-width:135px;margin:8px 0 0 93px;font-size:13px}.amongus-artboard__trust-card--celebration{padding:0}.amongus-artboard__trust-card--celebration .amongus-artboard__trust-card-scene{top:1px;left:3px;width:231px;height:224px}.amongus-artboard__trust-card--years .amongus-artboard__trust-card-art{top:-30px;left:-36px;width:91px;height:91px}.amongus-artboard__trust-card--years .amongus-artboard__trust-card-eyebrow{margin-left:55px}.amongus-artboard__trust-card--years strong{margin-top:55px;margin-left:57px}.amongus-artboard__trust-card--reviews .amongus-artboard__trust-card-art{top:68px;left:167px;width:81px;height:84px}.amongus-artboard__trust-card--reviews .amongus-artboard__trust-card-eyebrow{margin-right:37px}.amongus-artboard__trust-card--reviews strong{margin-left:5px}.amongus-artboard__trust-card--reviews p{max-width:140px;margin-left:28px}.amongus-artboard__trust-card--venues .amongus-artboard__trust-card-art{top:0;left:159px;width:100px;height:100px}.amongus-artboard__trust-card--venues strong{margin:53px 0 12px 53px}.amongus-artboard__trust-card--cartoon{padding:16px}.amongus-artboard__trust-card--cartoon .amongus-artboard__trust-card-scene{inset:16px;width:201px;height:191px}.amongus-artboard__trust-card--safety .amongus-artboard__trust-card-art{top:134px;left:0;width:87px;height:87px}.amongus-artboard__trust-card--safety p{max-width:205px}.amongus-artboard__trust-card--age h3{font-size:30px}.amongus-artboard__trust-card--party{padding:16px;background:#ffd900}.amongus-artboard__trust-card--party .amongus-artboard__trust-card-scene{inset:16px;width:201px;height:191px}.amongus-artboard__trust-card--party .amongus-artboard__trust-card-art{top:119px;left:148px;width:102px;height:112px}
+    .amongus-artboard__gallery-heading{height:var(--amongus-record-mobile,130px)}.amongus-artboard__gallery{height:var(--amongus-record-mobile,590px)}.amongus-artboard__gallery>div{grid-template-columns:repeat(2,1fr);gap:8px;width:320px;padding:0 8px}.amongus-artboard__gallery img{height:134px;border-radius:5px}
+    .amongus-artboard__bonus{height:var(--amongus-record-mobile,834px)}.amongus-artboard__bonus-canvas{width:320px;padding:60px 22px 0;border-radius:0}.amongus-artboard__bonus h2{width:190px;font-size:18px}.amongus-artboard__bonus ul{width:180px;margin:18px 0 25px}.amongus-artboard__bonus li{margin-bottom:8px;padding-left:15px;font-size:8px}.amongus-artboard__bonus-art img:nth-child(1){right:101px;width:85px}.amongus-artboard__bonus-art img:nth-child(2){right:35px;width:91px}.amongus-artboard__bonus-art img:nth-child(3){right:-33px;width:121px}.amongus-artboard__bonus-art img:nth-child(4){bottom:319px;left:-34px;width:80px}.amongus-artboard__bonus-art img:nth-child(5){top:415px;right:-57px;width:153px}
+    .amongus-artboard__venues-heading{height:var(--amongus-record-mobile,230px);padding:30px}.amongus-artboard__venues-heading p{font-size:9px}.amongus-artboard__venues-desktop{display:none}.amongus-artboard__venues{display:block;height:var(--amongus-record-mobile,595px)}.amongus-artboard__venues>div{width:280px;margin:17px auto;gap:8px}.amongus-artboard__venues a{padding:8px 11px;font-size:8px}.amongus-artboard__footer-spacer{height:var(--amongus-record-mobile,85px);margin-top:0}.amongus-artboard__footer-spacer::before{height:85px;border-top-width:3px;border-radius:36px 36px 0 0}.amongus-artboard__footer{height:var(--amongus-record-mobile,777px)}.amongus-artboard__footer-grid{grid-template-columns:1fr;gap:19px;width:310px;padding-top:30px}.amongus-artboard__footer section{gap:9px}.amongus-artboard__footer h2{font-size:12px}.amongus-artboard__footer a,.amongus-artboard__footer p{font-size:11px}.amongus-artboard__footer-legal>a:first-child{max-width:none;font-size:12px}.amongus-artboard__footer-legal p{margin-top:20px}.amongus-artboard__footer-bottom{height:var(--amongus-record-mobile,360px)}.amongus-artboard__footer-logo{top:44px;left:40px;width:126px}.amongus-artboard__footer-copyright{bottom:auto;top:189px;left:40px;font-size:11px}.amongus-artboard__footer-contact{top:239px;right:auto;left:40px;width:270px;gap:16px}.amongus-artboard__footer-phone{font-size:18px}.amongus-artboard__footer-phone--desktop{display:none}.amongus-artboard__footer-phone--mobile{display:block}.amongus-artboard__footer-contact p,.amongus-artboard__footer-email{font-size:11px}
+  }
+  @media (prefers-reduced-motion:reduce){.amongus-artboard__addition-window{scroll-behavior:auto}}
+</style>

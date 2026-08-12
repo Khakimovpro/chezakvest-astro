@@ -11,11 +11,18 @@ import CallbackForm from '../components/CallbackForm.astro';
 import PrebookingForm from '../components/PrebookingForm.astro';
 import VenuesSection from '../components/VenuesSection.astro';
 import ZoomImg from '../components/ZoomImg.astro';
+import OnoVenueHall from '../components/OnoVenueHall.astro';
+import ZapadSourceArtboard from '../components/ZapadSourceArtboard.astro';
 import site from '../data/site.json';
 import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { canonicalizeCardItems } from '../lib/card-items.js';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
+import '../styles/ono-source-parity.css';
+import '../styles/brawl-source-parity.css';
+import '../styles/zapad-source-parity.css';
+import '../styles/vr-source-parity.css';
 
 const { page, index = [], venues = [] } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -25,6 +32,41 @@ const link = (h) => siteHref(base, h);
 const path = '/' + page.slug;
 const seo = page.seo;
 const hero = page.hero || {};
+const sourceParity = page.sourceParity || {};
+// `/brawl_stars/` has Tilda records whose body order and geometry diverge from
+// generic quest pages. Gate the opt-in by captured route data, not by slug, so
+// the shared QuestPage remains stable for every unmarked route.
+const isBrawlSource = sourceParity.kind === 'brawl-source';
+const isZapadSource = sourceParity.kind === 'zapad-source';
+const isVrSource = sourceParity.kind === 'vr-source';
+// An empty sourceParity object is the shared quest template. Keep its T396
+// booking repair off every measured route-specific composition.
+const isGenericQuestSource = Object.keys(sourceParity).length === 0;
+const brawlInformation = isBrawlSource ? page.extra?.[0] : null;
+const sourceBookingHint = 'Выберите и забронируйте свободное время, кликнув по нему';
+const bookingLines = page.booking
+  ? (isGenericQuestSource
+    ? [...new Set([...(page.booking.lines || []), sourceBookingHint])]
+    : (page.booking.lines || []))
+  : [];
+// Most generic source records use 300/260px, with three captured desktop
+// artboard variants. Store only that measured geometry in page data so the
+// renderer remains shared and route-specific compositions stay opt-in.
+const genericBookingStyle = isGenericQuestSource && page.booking?.sourceHeight
+  ? `--generic-booking-desktop:${page.booking.sourceHeight.desktop || 300}px;--generic-booking-mobile:${page.booking.sourceHeight.mobile || 260}px`
+  : undefined;
+const vrStoryStyle = isVrSource
+  ? `--vr-story-desktop:${sourceParity.story?.desktop || 0}px;--vr-story-mobile:${sourceParity.story?.mobile || 0}px;--vr-story-mobile-offset:${sourceParity.storyOffsetMobile || 0}px`
+  : undefined;
+const vrFeaturesStyle = isVrSource
+  ? `--vr-features-desktop:${sourceParity.featuresHeight?.desktop || 0}px;--vr-features-mobile:${sourceParity.featuresHeight?.mobile || 0}px`
+  : undefined;
+const vrScenariosStyle = isVrSource
+  ? `--vr-scenarios-desktop:${sourceParity.scenariosHeight?.desktop || 0}px;--vr-scenarios-mobile:${sourceParity.scenariosHeight?.mobile || 0}px`
+  : undefined;
+const vrFlowStyle = isVrSource
+  ? `--vr-after-related:${sourceParity.relatedGap || 0}px;--vr-after-venue:${sourceParity.afterVenueGap || 0}px`
+  : undefined;
 const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
 const venue = venues.find((candidate) => candidate.slug === page.venueSlug);
 const venueContent = page.venue || {};
@@ -35,11 +77,31 @@ const celebrationVenues = (page.celebrationVenues?.length
   : ((venueContent.photos?.length || venueContent.lines?.length)
     ? [{ ...venueContent, venueSlug: page.venueSlug }]
     : []));
+// The Ono source T396 slider changes its linked venue together with the visible
+// hall. Keep that mapping route-local instead of teaching the shared qvenue
+// renderer about the source-specific artboard.
+const onoCelebrationHalls = sourceParity.hall === 't396'
+  ? celebrationVenues.map((hall) => {
+    const hallVenue = venues.find((candidate) => candidate.slug === hall.venueSlug)
+      || (hall.venueSlug === page.venueSlug ? venue : null);
+    return {
+      ...hall,
+      addressHref: hallVenue ? link('/' + hallVenue.slug) : '',
+    };
+  })
+  : [];
 const visiblePrice = Number(page.priceFrom) || null;
 // The generic quest source has its own body marker in addition to the dark
 // variant. It lets the measured callback artboard remain local to QuestPage
 // instead of changing the callback used by unrelated page families.
-const questBodyClass = ['quest-page', page.theme === 'dark' ? 'theme-dark' : ''].filter(Boolean).join(' ');
+const questBodyClass = [
+  'quest-page',
+  page.theme === 'dark' ? 'theme-dark' : '',
+  isBrawlSource ? 'quest-page--brawl-source' : '',
+  isZapadSource ? 'quest-page--zapad-source' : '',
+  isVrSource ? 'quest-page--vr-source' : '',
+  isGenericQuestSource ? 'quest-page--generic-source' : '',
+].filter(Boolean).join(' ');
 
 // возраст («12+») в оригинале стоит отдельным кружком справа, остальное — пилюли слева
 const age = (hero.pills || []).find((p) => /\+$/.test(p));
@@ -108,17 +170,7 @@ const relatedItems = page.related?.items?.length
       .slice(0, 8)
       .map((p) => ({ t: p.t.replace(/^Квест\s+/i, ''), href: '/' + p.slug, img: p.img }));
 const pagesBySlug = new Map(index.map((item) => [item.slug, item]));
-const canonicalizeCardItems = (items = []) => items.map((item) => {
-  const slug = String(item.href || '').split(/[?#]/, 1)[0].replace(/^\/+|\/+$/g, '');
-  // Explicit Tilda thumbnails were frequently low-resolution derivatives. Prefer
-  // the linked page's highest-quality local hero whenever it is available.
-  return {
-    ...item,
-    img: pagesBySlug.get(slug)?.img || item.img,
-    imgSet: pagesBySlug.get(slug)?.imgSet || null,
-  };
-});
-const canonicalCardItems = canonicalizeCardItems(relatedItems);
+const canonicalCardItems = canonicalizeCardItems(relatedItems, pagesBySlug);
 const relatedTitle = page.related?.title || 'Другие квесты от «Чё за Квест?»';
 const relatedSub = page.related?.subtitle || 'У нас есть из чего выбрать';
 
@@ -137,11 +189,13 @@ const preload = hero.bg
   preloadImage={preload}
   bodyClass={questBodyClass}
 >
-  <Header />
+  {!isZapadSource && <Header />}
 
-  <main>
+  <main style={vrFlowStyle}>
+    {isZapadSource ? <ZapadSourceArtboard page={page} source={sourceParity} asset={asset} href={link} /> : (
+      <>
     <!-- ============ ГЕРОЙ КВЕСТА ============ -->
-    <section class="qhero">
+    <section class:list={['qhero', { 'qhero--vr-source': isVrSource }]}>
       <div class="container-wide">
         <div class="qhero__panel">
           {hero.bg && (
@@ -194,7 +248,7 @@ const preload = hero.bg
 
     <!-- ============ ПРЕДЫСТОРИЯ ============ -->
     {page.story && (
-      <section class="qstory" id="story">
+      <section class:list={['qstory', { 'qstory--vr-source': isVrSource }]} id="story" style={vrStoryStyle}>
         <div class="container">
           <h2 class="section-title">{page.story.title}</h2>
           <div class="qstory__cols">
@@ -208,7 +262,13 @@ const preload = hero.bg
 
     <!-- ============ ОСОБЕННОСТИ ============ -->
     {page.features && ((page.features.items || []).length > 0 || (page.features.lead || []).length > 0) && (
-      <section class="qfeat">
+      <section class:list={[
+        'qfeat',
+        {
+          'qfeat--source-t265': isBrawlSource && sourceParity.features === 't265',
+          'qfeat--vr-source': isVrSource && sourceParity.features === 't1196',
+        },
+      ]} style={vrFeaturesStyle}>
         <div class="container">
           <h2 class="section-title qfeat__title">{page.features.title || 'Особенности'}</h2>
           {(page.features.lead || []).map((l, i) => (
@@ -219,7 +279,10 @@ const preload = hero.bg
           {(page.features.items || []).length > 0 && (
             <ul class="qfeat__row">
               {page.features.items.map((it) => (
-                <li class="qfeat__card">
+                <li class:list={['qfeat__card', { 'qfeat__card--source-t265': isBrawlSource && sourceParity.features === 't265' }]}>
+                  {isBrawlSource && sourceParity.features === 't265' && (
+                    <span class="qfeat__source-arrow" aria-hidden="true">→</span>
+                  )}
                   <h3 class="qfeat__cardtitle">{it.t}</h3>
                   {it.sub && <p class="qfeat__cardsub">{it.sub}</p>}
                 </li>
@@ -230,34 +293,59 @@ const preload = hero.bg
       </section>
     )}
 
-    <!-- ============ БРОНИРОВАНИЕ (расписание — внешний модуль, здесь заявка) ============ -->
-    {page.booking && (
-      <section class="qbook" id="booking">
+    {isBrawlSource && brawlInformation && (
+      <section class="qextra qextra--source-t1033" id="information">
         <div class="container">
-          <h2 class="section-title qbook__title">
-            {page.booking.title.split(' ')[0]} <span class="accent">{page.booking.title.split(' ').slice(1).join(' ')}</span>
-          </h2>
-          {page.booking.lines.map((l) => (<p class="qbook__line">{l}</p>))}
-          <div class="qbook__cta">
-            <a class="btn-orange" href={site.header.phoneHref}>Забронировать по телефону</a>
-            <a class="qbook__wa" href={site.header.wa} target="_blank" rel="noopener">Написать в WhatsApp</a>
-          </div>
+          <h2 class="section-title qextra__source-title">Дополнительная <span class="accent">информация</span></h2>
+          <ul class="qextra__source-list">
+            {(brawlInformation.items || []).map((item) => (
+              <li>
+                <h3>{item.label}</h3>
+                <p>{item.value}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     )}
 
-    {page.booking?.calendarId && <PrebookingForm id={`booking-${page.slug}`} quest={hero.h1 || seo.h1} calendarId={page.booking.calendarId} />}
+    <!-- ============ БРОНИРОВАНИЕ (расписание — внешний модуль, здесь заявка) ============ -->
+    {page.booking && (
+      <section class="qbook" id="booking" style={genericBookingStyle}>
+        <div class="container">
+          <h2 class="section-title qbook__title">
+            {page.booking.title.split(' ')[0]} <span class="accent">{page.booking.title.split(' ').slice(1).join(' ')}</span>
+          </h2>
+          {bookingLines.map((l) => (<p class="qbook__line">{l}</p>))}
+          {!isGenericQuestSource && !isVrSource && <div class="qbook__cta">
+              <a class="btn-orange" href={site.header.phoneHref}>Забронировать по телефону</a>
+              <a class="qbook__wa" href={site.header.wa} target="_blank" rel="noopener">Написать в WhatsApp</a>
+            </div>}
+        </div>
+      </section>
+    )}
+
+    {!isVrSource && page.booking?.calendarId && <PrebookingForm id={`booking-${page.slug}`} quest={hero.h1 || seo.h1} calendarId={page.booking.calendarId} />}
+
+    {isBrawlSource && <CallbackForm id="q" sectionId="callback" />}
 
     {relatedItems.length > 0 && (
       <CardsRow title={relatedTitle} subtitle={relatedSub}
-                items={canonicalCardItems} variant="poster" id="drugie" />
+                items={canonicalCardItems} variant="poster" id="drugie"
+                sourceGeometry={sourceParity.related} />
     )}
 
-    {page.showPartyForm !== false && <PartyForm />}
+    {!isBrawlSource && page.showPartyForm !== false && <PartyForm />}
 
     <!-- ============ ПЛОЩАДКА ============ -->
-    {celebrationVenues.length > 0 && (
-      <section class="qvenue">
+    {sourceParity.hall === 't396' ? (
+      <OnoVenueHall
+        halls={onoCelebrationHalls}
+        asset={asset}
+        ctaHref={site.header.phoneHref}
+      />
+    ) : celebrationVenues.length > 0 && (
+      <section class:list={['qvenue', { 'qvenue--vr-source': isVrSource && sourceParity.venue === 't396' }]}>
         <div class="container">
           <h2 class="section-title">{celebrationVenues[0].title || 'Площадка проведения'}</h2>
           {celebrationVenues[0].subtitle && <p class="section-sub">{celebrationVenues[0].subtitle}</p>}
@@ -294,8 +382,8 @@ const preload = hero.bg
     )}
 
     <!-- ============ ПРОЧИЕ БЛОКИ ОРИГИНАЛА (у части квестов свой набор секций) ============ -->
-    {(page.extra || []).map((e, sectionIndex) => (
-      <section class="qextra">
+    {!isBrawlSource && (page.extra || []).map((e, sectionIndex) => (
+      <section class:list={['qextra', { 'qextra--vr-source': isVrSource && sourceParity.gallery === 't396' }]}>
         <div class="container">
           {e.title && <h2 class="section-title">{e.title}</h2>}
           {e.lines.map((l) => (<p class="qextra__line">{l}</p>))}
@@ -317,7 +405,7 @@ const preload = hero.bg
 
     <!-- ============ ВИДЕО ============ -->
     {page.video && page.video.poster && (
-      <section class="qvideo" id="video">
+      <section class:list={['qvideo', { 'qvideo--source-t347': sourceParity.video === 't347' }]} id="video">
         <div class="container">
           <h2 class="section-title qvideo__title">{page.video.title}</h2>
           <figure class="qvideo__frame" data-video={page.video.src ? asset(page.video.src) : undefined}>
@@ -335,13 +423,18 @@ const preload = hero.bg
     )}
 
     {page.scenarios && (
-      <CardsRow title={page.scenarios.title} subtitle={page.scenarios.subtitle}
-                items={canonicalizeCardItems(page.scenarios.items)} variant="square" uptitle="День рождения в стиле" />
+      <div class={isVrSource ? 'vr-source-scenarios' : undefined} style={vrScenariosStyle}>
+        <CardsRow title={page.scenarios.title} subtitle={page.scenarios.subtitle}
+                  items={canonicalizeCardItems(page.scenarios.items, pagesBySlug)} variant="square" uptitle="День рождения в стиле"
+                  sourceGeometry={sourceParity.scenarios} />
+      </div>
     )}
 
-    <CallbackForm id={page.showPartyForm === false ? 'prazdnik' : 'q'} sectionId={page.showPartyForm === false ? 'prazdnik' : 'callback'} />
+    {!isBrawlSource && <CallbackForm id={page.showPartyForm === false ? 'prazdnik' : 'q'} sectionId={page.showPartyForm === false ? 'prazdnik' : 'callback'} />}
 
     <VenuesSection id={`venues-${page.slug}`} base={base} />
+      </>
+    )}
   </main>
 
   <Footer />

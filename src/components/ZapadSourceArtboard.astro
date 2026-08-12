@@ -1,0 +1,107 @@
+---
+// `/kvest_v_realnosti_zapad/` is a measured Tilda sequence rather than the
+// reusable QuestPage stack. Keep record ids and geometry route-owned through
+// page.sourceParity so unrelated quest pages never inherit this composition.
+import CallbackForm from './CallbackForm.astro';
+import venueData from '../data/venues.json';
+
+const { page = {}, source = {}, asset = (value) => value, href = (value) => value } = Astro.props;
+const records = source.records || {};
+const extra = page.extra || [];
+const story = extra[0] || {};
+const gallery = extra[1] || {};
+const information = extra[2] || {};
+const featureLines = (information.lines || []).slice(0, 5);
+const informationLines = (information.lines || []).slice(6, 10);
+const priceLines = (information.lines || []).slice(11, 13);
+const galleryPhoto = gallery.photos?.[1] || gallery.photos?.[0] || '';
+const hero = page.hero || {};
+const breadcrumbs = page.breadcrumbs || [];
+const bookingLines = page.booking?.lines || [];
+const recordStyle = (name) => {
+  const record = source[name] || {};
+  return [
+    Number.isFinite(record.desktop) && `--zapad-record-desktop:${record.desktop}px`,
+    Number.isFinite(record.mobile) && `--zapad-record-mobile:${record.mobile}px`,
+  ].filter(Boolean).join(';');
+};
+// `siteHref()` is correct for route links but would turn a same-page anchor
+// into `/#…`.  The captured hero books into the record below on this route.
+const localHref = (value) => String(value || '').startsWith('#') ? value : href(value);
+---
+
+<div class="zapad-artboard" data-source-artboard="zapad">
+  <section class="zapad-artboard__record zapad-artboard__hero" data-parity-record={records.hero} style={recordStyle('hero')} aria-labelledby="zapad-title">
+    {hero.bg && <img class="zapad-artboard__hero-image" src={asset(hero.bgset?.['1600'] || hero.bg)} alt={`Квест «${hero.h1 || page.seo?.h1 || ''}»`} width="1600" height="900" fetchpriority="high" decoding="async" />}
+    <div class="zapad-artboard__hero-shade" aria-hidden="true"></div>
+    <div class="zapad-artboard__rail zapad-artboard__hero-copy">
+      <h1 id="zapad-title">{hero.h1 || page.seo?.h1}</h1>
+      <div class="zapad-artboard__hero-pills" aria-label="Параметры квеста">
+        {(hero.pills || []).filter((pill) => pill !== '12+').map((pill) => <span>{pill}</span>)}
+        {(hero.pills || []).includes('12+') && <b>12+</b>}
+      </div>
+      <div class="zapad-artboard__hero-actions">
+        {(hero.buttons || []).map((button, index) => <a class:list={['zapad-artboard__hero-button', { 'zapad-artboard__hero-button--gift': index === 1 }]} href={localHref(button.href)}>{button.t}</a>)}
+      </div>
+    </div>
+  </section>
+
+  <nav class="zapad-artboard__record zapad-artboard__breadcrumbs" data-parity-record={records.breadcrumbs} aria-label="Хлебные крошки">
+    <div class="zapad-artboard__rail">
+      {breadcrumbs.map((crumb, index) => <span>{crumb.href ? <a href={href(crumb.href)}>{crumb.t}</a> : <b>{crumb.t}</b>}{index < breadcrumbs.length - 1 && <i aria-hidden="true">/</i>}</span>)}
+    </div>
+  </nav>
+  <div class="zapad-artboard__record zapad-artboard__paper-gap" data-parity-record={records.breadcrumbSpacer} aria-hidden="true"></div>
+  <div class="zapad-artboard__record zapad-artboard__alias" data-parity-record={records.aliasBeforeStory}>Error get alias</div>
+
+  <section class="zapad-artboard__record zapad-artboard__story" data-parity-record={records.story} style={recordStyle('story')} aria-labelledby="zapad-story-title">
+    <div class="zapad-artboard__rail zapad-artboard__story-grid">
+      {story.photos?.[0] && <img src={asset(story.photos[0])} alt="Ковбойские сапоги из квеста Дикий Запад" width="220" height="171" loading="lazy" decoding="async" />}
+      <div>
+        <h2 id="zapad-story-title">{story.title}</h2>
+        {(story.lines || []).map((line) => <p>{line}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="zapad-artboard__record zapad-artboard__gallery" data-parity-record={records.gallery} style={recordStyle('gallery')} aria-label="Фотографии квеста Дикий Запад">
+    {galleryPhoto && <>
+      <img class="zapad-artboard__gallery-ghost zapad-artboard__gallery-ghost--left" src={asset(galleryPhoto)} alt="" aria-hidden="true" width="760" height="507" loading="lazy" decoding="async" />
+      <img class="zapad-artboard__gallery-image" src={asset(galleryPhoto)} alt="Участники квеста Дикий Запад" width="760" height="507" loading="lazy" decoding="async" />
+      <img class="zapad-artboard__gallery-ghost zapad-artboard__gallery-ghost--right" src={asset(galleryPhoto)} alt="" aria-hidden="true" width="760" height="507" loading="lazy" decoding="async" />
+    </>}
+    <span class="zapad-artboard__gallery-arrow zapad-artboard__gallery-arrow--left" aria-hidden="true">‹</span>
+    <span class="zapad-artboard__gallery-arrow zapad-artboard__gallery-arrow--right" aria-hidden="true">›</span>
+  </section>
+  <div class="zapad-artboard__record zapad-artboard__story-gap" data-parity-record={records.storySpacer} aria-hidden="true"></div>
+
+  <section class="zapad-artboard__record zapad-artboard__information" data-parity-record={records.information} style={recordStyle('information')} aria-labelledby="zapad-features-title">
+    <div class="zapad-artboard__rail">
+      <h2 id="zapad-features-title">Особенности</h2>
+      <ul class="zapad-artboard__feature-list">{featureLines.map((line) => <li>{line}</li>)}</ul>
+      <h2>Дополнительная информация</h2>
+      <div class="zapad-artboard__information-lines">{informationLines.map((line) => <p>{line}</p>)}</div>
+      <div class="zapad-artboard__price-card"><h2>Цены</h2><p>{priceLines[0]} <strong>{priceLines[1]}</strong></p></div>
+    </div>
+  </section>
+
+  <section class="zapad-artboard__record zapad-artboard__booking" data-parity-record={records.booking} style={recordStyle('booking')} id="booking" aria-labelledby="zapad-booking-title">
+    <div class="zapad-artboard__rail">
+      <h2 id="zapad-booking-title">Онлайн <span>бронирование</span></h2>
+      {bookingLines.map((line, index) => <p class:list={{ 'zapad-artboard__booking-hint': index === bookingLines.length - 1 }}>{line}</p>)}
+    </div>
+  </section>
+
+  <CallbackForm id="zapad" sectionId="callback" recordId={records.callback} />
+  <div class="zapad-artboard__record zapad-artboard__alias" data-parity-record={records.aliasBeforeVenues}>Error get alias</div>
+
+  <section class="zapad-artboard__record zapad-artboard__venues-heading" data-parity-record={records.venuesHeading} aria-labelledby="zapad-venues-title">
+    <div class="zapad-artboard__rail"><h2 id="zapad-venues-title">Наши площадки</h2><p>9 современно оборудованных площадок с квест-комнатами и зонами отдыха в Ростове-на-Дону</p></div>
+  </section>
+  <section class="zapad-artboard__record zapad-artboard__venues" data-parity-record={records.venues} aria-label="Адреса площадок">
+    <div class="zapad-artboard__rail zapad-artboard__venue-chips">
+      {(venueData.chips || []).map((chip) => <a href={href(chip.href)}>{chip.t}</a>)}
+    </div>
+  </section>
+  <div class="zapad-artboard__record zapad-artboard__footer-gap" data-parity-record={records.footerSpacer} aria-hidden="true"></div>
+</div>

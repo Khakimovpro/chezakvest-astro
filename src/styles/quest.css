@@ -89,6 +89,14 @@ body.quest-page .crumbs{padding-bottom:90px}
 }
 .qbook__wa:hover{background:var(--orange);color:#fff}
 
+/* R27 generic quests share T396 booking artboards: source keeps three lines
+   of scheduler copy inside a 300/260px record, while the actual calendar is
+   retained separately as the intentionally masked local fallback. */
+.quest-page--generic-source .qbook{height:var(--generic-booking-desktop,300px);padding:64px 0 0;text-align:center}
+.quest-page--generic-source .qbook__title{font-size:34px;line-height:1.2}
+.quest-page--generic-source .qbook__line{margin-top:14px;font-size:20px;line-height:1.4}
+.quest-page--generic-source .qbook__line:last-of-type{color:var(--orange);font-weight:700}
+
 /* --- Fallback for the intentionally omitted external booking calendar --- */
 .prebook{padding:8px 0 24px}
 .prebook__card{max-width:820px;margin:0 auto;padding:30px;border:1px solid #f0d4ba;border-radius:18px;background:#fff9f3;text-align:center}
@@ -214,6 +222,9 @@ body.quest-page .crumbs{padding-bottom:90px}
 
 /* ===== Мобайл ===== */
 @media (max-width:900px){
+  .quest-page--generic-source .qbook{height:var(--generic-booking-mobile,260px);padding:35px 0 0}
+  .quest-page--generic-source .qbook__title{font-size:25px}
+  .quest-page--generic-source .qbook__line{margin-top:12px;font-size:14px;line-height:1.4}
   .qstory__cols{grid-template-columns:1fr}
   .qstory__lead,.qstory__p{grid-column:1;grid-row:auto}
   .qvenue__card{grid-template-columns:1fr}
@@ -413,10 +424,37 @@ body.theme-dark .cbform__consent{color:#bcbcbc}
 .info__chip:hover{background:#ff7d1a}
 .info__venues{margin-top:44px}
 .info__note{margin-top:26px;font-size:13px;color:#8a8a8a;line-height:1.5}
+.info--source{padding:96px 0 60px}
+.info--source .section-title{font-size:42px}
+.info--source .info__source-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px;margin-top:48px}
+.info--source .info__source-column{display:flex;min-width:0;flex-direction:column;gap:52px}
+.info--source .info__source-group{min-height:56px}
+.info--source .info__label{color:#111;font-size:22px;font-weight:700;line-height:1.15}
+.info--source .info__value{margin-top:16px;color:#777;font-size:20px;font-weight:400;line-height:1.25}
+.info--source .info__value--big{font-size:24px}
+.info--source .info__hours{margin-top:16px;color:#777;font-size:20px;line-height:1.25}
+.info--source .info__messenger{display:inline-block;margin-top:16px;color:#e6ae76;font-size:20px;line-height:1.25;text-decoration:underline;text-decoration-color:#e6ae76;text-underline-offset:7px}
+.info--source .info__socials{display:flex;flex-direction:column;gap:10px;margin-top:16px;color:#777;font-size:20px;line-height:1.25}
+.info--source .info__socials a{color:#91b8d6}
+.info--source .info__note{max-width:940px;margin-top:34px;color:#aaa;font-size:13px;line-height:1.35}
+.info--source .info__venues{margin-top:52px;padding-bottom:0}
+.info--source .info__venues .section-title{font-size:34px}
+.info--source .cvenues__list{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 28px;margin-top:18px}
+.info--source .cvenues__list a{display:inline-flex;align-items:center;gap:8px;color:var(--ink);font-size:14px;font-weight:700;text-transform:uppercase}
+.info--source .cvenues__list a::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--orange)}
 @media (max-width:900px){
   .ccert__inner{grid-template-columns:1fr}
   .cvenues__list{grid-template-columns:1fr}
   .info__grid{grid-template-columns:1fr}
+  .info--source{padding:72px 0 60px}
+  .info--source .section-title{font-size:34px}
+  .info--source .info__source-grid{grid-template-columns:1fr;gap:34px;margin-top:42px}
+  .info--source .info__source-column{gap:34px}
+  .info--source .info__label{font-size:20px}
+  .info--source .info__value,.info--source .info__hours,.info--source .info__messenger,.info--source .info__socials{font-size:18px}
+  .info--source .info__note{margin-top:32px;font-size:12px}
+  .info--source .info__venues{margin-top:42px}
+  .info--source .cvenues__list{grid-template-columns:1fr;gap:16px}
 }
 
 /* ===== Сетка квестов категории (тёмная секция, как в оригинале) ===== */

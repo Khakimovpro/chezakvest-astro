@@ -10,6 +10,7 @@ import CallbackForm from '../components/CallbackForm.astro';
 import ZoomImg from '../components/ZoomImg.astro';
 import Reviews from '../components/Reviews.astro';
 import VenuesSection from '../components/VenuesSection.astro';
+import HorrorCategoryArtboard from '../components/HorrorCategoryArtboard.astro';
 import site from '../data/site.json';
 import { absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
@@ -17,6 +18,7 @@ import '../styles/page.css';
 import '../styles/quest.css';
 import '../styles/holiday.css';
 import '../styles/category.css';
+import '../styles/horror-category-artboard.css';
 
 const { page, index = [], venues = [] } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -86,6 +88,11 @@ const preload = hero.bg
   ? { href: asset(heroSource), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
   : null;
 const hasExplicitHeroPrimary = (hero.buttons || []).some((button) => button.primary);
+const sourceHorror = page.sourceParity?.kind === 'horror-category-artboard';
+const categoryBodyClass = [
+  page.theme === 'dark' && 'theme-dark category-theme--dark',
+  sourceHorror && 'category-page--horror-source',
+].filter(Boolean).join(' ');
 ---
 <Layout
   title={seo.title}
@@ -95,10 +102,13 @@ const hasExplicitHeroPrimary = (hero.buttons || []).some((button) => button.prim
   ogImage={hero.bg}
   jsonld={jsonld}
   preloadImage={preload}
-  bodyClass={page.theme === 'dark' ? 'theme-dark category-theme--dark' : ''}
+  bodyClass={categoryBodyClass}
 >
-  {!hero.hideSharedHeader && <Header />}
+  {!sourceHorror && !hero.hideSharedHeader && <Header />}
 
+  {sourceHorror ? (
+    <HorrorCategoryArtboard page={page} source={page.sourceParity} games={games} asset={asset} href={link} />
+  ) : (
   <main>
     <!-- ============ ГЕРОЙ КАТЕГОРИИ ============ -->
     <section class:list={['qhero', { 'qhero--source-top-copy': hero.copyPosition === 'top' }]}>
@@ -212,8 +222,9 @@ const hasExplicitHeroPrimary = (hero.buttons || []).some((button) => button.prim
     <VenuesSection id={`venues-${page.slug}`} base={base}
       title={page.venues?.title || 'Наши площадки'} subtitle={page.venues?.subtitle} />
   </main>
+  )}
 
-  <Footer />
+  {!sourceHorror && <Footer />}
 </Layout>
 
 <script>

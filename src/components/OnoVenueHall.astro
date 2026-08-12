@@ -1,0 +1,260 @@
+---
+import ZoomImg from './ZoomImg.astro';
+
+const { halls = [], asset = (value) => value, ctaHref = '' } = Astro.props;
+const sourceHalls = halls.filter((hall) => hall?.address || hall?.photos?.length);
+const primaryHall = sourceHalls[0] || {};
+const splitLabel = (line) => {
+  const separator = line.indexOf(':');
+  return separator === -1
+    ? { label: line, value: '' }
+    : { label: `${line.slice(0, separator + 1)} `, value: line.slice(separator + 1).trimStart() };
+};
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const sourceFontCss = `
+  @font-face {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 200 1000;
+    font-display: swap;
+    src: url('${base}/assets/fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofIMeaBXso.woff2') format('woff2');
+    unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  }
+
+  @font-face {
+    font-family: 'Montserratblack';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('${base}/assets/static.tildacdn.com/tild3134-3738-4465-a238-656132666435/Montserrat.woff2') format('woff2');
+  }
+`;
+---
+
+<section class="ono-hall" data-ono-hall-root>
+  <div class="container ono-hall__heading">
+    {primaryHall.title && <h2 class="ono-hall__title">{primaryHall.title}</h2>}
+    {primaryHall.subtitle && <p class="ono-hall__subtitle">{primaryHall.subtitle}</p>}
+  </div>
+
+  <div class="container ono-hall__artboard">
+    {sourceHalls.map((hall, slideIndex) => {
+      const [capacity = '', format = '', equipment = '', ...equipmentItems] = hall.lines || [];
+      const capacityLine = splitLabel(capacity);
+      const formatLine = splitLabel(format);
+      const galleryId = `ono-hall-gallery-${slideIndex + 1}`;
+      return (
+        <article
+          class="ono-hall__slide"
+          data-ono-hall-slide
+          aria-hidden={slideIndex === 0 ? 'false' : 'true'}
+          hidden={slideIndex !== 0}
+        >
+          <div class="ono-hall__gallery">
+            <div class="ono-hall__photos" data-t396-gallery role="region" aria-roledescription="carousel"
+                 aria-label={`Фотографии зала: ${hall.address || ''}`} aria-live="off">
+              <div class="ono-hall__track" data-t396-gallery-track>
+                {(hall.photos || []).map((photo, photoIndex) => (
+                  <div class="ono-hall__photo-slide" id={`${galleryId}-slide-${photoIndex + 1}`}
+                       data-t396-gallery-slide aria-hidden={photoIndex === 0 ? 'false' : 'true'}>
+                    <ZoomImg
+                      src={asset(photo)}
+                      group={`quest-venue-ono-t396-${slideIndex}`}
+                      buttonClass="ono-hall__zoom"
+                      imageClass="ono-hall__photo"
+                      alt={`Зал для праздника — ${hall.address || ''}`}
+                      loading="lazy"
+                      decoding="async"
+                      width="600"
+                      height="400"
+                    />
+                  </div>
+                ))}
+              </div>
+              {(hall.photos || []).length > 1 && (
+                <div class="ono-hall__dots" role="tablist" aria-label="Выбор фотографии зала">
+                  {(hall.photos || []).map((_, photoIndex) => (
+                    <button type="button" class="ono-hall__dot" role="tab" data-t396-gallery-dot
+                            aria-label={`Фото ${photoIndex + 1} из ${(hall.photos || []).length}`}
+                            aria-controls={`${galleryId}-slide-${photoIndex + 1}`}
+                            aria-selected={photoIndex === 0 ? 'true' : 'false'}
+                            aria-current={photoIndex === 0 ? 'true' : 'false'}></button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {hall.caption && <p class="ono-hall__caption">{hall.caption}</p>}
+          <h3 class="ono-hall__address">
+            {hall.addressHref ? <a href={hall.addressHref}>{hall.address}</a> : hall.address}
+          </h3>
+          <div class="ono-hall__panel" aria-hidden="true"></div>
+          <div class="ono-hall__copy">
+            {capacity && <p><strong>{capacityLine.label}</strong>{capacityLine.value}</p>}
+            {format && <p><strong>{formatLine.label}</strong>{formatLine.value}</p>}
+            {equipment && <p><strong>{equipment}</strong></p>}
+            {equipmentItems.length > 0 && (
+              <ul>
+                {equipmentItems.map((item) => <li>{item}</li>)}
+              </ul>
+            )}
+          </div>
+          <a class="ono-hall__cta" href={ctaHref}>{hall.cta || 'Забронировать дату'}</a>
+        </article>
+      );
+    })}
+
+    {sourceHalls.length > 1 && (
+      <nav class="ono-hall__pagination" aria-label="Выбор площадки">
+        <button type="button" data-ono-hall-prev aria-label="Предыдущий зал">‹</button>
+        <p data-ono-hall-pagination aria-live="polite" aria-atomic="true">1 из {sourceHalls.length}</p>
+        <button type="button" data-ono-hall-next aria-label="Следующий зал">›</button>
+      </nav>
+    )}
+  </div>
+</section>
+
+<script>
+  import '../scripts/t396-gallery.js';
+
+  document.querySelectorAll('[data-ono-hall-root]').forEach((root) => {
+    const slides = [...root.querySelectorAll('[data-ono-hall-slide]')];
+    const previous = root.querySelector('[data-ono-hall-prev]');
+    const next = root.querySelector('[data-ono-hall-next]');
+    const pagination = root.querySelector('[data-ono-hall-pagination]');
+
+    if (slides.length < 2 || !previous || !next || !pagination) return;
+
+    let activeIndex = 0;
+    const setSlide = (nextIndex) => {
+      activeIndex = nextIndex;
+      slides.forEach((slide, index) => {
+        const isActive = index === activeIndex;
+        slide.hidden = !isActive;
+        slide.setAttribute('aria-hidden', String(!isActive));
+      });
+      pagination.textContent = `${activeIndex + 1} из ${slides.length}`;
+    };
+    const move = (direction) => {
+      const nextIndex = (activeIndex + direction + slides.length) % slides.length;
+      setSlide(nextIndex);
+    };
+
+    previous.addEventListener('click', () => move(-1));
+    next.addEventListener('click', () => move(1));
+  });
+</script>
+
+<style is:inline set:html={sourceFontCss}></style>
+
+<style>
+  .ono-hall{padding:0;overflow:clip;color:#333}
+  .ono-hall__heading{height:165px;padding-top:46px}
+  .ono-hall__title{width:1114px;max-width:100%;color:#000;font-size:38px;font-weight:700;line-height:44px}
+  .ono-hall__subtitle{width:672px;max-width:100%;margin-top:7px;color:#333;font-family:'Nunito',Arial,sans-serif;font-size:20px;font-weight:400;line-height:23px}
+  .ono-hall__artboard{position:relative;width:1200px;max-width:100%;height:570px;padding:0}
+  .ono-hall__slide{position:absolute;inset:0}
+  .ono-hall__gallery{position:absolute;top:8px;left:80px;width:600px;height:400px}
+  .ono-hall__photos{position:relative;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;border-radius:30px;scrollbar-width:none}
+  .ono-hall__photos::-webkit-scrollbar{display:none}
+  .ono-hall__photos.is-ready{overflow:hidden}
+  .ono-hall__track{display:flex;width:100%;height:100%;transition:transform .3s ease}
+  .ono-hall__photo-slide{display:block;flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start}
+  .ono-hall__photos :global(.ono-hall__zoom){display:block;flex:0 0 100%;width:100%;height:100%;padding:0;border:0;background:none;scroll-snap-align:start}
+  .ono-hall__photos :global(.ono-hall__photo){display:block;width:100%;height:100%;object-fit:cover}
+  .ono-hall__dots{position:absolute;z-index:4;bottom:10px;left:50%;display:flex;gap:10px;transform:translateX(-50%)}
+  .ono-hall__dot{width:8px;height:8px;padding:0;border:0;border-radius:50%;background:#474747;cursor:pointer}
+  .ono-hall__dot[aria-selected="true"]{background:#ff6900}
+  .ono-hall__dot:focus-visible{outline:2px solid #fff;outline-offset:3px}
+  .ono-hall__caption{position:absolute;z-index:3;top:419px;left:80px;width:442px;color:#333;font-family:'Montserratblack','Montserrat',Arial,sans-serif;font-size:22px;font-weight:400;line-height:34px;text-transform:uppercase;opacity:.3}
+  .ono-hall__address{position:absolute;z-index:2;top:27px;left:720px;width:399px;color:#333;font-family:'Montserratblack','Montserrat',Arial,sans-serif;font-size:26px;font-weight:400;line-height:40px;text-transform:uppercase}
+  .ono-hall__panel{position:absolute;z-index:1;top:138px;left:581px;width:540px;height:341px;border-radius:20px;background:rgba(255,255,255,.8);box-shadow:0 0 12px rgba(71,71,71,.3);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+  .ono-hall__copy{position:absolute;z-index:2;top:158px;left:610px;width:493px;color:#474747;font-family:'Nunito',Arial,sans-serif;font-size:18px;font-weight:400;line-height:22px}
+  .ono-hall__copy p + p{margin-top:22px}
+  .ono-hall__copy strong{font-weight:700}
+  .ono-hall__copy ul{margin:0;padding-left:20px;list-style:disc}
+  .ono-hall__cta{position:absolute;z-index:3;top:451px;left:720px;display:flex;align-items:center;justify-content:center;width:300px;height:55px;border-radius:30px;background-image:linear-gradient(0deg,#ff6900 0%,#f9ce29 100%);box-shadow:0 2px 3px rgba(71,71,71,.2);color:#fff;font-family:'Nunito',Arial,sans-serif;font-size:16px;font-weight:400;line-height:24.8px;text-align:center;text-transform:uppercase}
+  .ono-hall__pagination{position:absolute;z-index:3;top:523px;left:555px;display:flex;align-items:center;justify-content:space-between;width:90px;margin:0;color:#000;font-family:'Nunito',Arial,sans-serif;font-size:12px;line-height:19px}
+  .ono-hall__pagination p{margin:0}
+  .ono-hall__pagination button{padding:0;border:0;background:transparent;color:inherit;font:inherit;line-height:inherit;cursor:pointer}
+  .ono-hall__pagination button:focus-visible{outline:2px solid #ff8c20;outline-offset:2px}
+
+  @media (min-width:901px) and (max-width:1199px){
+    .ono-hall__heading{height:190px;padding-top:29px}
+    .ono-hall__title{width:720px}
+    .ono-hall__subtitle{width:688px;margin-top:54px}
+    .ono-hall__artboard{height:548px}
+    .ono-hall__gallery{left:12px}
+    .ono-hall__caption{top:416px;left:10px;width:403px;font-size:18px;line-height:23px}
+    .ono-hall__address{top:16px;left:630px;width:321px;font-size:24px;line-height:32px}
+    .ono-hall__panel{top:109px;left:489px;width:462px;height:350px}
+    .ono-hall__copy{top:130px;left:516px;width:416px;font-size:16px;line-height:22px}
+    .ono-hall__cta{top:431px;left:570px}
+    .ono-hall__pagination{top:501px;left:435px;width:90px}
+  }
+
+  @media (min-width:640px) and (max-width:900px){
+    .ono-hall__heading{height:220px;padding:35px 30px 0}
+    .ono-hall__title{width:510px;font-size:30px;line-height:35px}
+    .ono-hall__subtitle{width:510px;margin-top:16px;font-size:22px;line-height:25px}
+    .ono-hall__artboard{height:457px}
+    .ono-hall__gallery{top:11px;left:10px;width:380px;height:250px}
+    .ono-hall__photos{border-radius:30px}
+    .ono-hall__caption{top:273px;left:10px;width:241px;font-size:16px;line-height:21px}
+    .ono-hall__address{top:28px;left:410px;width:219px;font-size:18px;line-height:28px}
+    .ono-hall__panel{top:95px;left:310px;width:320px;height:280px}
+    .ono-hall__copy{top:109px;left:329px;width:285px;font-size:12px;line-height:16.8px}
+    .ono-hall__copy p + p{margin-top:16px}
+    .ono-hall__cta{top:352px;left:355px;width:230px;height:41px;font-size:14px}
+    .ono-hall__pagination{top:416px;left:270px;width:90px}
+  }
+
+  @media (min-width:480px) and (max-width:639px){
+    .ono-hall__heading{height:250px;padding:42px 30px 0}
+    .ono-hall__title{width:449px;font-size:32px;line-height:37px}
+    .ono-hall__subtitle{width:449px;margin-top:49px;font-size:20px;line-height:23px}
+    .ono-hall__artboard{height:560px}
+    .ono-hall__gallery{top:261px;left:10px;width:460px;height:220px}
+    .ono-hall__photos{border-radius:30px}
+    .ono-hall__caption{top:291px;left:71px;width:340px;font-size:14px;line-height:19px;text-align:center}
+    .ono-hall__address{top:20px;left:10px;width:461px;font-size:18px;line-height:28px;text-align:center}
+    .ono-hall__panel{top:57px;left:51px;width:379px;height:291px}
+    .ono-hall__copy{top:70px;left:71px;width:329px;font-size:18px;line-height:22px}
+    .ono-hall__copy p + p{margin-top:22px}
+    .ono-hall__cta{top:327px;left:140px;width:200px;height:46px;font-size:16px}
+    .ono-hall__pagination{top:510px;left:190px;width:90px}
+  }
+
+  @media (max-width:479px){
+    .ono-hall__heading{width:100%;max-width:none;height:235px;padding:42px 35px 0}
+    .ono-hall__title{width:300px;font-size:22px;line-height:25px}
+    .ono-hall__subtitle{width:300px;margin-top:10px;font-size:18px;line-height:21px}
+    .ono-hall__artboard{width:100%;max-width:none;height:755px;padding:0}
+    .ono-hall__gallery{top:415.672px;left:-24.375px;width:439px;height:275px}
+    .ono-hall__photos{border-radius:37px}
+    .ono-hall__caption{top:455.891px;left:29.25px;width:331.563px;font-size:17.063px;line-height:26.813px}
+    .ono-hall__address{top:62.156px;left:12.188px;width:366.906px;font-size:24.375px;line-height:37.781px}
+    .ono-hall__panel{top:148.703px;left:12.188px;width:365.688px;height:353.5px}
+    .ono-hall__copy{top:165.781px;left:34.125px;width:324.25px;font-size:14.625px;line-height:17.063px}
+    .ono-hall__copy p + p{margin-top:17.063px}
+    .ono-hall__copy ul{padding-left:24.375px}
+    .ono-hall__cta{top:663.125px;left:36.563px;width:316.938px;height:56.063px;font-size:14px;line-height:21.7px}
+    .ono-hall__pagination{top:21px;left:152.375px;width:85.328px;font-size:12px;line-height:19px}
+  }
+
+  @media (max-width:359px){
+    .ono-hall__artboard{height:620px}
+    .ono-hall__gallery{top:341px;left:-20px;width:360px;height:226px}
+    .ono-hall__caption{top:374px;left:24px;width:272px;font-size:14px;line-height:22px}
+    .ono-hall__address{top:51px;left:10px;width:301px;font-size:20px;line-height:31px}
+    .ono-hall__panel{top:122px;left:10px;width:300px;height:290px}
+    .ono-hall__copy{top:136px;left:28px;width:266px;font-size:12px;line-height:17px}
+    .ono-hall__copy p + p{margin-top:14px}
+    .ono-hall__copy ul{padding-left:20px}
+    .ono-hall__cta{top:544px;left:30px;width:260px;height:46px}
+    .ono-hall__pagination{top:21px;left:125px;width:70px}
+  }
+
+  @media (prefers-reduced-motion:reduce){.ono-hall__track{transition:none}}
+</style>

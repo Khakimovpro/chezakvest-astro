@@ -92,12 +92,41 @@ test('homepage slider uses locally optimized copies of traceable original Tilda 
   }
 });
 
-test('homepage keeps the live slider footprint and removes the clone-only pause control', async () => {
+test('homepage keeps the source slider artboard and removes the clone-only pause control', async () => {
   const styles = await readFile(new URL('../src/styles/home.css', import.meta.url), 'utf8');
 
-  assert.match(styles, /\.home-page \.slider\{max-width:1160px\}/u);
+  assert.match(styles, /\.home-page \.slider\{max-width:1200px;padding-bottom:44px\}/u);
   assert.match(styles, /\.home-page \.slider__pause\{display:none\}/u);
-  assert.match(styles, /@media \(max-width:640px\)\{[\s\S]*\.home-page \.slider\{max-width:none\}/u);
+  assert.match(styles, /@media \(max-width:640px\)\{[\s\S]*\.home-page \.slider\{max-width:none;padding-bottom:44px\}/u);
+});
+
+test('homepage models the T604 promo and T395 tabs as source records without changing capture-normalized slide order', async () => {
+  const [site, home, styles] = await Promise.all([
+    readFile(new URL('../src/data/site.json', import.meta.url), 'utf8').then(JSON.parse),
+    readFile(new URL('../src/pages/index.astro', import.meta.url), 'utf8'),
+    readFile(new URL('../src/styles/home.css', import.meta.url), 'utf8'),
+  ]);
+
+  // The first two entries are intentionally capture-normalized: after the
+  // six-second source cycle, both R27 screenshots show the Mystery banner.
+  assert.deepEqual(site.slider.slice(0, 2).map((slide) => slide.img), [
+    '/assets/q/c758969e30.webp',
+    '/assets/q/53c847a5f5.webp',
+  ]);
+  assert.match(home, /<section class="promo" data-parity-record="rec958749021">/u);
+  assert.match(home, /<div class="tabs" data-parity-record="rec671013302"/u);
+  assert.match(home, /<div class="tabs-mobile" data-parity-record="rec671013302">/u);
+  assert.match(home, /<option value=\{t\.cat\}>➧ \{t\.t\}\{t\.badge && ' ✪'\}<\/option>/u);
+
+  assert.match(styles, /\.home-page \.promo\{margin-top:0;padding:15px 0 30px\}/u);
+  assert.match(styles, /\.home-page \.slider\{max-width:1200px;padding-bottom:44px\}/u);
+  assert.match(styles, /\.home-page \.slider__viewport\{width:calc\(100% - 40px\);height:500px;margin-inline:auto;border-radius:6px\}/u);
+  assert.match(styles, /\.home-page \.slider__slide img\{object-fit:contain;border-radius:6px\}/u);
+  assert.match(styles, /\.home-page \.slider__arrow\{top:250px;width:60px;height:60px;padding:0;border:0;background:rgba\(255,255,255,\.6\);box-shadow:none\}/u);
+  assert.match(styles, /\.home-page \.tabs-mobile\{height:51px;border:1px solid #ff6900;border-radius:30px;overflow:hidden\}/u);
+  assert.match(styles, /\.home-page \.tabs-mobile select\{height:49px;border-radius:0;background:#ff6900;color:#fff;font-family:'Montserrat',Arial,sans-serif;font-size:16px;text-transform:none;padding:0 40px 0 20px\}/u);
+  assert.match(styles, /@media \(max-width:640px\)\{[\s\S]*\.home-page \.promo\{margin-top:0;padding:15px 0 60px\}/u);
+  assert.match(styles, /@media \(max-width:640px\)\{[\s\S]*\.home-page \.slider__viewport\{width:100%;height:auto;margin-inline:0;aspect-ratio:1160\/500;border-radius:10px\}/u);
 });
 
 test('homepage catalog preserves the live card sequence, grouping, and source addresses', async () => {

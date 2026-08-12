@@ -1,0 +1,86 @@
+/*
+ * Captured `/brawl_stars/` records T265, T1033 and T774 are deliberately
+ * opt-in through `sourceParity.kind`. Their fixed live composition must not
+ * alter generic QuestPage cards, information blocks or booking controls.
+ */
+.quest-page--brawl-source .qfeat--source-t265{padding:48px 0 0}
+.quest-page--brawl-source .qfeat--source-t265 .qfeat__title{font-size:38px;line-height:1.2}
+.quest-page--brawl-source .qfeat--source-t265 .qfeat__lead{font-size:20px;line-height:1.55;color:#111}
+.quest-page--brawl-source .qfeat--source-t265 .qfeat__lead--strong{margin-top:24px}
+.quest-page--brawl-source .qfeat--source-t265 .qfeat__wrap{margin-top:22px}
+.quest-page--brawl-source .qfeat--source-t265 .qfeat__row{display:grid;gap:0;overflow:visible;padding:0;scroll-snap-type:none}
+.quest-page--brawl-source .qfeat__card--source-t265{display:flex;align-items:center;gap:16px;min-height:89px;padding:18px 20px;background:#333;border-radius:20px;box-shadow:none}
+.quest-page--brawl-source .qfeat__card--source-t265+.qfeat__card--source-t265{margin-top:0}
+.quest-page--brawl-source .qfeat__card--source-t265 .qfeat__cardtitle{color:#fff;font-size:20px;font-weight:300;line-height:1.3}
+.quest-page--brawl-source .qfeat__source-arrow{display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px;width:24px;height:24px;border-radius:50%;background:#ff6900;color:#fff;font-size:17px;font-weight:700;line-height:1}
+
+.quest-page--brawl-source .qextra--source-t1033{padding:50px 0 45px}
+.quest-page--brawl-source .qextra--source-t1033 .qextra__source-title{font-size:38px;line-height:1.2;text-align:center}
+.quest-page--brawl-source .qextra__source-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:60px;margin-top:60px}
+.quest-page--brawl-source .qextra__source-list h3{padding-bottom:22px;border-bottom:1px solid #ff6900;color:#111;font-size:20px;font-weight:700;line-height:1.2;text-transform:uppercase}
+.quest-page--brawl-source .qextra__source-list p{margin-top:18px;color:#777;font-size:20px;font-weight:300;line-height:1.3}
+
+.quest-page--brawl-source .qbook{padding:64px 0 38px}
+.quest-page--brawl-source .qbook__title{font-size:34px;line-height:1.2}
+.quest-page--brawl-source .qbook__line{max-width:800px;margin-inline:auto;color:#333;font-size:20px;line-height:1.4}
+.quest-page--brawl-source .qbook__line:nth-of-type(2){margin-top:28px}
+.quest-page--brawl-source .qbook__line:last-of-type{margin-top:10px;color:#ff6900;font-weight:700}
+.quest-page--brawl-source .qbook__cta{display:none}
+
+/* T774: 5 × 220px tiles at desktop; the source's 320px artboard switches to
+   2 × 151px tiles. Padding plus grid gaps reproduce the 806px / 1337px
+   records, and sourceOrder preserves the different visual order by viewport. */
+.quest-page--brawl-source .cards--source-t774{padding:32px 0 50px}
+.quest-page--brawl-source .cards--source-t774>.container:first-child{display:none}
+.quest-page--brawl-source .cards--source-t774 .cards__wrap{max-width:1200px;margin-top:0;padding-inline:0}
+.quest-page--brawl-source .cards--source-t774 .cards__row{display:grid;grid-template-columns:repeat(5,220px);column-gap:25px;row-gap:32px;justify-content:start;overflow:visible;padding-bottom:0;scroll-snap-type:none}
+.quest-page--brawl-source .cards--source-t774 .card{width:220px;height:220px;order:var(--source-desktop-order)}
+.quest-page--brawl-source .cards--source-t774 .card__link,.quest-page--brawl-source .cards--source-t774 .card__img{width:220px;height:220px}
+.quest-page--brawl-source .cards--source-t774 .card__img{object-fit:cover}
+.quest-page--brawl-source .cards--source-t774 .card__t774-overlay{position:absolute;inset:0;display:block;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.68);background:linear-gradient(180deg,rgba(0,0,0,.36) 0%,rgba(0,0,0,.08) 30%,rgba(0,0,0,.74) 100%)}
+.quest-page--brawl-source .cards--source-t774 .card__t774-keys{position:absolute;top:15px;left:15px;display:flex;gap:2px;color:#ff6900}
+.quest-page--brawl-source .cards--source-t774 .card__t774-keys svg{width:10px;height:10px}
+.quest-page--brawl-source .cards--source-t774 .card__t774-age{position:absolute;top:14px;right:14px;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#fff;color:#666;font-size:10px;font-weight:700;text-shadow:none}
+.quest-page--brawl-source .cards--source-t774 .card__t774-meta{position:absolute;top:45px;left:15px;display:grid;gap:4px;color:#f2f2f2;font-size:12px;font-weight:300;line-height:1}
+.quest-page--brawl-source .cards--source-t774 .card__t774-meta span,.quest-page--brawl-source .cards--source-t774 .card__t774-address{display:flex;align-items:center;gap:5px}
+.quest-page--brawl-source .cards--source-t774 .card__t774-meta svg{width:14px;height:14px;color:#ff6900;flex:0 0 auto}
+.quest-page--brawl-source .cards--source-t774 .card__t774-title{position:absolute;right:15px;bottom:42px;left:15px;color:#fff;font-size:14px;font-weight:700;line-height:1.3}
+.quest-page--brawl-source .cards--source-t774 .card__t774-address{position:absolute;right:15px;bottom:15px;left:15px;color:#f4f4f4;font-size:12px;font-weight:300;line-height:1.2}
+.quest-page--brawl-source .cards--source-t774 .card__t774-address svg{width:14px;height:14px;color:#ff6900;flex:0 0 auto}
+
+@media (max-width:900px){
+  .quest-page--brawl-source .qfeat--source-t265{padding:34px 0 0}
+  .quest-page--brawl-source .qfeat--source-t265 .qfeat__title{font-size:26px}
+  .quest-page--brawl-source .qfeat--source-t265 .qfeat__lead{font-size:12px;line-height:1.35}
+  .quest-page--brawl-source .qfeat--source-t265 .qfeat__lead--strong{margin-top:17px}
+  .quest-page--brawl-source .qfeat--source-t265 .qfeat__wrap{margin-top:12px}
+  .quest-page--brawl-source .qfeat__card--source-t265{gap:10px;min-height:65px;padding:14px 12px;border-radius:16px}
+  .quest-page--brawl-source .qfeat__card--source-t265 .qfeat__cardtitle{font-size:14px;line-height:1.3}
+  .quest-page--brawl-source .qfeat__source-arrow{flex-basis:18px;width:18px;height:18px;font-size:13px}
+
+  .quest-page--brawl-source .qextra--source-t1033{padding:28px 0 0}
+  .quest-page--brawl-source .qextra--source-t1033 .qextra__source-title{font-size:22px}
+  .quest-page--brawl-source .qextra__source-list{grid-template-columns:1fr;gap:20px;margin-top:40px}
+  .quest-page--brawl-source .qextra__source-list h3{padding-bottom:12px;font-size:14px}
+  .quest-page--brawl-source .qextra__source-list p{margin-top:10px;font-size:14px;line-height:1.3}
+
+  .quest-page--brawl-source .qbook{padding:48px 0 30px}
+  .quest-page--brawl-source .qbook__title{font-size:20px}
+  .quest-page--brawl-source .qbook__line{font-size:12px;line-height:1.35}
+  .quest-page--brawl-source .qbook__line:nth-of-type(2){margin-top:23px}
+  .quest-page--brawl-source .qbook__line:last-of-type{margin-top:8px;font-size:12px}
+
+  .quest-page--brawl-source .cards--source-t774{padding:22px 0 27px}
+  .quest-page--brawl-source .cards--source-t774 .cards__wrap{padding-inline:0}
+  .quest-page--brawl-source .cards--source-t774 .cards__row{grid-template-columns:repeat(2,151px);column-gap:20px;row-gap:21px;justify-content:center}
+  .quest-page--brawl-source .cards--source-t774 .card{width:151px;height:166px;order:var(--source-mobile-order)}
+  .quest-page--brawl-source .cards--source-t774 .card__link,.quest-page--brawl-source .cards--source-t774 .card__img{width:151px;height:166px}
+  .quest-page--brawl-source .cards--source-t774 .card__t774-keys{top:9px;left:9px;gap:1px}
+  .quest-page--brawl-source .cards--source-t774 .card__t774-keys svg{width:7px;height:7px}
+  .quest-page--brawl-source .cards--source-t774 .card__t774-age{top:9px;right:9px;width:18px;height:18px;font-size:7px}
+  .quest-page--brawl-source .cards--source-t774 .card__t774-meta{top:28px;left:9px;gap:2px;font-size:8px}
+  .quest-page--brawl-source .cards--source-t774 .card__t774-meta svg{width:10px;height:10px}
+  .quest-page--brawl-source .cards--source-t774 .card__t774-title{right:9px;bottom:30px;left:9px;font-size:9px;line-height:1.2}
+  .quest-page--brawl-source .cards--source-t774 .card__t774-address{right:9px;bottom:9px;left:9px;gap:3px;font-size:7px}
+  .quest-page--brawl-source .cards--source-t774 .card__t774-address svg{width:9px;height:9px}
+}

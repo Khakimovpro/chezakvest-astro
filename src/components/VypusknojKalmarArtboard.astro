@@ -1,0 +1,536 @@
+---
+// This campaign is a captured Tilda composition, not a variant of the shared
+// holiday template.  Its artboard geometry stays opt-in and is driven by the
+// matching page data so no other holiday route inherits its dark presentation.
+const { source = {}, asset = (value) => value, href = (value) => value, phoneHref = '#', phone = '' } = Astro.props;
+const records = source.records || {};
+const hero = source.hero || {};
+const program = source.program || {};
+const scenarios = source.scenarios || {};
+const additions = source.additions || {};
+const hall = source.hall || {};
+const trust = source.trust || {};
+const gift = source.gift || {};
+const venues = source.venues || {};
+const footer = source.footer || {};
+const bookingHref = href(source.bookingHref || '#prazdnik');
+const desktopFooterRecordTrim = -Math.abs(Number(source.desktopFooterRecordTrim) || 0);
+
+const px = (value) => Number.isFinite(value) ? `${value}px` : String(value || '');
+const recordStyle = (record = {}) => [
+  record.desktop && `--vypusknoj-record-desktop:${px(record.desktop)}`,
+  record.mobile && `--vypusknoj-record-mobile:${px(record.mobile)}`,
+].filter(Boolean).join(';');
+const layerStyle = (layer) => {
+  const desktop = layer.desktop || {};
+  const mobile = layer.mobile || {};
+  return [
+    ['--vyp-layer-top', desktop.top],
+    ['--vyp-layer-left', desktop.left],
+    ['--vyp-layer-width', desktop.width],
+    ['--vyp-layer-height', desktop.height],
+    ['--vyp-layer-top-mobile', mobile.top],
+    ['--vyp-layer-left-mobile', mobile.left],
+    ['--vyp-layer-width-mobile', mobile.width],
+    ['--vyp-layer-height-mobile', mobile.height],
+  ].filter(([, value]) => value !== undefined && value !== null)
+    .map(([name, value]) => `${name}:${px(value)}`).join(';');
+};
+const bgStyle = (image) => image ? `background-image:url('${asset(image)}')` : '';
+---
+
+<div class="vypusknoj-artboard" id="about" style={`--vypusknoj-desktop-footer-trim:${desktopFooterRecordTrim}px`}>
+  <div class="vypusknoj-artboard__spacer" data-parity-record={records.spacer?.id} style={recordStyle(records.spacer)} aria-hidden="true"></div>
+
+  <section class="vypusknoj-artboard__hero" data-parity-record={records.hero?.id} aria-labelledby="vypusknoj-hero-title" style={`${recordStyle(records.hero)};${bgStyle(hero.background)}`}>
+    <div class="vypusknoj-artboard__hero-canvas">
+      {(hero.layers || []).map((layer) => (
+        <img class="vypusknoj-artboard__hero-layer" src={asset(layer.src)} alt="" aria-hidden="true"
+             style={layerStyle(layer)} width={layer.desktop?.width || 1} height={layer.desktop?.height || 1}
+             fetchpriority="high" decoding="async" />
+      ))}
+      {hero.logo && <img class="vypusknoj-artboard__hero-logo" src={asset(hero.logo)} alt="Чё за Квест" width="48" height="42" decoding="async" />}
+      <nav class="vypusknoj-artboard__hero-nav" aria-label="Навигация выпускного">
+        {(hero.nav || []).map((item) => (<a href={href(item.href)}>{item.title}</a>))}
+        {phone && <a class="vypusknoj-artboard__hero-phone" href={phoneHref}>{phone}</a>}
+      </nav>
+      <div class="vypusknoj-artboard__hero-copy">
+        {hero.city && <p class="vypusknoj-artboard__hero-city">{hero.city}</p>}
+        {hero.sub && <p class="vypusknoj-artboard__hero-sub">{hero.sub}</p>}
+        <h1 id="vypusknoj-hero-title">{hero.title}</h1>
+        {hero.benefit && <p class="vypusknoj-artboard__hero-benefit">{hero.benefit}</p>}
+        {hero.cta && <a class="vypusknoj-artboard__pink-button" href={bookingHref}>{hero.cta}</a>}
+      </div>
+    </div>
+  </section>
+
+  <section class="vypusknoj-artboard__intro" data-parity-record={records.intro?.id} style={recordStyle(records.intro)} aria-labelledby="vypusknoj-intro-title">
+    <div class="vypusknoj-artboard__rail">
+      <h2 id="vypusknoj-intro-title">{source.intro?.title}</h2>
+      <p>{source.intro?.text}</p>
+    </div>
+  </section>
+
+  <section class="vypusknoj-artboard__features" data-parity-record={records.features?.id} style={`${recordStyle(records.features)};${bgStyle(source.features?.background)}`} aria-labelledby="vypusknoj-features-title">
+    <div class="vypusknoj-artboard__rail vypusknoj-artboard__features-canvas">
+      <h2 id="vypusknoj-features-title">{source.features?.title}</h2>
+      {source.features?.figure && <img class="vypusknoj-artboard__features-figure" src={asset(source.features.figure)} alt="" aria-hidden="true" width="181" height="389" loading="lazy" decoding="async" />}
+      <ul>
+        {(source.features?.items || []).map((item) => (<li>{item}</li>))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="vypusknoj-artboard__section-heading" data-parity-record={records.scenarioHeading?.id} style={recordStyle(records.scenarioHeading)} aria-labelledby="vypusknoj-scenario-heading">
+    <h2 id="vypusknoj-scenario-heading">ВЫБЕРИТЕ СВОЙ <span>СЦЕНАРИЙ</span> ВЫПУСКНОГО</h2>
+  </section>
+
+  <section class="vypusknoj-artboard__program" data-parity-record={records.program?.id} style={`${recordStyle(records.program)};${bgStyle(program.background)}`} aria-labelledby="vypusknoj-program-title">
+    <div class="vypusknoj-artboard__rail vypusknoj-artboard__program-canvas">
+      <p class="vypusknoj-artboard__program-label">{program.label}</p>
+      {program.poster && <img class="vypusknoj-artboard__program-poster" src={asset(program.poster)} alt="" aria-hidden="true" width="776" height="1042" loading="lazy" decoding="async" />}
+      <h2 id="vypusknoj-program-title">{program.title}</h2>
+      <div class="vypusknoj-artboard__program-grid">
+        {(program.cards || []).map((card) => (
+          <a class="vypusknoj-artboard__program-card" href={bookingHref}>
+            <img src={asset(card.src)} alt="" width="972" height="824" loading="lazy" decoding="async" />
+            <span>{card.title}</span>
+          </a>
+        ))}
+      </div>
+      {program.cta && <a class="vypusknoj-artboard__pink-button vypusknoj-artboard__program-cta" href={bookingHref}>{program.cta}</a>}
+    </div>
+  </section>
+
+  <div class="vypusknoj-artboard__divider vypusknoj-artboard__divider--art" data-parity-record={records.dividerAfterProgram?.id} style={recordStyle(records.dividerAfterProgram)} aria-hidden="true">
+    {hero.dividerArt && <img src={asset(hero.dividerArt)} alt="" width="140" height="140" loading="lazy" decoding="async" />}
+  </div>
+
+  <section class="vypusknoj-artboard__carousel vypusknoj-artboard__carousel--scenarios" data-parity-record={records.scenarios?.id} style={recordStyle(records.scenarios)} aria-labelledby="vypusknoj-scenarios-title"
+           data-vypusk-slider data-vypusk-slider-mode="cards" data-vypusk-offset-desktop="-280" data-vypusk-offset-mobile="0" data-vypusk-step-desktop="300" data-vypusk-step-mobile="344">
+    <h2 id="vypusknoj-scenarios-title">{scenarios.title}</h2>
+    <div class="vypusknoj-artboard__carousel-window" data-vypusk-slider-window>
+      <div class="vypusknoj-artboard__carousel-track" data-vypusk-slider-track>
+        {(scenarios.items || []).map((item, index) => (
+          <article class="vypusknoj-artboard__carousel-card" data-vypusk-slider-slide id={`vypusknoj-scenario-${index + 1}`} aria-label={`Сценарий ${index + 1} из ${(scenarios.items || []).length}`}>
+            <a href={href(item.href)}><img src={asset(item.src)} alt={item.title} width="520" height="400" loading="lazy" decoding="async" /></a>
+            <div>
+              <a href={href(item.href)}>{item.title}</a>
+              <a class="vypusknoj-artboard__carousel-cta" href={bookingHref}>{scenarios.cta} <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+    <div class="vypusknoj-artboard__carousel-controls" aria-label="Управление сценариями">
+      <button class="vypusknoj-artboard__carousel-arrow" type="button" data-vypusk-slider-prev aria-label="Предыдущий сценарий"><span aria-hidden="true">←</span></button>
+      <div class="vypusknoj-artboard__carousel-dots" role="tablist" aria-label="Сценарии выпускного">
+        {(scenarios.items || []).map((item, index) => (
+          <button class="vypusknoj-artboard__carousel-dot" type="button" role="tab" data-vypusk-slider-dot aria-controls={`vypusknoj-scenario-${index + 1}`}
+                  aria-label={`Показать сценарий ${index + 1}: ${item.title}`} aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1}></button>
+        ))}
+      </div>
+      <button class="vypusknoj-artboard__carousel-arrow" type="button" data-vypusk-slider-next aria-label="Следующий сценарий"><span aria-hidden="true">→</span></button>
+    </div>
+  </section>
+
+  <div class="vypusknoj-artboard__divider" data-parity-record={records.dividerAfterScenarios?.id} style={recordStyle(records.dividerAfterScenarios)} aria-hidden="true"></div>
+
+  <section class="vypusknoj-artboard__carousel vypusknoj-artboard__carousel--additions" data-parity-record={records.additions?.id} style={recordStyle(records.additions)} aria-labelledby="vypusknoj-additions-title"
+           data-vypusk-slider data-vypusk-slider-mode="cards" data-vypusk-offset-desktop="-280" data-vypusk-offset-mobile="0" data-vypusk-step-desktop="300" data-vypusk-step-mobile="344">
+    <h2 id="vypusknoj-additions-title">{additions.title}</h2>
+    <div class="vypusknoj-artboard__carousel-window" data-vypusk-slider-window>
+      <div class="vypusknoj-artboard__carousel-track" data-vypusk-slider-track>
+        {(additions.items || []).map((item, index) => (
+          <article class="vypusknoj-artboard__carousel-card" data-vypusk-slider-slide id={`vypusknoj-addition-${index + 1}`} aria-label={`Дополнение ${index + 1} из ${(additions.items || []).length}`}>
+            <a href={bookingHref}><img src={asset(item.src)} alt={item.title} width="700" height="553" loading="lazy" decoding="async" /></a>
+            <div>
+              <a href={bookingHref}>{item.title}</a>
+              <a class="vypusknoj-artboard__carousel-cta" href={bookingHref}>{additions.cta} <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+    <div class="vypusknoj-artboard__carousel-controls" aria-label="Управление дополнительными услугами">
+      <button class="vypusknoj-artboard__carousel-arrow" type="button" data-vypusk-slider-prev aria-label="Предыдущая дополнительная услуга"><span aria-hidden="true">←</span></button>
+      <div class="vypusknoj-artboard__carousel-dots" role="tablist" aria-label="Дополнительные услуги">
+        {(additions.items || []).map((item, index) => (
+          <button class="vypusknoj-artboard__carousel-dot" type="button" role="tab" data-vypusk-slider-dot aria-controls={`vypusknoj-addition-${index + 1}`}
+                  aria-label={`Показать дополнительную услугу ${index + 1}: ${item.title}`} aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1}></button>
+        ))}
+      </div>
+      <button class="vypusknoj-artboard__carousel-arrow" type="button" data-vypusk-slider-next aria-label="Следующая дополнительная услуга"><span aria-hidden="true">→</span></button>
+    </div>
+  </section>
+
+  <section class="vypusknoj-artboard__hall-heading" data-parity-record={records.hallHeading?.id} style={recordStyle(records.hallHeading)} aria-labelledby="vypusknoj-hall-heading">
+    <h2 id="vypusknoj-hall-heading">{hall.heading}</h2>
+    <p>{hall.subtitle}</p>
+  </section>
+
+  <section class="vypusknoj-artboard__hall" data-parity-record={records.hall?.id} style={recordStyle(records.hall)} aria-labelledby="vypusknoj-hall-title"
+           data-vypusk-slider data-vypusk-slider-mode="gallery" data-vypusk-autoplay="3000">
+    <div class="vypusknoj-artboard__rail vypusknoj-artboard__hall-canvas">
+      <div class="vypusknoj-artboard__hall-images" data-vypusk-slider-window>
+        <div class="vypusknoj-artboard__hall-track" data-vypusk-slider-track>
+          {(hall.images || []).map((image, index) => (
+            <div class:list={['vypusknoj-artboard__hall-slide', { 'is-active': index === 0 }]} data-vypusk-slider-slide id={`vypusknoj-hall-photo-${index + 1}`}
+                 aria-hidden={index === 0 ? 'false' : 'true'} inert={index > 0 ? true : undefined}>
+              <img src={asset(image)} alt="Зал для выпускного" width="1280" height="960" loading="lazy" decoding="async" />
+            </div>
+          ))}
+        </div>
+        <div class="vypusknoj-artboard__hall-dots" role="tablist" aria-label="Фотографии зала">
+          {(hall.images || []).map((image, index) => (
+            <button class="vypusknoj-artboard__hall-dot" type="button" role="tab" data-vypusk-slider-dot aria-controls={`vypusknoj-hall-photo-${index + 1}`}
+                    aria-label={`Показать фотографию зала ${index + 1}`} aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1}></button>
+          ))}
+        </div>
+      </div>
+      <div class="vypusknoj-artboard__hall-copy">
+        <h2 id="vypusknoj-hall-title">{hall.title}</h2>
+        <div class="vypusknoj-artboard__hall-details">
+          <p class="vypusknoj-artboard__hall-capacity"><strong>Вместимость:</strong> {hall.capacity}<br />{hall.guests}</p>
+          <p class="vypusknoj-artboard__hall-format"><strong>Формат:</strong> {hall.format}</p>
+          {hall.equipmentTitle && <h3>{hall.equipmentTitle}</h3>}
+          {(hall.equipment || []).length > 0 && <ul>{(hall.equipment || []).map((item) => <li>{item}</li>)}</ul>}
+        </div>
+        {hall.cta && <a class="vypusknoj-artboard__pink-button" href={bookingHref}>{hall.cta}</a>}
+        <div class="vypusknoj-artboard__hall-pager" aria-label="Переключение фотографий зала">
+          <button type="button" data-vypusk-slider-prev aria-label="Предыдущая фотография зала">{hall.previousIcon ? <img src={asset(hall.previousIcon)} alt="" aria-hidden="true" width="20" height="21" loading="lazy" decoding="async" /> : <span aria-hidden="true">←</span>}</button>
+          <span class="vypusknoj-artboard__hall-count" data-vypusk-slider-count aria-live="polite">1 из {(hall.images || []).length}</span>
+          <button type="button" data-vypusk-slider-next aria-label="Следующая фотография зала">{hall.nextIcon ? <img src={asset(hall.nextIcon)} alt="" aria-hidden="true" width="20" height="21" loading="lazy" decoding="async" /> : <span aria-hidden="true">→</span>}</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="vypusknoj-artboard__section-heading vypusknoj-artboard__section-heading--trust" data-parity-record={records.trustHeading?.id} style={recordStyle(records.trustHeading)} aria-labelledby="vypusknoj-trust-heading">
+    <h2 id="vypusknoj-trust-heading">{trust.heading}</h2>
+  </section>
+
+  <section class="vypusknoj-artboard__trust" data-parity-record={records.trust?.id} style={`${recordStyle(records.trust)};${bgStyle(trust.background)}`} aria-label="Причины доверить выпускной">
+    <div class="vypusknoj-artboard__trust-grid">
+      {(trust.cards || []).map((card, index) => (
+        <article class:list={['vypusknoj-artboard__trust-card', { 'vypusknoj-artboard__trust-card--note': card.title, 'vypusknoj-artboard__trust-card--mark': index === 1 }]}>
+          {card.src && <img src={asset(card.src)} alt="" aria-hidden="true" width="312" height="312" loading="lazy" decoding="async" />}
+          {index === 1 && trust.mark && <img class="vypusknoj-artboard__trust-mark" src={asset(trust.mark)} alt="" aria-hidden="true" width="224" height="223" loading="lazy" decoding="async" />}
+          {card.prefix && <span class="vypusknoj-artboard__trust-prefix">{card.prefix}</span>}
+          {card.value && <strong>{card.value}</strong>}
+          {card.title && <h3>{card.title}</h3>}
+          <p>{card.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <div class="vypusknoj-artboard__masked-review-rail" data-parity-record={records.maskedReviewTop?.id} style={recordStyle(records.maskedReviewTop)} aria-hidden="true"></div>
+  <div class="vypusknoj-artboard__masked-review-rail" data-parity-record={records.maskedReviewMiddle?.id} style={recordStyle(records.maskedReviewMiddle)} aria-hidden="true"></div>
+  <div class="vypusknoj-artboard__masked-review-rail" data-parity-record={records.maskedReviewBottom?.id} style={recordStyle(records.maskedReviewBottom)} aria-hidden="true"></div>
+
+  <section class="vypusknoj-artboard__gift" data-parity-record={records.gift?.id} style={`${recordStyle(records.gift)};${bgStyle(gift.background)}`} aria-labelledby="vypusknoj-gift-title">
+    <div class="vypusknoj-artboard__rail vypusknoj-artboard__gift-canvas">
+      <h2 id="vypusknoj-gift-title">{gift.title}</h2>
+      <p>{gift.text}</p>
+      {gift.cta && <a class="vypusknoj-artboard__pink-button" href={bookingHref}>{gift.cta}</a>}
+      {gift.art && <img src={asset(gift.art)} alt="" aria-hidden="true" width="230" height="178" loading="lazy" decoding="async" />}
+    </div>
+  </section>
+
+  <section class="vypusknoj-artboard__venues-heading" data-parity-record={records.venuesHeading?.id} style={recordStyle(records.venuesHeading)} aria-labelledby="vypusknoj-venues-title">
+    <h2 id="vypusknoj-venues-title">{venues.heading}</h2>
+    <p>{venues.subtitle}</p>
+  </section>
+
+  <section class="vypusknoj-artboard__venues" data-parity-record={records.venues?.id} style={recordStyle(records.venues)} aria-label="Адреса площадок">
+    <div class="vypusknoj-artboard__venues-list">
+      {(venues.items || []).map((item) => (<a href={href(item.href)}>{item.title}</a>))}
+    </div>
+  </section>
+
+  <div class="vypusknoj-artboard__footer-spacer" data-parity-record={records.footerSpacer?.id} style={recordStyle(records.footerSpacer)} aria-hidden="true"></div>
+
+  <footer class="vypusknoj-artboard__footer">
+    <div class="vypusknoj-artboard__footer-main" data-parity-record={records.footer?.id} style={recordStyle(records.footer)}>
+      <div class="vypusknoj-artboard__footer-grid">
+        <section><h2>ОРГАНИЗАЦИЯ <span>МЕРОПРИЯТИЙ</span></h2>{(footer.organisation || []).map((item) => (<a href={href(item.href)}>{item.title}</a>))}</section>
+        <section><h2>ВИДЫ РАЗВЛЕЧЕНИЙ</h2>{(footer.entertainment || []).map((item) => (<a href={href(item.href)}>{item.title}</a>))}</section>
+        <section><h2>НАШИ ПЛОЩАДКИ</h2>{(footer.venues || []).map((item) => (<a href={href(item.href)}>{item.title}</a>))}</section>
+        <section class="vypusknoj-artboard__footer-legal">{footer.privacy && <a href={href(footer.privacyHref || '/privacy')}>{footer.privacy}</a>}<p>{(footer.legal || []).map((line) => <span>{line}</span>)}</p></section>
+      </div>
+    </div>
+    <div class="vypusknoj-artboard__footer-bottom" data-parity-record={records.footerBottom?.id} style={recordStyle(records.footerBottom)}>
+      <div class="vypusknoj-artboard__footer-brand">
+        {footer.logo && <a href={href('/')}><img src={asset(footer.logo)} alt="Чё за Квест" width="125" height="53" loading="lazy" decoding="async" /></a>}
+        {footer.copyright && <p>{footer.copyright}</p>}
+      </div>
+      <div class="vypusknoj-artboard__footer-contact">
+        {phone && <a href={phoneHref}>{phone}</a>}
+        {footer.hours && <p>{footer.hours}</p>}
+        {footer.email && <a href={footer.emailHref || `mailto:${footer.email}`}>{footer.email}</a>}
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  import '../scripts/vypusknoj-artboard-controls.js';
+</script>
+
+<style is:global>
+  .vypusknoj-artboard__booking .pform{display:none}
+  .vypusknoj-artboard__booking .pform:target{display:block}
+</style>
+
+<style>
+  .vypusknoj-artboard{overflow:hidden;background:#031818;color:#fff;font-family:Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard a{color:inherit;text-decoration:none}
+  .vypusknoj-artboard__rail{position:relative;width:1200px;height:100%;margin-inline:auto}
+  .vypusknoj-artboard__spacer{height:var(--vypusknoj-record-desktop,58px);background:#fff}
+  .vypusknoj-artboard__hero{height:var(--vypusknoj-record-desktop,856px);overflow:hidden;background-color:#031818;background-repeat:no-repeat;background-position:center -71px;background-size:1920px 941px}
+  .vypusknoj-artboard__hero-canvas{position:relative;width:1200px;height:100%;margin:auto}
+  .vypusknoj-artboard__hero-layer{position:absolute;z-index:1;top:var(--vyp-layer-top);left:var(--vyp-layer-left);width:var(--vyp-layer-width);height:var(--vyp-layer-height);object-fit:cover;pointer-events:none}
+  .vypusknoj-artboard__hero-layer:nth-of-type(3){z-index:2}
+  .vypusknoj-artboard__hero-layer:nth-of-type(4){z-index:4}
+  .vypusknoj-artboard__hero-logo{position:absolute;z-index:6;top:24px;right:0;width:48px;height:42px;object-fit:contain}
+  .vypusknoj-artboard__hero-nav{position:absolute;z-index:7;top:39px;left:310px;display:flex;align-items:center;gap:82px;color:#fff;font:400 16px/1.15 Montserrat,Arial,sans-serif;white-space:nowrap}
+  .vypusknoj-artboard__hero-nav a{transition:opacity .2s ease}
+  .vypusknoj-artboard__hero-nav a:hover{opacity:.75}
+  .vypusknoj-artboard__hero-nav .vypusknoj-artboard__hero-phone{margin-left:30px;font-weight:700;font-size:18px}
+  .vypusknoj-artboard__hero-copy{position:absolute;z-index:5;inset:0;pointer-events:none}
+  .vypusknoj-artboard__hero-copy > *{position:absolute;margin:0}
+  .vypusknoj-artboard__hero-city{top:510px;left:154px;font:400 20px/1.1 Montserrat,Arial,sans-serif;letter-spacing:.02em}
+  .vypusknoj-artboard__hero-sub{top:290px;left:186px;font:400 20px/1.1 Montserrat,Arial,sans-serif;letter-spacing:.02em}
+  .vypusknoj-artboard__hero-copy h1{top:157px;left:0;width:510px;color:#fff;font:800 70px/.98 Montserrat,Arial,sans-serif;letter-spacing:-.035em}
+  .vypusknoj-artboard__hero-benefit{top:641px;left:48px;width:180px;font:400 14px/1.45 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__pink-button{display:flex;box-sizing:border-box;width:270px;height:60px;align-items:center;justify-content:center;border:1px solid #ec406b;border-radius:8px;background:#ec406b;color:#fff;font:700 14px/1 Montserrat,Arial,sans-serif;letter-spacing:.015em;text-align:center;transition:filter .2s ease,transform .2s ease}
+  .vypusknoj-artboard__pink-button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+  .vypusknoj-artboard__hero-copy .vypusknoj-artboard__pink-button{top:566px;left:0;pointer-events:auto}
+  .vypusknoj-artboard__intro{height:var(--vypusknoj-record-desktop,212px);background:#031818}
+  .vypusknoj-artboard__intro h2{position:absolute;top:53px;left:0;width:580px;margin:0;color:#fff;font:700 31px/1.15 Montserrat,Arial,sans-serif;letter-spacing:-.025em}
+  .vypusknoj-artboard__intro p{position:absolute;top:49px;right:0;width:500px;margin:0;color:#fff;font:400 17px/1.55 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__features{height:var(--vypusknoj-record-desktop,850px);overflow:hidden;background-color:#fff;background-repeat:no-repeat;background-position:center top;background-size:1920px 850px;color:#031818}
+  .vypusknoj-artboard__features h2{position:absolute;top:144px;left:0;width:550px;margin:0;font:700 38px/1.13 Montserrat,Arial,sans-serif;letter-spacing:-.035em}
+  .vypusknoj-artboard__features ul{position:absolute;top:156px;right:0;display:grid;width:505px;margin:0;padding:0;list-style:none}
+  .vypusknoj-artboard__features li{min-height:69px;box-sizing:border-box;padding:0 0 15px 39px;background:linear-gradient(135deg,transparent 0 47%,#ec406b 48% 52%,transparent 53%) 3px 8px/20px 20px no-repeat;font:400 17px/1.3 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__features-figure{position:absolute;right:-67px;bottom:-2px;width:167px;height:356px;object-fit:contain}
+  .vypusknoj-artboard__section-heading{display:flex;height:var(--vypusknoj-record-desktop,160px);align-items:center;justify-content:center;box-sizing:border-box;padding:16px 20px;background:#031818;text-align:center}
+  .vypusknoj-artboard__section-heading h2{max-width:1000px;margin:0;color:#fff;font:700 38px/1.15 Montserrat,Arial,sans-serif;letter-spacing:-.03em}
+  .vypusknoj-artboard__section-heading h2 span{color:#ec406b}
+  .vypusknoj-artboard__program{height:var(--vypusknoj-record-desktop,847px);overflow:hidden;background-color:#031818;background-position:center;background-size:cover}
+  .vypusknoj-artboard__program-canvas{height:100%}
+  .vypusknoj-artboard__program-label{position:absolute;top:85px;left:20px;margin:0;color:#fff;font:700 38px/1.2 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__program-poster{position:absolute;top:163px;left:-24px;width:388px;height:520px;object-fit:cover}
+  .vypusknoj-artboard__program h2{position:absolute;top:85px;left:431px;margin:0;color:#fff;font:700 38px/1.2 Montserrat,Arial,sans-serif;letter-spacing:-.02em}
+  .vypusknoj-artboard__program-grid{position:absolute;top:163px;left:466px;display:grid;grid-template-columns:repeat(2,363px);gap:18px 14px}
+  .vypusknoj-artboard__program-card{position:relative;display:block;overflow:hidden;width:363px;height:251px;background:#031818}
+  .vypusknoj-artboard__program-card img{display:block;width:100%;height:100%;object-fit:cover}
+  .vypusknoj-artboard__program-card::after{position:absolute;right:0;bottom:0;left:0;height:104px;background:linear-gradient(9deg,#ec406b 15%,#031818 32%,rgba(3,24,24,0) 64%);content:''}
+  .vypusknoj-artboard__program-card span{position:absolute;z-index:1;right:21px;bottom:18px;left:21px;color:#fff;font:700 16px/1.25 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__program-cta{position:absolute;top:713px;left:460px;width:280px;height:64px}
+  .vypusknoj-artboard__divider{height:var(--vypusknoj-record-desktop,40px);overflow:hidden;background:#031818}
+  .vypusknoj-artboard__divider--art{position:relative}
+  .vypusknoj-artboard__divider--art img{position:absolute;top:-52px;left:calc(50% - 600px + 174px);width:92px;height:92px;object-fit:contain}
+  .vypusknoj-artboard__carousel{position:relative;height:var(--vypusknoj-record-desktop,624px);overflow:hidden;background:#031818}
+  .vypusknoj-artboard__carousel h2{width:1200px;margin:0 auto;color:#fff;font:700 38px/1.15 Montserrat,Arial,sans-serif;letter-spacing:-.03em;text-align:center}
+  .vypusknoj-artboard__carousel--scenarios h2{padding-top:75px}
+  .vypusknoj-artboard__carousel--additions h2{padding-top:90px}
+  .vypusknoj-artboard__carousel-window{overflow:hidden;width:100%;margin-top:59px}
+  .vypusknoj-artboard__carousel--additions .vypusknoj-artboard__carousel-window{margin-top:58px}
+  .vypusknoj-artboard__carousel-track{display:flex;gap:40px;width:1200px;margin:auto;transform:translateX(-280px);transition:transform .3s ease}
+  .vypusknoj-artboard__carousel-card{flex:0 0 260px;overflow:hidden;border-radius:12px;background:#0d3c3c;box-shadow:0 1px 0 rgba(255,255,255,.1)}
+  .vypusknoj-artboard__carousel-card > a:first-child{display:block;height:200px;background:#ec406b}
+  .vypusknoj-artboard__carousel-card img{display:block;width:100%;height:100%;object-fit:cover}
+  .vypusknoj-artboard__carousel-card > div{display:flex;min-height:155px;flex-direction:column;box-sizing:border-box;padding:21px 21px 19px}
+  .vypusknoj-artboard__carousel-card > div > a:first-child{font:700 18px/1.25 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__carousel-cta{display:block;margin-top:auto;color:#72afb0!important;font:400 15px/1 Montserrat,Arial,sans-serif;text-transform:uppercase}
+  .vypusknoj-artboard__carousel-cta span{padding-left:7px;font-size:22px;vertical-align:-1px}
+  .vypusknoj-artboard__carousel-controls{position:absolute;z-index:3;bottom:18px;left:50%;display:flex;align-items:center;gap:16px;transform:translateX(-50%)}
+  .vypusknoj-artboard__carousel-arrow{display:grid;width:32px;height:32px;padding:0;place-items:center;border:1px solid rgba(114,175,176,.9);border-radius:50%;background:#0d3c3c;color:#fff;cursor:pointer;font:500 18px/1 Arial,sans-serif}
+  .vypusknoj-artboard__carousel-arrow:hover,.vypusknoj-artboard__carousel-arrow:focus-visible{border-color:#fff;background:#72afb0;outline:0}
+  .vypusknoj-artboard__carousel-dots{display:flex;align-items:center;gap:8px}
+  .vypusknoj-artboard__carousel-dot,.vypusknoj-artboard__hall-dot{display:block;width:8px;height:8px;padding:0;border:0;border-radius:50%;background:#474747;cursor:pointer}
+  .vypusknoj-artboard__carousel-dot.is-active,.vypusknoj-artboard__carousel-dot[aria-selected="true"],.vypusknoj-artboard__hall-dot.is-active,.vypusknoj-artboard__hall-dot[aria-selected="true"]{background:#ff6900}
+  .vypusknoj-artboard__carousel-dot:focus-visible,.vypusknoj-artboard__hall-dot:focus-visible{outline:2px solid #fff;outline-offset:3px}
+  .vypusknoj-artboard__hall-heading{height:var(--vypusknoj-record-desktop,260px);box-sizing:border-box;padding:86px 20px 30px;background:#fff;color:#031818;text-align:center}
+  .vypusknoj-artboard__hall-heading h2,.vypusknoj-artboard__venues-heading h2{margin:0;font:700 38px/1.15 Montserrat,Arial,sans-serif;letter-spacing:-.03em}
+  .vypusknoj-artboard__hall-heading p,.vypusknoj-artboard__venues-heading p{max-width:920px;margin:14px auto 0;font:400 19px/1.42 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__hall{height:var(--vypusknoj-record-desktop,600px);overflow:hidden;background:#fff;color:#031818}
+  .vypusknoj-artboard__hall-canvas{position:relative;display:block}
+  .vypusknoj-artboard__hall-images{position:absolute;top:7px;left:80px;width:600px;height:400px;overflow:hidden;border-radius:30px}
+  .vypusknoj-artboard__hall-track{position:relative;width:100%;height:100%}
+  .vypusknoj-artboard__hall-slide{position:absolute;inset:0;opacity:0;transition:opacity .3s ease}
+  .vypusknoj-artboard__hall-slide.is-active{opacity:1}
+  .vypusknoj-artboard__hall-slide img{display:block;width:100%;height:100%;object-fit:cover}
+  .vypusknoj-artboard__hall-dots{position:absolute;z-index:2;bottom:15px;left:50%;display:flex;gap:8px;transform:translateX(-50%)}
+  .vypusknoj-artboard__hall-copy{position:static}
+  .vypusknoj-artboard__hall-copy h2{position:absolute;top:39px;left:720px;width:420px;margin:0;font:700 26px/1.18 Montserrat,Arial,sans-serif;letter-spacing:-.03em}
+  .vypusknoj-artboard__hall-details{position:absolute;z-index:1;top:141px;left:580px;box-sizing:border-box;width:540px;height:341px;padding:32px 40px;border-radius:30px;background:rgba(255,255,255,.96);box-shadow:0 6px 22px rgba(3,24,24,.18)}
+  .vypusknoj-artboard__hall-details p{margin:0;font:400 18px/1.25 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__hall-details strong,.vypusknoj-artboard__hall-details h3{font-weight:700}
+  .vypusknoj-artboard__hall-format{margin-top:26px!important}
+  .vypusknoj-artboard__hall-details h3{margin:22px 0 5px;font:700 18px/1.2 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__hall-details ul{margin:0;padding-left:27px;font:400 18px/1.2 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__hall-details li+li{margin-top:3px}
+  .vypusknoj-artboard__hall-copy .vypusknoj-artboard__pink-button{position:absolute;z-index:2;top:451px;left:701px;width:300px;height:55px;font:500 16px/1 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__hall-pager{position:absolute;top:515px;left:555px;display:flex;align-items:center;gap:9px;color:#031818;font:400 13px/1 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__hall-pager button{display:grid;width:20px;height:21px;padding:0;place-items:center;border:0;background:transparent;color:#ec406b;cursor:pointer}
+  .vypusknoj-artboard__hall-pager button img{display:block;width:20px;height:21px;object-fit:contain}
+  .vypusknoj-artboard__hall-pager button:hover,.vypusknoj-artboard__hall-pager button:focus-visible{filter:brightness(.8);outline:0}
+  .vypusknoj-artboard__hall-count{color:#555;font:400 13px/1 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__section-heading--trust{height:var(--vypusknoj-record-desktop,140px);padding-top:21px}
+  .vypusknoj-artboard__section-heading--trust h2{max-width:850px;font-size:31px}
+  .vypusknoj-artboard__trust{height:var(--vypusknoj-record-desktop,770px);overflow:hidden;background-color:#031818;background-repeat:no-repeat;background-position:center;background-size:cover}
+  .vypusknoj-artboard__trust-grid{display:grid;grid-template-columns:repeat(4,260px);grid-template-rows:260px 260px;gap:40px;width:1160px;margin:110px auto 0}
+  .vypusknoj-artboard__trust-card{position:relative;display:flex;overflow:hidden;box-sizing:border-box;min-height:0;flex-direction:column;justify-content:center;padding:20px;background:linear-gradient(0deg,#ec406b,#ff6900);color:#fff;text-align:center}
+  .vypusknoj-artboard__trust-card:nth-child(2){background:linear-gradient(0deg,#ec406b,#fa6288)}
+  .vypusknoj-artboard__trust-card:nth-child(3){background:linear-gradient(0deg,#ec406b,#ff6900)}
+  .vypusknoj-artboard__trust-card strong{display:block;font:700 92px/.9 Montserrat,Arial,sans-serif;letter-spacing:-.07em}
+  .vypusknoj-artboard__trust-card:nth-child(2) strong{font-size:58px}
+  .vypusknoj-artboard__trust-prefix{font:400 19px/1 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__trust-card p{position:relative;z-index:1;margin:8px 0 0;font:400 16px/1.35 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__trust-card--mark{background:linear-gradient(0deg,#ec406b,#fa6288)}
+  .vypusknoj-artboard__trust-mark{position:absolute;inset:5px;width:calc(100% - 10px);height:calc(100% - 10px);object-fit:contain;opacity:.95}
+  .vypusknoj-artboard__trust-card--note{justify-content:flex-end;background:#0d3c3c!important;text-align:left}
+  .vypusknoj-artboard__trust-card--note img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45}
+  .vypusknoj-artboard__trust-card--note h3{position:relative;z-index:1;margin:0;color:#fff;font:700 18px/1.15 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__trust-card--note p{font-size:13px;line-height:1.35}
+  .vypusknoj-artboard__trust-card:nth-child(4){grid-column:1 / span 2}
+  .vypusknoj-artboard__trust-card:nth-child(5){grid-column:3 / span 2}
+  .vypusknoj-artboard__masked-review-rail{height:var(--vypusknoj-record-desktop,73px);background:#031818}
+  .vypusknoj-artboard__gift{height:var(--vypusknoj-record-desktop,700px);background-color:#031818;background-position:center;background-size:cover}
+  .vypusknoj-artboard__gift-canvas{padding-top:130px;box-sizing:border-box}
+  .vypusknoj-artboard__gift h2{width:595px;margin:0;color:#fff;font:700 40px/1.12 Montserrat,Arial,sans-serif;letter-spacing:-.035em}
+  .vypusknoj-artboard__gift p{width:460px;margin:24px 0 0;color:#fff;font:400 18px/1.55 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__gift .vypusknoj-artboard__pink-button{width:289px;height:64px;margin-top:35px}
+  .vypusknoj-artboard__gift img{position:absolute;top:445px;left:257px;width:115px;height:89px;object-fit:contain}
+  .vypusknoj-artboard__venues-heading{height:var(--vypusknoj-record-desktop,210px);box-sizing:border-box;padding:55px 20px 20px;background:#031818;color:#fff;text-align:center}
+  .vypusknoj-artboard__venues-heading p{max-width:980px;font-size:18px}
+  .vypusknoj-artboard__venues{height:var(--vypusknoj-record-desktop,157px);box-sizing:border-box;padding:30px 20px;background:#031818}
+  .vypusknoj-artboard__venues-list{display:flex;max-width:1200px;margin:auto;gap:26px 30px;flex-wrap:wrap;justify-content:center}
+  .vypusknoj-artboard__venues-list a{box-sizing:border-box;min-width:210px;padding:15px 21px;border:1px solid #fff;border-radius:999px;background:#72afb0;color:#fff;font:400 15px/1 Montserrat,Arial,sans-serif;text-align:center;white-space:nowrap}
+  .vypusknoj-artboard__footer-spacer{height:var(--vypusknoj-record-desktop,84px);background:#031818}
+  .vypusknoj-artboard__footer{background:#031818;color:#fff}
+  .vypusknoj-artboard__footer-main{box-sizing:border-box;height:var(--vypusknoj-record-desktop,341px);padding:24px max(20px,calc((100% - 1160px) / 2)) 0;background:#031818}
+  .vypusknoj-artboard__footer-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:60px}
+  .vypusknoj-artboard__footer h2{margin:0 0 13px;color:#ec406b;font:700 16px/1.25 Montserrat,Arial,sans-serif;letter-spacing:.015em}
+  .vypusknoj-artboard__footer h2 span{display:block}
+  .vypusknoj-artboard__footer section > a{display:block;margin-top:11px;color:rgba(255,255,255,.83);font:300 14px/1.3 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__footer-legal > a{margin-top:0!important;line-height:1.4!important}
+  .vypusknoj-artboard__footer-legal p{margin:34px 0 0;color:rgba(255,255,255,.45);font:300 14px/1.55 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__footer-legal p span{display:block}
+  .vypusknoj-artboard__footer-bottom{display:grid;grid-template-columns:1fr 1fr;box-sizing:border-box;height:var(--vypusknoj-record-desktop,194px);margin-bottom:var(--vypusknoj-desktop-footer-trim,0px);padding:15px max(20px,calc((100% - 1160px) / 2)) 0;background:#031818}
+  .vypusknoj-artboard__footer-brand img{display:block;width:125px;height:53px;object-fit:contain;object-position:left top}
+  .vypusknoj-artboard__footer-brand p{margin:64px 0 0;color:rgba(255,255,255,.45);font:300 14px/1 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__footer-contact{padding-left:220px}
+  .vypusknoj-artboard__footer-contact > a{display:block;color:#fff;font:700 20px/1.15 Montserrat,Arial,sans-serif;white-space:nowrap}
+  .vypusknoj-artboard__footer-contact p{margin:20px 0 0;color:rgba(255,255,255,.86);font:400 14px/1.25 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__footer-contact > a:last-child{margin-top:12px;color:#fff;font:400 14px/1.25 Montserrat,Arial,sans-serif}
+
+  @media (max-width:639px){
+    .vypusknoj-artboard__rail,.vypusknoj-artboard__hero-canvas{width:320px}
+    .vypusknoj-artboard__spacer{height:var(--vypusknoj-record-mobile,58px)}
+    .vypusknoj-artboard__hero{height:var(--vypusknoj-record-mobile,770px);background-position:center -71px;background-size:700px 902px}
+    .vypusknoj-artboard__hero-layer{top:var(--vyp-layer-top-mobile,var(--vyp-layer-top));left:var(--vyp-layer-left-mobile,var(--vyp-layer-left));width:var(--vyp-layer-width-mobile,var(--vyp-layer-width));height:var(--vyp-layer-height-mobile,var(--vyp-layer-height))}
+    .vypusknoj-artboard__hero-logo{top:24px;right:0}
+    .vypusknoj-artboard__hero-nav{display:none}
+    .vypusknoj-artboard__hero-city{top:339px;left:110px;font-size:16px}
+    .vypusknoj-artboard__hero-sub{top:179px;left:111px;font-size:16px}
+    .vypusknoj-artboard__hero-copy h1{top:109px;left:0;width:290px;font-size:42px}
+    .vypusknoj-artboard__hero-benefit{top:585px;left:75px;width:171px;font-size:12px;line-height:1.5}
+    .vypusknoj-artboard__pink-button{width:270px;height:56px;font-size:13px}
+    .vypusknoj-artboard__hero-copy .vypusknoj-artboard__pink-button{top:629px;left:25px}
+    .vypusknoj-artboard__intro{height:var(--vypusknoj-record-mobile,282px)}
+    .vypusknoj-artboard__intro h2{top:0;left:1px;width:319px;font-size:24px;line-height:1.25}
+    .vypusknoj-artboard__intro p{top:116px;right:0;width:320px;font-size:15px;line-height:1.55}
+    .vypusknoj-artboard__features{height:var(--vypusknoj-record-mobile,1020px);background-size:1118px 495px;background-position:center 263px}
+    .vypusknoj-artboard__features h2{top:54px;left:10px;width:310px;font-size:23px;line-height:1.22}
+    .vypusknoj-artboard__features ul{top:474px;right:0;width:277px}
+    .vypusknoj-artboard__features li{min-height:56px;padding:0 0 10px 43px;background-position:7px 7px;background-size:18px 18px;font-size:14px;line-height:1.35}
+    .vypusknoj-artboard__features-figure{right:-19px;bottom:-1px;width:109px;height:233px}
+    .vypusknoj-artboard__section-heading{height:var(--vypusknoj-record-mobile,150px);padding:16px 30px}
+    .vypusknoj-artboard__section-heading h2{font-size:24px;line-height:1.25}
+    .vypusknoj-artboard__program{height:var(--vypusknoj-record-mobile,1691px);background-size:auto 100%;background-position:center}
+    .vypusknoj-artboard__program-label{top:50px;left:18px;font-size:29px}
+    .vypusknoj-artboard__program-poster{top:107px;left:1px;width:318px;height:426px}
+    .vypusknoj-artboard__program h2{top:573px;left:0;width:320px;font-size:28px;line-height:1.25}
+    .vypusknoj-artboard__program-grid{top:745px;left:0;grid-template-columns:320px;gap:20px}
+    .vypusknoj-artboard__program-card{width:320px;height:204px}
+    .vypusknoj-artboard__program-card::after{height:128px}
+    .vypusknoj-artboard__program-card span{right:14px;bottom:12px;left:14px;font-size:14px}
+    .vypusknoj-artboard__program-cta{top:1585px;left:20px;width:280px;height:56px}
+    .vypusknoj-artboard__divider{height:var(--vypusknoj-record-mobile,40px)}
+    .vypusknoj-artboard__divider--art img{top:-32px;left:calc(50% - 160px + 3px);width:61px;height:61px}
+    .vypusknoj-artboard__carousel{height:var(--vypusknoj-record-mobile,590px)}
+    .vypusknoj-artboard__carousel h2{width:320px;font-size:24px;line-height:1.22}
+    .vypusknoj-artboard__carousel--scenarios h2{padding-top:75px}
+    .vypusknoj-artboard__carousel--additions h2{padding-top:90px}
+    .vypusknoj-artboard__carousel-window{width:320px;margin:48px auto 0}
+    .vypusknoj-artboard__carousel--additions .vypusknoj-artboard__carousel-window{margin-top:47px}
+    .vypusknoj-artboard__carousel-track{gap:24px;width:320px;transform:none}
+    .vypusknoj-artboard__carousel-card{flex-basis:320px;border-radius:10px}
+    .vypusknoj-artboard__carousel-card > a:first-child{height:246px}
+    .vypusknoj-artboard__carousel-card > div{min-height:136px;padding:16px 20px}
+    .vypusknoj-artboard__carousel-card > div > a:first-child{font-size:17px}
+    .vypusknoj-artboard__carousel-controls{bottom:11px;gap:11px}
+    .vypusknoj-artboard__carousel-arrow{width:27px;height:27px;font-size:15px}
+    .vypusknoj-artboard__carousel-dots{gap:7px}
+    .vypusknoj-artboard__hall-heading{height:var(--vypusknoj-record-mobile,260px);padding:60px 25px 20px}
+    .vypusknoj-artboard__hall-heading h2,.vypusknoj-artboard__venues-heading h2{font-size:24px;line-height:1.25}
+    .vypusknoj-artboard__hall-heading p,.vypusknoj-artboard__venues-heading p{margin-top:15px;font-size:15px;line-height:1.45}
+    .vypusknoj-artboard__hall{height:var(--vypusknoj-record-mobile,785px)}
+    .vypusknoj-artboard__hall-canvas{display:block;padding-top:0}
+    .vypusknoj-artboard__hall-images{top:405px;left:-59px;width:439px;height:275px;margin:0;border-radius:0}
+    .vypusknoj-artboard__hall-copy h2{top:67px;left:0;width:320px;font-size:25px;line-height:1.28;text-align:center}
+    .vypusknoj-artboard__hall-details{top:150px;left:-23px;width:366px;height:352px;padding:20px 23px;border-radius:28px}
+    .vypusknoj-artboard__hall-details p{font-size:16px;line-height:1.28}
+    .vypusknoj-artboard__hall-format{margin-top:24px!important}
+    .vypusknoj-artboard__hall-details h3{margin:20px 0 5px;font-size:16px;line-height:1.22}
+    .vypusknoj-artboard__hall-details ul{padding-left:25px;font-size:16px;line-height:1.22}
+    .vypusknoj-artboard__hall-details li+li{margin-top:2px}
+    .vypusknoj-artboard__hall-copy .vypusknoj-artboard__pink-button{top:649px;left:2px;width:317px;height:56px;font-size:16px}
+    .vypusknoj-artboard__hall-pager{top:17px;left:50%;transform:translateX(-50%)}
+    .vypusknoj-artboard__section-heading--trust{height:var(--vypusknoj-record-mobile,220px);padding:30px 35px}
+    .vypusknoj-artboard__section-heading--trust h2{font-size:24px;line-height:1.25}
+    .vypusknoj-artboard__trust{height:var(--vypusknoj-record-mobile,750px);background-position:center;background-size:auto 100%}
+    .vypusknoj-artboard__trust-grid{grid-template-columns:145px 145px;grid-template-rows:145px 145px 145px 145px;gap:15px;width:305px;margin:33px auto 0}
+    .vypusknoj-artboard__trust-card{padding:11px}
+    .vypusknoj-artboard__trust-card strong{font-size:54px}
+    .vypusknoj-artboard__trust-card:nth-child(2) strong{font-size:31px}
+    .vypusknoj-artboard__trust-prefix{font-size:13px}
+    .vypusknoj-artboard__trust-card p{margin-top:5px;font-size:10px;line-height:1.25}
+    .vypusknoj-artboard__trust-card--note h3{font-size:12px}
+    .vypusknoj-artboard__trust-card--note p{font-size:9px}
+    .vypusknoj-artboard__trust-card:nth-child(4),.vypusknoj-artboard__trust-card:nth-child(5){grid-column:auto}
+    .vypusknoj-artboard__masked-review-rail{height:var(--vypusknoj-record-mobile,73px);background:#031818}
+    .vypusknoj-artboard__gift{height:var(--vypusknoj-record-mobile,490px);background-position:center;background-size:auto 490px}
+    .vypusknoj-artboard__gift-canvas{padding:63px 9px 0;box-sizing:border-box}
+    .vypusknoj-artboard__gift h2{width:307px;font-size:27px;line-height:1.17}
+    .vypusknoj-artboard__gift p{width:302px;margin-top:12px;font-size:14px;line-height:1.45}
+    .vypusknoj-artboard__gift .vypusknoj-artboard__pink-button{width:238px;height:56px;margin-top:28px}
+    .vypusknoj-artboard__gift img{top:361px;left:222px;width:98px;height:74px}
+    .vypusknoj-artboard__venues-heading{height:var(--vypusknoj-record-mobile,230px);padding:42px 25px 20px}
+    .vypusknoj-artboard__venues{height:var(--vypusknoj-record-mobile,567px);padding:30px 20px}
+    .vypusknoj-artboard__venues-list{display:block;width:300px}
+    .vypusknoj-artboard__venues-list a{display:block;min-width:0;margin-bottom:13px;padding:12px 8px;font-size:13px}
+    .vypusknoj-artboard__footer-spacer{height:var(--vypusknoj-record-mobile,85px)}
+    .vypusknoj-artboard__footer-main{height:var(--vypusknoj-record-mobile,856px);padding:0 20px;overflow:hidden}
+    .vypusknoj-artboard__footer-grid{display:block}
+    .vypusknoj-artboard__footer section{margin:0 0 27px}
+    .vypusknoj-artboard__footer h2{margin-bottom:13px;font-size:18px;line-height:1.2}
+    .vypusknoj-artboard__footer h2 span{display:inline}
+    .vypusknoj-artboard__footer section > a{margin-top:11px;font-size:14px;line-height:1.3}
+    .vypusknoj-artboard__footer-legal p{margin-top:20px;font-size:14px;line-height:1.55}
+    .vypusknoj-artboard__footer-bottom{display:block;height:var(--vypusknoj-record-mobile,360px);margin-bottom:0;padding:17px 20px 0}
+    .vypusknoj-artboard__footer-brand img{width:125px;height:53px}
+    .vypusknoj-artboard__footer-brand p{margin-top:42px}
+    .vypusknoj-artboard__footer-contact{margin-top:31px;padding-left:0}
+    .vypusknoj-artboard__footer-contact > a{font-size:20px;line-height:1.2}
+    .vypusknoj-artboard__footer-contact p{margin-top:11px;font-size:14px}
+    .vypusknoj-artboard__footer-contact > a:last-child{margin-top:12px;font-size:14px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .vypusknoj-artboard__carousel-track,.vypusknoj-artboard__hall-slide{transition:none}
+  }
+</style>

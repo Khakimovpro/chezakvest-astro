@@ -16,10 +16,107 @@
   { "t": "Проведение праздников", "href": "/kids" },
   { "t": "День рождения на VR-арене", "href": null }
  ],
+ "sourceParity": {
+  "kind": "vr-birthday-artboard",
+  "bookingHref": "#callback",
+  "records": {
+   "header": { "desktop": 90, "mobile": 90 },
+   "hero": { "desktop": 550, "mobile": 600 },
+   "breadcrumbs": { "desktop": 54, "mobile": 78 },
+   "games": { "desktop": 519, "mobile": 576 },
+   "packagesHeading": { "desktop": 165, "mobile": 198 },
+   "packages": { "desktop": 610, "mobile": 1294 },
+   "showsHeading": { "desktop": 198, "mobile": 226 },
+   "shows": { "desktop": 635, "mobile": 468 },
+   "hallHeading": { "desktop": 165, "mobile": 235 },
+   "hall": { "desktop": 530, "mobile": 755 },
+   "videoSpacer": { "desktop": 60, "mobile": 60 },
+   "videoHeading": { "desktop": 122, "mobile": 113 },
+   "video": { "desktop": 550, "mobile": 670 },
+   "certificate": { "desktop": 740, "mobile": 620 },
+   "gallerySpacer": { "desktop": 26, "mobile": 26 },
+   "galleryHeading": { "desktop": 82, "mobile": 82 },
+   "gallery": { "desktop": 410, "mobile": 462 },
+   "callback": { "desktop": 480, "mobile": 630 },
+   "venuesHeading": { "desktop": 132, "mobile": 111 },
+   "venues": { "desktop": 191, "mobile": 538 },
+   "footerSpacer": { "desktop": 60, "mobile": 60 },
+   "footer": { "desktop": 311, "mobile": 910 },
+   "copyright": { "desktop": 170, "mobile": 246 }
+  },
+  "hero": {
+   "desktop": "/assets/static.tildacdn.com/tild6565-3663-4230-b338-636363623031/_.jpg",
+   "mobile": "/assets/static.tildacdn.com/tild3465-3338-4533-a235-356139393230/_.webp",
+   "title": "День рождения на VR-арене",
+   "subtitle": "Самый технологичный праздник в Ростове-на-Дону. Погрузитесь в кибер-реальность и испытайте невероятные эмоции!"
+  },
+  "games": [
+   { "title": "PORTAL STRIKE", "href": "/portal-strike", "src": "/assets/static.tildacdn.com/tild3833-6162-4661-a631-346362346432/_Portal_Strike.png" },
+   { "title": "PORTAL STRIKE KIDS", "href": "/portal-strike-kids", "src": "/assets/static.tildacdn.com/tild6331-3366-4863-b230-356361323838/_Portal_Strike_Kids.jpg" },
+   { "title": "PARTY GAMES", "href": "/party-games", "src": "/assets/static.tildacdn.com/tild6330-6164-4263-a666-323231353964/noroot.png" },
+   { "title": "PORTAL ZOMBIE", "href": "/portal-zombie", "src": "/assets/static.tildacdn.com/tild6137-3566-4436-b937-393639633464/photo_60161969967691.jpg" }
+  ],
+  "packages": [
+   { "title": "СТАНДАРТ", "src": "/assets/static.tildacdn.com/tild3533-6262-4464-a465-383865646636/_1___-2.png" },
+   { "title": "СУПЕР", "src": "/assets/static.tildacdn.com/tild3165-6431-4336-b038-616431346461/_2___-2.png" },
+   { "title": "МАКСИ", "src": "/assets/static.tildacdn.com/tild3839-6436-4735-a434-636630643635/_3___-2.png" }
+  ],
+  "shows": [
+   { "title": "НАЩУПАЛ", "src": "/assets/static.tildacdn.com/tild6230-6463-4838-b865-386137323461/2_.jpg" },
+   { "title": "МАФИЯ", "src": "/assets/static.tildacdn.com/tild3738-3861-4636-b531-376631326334/_.jpg" },
+   { "title": "УГАДАЙ МЕЛОДИЮ", "src": "/assets/static.tildacdn.com/tild6165-3563-4637-a661-396264623634/_-2.jpg" },
+   { "title": "ПОПРОБУЙ ОБЪЯСНИТЬ", "src": "/assets/static.tildacdn.com/tild3666-3363-4430-b737-616439363137/-_.jpg" },
+   { "title": "ЛЮБИМЫЙ ГЕРОЙ", "src": "/assets/static.tildacdn.com/tild3764-6439-4433-a266-633336383865/-_.jpg" },
+   { "title": "НЕИГРЫ", "src": "/assets/static.tildacdn.com/tild3336-6130-4464-b336-336463313232/tempImageclLCMN_1.webp" },
+   { "title": "ИМПРОВИЗАЦИЯ. БЕЗ ЧУВСТВ", "src": "/assets/static.tildacdn.com/tild3862-6331-4263-b264-343334343765/_.jpg" },
+   { "title": "ФЛЕШМОБ (ДИСКОТЕКА)", "src": "/assets/static.tildacdn.com/tild3535-3437-4837-b939-646237636439/photo.jpg" }
+  ],
+  "hall": {
+   "desktop": "/assets/static.tildacdn.com/tild3234-3134-4166-a434-386630616463/photo_53980772950812.jpg",
+   "mobile": "/assets/static.tildacdn.com/tild3239-6162-4163-a632-643330623031/photo_53980772950812.jpg",
+   "address": "УЛИЦА 40-ЛЕТИЯ ПОБЕДЫ, 216",
+   "size": "2 ЗАЛА ПО 30 КВ.М",
+   "description": "Наша новая и самая масштабная площадка для проведения вашего праздника в формате активной виртуальной игры и темным лабиринтом в 200 кв.м.",
+   "equipment": ["музыкальной колонкой", "холодильником и микроволновой печью", "кулером с горячей и холодной водой", "необходимой мебелью: столы, стулья, диванчики", "безлимитный чай/кофе для вас"]
+  },
+  "video": {
+   "poster": "/assets/static.tildacdn.com/tild3432-6136-4333-b532-663661646264/photo_2024-11-11_12-.jpg",
+   "before": "/assets/static.tildacdn.com/tild3032-6539-4530-a232-383538656536/photo_53008932490047.jpg",
+   "after": "/assets/static.tildacdn.com/tild3038-6139-4537-b335-393765383864/photo_2024-11-02_03-.jpg"
+  },
+  "certificate": {
+   "image": "/assets/static.tildacdn.com/tild3032-3630-4539-b636-303163646634/_.png",
+   "ornaments": ["/assets/static.tildacdn.com/tild3666-3139-4239-a333-396537623161/logo2-03.svg", "/assets/static.tildacdn.com/tild6234-3334-4733-a235-646132656433/logo2-04.svg", "/assets/static.tildacdn.com/tild6666-6265-4239-a537-643961396530/logo2-02.svg"]
+  },
+  "gallery": [
+   "/assets/static.tildacdn.com/tild3762-3433-4465-a331-313563633066/photo_2024-11-02_03-.jpg",
+   "/assets/static.tildacdn.com/tild3066-6163-4165-b437-323735303534/_.jpg",
+   "/assets/static.tildacdn.com/tild3537-3136-4665-b339-363339353138/IMG_7336.JPG",
+   "/assets/static.tildacdn.com/tild6438-3330-4435-a239-393237303465/_VR.jpg",
+   "/assets/static.tildacdn.com/tild3931-6261-4331-a661-366430393039/photo_2024-06-18_21-.jpg",
+   "/assets/static.tildacdn.com/tild3236-6634-4161-b739-303963653530/photo_2024-09-28_14-.jpg",
+   "/assets/static.tildacdn.com/tild6438-6361-4462-b761-316137333336/photo_2024-11-11_12-.jpg",
+   "/assets/static.tildacdn.com/tild3165-3133-4965-b833-646230346232/photo_52719489404110.jpg"
+  ],
+  "venues": [
+   { "title": "ГВАРДЕЙСКИЙ ПЕР., 61", "href": "/guardeskypereulog61" },
+   { "title": "УЛ. СОЦИАЛИСТИЧЕСКАЯ, 186", "href": "/socialicheskaya186" },
+   { "title": "УЛ. КРАСНОАРМЕЙСКАЯ, 103", "href": "/krasnormerskaya103" },
+   { "title": "ПР-Т СОКОЛОВА, 23", "href": "/sokolova23" },
+   { "title": "ПР-Т МИРА, Д. 27", "href": "/mira27" },
+   { "title": "УЛ. НАНСЕНА, 107/1", "href": "/nansena107" },
+   { "title": "УЛ. МАГНИТОГОРСКАЯ, 1", "href": "/magnitogorskaya1" },
+   { "title": "УЛ. 40-ЛЕТИЯ ПОБЕДЫ, 216", "href": "/40letpobedy216" },
+   { "title": "ПР-Т НАГИБИНА, 14А", "href": "/nagibina14" }
+  ],
+  "footerLogo": "/assets/static.tildacdn.com/tild6337-6561-4434-a631-626137386564/-_.png"
+ },
  "sections": [
   {
    "kind": "hero",
    "variant": "dark",
+   "composition": "vr-birthday-artboard",
+   "hideSharedHeader": true,
    "h1": "День рождения на VR-арене",
    "up": "",
    "sub": "Самый технологичный праздник в Ростове-на-Дону. Погрузитесь в кибер-реальность и испытайте невероятные эмоции!",

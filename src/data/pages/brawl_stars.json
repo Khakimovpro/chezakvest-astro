@@ -51,13 +51,25 @@
    "Формат квеста проходит вместе с подсветкой и одним из героев видеоигры.",
    "Ребятам необходимо выполнять задания и по их окончанию будет подсчет результатов.",
    "Игра проходит в несколько раундов."
+  ],
+  "items": [
+   {
+    "t": "Уровень сложности рассчитан на детей и подростков"
+   },
+   {
+    "t": "Актер входит в стоимость"
+   },
+   {
+    "t": "Есть комната отдыха, рассчитана на 20 человек"
+   }
   ]
  },
  "booking": {
   "title": "Онлайн бронирование",
   "lines": [
    "Точная стоимость – в форме бронирования",
-   "Оплатить участие в квесте можно наличными или переводом в день игры"
+   "Оплатить участие в квесте можно наличными или переводом в день игры",
+   "Выберите и забронируйте свободное время, кликнув по нему"
   ]
  },
  "related": {
@@ -65,85 +77,155 @@
   "subtitle": "2-24",
   "items": [
    {
-    "t": "Звонок",
-    "href": "/zvonok",
-    "img": "/assets/q/4782464ded.webp"
-   },
-   {
-    "t": "Шерлок холмс",
-    "href": "/kvest_v_realnosti_sherlock_holms",
-    "img": "/assets/q/c113e94883.webp"
-   },
-   {
     "t": "Ограбление банка. Бумажный дом",
     "href": "/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom",
-    "img": "/assets/q/b032f01758.webp"
+    "img": "/assets/q/b032f01758.webp",
+    "duration": "60 мин",
+    "players": "2-10",
+    "age": "6+",
+    "address": "Социалистическая, 186",
+    "sourceOrder": { "desktop": 1, "mobile": 1 }
    },
    {
     "t": "Психбольница",
     "href": "/kvest_v_realnosti_psihbolnitsa",
-    "img": "/assets/q/4246a3a5f3.webp"
+    "img": "/assets/q/4246a3a5f3.webp",
+    "duration": "60 мин",
+    "players": "2-10",
+    "age": "12+",
+    "address": "пер. Гвардейский, 61",
+    "sourceOrder": { "desktop": 2, "mobile": 2 }
    },
    {
-    "t": "Дом призраков",
-    "href": "/kvest_v_realnosti_dom_prizrakov",
-    "img": "/assets/q/2fdd56c613.webp"
+    "t": "Звонок",
+    "href": "/zvonok",
+    "img": "/assets/q/4782464ded.webp",
+    "duration": "60 мин",
+    "players": "2-24",
+    "age": "12+",
+    "address": "Магнитогорская, 1",
+    "sourceOrder": { "desktop": 3, "mobile": 3 }
    },
    {
-    "t": "Уэнсдей. Новая битва",
-    "href": "/kvest_v_realnosti_wednesday",
-    "img": "/assets/q/2d8d4b70f4.webp"
-   },
-   {
-    "t": "Гарри Поттер и Последний Крестраж",
-    "href": "/kvest_v_realnosti_harry_potter_i_krestrazh",
-    "img": "/assets/q/cb2af5e6ce.webp"
-   },
-   {
-    "t": "Ночь в музее. Ограбление",
-    "href": "/kvest_v_realnosti_noch_v_museum_ograblenie",
-    "img": "/assets/q/3dac1eeb5d.webp"
-   },
-   {
-    "t": "ОНО",
-    "href": "/ono",
-    "img": "/assets/q/b0a1139957.webp"
+    "t": "Шерлок Холмс",
+    "href": "/kvest_v_realnosti_sherlock_holms",
+    "img": "/assets/q/c113e94883.webp",
+    "duration": "60 мин",
+    "players": "2-10",
+    "age": "12+",
+    "address": "пер. Гвардейский, 61",
+    "sourceOrder": { "desktop": 4, "mobile": 4 }
    },
    {
     "t": "Коралина в Стране Кошмаров",
     "href": "/kvest_v_realnosti_koralina",
-    "img": "/assets/q/29d8acde3d.webp"
+    "img": "/assets/q/29d8acde3d.webp",
+    "duration": "60 мин",
+    "players": "2-10",
+    "age": "12+",
+    "address": "Красноармейская, 103",
+    "sourceOrder": { "desktop": 5, "mobile": 5 }
    },
    {
-    "t": "Шизофрения. Тени правды",
+    "t": "Уэнсдей. Новая битва",
+    "href": "/kvest_v_realnosti_wednesday",
+    "img": "/assets/q/2d8d4b70f4.webp",
+    "duration": "60 мин",
+    "players": "2-10",
+    "age": "9+",
+    "address": "Красноармейская, 103",
+    "sourceOrder": { "desktop": 9, "mobile": 6 }
+   },
+   {
+    "t": "Гарри и последний крестраж",
+    "href": "/kvest_v_realnosti_harry_potter_i_krestrazh",
+    "img": "/assets/q/cb2af5e6ce.webp",
+    "duration": "60 мин",
+    "players": "2-10",
+    "age": "6+",
+    "address": "пр-т Соколова, 23",
+    "sourceOrder": { "desktop": 6, "mobile": 7 }
+   },
+   {
+    "t": "Ночь в музее. Ограбление",
+    "href": "/kvest_v_realnosti_noch_v_museum_ograblenie",
+    "img": "/assets/q/3dac1eeb5d.webp",
+    "duration": "60 мин",
+    "players": "2-10",
+    "age": "6+",
+    "address": "пр-т Соколова, 23",
+    "sourceOrder": { "desktop": 7, "mobile": 8 }
+   },
+   {
+    "t": "ОНО",
+    "href": "/ono",
+    "img": "/assets/q/b0a1139957.webp",
+    "duration": "60 мин",
+    "players": "2-24",
+    "age": "12+",
+    "address": "Магнитогорская, 1",
+    "sourceOrder": { "desktop": 10, "mobile": 9 }
+   },
+   {
+    "t": "Дом Призраков",
+    "href": "/kvest_v_realnosti_dom_prizrakov",
+    "img": "/assets/q/2fdd56c613.webp",
+    "duration": "60 мин",
+    "players": "2-10",
+    "age": "10+",
+    "address": "пр-т Соколова, 23",
+    "sourceOrder": { "desktop": 8, "mobile": 10 }
+   },
+   {
+    "t": "Шизофрения. Тени Правды",
     "href": "/shizofreniya",
-    "img": "/assets/q/b8a57b876a.webp"
+    "img": "/assets/q/b8a57b876a.webp",
+    "duration": "90 мин",
+    "players": "2-10",
+    "age": "12+",
+    "address": "пр-т Мира, д. 27",
+    "sourceOrder": { "desktop": 11, "mobile": 11 }
    },
    {
     "t": "Хостел. Подвал пыток",
     "href": "/hostel-podval-pytok",
-    "img": "/assets/q/db30d14bdb.webp"
+    "img": "/assets/q/db30d14bdb.webp",
+    "duration": "90 мин",
+    "players": "2-10",
+    "age": "12+",
+    "address": "ул. Нансена, д. 107/1",
+    "sourceOrder": { "desktop": 12, "mobile": 12 }
    },
    {
     "t": "Патология",
     "href": "/patologiya",
-    "img": null
+    "img": null,
+    "duration": "90 мин",
+    "players": "2-10",
+    "age": "12+",
+    "address": "ул. Нансена, д. 107/1",
+    "sourceOrder": { "desktop": 13, "mobile": 13 }
    }
   ]
  },
  "extra": [
   {
-   "title": "WI-FI",
-   "lines": [
-    "Есть",
-    "ПАРКОВКА",
-    "Нет",
-    "ЗАЛ ОЖИДАНИЯ",
-    "Есть гостевая зона, есть зона для проведения праздника",
-    "АДРЕС",
-    "Магнитогорская, 1"
+   "title": "Дополнительная информация",
+   "items": [
+    { "label": "WI-FI", "value": "Есть" },
+    { "label": "ПАРКОВКА", "value": "Нет" },
+    { "label": "ЗАЛ ОЖИДАНИЯ", "value": "Есть гостевая зона, есть зона для проведения праздника" },
+    { "label": "АДРЕС", "value": "Магнитогорская, 1" }
    ],
+   "lines": [],
    "photos": []
   }
- ]
+ ],
+ "showPartyForm": false,
+ "sourceParity": {
+  "kind": "brawl-source",
+  "features": "t265",
+  "information": "t1033",
+  "related": "t774"
+ }
 }

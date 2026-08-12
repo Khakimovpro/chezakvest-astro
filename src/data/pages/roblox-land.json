@@ -15,6 +15,7 @@
     { "t": "День рождения в стиле Роблокс", "href": null }
   ],
   "reviewsTitle": "Что говорят гости о нас",
+  "showCallback": false,
   "sections": [
     {
       "kind": "hero",
@@ -24,7 +25,7 @@
       "copyPosition": "top",
       "heightDesktop": 938,
       "heightMobile": 918,
-      "composition": "tilda-artboard",
+      "composition": "roblox-artboard",
       "hidePills": true,
       "artboard": {
         "desktop": { "width": 1200, "height": 938 },
@@ -211,5 +212,158 @@
       "ctaHref": "#prazdnik"
     },
     { "kind": "party-form" }
-  ]
+  ],
+  "sourceParity": {
+    "kind": "roblox-artboard",
+    "bookingHref": "#prazdnik",
+    "records": {
+      "hero": { "desktop": 938, "mobile": 918 },
+      "intro": { "desktop": 706, "mobile": 1146 },
+      "video": { "desktop": 752, "mobile": 602 },
+      "packages": { "desktop": 1173, "mobile": 2433 },
+      "shows": { "desktop": 590, "mobile": 1874 },
+      "showDivider": { "desktop": 40, "mobile": 40 },
+      "additions": { "desktop": 625, "mobile": 681 },
+      "hallHeading": { "desktop": 290, "mobile": 330 },
+      "hall": { "desktop": 600, "mobile": 785 },
+      "trustHeading": { "desktop": 155, "mobile": 165 },
+      "trust": { "desktop": 707, "mobile": 1926 },
+      "bonus": { "desktop": 664, "mobile": 764 },
+      "venuesHeading": { "desktop": 210, "mobile": 230 },
+      "venues": { "desktop": 164, "mobile": 595 },
+      "venuesGap": { "desktop": 0, "mobile": 1 },
+      "footerSpacer": { "desktop": 84, "mobile": 85 },
+      "footer": { "desktop": 277, "mobile": 777 },
+      "footerBottom": { "desktop": 194, "mobile": 360 },
+      "documentTrim": { "desktop": 0, "mobile": -1 }
+    },
+    "hero": {
+      "background": "/assets/static.tildacdn.com/tild6366-3466-4664-a338-633938366530/7ad3c0ee-a35c-444c-9.png",
+      "circle": "/assets/static.tildacdn.com/tild3166-6133-4265-b736-666331333162/caed1ab0-dd5c-4e39-a.png",
+      "logo": "/assets/static.tildacdn.com/tild3062-3833-4637-a365-653838626563/ROBLOX.svg",
+      "avatar": "/assets/static.tildacdn.com/tild6633-3333-4139-a330-663635636135/1_.png",
+      "decor": "/assets/static.tildacdn.com/tild6266-3432-4137-a538-646265633432/decor__.svg",
+      "blur": "/assets/static.tildacdn.com/tild3561-6366-4337-a637-363764333531/decor___blur.svg",
+      "titleLead": "КВЕСТ-ШОУ",
+      "titleMiddle": "по мотивам популярной игры для",
+      "titleEnd": "ВАШЕГО ПРАЗДНИКА",
+      "text": "Идеальный подарок для всех фанатов серии видеоигр и кубической вселенной.",
+      "cta": "Рассчитать стоимость"
+    },
+    "intro": {
+      "title": "ЧЕ ЗА КВЕСТ — МИР ПРИКЛЮЧЕНИЙ И ВЕСЕЛЬЯ",
+      "text": "Место, где каждый сможет почувствовать себя главным героем игры, пройти испытания и получить яркие впечатления вместе с друзьями.",
+      "label": "Для вас:",
+      "photo": "/assets/static.tildacdn.com/tild3839-3438-4135-a335-666434316132/photo_2024-10-30_14-.jpg",
+      "decor": "/assets/static.tildacdn.com/tild3637-6230-4333-b731-313330343434/2_decor__.svg",
+      "badge": "/assets/static.tildacdn.com/tild6338-3364-4132-a237-636565613261/2_.svg",
+      "items": [
+        "Огромный лабиринт 150 м2;",
+        "Профессиональные актеры-ведущие;",
+        "Уникальные задания и испытания;",
+        "Изучение мира Roblox;",
+        "Встреча со знаковыми персонажами;",
+        "Уроки крафта, изучение руд и алмазов;",
+        "Возможность стать главным героем видеоигры в реальной жизни;",
+        "Большие комнаты отдыха на 20 посадочных мест;",
+        "Шоу-программы и мастер-классы на выбор."
+      ]
+    },
+    "video": {
+      "title": "ПОСМОТРИТЕ, КАК ПРОХОДЯТ НАШИ ПРАЗДНИКИ",
+      "poster": "/assets/static.tildacdn.com/tild3037-3236-4237-b563-663238316563/3__.jpg",
+      "leftArt": "/assets/static.tildacdn.com/tild3730-3631-4664-a639-323638656165/3__.png",
+      "rightArt": "/assets/static.tildacdn.com/tild3231-6466-4162-a665-353764346531/3__.png",
+      "leftCharacter": "/assets/static.tildacdn.com/tild6638-3763-4335-a434-623762353536/noroot.png",
+      "rightCharacter": "/assets/static.tildacdn.com/tild6433-3534-4265-a436-633664336631/3_.png"
+    },
+    "packagesDecor": "/assets/static.tildacdn.com/tild3737-6464-4266-b265-393030366439/4__.png",
+    "packages": [
+      {
+        "title": "Стандарт",
+        "duration": "2 часа",
+        "tone": "standard",
+        "program": ["Квест на выбор — 60 минут", "Банкет — 15 минут", "Шоу-программа на выбор — 30 минут", "Торжественный вынос торта — 15 минут"],
+        "includes": ["Костюмированный актер-ведущий", "Украшенная зона отдыха", "Сервировка стола праздничной посудой", "Чай/кофе без ограничений", "Электронные пригласительные"]
+      },
+      {
+        "title": "Супер",
+        "duration": "2,5 часа",
+        "tone": "super",
+        "badge": "ХИТ ПРОДАЖ",
+        "program": ["Квест на выбор — 60 минут", "Банкет — 15 минут", "Две шоу-программы на выбор — 30 минут", "Торжественный вынос торта — 15 минут"],
+        "includes": ["Костюмированный актер-ведущий", "Украшенная зона отдыха", "Сервировка стола праздничной посудой", "Чай/кофе без ограничений", "Электронные пригласительные и сувениры"]
+      },
+      {
+        "title": "Макси",
+        "duration": "3 часа",
+        "tone": "maxi",
+        "program": ["Квест на выбор — 60 минут", "Банкет — 15 минут", "Три шоу-программы на выбор — 30 минут", "Торжественный вынос торта — 15 минут"],
+        "includes": ["Костюмированный актер-ведущий", "Украшенная зона отдыха", "Сервировка стола праздничной посудой", "Чай/кофе без ограничений", "Электронные пригласительные и сувениры"]
+      }
+    ],
+    "shows": [
+      { "title": "Шоу Любимый герой", "src": "/assets/static.tildacdn.com/tild3431-3631-4338-a263-343265383664/noroot.png" },
+      { "title": "Шоу Квиз Роблокс", "src": "/assets/static.tildacdn.com/tild6462-3366-4731-a530-303530653535/noroot.png" },
+      { "title": "Шоу Кажется нащупал", "src": "/assets/static.tildacdn.com/tild6464-3138-4234-b034-316262333862/image_2025-03-20_20-.jpg" },
+      { "title": "Шоу мафия. Игра на выживание", "src": "/assets/static.tildacdn.com/tild3235-3935-4063-b933-346639363931/noroot.png" }
+    ],
+    "showDivider": "/assets/static.tildacdn.com/tild3865-3330-4661-a539-613535393162/photo.png",
+    "additions": [
+      { "title": "Вынос торта ведущим", "src": "/assets/static.tildacdn.com/tild3834-6264-4434-b061-333862343963/noroot.png" },
+      { "title": "Тематические торты", "src": "/assets/static.tildacdn.com/tild3930-6438-4463-b237-306432633962/_Roblox.jpg" },
+      { "title": "Фотограф на мероприятие", "src": "/assets/static.tildacdn.com/tild3635-3963-4039-b139-663737666633/-_.jpg" },
+      { "title": "Профессиональные актеры", "src": "/assets/static.tildacdn.com/tild3365-6339-4435-a633-623833323735/noroot.png" }
+    ],
+    "hall": {
+      "title": "ПОДБЕРЁМ ЗАЛ КОТОРЫЙ ПОДХОДИТ ВАМ",
+      "subtitle": "4 оборудованных зала, со всем необходимым для успешного проведения детского праздника или семейного мероприятия",
+      "image": "/assets/static.tildacdn.com/tild3133-3664-4632-b566-643965636530/photo_53980772950812.jpg",
+      "secondaryImage": "/assets/static.tildacdn.com/tild3434-6330-4661-b163-643832373066/photo_53980772950812.jpg",
+      "address": "УЛИЦА 40-ЛЕТИЯ ПОБЕДЫ, 216",
+      "size": "Вместимость: 2 зала по 30 кв. м",
+      "capacity": "До 15 гостей в каждом зале",
+      "format": "Формат: Наша новая и самая масштабная площадка для проведения вашего выпускного в формате активной игры в лабиринте или на VR-арене.",
+      "equipment": ["музыкальной колонкой", "холодильником и микроволновой печью", "кулером с горячей и холодной водой", "необходимой мебелью: столы, стулья, диванчики", "безлимитный чай/кофе для вас"],
+      "cta": "ЗАБРОНИРОВАТЬ ДАТУ"
+    },
+    "trust": {
+      "background": "/assets/static.tildacdn.com/tild6537-6635-4333-a439-656130613230/6_img1.jpg",
+      "decor": [
+        "/assets/static.tildacdn.com/tild6362-3362-4531-a466-306163656161/6_konfetti.png",
+        "/assets/static.tildacdn.com/tild6264-3138-4432-b566-626239613665/6_baloon.png",
+        "/assets/static.tildacdn.com/tild3466-3134-4363-b064-613538316266/6_baloon2.png"
+      ],
+      "cards": [
+        { "kind": "years", "value": "8 ЛЕТ", "text": "уже создаём волшебные дни рождения" },
+        { "kind": "children", "src": "/assets/static.tildacdn.com/tild3165-3939-4561-b536-386234653237/6_kids.png", "title": "ЧЁ ЗА КВЕСТ", "text": "пространство для настоящих эмоций" },
+        { "kind": "reviews", "value": "10 000", "text": "более восторженных отзывов" },
+        { "kind": "venues", "value": "9", "text": "современно оборудованных площадок с комнатами отдыха" },
+        { "kind": "safe", "src": "/assets/static.tildacdn.com/tild6137-6435-4262-b135-353636633333/noroot.png", "title": "БЕЗОПАСНО", "text": "На каждом празднике присутствует инструктор, который следит за безопасностью всех участников" },
+        { "kind": "age", "src": "/assets/static.tildacdn.com/tild3163-6266-4530-a136-376662333735/6_like.png", "title": "ДЛЯ ВСЕХ ВОЗРАСТОВ", "text": "Каждый сценарий адаптируется под любой возраст участников" },
+        { "kind": "hand", "src": "/assets/static.tildacdn.com/tild3239-3565-4161-a230-323732646465/6_ruka.png", "title": "ПРОДУМАНО", "text": "Берём организацию на себя: от квеста до праздничного стола" },
+        { "kind": "photo", "src": "/assets/static.tildacdn.com/tild6537-6635-4333-a439-656130613230/6_img1.jpg", "text": "" }
+      ]
+    },
+    "bonus": {
+      "background": "/assets/static.tildacdn.com/tild6164-6438-4164-b066-303037393733/5_fon.jpg",
+      "gift": "/assets/static.tildacdn.com/tild6364-6138-4961-b132-383266363438/5_gift.png",
+      "icon": "/assets/static.tildacdn.com/tild3966-6666-4363-b838-613961643464/2_.svg",
+      "art": "/assets/static.tildacdn.com/tild3431-3237-4565-a435-343732646232/5_banda.png",
+      "title": "УЗНАЙТЕ СТОИМОСТЬ И ПОЛУЧИТЕ ОДИН ИЗ ТРЁХ БОНУСОВ",
+      "items": ["Пригласительные для всех гостей", "Памятные сувениры всем участникам", "Фотографии с персонажами игры"],
+      "cta": "РАССЧИТАТЬ СТОИМОСТЬ"
+    },
+    "venues": [
+      { "title": "Гвардейский пер., 61", "href": "/guardeskypereulog61" },
+      { "title": "ул. Социалистическая, 186", "href": "/socialicheskaya186" },
+      { "title": "ул. Красноармейская, 103", "href": "/krasnormerskaya103" },
+      { "title": "пр-т Соколова, 23", "href": "/sokolova23" },
+      { "title": "пр-т Мира, д. 27", "href": "/mira27" },
+      { "title": "ул. Нансена, 107/1", "href": "/nansena107" },
+      { "title": "ул. Магнитогорская, 1", "href": "/magnitogorskaya1" },
+      { "title": "ул. 40-летия Победы, 216", "href": "/40letpobedy216" },
+      { "title": "пр-т Нагибина, 14а", "href": "/nagibina14" }
+    ]
+  }
 }

@@ -1,0 +1,366 @@
+---
+// The captured catalogue is four independent T396 artboards controlled by one
+// T395 tab strip.  Keeping it here prevents source-specific image and geometry
+// data from leaking into the shared horizontal CardsRow component.
+const { catalogue = {}, asset = (value) => value, href = (value) => value } = Astro.props;
+const groups = catalogue.groups || [];
+const tabs = catalogue.tabs || [];
+const heading = catalogue.heading || {};
+const asPx = (value, fallback = 0) => `${Number(value ?? fallback)}px`;
+const addressLines = (item) => (Array.isArray(item.address) ? item.address : [item.address]).filter(Boolean);
+const groupStyle = (group) => [
+  `--podkluch-group-height:${asPx(group.desktopHeight)}`,
+  `--podkluch-group-height-mobile:${asPx(group.mobileHeight)}`,
+].join(';');
+const subheadingStyle = (subheading) => [
+  `--podkluch-subheading-top:${asPx(subheading.desktop?.top)}`,
+  `--podkluch-subheading-left:${asPx(subheading.desktop?.left)}`,
+  `--podkluch-subheading-top-mobile:${asPx(subheading.mobile?.top)}`,
+  `--podkluch-subheading-left-mobile:${asPx(subheading.mobile?.left)}`,
+].join(';');
+const cardStyle = (item) => {
+  const desktop = item.desktop || {};
+  const mobile = item.mobile || {};
+  return [
+    `--podkluch-game-top:${asPx(desktop.top)}`,
+    `--podkluch-game-left:${asPx(desktop.left)}`,
+    `--podkluch-game-duration-top:${asPx(desktop.durationTop, 50)}`,
+    `--podkluch-game-players-top:${asPx(desktop.playersTop, 83)}`,
+    `--podkluch-game-age-top:${asPx(desktop.ageTop, 21)}`,
+    `--podkluch-game-title-top:${asPx(desktop.titleTop, 180)}`,
+    `--podkluch-game-address-top:${asPx(desktop.addressTop, 218)}`,
+    `--podkluch-game-cta-top:${asPx(desktop.ctaTop, 256)}`,
+    `--podkluch-game-top-mobile:${asPx(mobile.top)}`,
+    `--podkluch-game-left-mobile:${asPx(mobile.left)}`,
+    `--podkluch-game-duration-top-mobile:${asPx(mobile.durationTop, 49)}`,
+    `--podkluch-game-players-top-mobile:${asPx(mobile.playersTop, 82)}`,
+    `--podkluch-game-age-top-mobile:${asPx(mobile.ageTop, 20)}`,
+    `--podkluch-game-title-top-mobile:${asPx(mobile.titleTop, 155)}`,
+    `--podkluch-game-address-top-mobile:${asPx(mobile.addressTop, 192)}`,
+    `--podkluch-game-cta-top-mobile:${asPx(mobile.ctaTop, 228)}`,
+  ].join(';');
+};
+---
+
+{groups.length > 0 && (
+  <section class="podkluch-games" id={catalogue.id || undefined} data-podkluch-games>
+    <div class="podkluch-games__heading">
+      <h2><span>{heading.prefix}</span>{' '}<span class="podkluch-games__accent">{heading.accent}</span></h2>
+    </div>
+
+    <div class="podkluch-games__filters">
+      <div class="podkluch-games__tabs" role="tablist" aria-label="Категории игр">
+        {tabs.map((tab) => (
+          <button
+            class:list={['podkluch-games__tab', { 'podkluch-games__tab--active': tab.id === 'all' }]}
+            type="button"
+            role="tab"
+            data-podkluch-filter={tab.id}
+            aria-selected={tab.id === 'all' ? 'true' : 'false'}
+          >
+            {tab.label}{tab.mark && <span class="podkluch-games__tab-mark" aria-hidden="true"> {tab.mark}</span>}
+          </button>
+        ))}
+      </div>
+      <select class="podkluch-games__select" data-podkluch-select aria-label="Категория игр">
+        {tabs.map((tab) => <option value={tab.id}>{tab.label}{tab.mark ? ` ${tab.mark}` : ''}</option>)}
+      </select>
+    </div>
+
+    {groups.map((group) => (
+      <section
+        class="podkluch-games__group"
+        id={`podkluch-games-${group.id}`}
+        data-podkluch-game-group={group.id}
+        aria-labelledby={`podkluch-games-${group.id}-title`}
+        style={groupStyle(group)}
+      >
+        <div class="podkluch-games__artboard">
+          <h3 id={`podkluch-games-${group.id}-title`}>{group.title}</h3>
+          {group.subheading && (
+            <h4 class="podkluch-games__subheading" style={subheadingStyle(group.subheading)}>{group.subheading.t}</h4>
+          )}
+          {group.items.map((item) => (
+            <article class="podkluch-game-card" style={cardStyle(item)}>
+              <a class="podkluch-game-card__poster" href={href(item.href)} aria-label={item.t}>
+                <img
+                  src={asset(item.img)}
+                  alt=""
+                  width="360"
+                  height="264"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </a>
+              <span class="podkluch-game-card__people" aria-hidden="true">
+                {Array.from({ length: 5 }, () => <i></i>)}
+              </span>
+              <a class="podkluch-game-card__metric podkluch-game-card__metric--duration" href={href(item.href)}>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2"></circle><path d="M10 5.6v4.8l3.1 1.9"></path></svg>{item.duration}
+              </a>
+              <a class="podkluch-game-card__metric podkluch-game-card__metric--players" href={href(item.href)}>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="6.1" r="3"></circle><path d="M4.7 16.4c.8-3.3 2.6-5 5.3-5s4.5 1.7 5.3 5"></path></svg>{item.players}
+              </a>
+              <a class="podkluch-game-card__age" href={href(item.href)}>{item.age}</a>
+              <a class="podkluch-game-card__title" href={href(item.href)}>{item.t}</a>
+              <a class="podkluch-game-card__address" href={href(item.href)}>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 18s5.3-4.8 5.3-10a5.3 5.3 0 1 0-10.6 0C4.7 13.2 10 18 10 18Z"></path><circle cx="10" cy="8" r="1.7"></circle></svg>
+                <span>{addressLines(item).map((line) => <span>{line}</span>)}</span>
+              </a>
+              <a class="podkluch-game-card__cta" href={href(item.href)} aria-label={`${item.t}: Забронировать`}>
+                <img src={asset(item.ctaImg)} alt="Забронировать" width="260" height="66" loading="lazy" decoding="async" />
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+  </section>
+)}
+
+<script>
+  document.querySelectorAll('[data-podkluch-games]').forEach((root) => {
+    const buttons = root.querySelectorAll('[data-podkluch-filter]');
+    const select = root.querySelector('[data-podkluch-select]');
+    const groups = root.querySelectorAll('[data-podkluch-game-group]');
+
+    const setFilter = (filter) => {
+      groups.forEach((group) => {
+        const visible = filter === 'all' || group.dataset.podkluchGameGroup === filter;
+        group.hidden = !visible;
+      });
+      buttons.forEach((button) => {
+        const active = button.dataset.podkluchFilter === filter;
+        button.classList.toggle('podkluch-games__tab--active', active);
+        button.setAttribute('aria-selected', String(active));
+      });
+      if (select) select.value = filter;
+    };
+
+    buttons.forEach((button) => button.addEventListener('click', () => setFilter(button.dataset.podkluchFilter || 'all')));
+    select?.addEventListener('change', () => setFilter(select.value));
+  });
+</script>
+
+<style>
+  .podkluch-games{background:#fff;color:#474747;overflow:hidden}
+  .podkluch-games__heading{
+    box-sizing:border-box;
+    position:relative;
+    height:125px;
+    padding:63px 20px 0;
+    text-align:center;
+  }
+  .podkluch-games__heading h2,
+  .podkluch-games__group h3,
+  .podkluch-games__subheading{
+    margin:0;
+    color:#474747;
+    font-family:'Montserratblack',Montserrat,Arial,sans-serif;
+    font-weight:700;
+  }
+  .podkluch-games__heading h2{font-size:38px;line-height:1.15}
+  .podkluch-games__accent{color:#ff6900}
+  .podkluch-games__filters{
+    box-sizing:border-box;
+    display:flex;
+    height:84px;
+    align-items:flex-start;
+    justify-content:center;
+    padding:14px 20px 0;
+  }
+  .podkluch-games__tabs{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    width:1160px;
+    overflow:hidden;
+    border:1px solid #ff9d47;
+    border-radius:22px;
+    background:#fff;
+  }
+  .podkluch-games__tab{
+    min-height:30px;
+    border:0;
+    border-right:1px solid #ff9d47;
+    color:#474747;
+    background:#fff;
+    cursor:pointer;
+    font:600 11px/1.2 Montserrat,Arial,sans-serif;
+    transition:background-color .15s ease,color .15s ease;
+  }
+  .podkluch-games__tab:last-child{border-right:0}
+  .podkluch-games__tab--active{color:#fff;background:#ff7900}
+  .podkluch-games__tab-mark{color:#0092ff;font-size:13px}
+  .podkluch-games__tab--active .podkluch-games__tab-mark{color:#fff}
+  .podkluch-games__select{display:none}
+  .podkluch-games__group{
+    height:var(--podkluch-group-height);
+    background:#fff;
+  }
+  .podkluch-games__group[hidden]{display:none}
+  .podkluch-games__artboard{position:relative;width:1200px;height:100%;margin:0 auto}
+  .podkluch-games__group h3{
+    position:absolute;
+    top:35px;
+    left:0;
+    width:100%;
+    font-size:34px;
+    line-height:1.55;
+    text-align:center;
+  }
+  .podkluch-games__subheading{
+    position:absolute;
+    top:var(--podkluch-subheading-top);
+    left:var(--podkluch-subheading-left);
+    width:503px;
+    font-size:30px;
+    line-height:1.25;
+    text-align:center;
+  }
+  .podkluch-game-card{
+    position:absolute;
+    top:var(--podkluch-game-top);
+    left:var(--podkluch-game-left);
+    width:360px;
+    height:330px;
+  }
+  .podkluch-game-card__poster{
+    position:absolute;
+    inset:0 auto auto 0;
+    display:block;
+    width:360px;
+    height:264px;
+    overflow:hidden;
+    border-radius:13px;
+  }
+  .podkluch-game-card__poster img{display:block;width:100%;height:100%;object-fit:cover}
+  .podkluch-game-card__people{
+    position:absolute;
+    top:14px;
+    left:16px;
+    display:flex;
+    gap:4px;
+    height:13px;
+  }
+  .podkluch-game-card__people i{
+    position:relative;
+    display:block;
+    width:5px;
+    height:9px;
+    border-radius:4px 4px 2px 2px;
+    background:#ff7000;
+  }
+  .podkluch-game-card__people i::before{
+    position:absolute;
+    top:-3px;
+    left:1px;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:#ff7000;
+    content:'';
+  }
+  .podkluch-game-card__metric,
+  .podkluch-game-card__title,
+  .podkluch-game-card__address,
+  .podkluch-game-card__age{position:absolute;color:#fff;text-decoration:none}
+  .podkluch-game-card__metric{
+    left:16px;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    font:500 12px/14px Montserrat,Arial,sans-serif;
+  }
+  .podkluch-game-card__metric--duration{top:var(--podkluch-game-duration-top)}
+  .podkluch-game-card__metric--players{top:var(--podkluch-game-players-top)}
+  .podkluch-game-card__metric svg{width:15px;height:15px;fill:none;stroke:#ff7000;stroke-width:2}
+  .podkluch-game-card__age{
+    top:var(--podkluch-game-age-top);
+    right:10px;
+    display:grid;
+    width:20px;
+    height:20px;
+    place-items:center;
+    border-radius:50%;
+    color:#555;
+    background:#fff;
+    font:500 10px/1 Montserrat,Arial,sans-serif;
+  }
+  .podkluch-game-card__title{
+    top:var(--podkluch-game-title-top);
+    left:19px;
+    width:322px;
+    color:#fff;
+    font:700 16px/1.15 Montserrat,Arial,sans-serif;
+  }
+  .podkluch-game-card__address{
+    top:var(--podkluch-game-address-top);
+    left:18px;
+    display:flex;
+    width:320px;
+    align-items:flex-start;
+    gap:5px;
+    color:#fff;
+    font:500 8px/1.25 Montserrat,Arial,sans-serif;
+  }
+  .podkluch-game-card__address svg{flex:0 0 auto;width:15px;height:15px;fill:#ff7000;stroke:#ff7000;stroke-width:1.3}
+  .podkluch-game-card__address > span{display:grid;gap:1px}
+  .podkluch-game-card__cta{
+    position:absolute;
+    top:var(--podkluch-game-cta-top);
+    left:50px;
+    display:block;
+    width:260px;
+    height:auto;
+  }
+  .podkluch-game-card__cta img{display:block;width:100%;height:auto}
+  .podkluch-game-card a:focus-visible,
+  .podkluch-games__tab:focus-visible,
+  .podkluch-games__select:focus-visible{outline:3px solid #0092ff;outline-offset:3px}
+
+  @media (max-width:639px){
+    .podkluch-games__heading{height:115px;padding:60px 20px 0}
+    .podkluch-games__heading h2{font-size:29px;line-height:1.15}
+    .podkluch-games__filters{height:94px;padding:20px 20px 0}
+    .podkluch-games__tabs{display:none}
+    .podkluch-games__select{
+      display:block;
+      width:320px;
+      height:34px;
+      padding:0 12px;
+      border:1px solid #ff7900;
+      border-radius:18px;
+      color:#fff;
+      background:#ff7900;
+      font:600 11px/1 Montserrat,Arial,sans-serif;
+      text-align:center;
+      text-align-last:center;
+    }
+    .podkluch-games__group{height:var(--podkluch-group-height-mobile)}
+    .podkluch-games__artboard{width:320px}
+    .podkluch-games__group h3{top:24px;font-size:22px;line-height:1.4}
+    .podkluch-games__subheading{
+      top:var(--podkluch-subheading-top-mobile);
+      left:var(--podkluch-subheading-left-mobile);
+      width:292px;
+      font-size:22px;
+      line-height:1.2;
+    }
+    .podkluch-game-card{
+      top:var(--podkluch-game-top-mobile);
+      left:var(--podkluch-game-left-mobile);
+      width:320px;
+      height:295px;
+    }
+    .podkluch-game-card__poster{width:320px;height:234px;border-radius:12px}
+    .podkluch-game-card__people{top:11px;left:16px;gap:4px}
+    .podkluch-game-card__metric{left:14px;font-size:12px;line-height:14px}
+    .podkluch-game-card__metric--duration{top:var(--podkluch-game-duration-top-mobile)}
+    .podkluch-game-card__metric--players{top:var(--podkluch-game-players-top-mobile)}
+    .podkluch-game-card__metric svg{width:15px;height:15px}
+    .podkluch-game-card__age{top:var(--podkluch-game-age-top-mobile);right:18px;width:18px;height:18px;font-size:10px}
+    .podkluch-game-card__title{top:var(--podkluch-game-title-top-mobile);left:16px;width:288px;font-size:14px;line-height:1.16}
+    .podkluch-game-card__address{top:var(--podkluch-game-address-top-mobile);left:16px;width:288px;font-size:8px;line-height:1.2}
+    .podkluch-game-card__cta{top:var(--podkluch-game-cta-top-mobile);left:30px}
+  }
+</style>

@@ -18,6 +18,8 @@
   {
    "kind": "hero",
    "variant": "light",
+   "composition": "kids-artboard",
+   "hideSharedHeader": true,
    "h1": "Подарите ребёнку приключение в квесте",
    "up": "В Ростове-на-Дону",
    "sub": "Берём комплексную организацию детского праздника на себя, пока вы отдыхаете",
@@ -397,5 +399,80 @@
     "/assets/q/9b89bc84b8.webp"
    ]
   }
- ]
+ ],
+ "sourceParity": {
+  "kind": "kids-artboard",
+  "bookingHref": "#prazdnik",
+  "records": {
+   "header": { "desktop": 60, "mobile": 60 },
+   "hero": { "desktop": 756, "mobile": 731 },
+   "breadcrumbs": { "desktop": 54, "mobile": 54 },
+   "breadcrumbGap": { "desktop": 50, "mobile": 50 },
+   "breadcrumbTail": { "desktop": 15, "mobile": 15 },
+   "scenarios": { "desktop": 563, "mobile": 563 },
+   "dividerAfterScenarios": { "desktop": 50, "mobile": 50 },
+   "statsHeading": { "desktop": 165, "mobile": 165 },
+   "stats": { "desktop": 640, "mobile": 740 },
+   "dividerAfterStats": { "desktop": 50, "mobile": 50 },
+   "packagesHeading": { "desktop": 165, "mobile": 205 },
+   "packageTabs": { "desktop": 57, "mobile": 67 },
+   "packages": { "desktop": 672, "mobile": 1124 },
+   "dividerAfterPackages": { "desktop": 50, "mobile": 50 },
+   "showsHeading": { "desktop": 180, "mobile": 250 },
+   "shows": { "desktop": 745, "mobile": 469 },
+   "dividerAfterShows": { "desktop": 50, "mobile": 50 },
+   "quizHeading": { "desktop": 215, "mobile": 215 },
+   "quiz": { "desktop": 670, "mobile": 130 },
+   "dividerAfterQuiz": { "desktop": 50, "mobile": 50 },
+   "hallsHeading": { "desktop": 215, "mobile": 215 },
+   "halls": { "desktop": 570, "mobile": 755 },
+   "dividerAfterHalls": { "desktop": 50, "mobile": 50 },
+   "bookingHeading": { "desktop": 215, "mobile": 235 },
+   "booking": { "desktop": 360, "mobile": 487 },
+   "dividerAfterBooking": { "desktop": 50, "mobile": 50 },
+   "additionsHeading": { "desktop": 175, "mobile": 175 },
+   "additions": { "desktop": 405, "mobile": 535 },
+   "masterclasses": { "desktop": 500, "mobile": 600 },
+   "dividerAfterMasterclasses": { "desktop": 50, "mobile": 50 },
+   "reviewsHeading": { "desktop": 115, "mobile": 195 },
+   "dividerAfterReviews": { "desktop": 50, "mobile": 50 },
+   "invitationHeading": { "desktop": 115, "mobile": 265 },
+   "invitation": { "desktop": 700, "mobile": 1339 },
+   "dividerAfterInvitation": { "desktop": 50, "mobile": 50 },
+   "galleryHeading": { "desktop": 175, "mobile": 165 },
+   "gallery": { "desktop": 3880, "mobile": 1046 },
+   "dividerAfterGallery": { "desktop": 50, "mobile": 50 },
+   "venuesHeading": { "desktop": 132, "mobile": 111 },
+   "venues": { "desktop": 191, "mobile": 537 },
+   "footerSpacer": { "desktop": 60, "mobile": 60 },
+   "footer": { "desktop": 311, "mobile": 910 },
+   "copyright": { "desktop": 170, "mobile": 246 }
+  },
+  "localAssets": [
+   "/assets/q/9225f40989.webp",
+   "/assets/q/5c1b73b72a.webp",
+   "/assets/q/9f46ee67f3.webp",
+   "/assets/q/bd94a3634c.webp",
+   "/assets/q/d51693969a.webp",
+   "/assets/q/a360040221.webp",
+   "/assets/q/1ffb0a5c31.webp",
+   "/assets/q/b381cce340.webp"
+  ],
+  "invitation": {
+   "title": "Получи уникальный пригласительный на свой праздник",
+   "subtitle": "Создай дизайн пригласительного на день рождения совершенно бесплатно",
+   "cta": "Получить пригласительный"
+  },
+  "venues": [
+   { "title": "Гвардейский пер., 61", "href": "/guardeskypereulog61" },
+   { "title": "ул. Социалистическая, 186", "href": "/socialicheskaya186" },
+   { "title": "ул. Красноармейская, 103", "href": "/krasnormerskaya103" },
+   { "title": "пр-т Соколова, 23", "href": "/sokolova23" },
+   { "title": "пр-т Мира, д. 27", "href": "/mira27" },
+   { "title": "ул. Нансена, 107/1", "href": "/nansena107" },
+   { "title": "ул. Магнитогорская, 1", "href": "/magnitogorskaya1" },
+   { "title": "ул. 40-летия Победы, 216", "href": "/40letpobedy216" },
+   { "title": "пр-т Нагибина, 14а", "href": "/nagibina14" }
+  ]
+ }
 }

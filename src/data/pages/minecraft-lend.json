@@ -15,11 +15,120 @@
     { "t": "День рождения в стиле Майнкрафт", "href": null }
   ],
   "reviewsTitle": "Что говорят гости о нас",
+  "sourceParity": {
+    "kind": "minecraft-artboard",
+    "bookingHref": "#prazdnik",
+    "records": {
+      "header": { "desktop": 90, "mobile": 90 },
+      "hero": { "desktop": 550, "mobile": 530 },
+      "intro": { "desktop": 690, "mobile": 844 },
+      "programHeading": { "desktop": 140, "mobile": 140 },
+      "programs": { "desktop": 744, "mobile": 1330 },
+      "programSpacer": { "desktop": 30, "mobile": 30 },
+      "shows": { "desktop": 1007, "mobile": 3464 },
+      "showsSpacer": { "desktop": 40, "mobile": 40 },
+      "additions": { "desktop": 620, "mobile": 660 },
+      "trustHeading": { "desktop": 140, "mobile": 200 },
+      "trust": { "desktop": 850, "mobile": 800 },
+      "galleryHeading": { "desktop": 160, "mobile": 160 },
+      "gallery": { "desktop": 360, "mobile": 450 },
+      "gallerySpacer": { "desktop": 73, "mobile": 73 },
+      "gift": { "desktop": 700, "mobile": 500 },
+      "venuesHeading": { "desktop": 210, "mobile": 190 },
+      "venues": { "desktop": 157, "mobile": 568 },
+      "footerSpacer": { "desktop": 84, "mobile": 85 },
+      "footer": { "desktop": 277, "mobile": 777 },
+      "copyright": { "desktop": 194, "mobile": 359 }
+    },
+    "hero": {
+      "background": "/assets/static.tildacdn.com/tild3437-3561-4536-a635-303066306432/new__.jpg",
+      "gift": "/assets/static.tildacdn.com/tild3339-6462-4239-b662-353164363932/-.png",
+      "title": ["Незабываемый праздник", "в настоящем квесте", "с любимыми героями"],
+      "subtitle": "Идеальный подарок для всех фанатов серии видеоигр и кубической вселенной",
+      "cta": "Рассчитать стоимость"
+    },
+    "intro": {
+      "title": "Че За Квест — мир приключений и веселья",
+      "lead": "Место, где каждый сможет почувствовать себя главным героем игры, изучить руды, встретиться с главными противниками, скрафтить меч и броню и заполучить алмазы!",
+      "photo": "/assets/static.tildacdn.com/tild3564-3134-4832-b935-343137363033/IMG_5253.JPG",
+      "character": "/assets/static.tildacdn.com/tild3061-3062-4664-b265-356362643635/photo.png",
+      "features": [
+        "Огромный лабиринт 150 м²",
+        "Профессиональные актеры-ведущие",
+        "Уникальные задания и испытания",
+        "Изучение мира Майнкрафт",
+        "Встреча со знаковыми персонажами серии",
+        "Уроки крафта, изучение руд и алмазов",
+        "Возможность стать главным героем видеоигры в реальной жизни",
+        "Большие комнаты отдыха на 20 посадочных мест",
+        "Шоу-программы и мастер-классы на выбор"
+      ]
+    },
+    "programs": [
+      { "title": "СТАНДАРТ", "src": "/assets/static.tildacdn.com/tild3836-3465-4165-b533-363736613561/_1___-2.png" },
+      { "title": "СУПЕР", "src": "/assets/static.tildacdn.com/tild3232-6365-4432-a637-613261343564/_2___-2.png" },
+      { "title": "МАКСИ", "src": "/assets/static.tildacdn.com/tild6164-3662-4438-a431-616666313931/_3___.png" }
+    ],
+    "programBackground": "/assets/static.tildacdn.com/tild3962-3064-4039-a531-343538613834/_photo_2024-04-26_13.jpg",
+    "grass": "/assets/static.tildacdn.com/tild6463-6163-4266-a136-623536393237/photo.png",
+    "shows": [
+      { "title": "Шоу Блок-Баттл", "src": "/assets/static.tildacdn.com/tild6133-6535-4638-a662-636261656433/-.jpg" },
+      { "title": "Шоу Любимый герой", "src": "/assets/static.tildacdn.com/tild3035-3863-4332-b833-393664323961/photo_2024-10-17_12-.png" },
+      { "title": "Шоу Угадай руду", "src": "/assets/static.tildacdn.com/tild6264-6533-4639-b035-366261623630/photo_2024-10-31_15-.jpg" },
+      { "title": "Шоу Урок Алхимии", "src": "/assets/static.tildacdn.com/tild3137-6139-4565-a434-333431353034/noroot.png" },
+      { "title": "Шоу Ютуб Пати", "src": "/assets/static.tildacdn.com/tild6366-3134-4334-a130-326664373730/photo_2024-10-31_15-.jpg" },
+      { "title": "Шоу Квиз Майнкрафт", "src": "/assets/static.tildacdn.com/tild3236-3232-4839-b637-666466343066/-.jpg" },
+      { "title": "Шоу Кажется нащупал", "src": "/assets/static.tildacdn.com/tild3237-3664-4263-b133-346137303465/2_.jpg" },
+      { "title": "Шоу Мафия. Найти грифера", "src": "/assets/static.tildacdn.com/tild3763-3839-4662-a161-633239313535/_.jpg" }
+    ],
+    "additions": [
+      { "title": "Вынос торта Стивом", "src": "/assets/static.tildacdn.com/tild6338-3231-4465-a430-356663653936/noroot.png" },
+      { "title": "Тематические торты", "src": "/assets/static.tildacdn.com/tild3730-6433-4639-b934-633037323135/photo.jpg" },
+      { "title": "Профессиональные актеры", "src": "/assets/static.tildacdn.com/tild6263-3230-4230-a633-653166653038/photo_2024-10-17_12-.png" },
+      { "title": "Фотограф на мероприятие", "src": "/assets/static.tildacdn.com/tild3635-3963-4039-b139-663737666633/-_.jpg" }
+    ],
+    "trust": {
+      "background": "/assets/static.tildacdn.com/tild3161-3838-4437-b162-633936376562/photo_2024-04-26_13-.jpg",
+      "photo": "/assets/static.tildacdn.com/tild6566-3034-4337-b431-653937663966/photo_2024-10-30_14-.jpg",
+      "character": "/assets/static.tildacdn.com/tild6432-6136-4731-b663-633363363665/noroot.png",
+      "icon": "/assets/static.tildacdn.com/tild3965-3930-4331-a639-613063303966/photo.svg",
+      "stats": [
+        { "top": "Уже", "value": "8", "bottom": "лет создаем волшебные дни рождения" },
+        { "top": "Более", "value": "10 000", "bottom": "восторженных отзывов" },
+        { "top": "", "value": "9", "bottom": "современно оборудованных площадок с комнатами отдыха" }
+      ]
+    },
+    "gallery": [
+      "/assets/static.tildacdn.com/tild3332-3061-4661-b738-346636633462/tempImage4rhrwp_1-3-.jpg",
+      "/assets/static.tildacdn.com/tild6462-3563-4363-a461-393036653939/IMG_5252.JPG",
+      "/assets/static.tildacdn.com/tild3938-3132-4264-b439-643831653037/IMG_5253.JPG"
+    ],
+    "gift": {
+      "background": "/assets/static.tildacdn.com/tild6331-6563-4532-b038-363833663461/photo_2024-10-29_16-.jpg",
+      "image": "/assets/static.tildacdn.com/tild3339-6462-4239-b662-353164363932/-.png",
+      "title": "Гарантированно получите 1 из 3 волшебных подарков",
+      "text": "Ответьте на 4 вопроса — и узнайте точную стоимость волшебного дня рождения для вашего ребенка",
+      "cta": "Рассчитать стоимость"
+    },
+    "venues": [
+      { "title": "ГВАРДЕЙСКИЙ ПЕР., 61", "href": "/guardeskypereulog61" },
+      { "title": "УЛ. СОЦИАЛИСТИЧЕСКАЯ, 186", "href": "/socialicheskaya186" },
+      { "title": "УЛ. КРАСНОАРМЕЙСКАЯ, 103", "href": "/krasnormerskaya103" },
+      { "title": "ПР-Т СОКОЛОВА, 23", "href": "/sokolova23" },
+      { "title": "ПР-Т МИРА, Д. 27", "href": "/mira27" },
+      { "title": "УЛ. НАНСЕНА, 107/1", "href": "/nansena107" },
+      { "title": "УЛ. МАГНИТОГОРСКАЯ, 1", "href": "/magnitogorskaya1" },
+      { "title": "УЛ. 40-ЛЕТИЯ ПОБЕДЫ, 216", "href": "/40letpobedy216" },
+      { "title": "ПР-Т НАГИБИНА, 14А", "href": "/nagibina14" }
+    ],
+    "footerLogo": "/assets/static.tildacdn.com/tild6337-6561-4434-a631-626137386564/-_.png"
+  },
   "sections": [
     {
       "kind": "hero",
       "variant": "dark",
-      "composition": "tilda-artboard",
+      "composition": "minecraft-artboard",
+      "hideSharedHeader": true,
       "hidePills": true,
       "artboard": {
         "desktop": { "width": 1200, "height": 550 },

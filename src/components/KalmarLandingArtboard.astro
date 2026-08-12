@@ -1,0 +1,168 @@
+---
+// /igra-v-kalmara-lend/ is a captured twenty-record canvas, not a skin for
+// the shared holiday sections. Keep its geometry and controls local to it.
+import SourceArtboardRailControls from './SourceArtboardRailControls.astro';
+
+const { source = {}, asset = (value) => value, href = (value) => value, phoneHref = 'tel:+78633030959', phone = '+7 (863) 303-09-59' } = Astro.props;
+const records = source.records || {};
+const bookingHref = href(source.bookingHref || '#prazdnik');
+const hall = source.hall || {};
+const hallSlides = Array.isArray(hall.slides) ? hall.slides : [];
+const recordStyle = (record = {}) => [
+  record.desktop && '--kalmar-record-desktop:' + Number(record.desktop) + 'px',
+  record.mobile && '--kalmar-record-mobile:' + Number(record.mobile) + 'px',
+].filter(Boolean).join(';');
+const backgroundStyle = (image) => image ? 'background-image:url(' + asset(image) + ')' : '';
+const footerGroups = [
+  ['Детские праздники', 'Выпускные', 'Корпоративы'],
+  ['Квесты', 'VR-арена', 'Шоу-программы'],
+  ['Площадки', 'Подарочные сертификаты', 'Контакты'],
+];
+---
+
+<div class="kalmar-landing-artboard">
+  <section class="kalmar-landing-artboard__hero kalmar-landing-artboard__record" style={recordStyle(records.hero)} aria-labelledby="kalmar-hero-title">
+    <div class="kalmar-landing-artboard__rail">
+      <img class="kalmar-landing-artboard__hero-background" src={asset(source.hero?.background)} alt="" width="1200" height="856" fetchpriority="high" decoding="async" />
+      {(source.hero?.layers || []).map((layer, index) => (
+        <img class:list={['kalmar-landing-artboard__hero-layer', 'kalmar-landing-artboard__hero-layer--' + (index + 1)]}
+          src={asset(layer)} alt="" width={index === 0 ? 1012 : index === 1 ? 733 : 2203}
+          height={index === 0 ? 675 : index === 1 ? 519 : 601} decoding="async" />
+      ))}
+      <img class="kalmar-landing-artboard__hero-badge" src={asset(source.hero?.badge)} alt="" width="153" height="153" decoding="async" />
+      <p class="kalmar-landing-artboard__hero-gift">{source.hero?.gift}</p>
+      <p class="kalmar-landing-artboard__hero-subtitle">{source.hero?.subtitle}</p>
+      <h1 id="kalmar-hero-title">{source.hero?.title}</h1>
+      <a class="kalmar-landing-artboard__button kalmar-landing-artboard__hero-cta" href={bookingHref}>{source.hero?.cta}</a>
+    </div>
+  </section>
+
+  <section class="kalmar-landing-artboard__intro kalmar-landing-artboard__record" style={recordStyle(records.intro)} aria-labelledby="kalmar-intro-title">
+    <div class="kalmar-landing-artboard__rail"><h2 id="kalmar-intro-title">{source.intro?.title}</h2><p>{source.intro?.text}</p></div>
+  </section>
+
+  <section class="kalmar-landing-artboard__features kalmar-landing-artboard__record" style={recordStyle(records.features) + ';' + backgroundStyle(source.features?.background)} aria-labelledby="kalmar-features-title">
+    <div class="kalmar-landing-artboard__rail">
+      <h2 id="kalmar-features-title">{source.features?.title}</h2>
+      <img class="kalmar-landing-artboard__features-photo" src={asset(source.features?.photo)} alt="Игра в кальмара в Чё за Квест" width="580" height="367" loading="lazy" decoding="async" />
+      <ul>{(source.features?.items || []).map((item) => <li>{item}</li>)}</ul>
+      <img class="kalmar-landing-artboard__features-figure" src={asset(source.features?.figure)} alt="" width="167" height="356" loading="lazy" decoding="async" />
+    </div>
+  </section>
+
+  <section class="kalmar-landing-artboard__program-heading kalmar-landing-artboard__record" style={recordStyle(records.programHeading)} aria-labelledby="kalmar-program-title">
+    <div class="kalmar-landing-artboard__rail"><h2 id="kalmar-program-title">{source.program?.title}</h2></div>
+  </section>
+  <section class="kalmar-landing-artboard__program kalmar-landing-artboard__record" style={recordStyle(records.program) + ';' + backgroundStyle(source.program?.background)} aria-label="Программы праздника">
+    <div class="kalmar-landing-artboard__rail">
+      <div class="kalmar-landing-artboard__program-cards">
+        {(source.program?.items || []).map((item) => <a href={bookingHref} aria-label={item.title + ': узнать стоимость'}><img src={asset(item.src)} alt={item.title} width="360" height="443" loading="lazy" decoding="async" /></a>)}
+      </div>
+      <a class="kalmar-landing-artboard__button kalmar-landing-artboard__program-cta" href={bookingHref}>{source.program?.cta}</a>
+    </div>
+  </section>
+  <section class="kalmar-landing-artboard__program-divider kalmar-landing-artboard__record" style={recordStyle(records.programDivider)} aria-hidden="true">
+    <div class="kalmar-landing-artboard__rail"><img src={asset(source.program?.decoration)} alt="" width="140" height="140" loading="lazy" decoding="async" /></div>
+  </section>
+
+  <section class="kalmar-landing-artboard__shows kalmar-landing-artboard__record" style={recordStyle(records.shows)} aria-labelledby="kalmar-shows-title">
+    <div class="kalmar-landing-artboard__rail">
+      <h2 id="kalmar-shows-title">ДОБАВЬТЕ В ПРАЗДНИК ШОУ-ПРОГРАММУ</h2>
+      <div class="kalmar-landing-artboard__shows-grid">
+        {(source.shows || []).map((item) => <a href={bookingHref} class="kalmar-landing-artboard__show-card"><img src={asset(item.src)} alt="" width="260" height="230" loading="lazy" decoding="async" /><span>{item.title}</span><b>Заказать</b></a>)}
+      </div>
+    </div>
+  </section>
+  <section class="kalmar-landing-artboard__shows-divider kalmar-landing-artboard__record" style={recordStyle(records.showsDivider)} aria-hidden="true">
+    <div class="kalmar-landing-artboard__rail"><img src={asset(source.showsDecoration)} alt="" width="310" height="40" loading="lazy" decoding="async" /></div>
+  </section>
+
+  <section class="kalmar-landing-artboard__additions kalmar-landing-artboard__record" style={recordStyle(records.additions)} data-source-artboard-rail data-source-artboard-rail-id="kalmar-additions" aria-labelledby="kalmar-additions-title">
+    <div class="kalmar-landing-artboard__rail">
+      <h2 id="kalmar-additions-title">ДОПОЛНЕНИЯ, КОТОРЫЕ УКРАСЯТ ВАШ ПРАЗДНИК</h2>
+      <div id="kalmar-additions-viewport" class="kalmar-landing-artboard__additions-viewport" data-source-artboard-rail-viewport tabindex="0" aria-label="Дополнения к празднику: листайте карточки">
+        <div class="kalmar-landing-artboard__additions-track">
+          {(source.additions || []).map((item, index) => <a id={'kalmar-additions-slide-' + (index + 1)} class="kalmar-landing-artboard__addition-card" data-source-artboard-rail-slide href={bookingHref}><img src={asset(item.src)} alt="" width="260" height="230" loading="lazy" decoding="async" /><span>{item.title}</span><b>Заказать</b></a>)}
+        </div>
+      </div>
+      <SourceArtboardRailControls railId="kalmar-additions" label="Дополнения к празднику" items={source.additions || []} />
+    </div>
+  </section>
+
+  <section class="kalmar-landing-artboard__hall-heading kalmar-landing-artboard__record" style={recordStyle(records.hallHeading)} aria-labelledby="kalmar-hall-title">
+    <div class="kalmar-landing-artboard__rail"><h2 id="kalmar-hall-title">{hall.title}</h2><p>{hall.subtitle}</p></div>
+  </section>
+  <section class="kalmar-landing-artboard__hall kalmar-landing-artboard__record" style={recordStyle(records.hall)} data-source-artboard-rail data-source-artboard-rail-id="kalmar-hall" aria-label="Залы для праздника">
+    <div class="kalmar-landing-artboard__hall-rail">
+      <div id="kalmar-hall-viewport" class="kalmar-landing-artboard__hall-viewport" data-source-artboard-rail-viewport tabindex="0" aria-label="Залы для праздника: листайте площадки">
+        <div class="kalmar-landing-artboard__hall-track">
+          {hallSlides.map((slide, slideIndex) => (
+            <article id={'kalmar-hall-slide-' + (slideIndex + 1)} class="kalmar-landing-artboard__hall-slide" data-source-artboard-rail-slide aria-label={slide.title}>
+              <div class="kalmar-landing-artboard__hall-image">
+                {(slide.images || []).map((image, imageIndex) => <img class:list={{ 'is-current': imageIndex === 0 }} src={asset(image)} alt={imageIndex === 0 ? 'Зал: ' + slide.title : ''} width="600" height="400" loading={imageIndex === 0 ? 'lazy' : undefined} decoding="async" />)}
+              </div>
+              <div class="kalmar-landing-artboard__hall-copy">
+                <h3><a href={href(slide.href)}>{slide.title}</a></h3><p class="kalmar-landing-artboard__hall-size">{slide.size}</p>
+                <div class="kalmar-landing-artboard__hall-details">{(slide.details || []).map((line, index) => index > 2 ? <span>• {line}</span> : <p class:list={{ 'is-list-title': index === 2 }}>{line}</p>)}</div>
+                <a class="kalmar-landing-artboard__button" href={bookingHref}>{hall.cta}</a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+      <SourceArtboardRailControls railId="kalmar-hall" label="Залы для праздника" items={hallSlides} />
+    </div>
+  </section>
+
+  <section class="kalmar-landing-artboard__trust-heading kalmar-landing-artboard__record" style={recordStyle(records.trustHeading)} aria-labelledby="kalmar-trust-title">
+    <div class="kalmar-landing-artboard__rail"><h2 id="kalmar-trust-title">{source.trust?.title}</h2></div>
+  </section>
+  <section class="kalmar-landing-artboard__trust kalmar-landing-artboard__record" style={recordStyle(records.trust) + ';' + backgroundStyle(source.trust?.background)} aria-label="Причины доверить нам праздник">
+    <div class="kalmar-landing-artboard__rail">
+      <div class="kalmar-landing-artboard__trust-grid">
+        <div class="kalmar-landing-artboard__trust-stat"><small>{source.trust?.cards?.[0]?.prefix}</small><strong>{source.trust?.cards?.[0]?.value}</strong><p>{source.trust?.cards?.[0]?.text}</p></div>
+        <div class="kalmar-landing-artboard__trust-mark"><img src={asset(source.trust?.mark)} alt="Чё за Квест" width="180" height="180" loading="lazy" decoding="async" /></div>
+        <div class="kalmar-landing-artboard__trust-stat"><small>{source.trust?.cards?.[1]?.prefix}</small><strong>{source.trust?.cards?.[1]?.value}</strong><p>{source.trust?.cards?.[1]?.text}</p></div>
+        <div class="kalmar-landing-artboard__trust-stat"><strong>{source.trust?.cards?.[2]?.value}</strong><p>{source.trust?.cards?.[2]?.text}</p></div>
+        <div class="kalmar-landing-artboard__trust-photo"><img src={asset(source.trust?.leftPhoto)} alt="" width="260" height="260" loading="lazy" decoding="async" /></div>
+        <div class="kalmar-landing-artboard__trust-safety"><img src={asset(source.trust?.divider)} alt="" width="70" height="30" loading="lazy" decoding="async" /><strong>{source.trust?.cards?.[3]?.prefix}</strong><p>{source.trust?.cards?.[3]?.text}</p></div>
+        <div class="kalmar-landing-artboard__trust-mark kalmar-landing-artboard__trust-mark--small"><img src={asset(source.trust?.mark)} alt="" width="120" height="120" loading="lazy" decoding="async" /></div>
+        <div class="kalmar-landing-artboard__trust-photo"><img src={asset(source.trust?.rightPhoto)} alt="" width="260" height="260" loading="lazy" decoding="async" /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="kalmar-landing-artboard__pink-divider kalmar-landing-artboard__record" style={recordStyle(records.pinkDivider)} aria-hidden="true"></section>
+  <section class="kalmar-landing-artboard__gift kalmar-landing-artboard__record" style={recordStyle(records.gift) + ';' + backgroundStyle(source.gift?.background)} aria-labelledby="kalmar-gift-title">
+    <div class="kalmar-landing-artboard__rail"><div class="kalmar-landing-artboard__gift-copy"><h2 id="kalmar-gift-title">{source.gift?.title}</h2><p>{source.gift?.text}</p><a class="kalmar-landing-artboard__button" href={bookingHref}>{source.gift?.cta}</a></div><img class="kalmar-landing-artboard__gift-art" src={asset(source.gift?.art)} alt="" width="650" height="605" loading="lazy" decoding="async" /></div>
+  </section>
+
+  <section class="kalmar-landing-artboard__venues-heading kalmar-landing-artboard__record" style={recordStyle(records.venuesHeading)} aria-labelledby="kalmar-venues-title"><div class="kalmar-landing-artboard__rail"><h2 id="kalmar-venues-title">НАШИ ПЛОЩАДКИ</h2></div></section>
+  <section class="kalmar-landing-artboard__venues kalmar-landing-artboard__record" style={recordStyle(records.venues)} aria-label="Адреса площадок"><div class="kalmar-landing-artboard__rail"><ul>{(source.venues || []).map((venue) => <li><a href={href(venue.href)}>{venue.title}</a></li>)}</ul></div></section>
+
+  <div class="kalmar-landing-artboard__footer-spacer kalmar-landing-artboard__record" style={recordStyle(records.footerSpacer)} aria-hidden="true"></div>
+  <footer class="kalmar-landing-artboard__footer kalmar-landing-artboard__record" style={recordStyle(records.footer)}>
+    <div class="kalmar-landing-artboard__rail"><div class="kalmar-landing-artboard__footer-brand"><img src={asset(source.footerLogo)} alt="Чё за Квест" width="180" height="80" loading="lazy" decoding="async" /><a href={phoneHref}>{phone}</a></div>{footerGroups.map((group) => <ul>{group.map((item) => <li><a href={bookingHref}>{item}</a></li>)}</ul>)}</div>
+  </footer>
+  <div class="kalmar-landing-artboard__footer-bottom kalmar-landing-artboard__record" style={recordStyle(records.footerBottom)}><div class="kalmar-landing-artboard__rail"><p>© Чё за Квест, Ростов-на-Дону</p><a href={href('/privacy/')}>Политика конфиденциальности</a><a href={bookingHref}>Оставить заявку</a></div></div>
+</div>
+
+<style is:global>
+  .kalmar-landing-artboard__booking .pform{display:none}
+  .kalmar-landing-artboard__booking .pform:target{display:block;outline:3px solid #ff4f8c;outline-offset:4px}
+</style>
+
+<style>
+  .kalmar-landing-artboard{--kalmar-ink:#031818;--kalmar-pink:#e72f69;overflow:hidden;background:#031818;color:#fff;font-family:Montserrat,Arial,sans-serif}
+  .kalmar-landing-artboard *{box-sizing:border-box}.kalmar-landing-artboard__record{position:relative;height:var(--kalmar-record-desktop);overflow:hidden}.kalmar-landing-artboard__rail,.kalmar-landing-artboard__hall-rail{position:relative;width:1200px;height:100%;margin:0 auto}.kalmar-landing-artboard h1,.kalmar-landing-artboard h2,.kalmar-landing-artboard h3,.kalmar-landing-artboard p{margin:0}.kalmar-landing-artboard h1,.kalmar-landing-artboard h2,.kalmar-landing-artboard h3{font-weight:900;letter-spacing:-.035em}.kalmar-landing-artboard__button{display:inline-grid;min-width:260px;height:64px;padding:0 24px;place-items:center;background:var(--kalmar-pink);color:#fff;font-size:13px;font-weight:800;letter-spacing:.035em;text-align:center;text-decoration:none;text-transform:uppercase}.kalmar-landing-artboard__button:hover,.kalmar-landing-artboard__button:focus-visible{filter:brightness(1.12);outline:2px solid #fff;outline-offset:3px}
+  .kalmar-landing-artboard__hero{background:#000}.kalmar-landing-artboard__hero-background,.kalmar-landing-artboard__hero-layer,.kalmar-landing-artboard__hero-badge{position:absolute;display:block;object-fit:cover}.kalmar-landing-artboard__hero-background{inset:0;width:1200px;height:856px}.kalmar-landing-artboard__hero-layer--1{top:195px;left:404px;width:1012px;height:675px}.kalmar-landing-artboard__hero-layer--2{top:231px;left:551px;width:733px;height:519px}.kalmar-landing-artboard__hero-layer--3{top:377px;left:-512px;width:2203px;height:601px}.kalmar-landing-artboard__hero-badge{top:160px;left:0;width:71px;height:71px}.kalmar-landing-artboard__hero-gift{position:absolute;top:647px;left:48px;width:180px;color:#fff;font-size:12px;font-weight:700;line-height:1.25}.kalmar-landing-artboard__hero-subtitle{position:absolute;top:388px;left:219px;color:#fff;font-size:20px;font-weight:700}.kalmar-landing-artboard__hero h1{position:absolute;top:448px;left:1px;width:590px;color:#fff;font-size:39px;line-height:1.04;text-transform:uppercase}.kalmar-landing-artboard__hero-cta{position:absolute;top:572px;left:0;width:271px;height:60px}
+  .kalmar-landing-artboard__intro{background:#031818}.kalmar-landing-artboard__intro h2{position:absolute;top:1px;left:1px;width:579px;font-size:34px;line-height:1.09}.kalmar-landing-artboard__intro p{position:absolute;top:9px;right:19px;width:561px;font-size:15px;line-height:1.45}.kalmar-landing-artboard__intro::after{position:absolute;right:0;bottom:-1px;left:0;height:24px;background:#fff;clip-path:polygon(0 35%,5% 0,10% 35%,15% 0,20% 35%,25% 0,30% 35%,35% 0,40% 35%,45% 0,50% 35%,55% 0,60% 35%,65% 0,70% 35%,75% 0,80% 35%,85% 0,90% 35%,95% 0,100% 35%,100% 100%,0 100%);content:""}
+  .kalmar-landing-artboard__features{background:#f7f6f4 center/cover no-repeat;color:#031818}.kalmar-landing-artboard__features h2{position:absolute;top:144px;left:1px;width:579px;font-size:39px;line-height:1.07}.kalmar-landing-artboard__features-photo{position:absolute;top:336px;left:0;width:580px;height:367px;object-fit:cover}.kalmar-landing-artboard__features ul{position:absolute;top:157px;left:695px;width:430px;margin:0;padding:0;list-style:none}.kalmar-landing-artboard__features li{position:relative;min-height:69px;padding:0 0 12px 36px;font-size:14px;font-weight:650;line-height:1.2}.kalmar-landing-artboard__features li::before{position:absolute;top:-5px;left:0;color:#e51e5e;content:"✓";font-size:25px;font-weight:900}.kalmar-landing-artboard__features-figure{position:absolute;top:496px;left:1220px;width:167px;height:356px;object-fit:contain}
+  .kalmar-landing-artboard__program-heading,.kalmar-landing-artboard__program,.kalmar-landing-artboard__program-divider,.kalmar-landing-artboard__shows,.kalmar-landing-artboard__shows-divider,.kalmar-landing-artboard__additions{background:#031818}.kalmar-landing-artboard__program-heading h2{position:absolute;top:47px;left:0;width:700px;font-size:33px;line-height:1.05}.kalmar-landing-artboard__program{background:center/cover no-repeat}.kalmar-landing-artboard__program::before{position:absolute;inset:0;background:rgba(3,24,24,.46);content:""}.kalmar-landing-artboard__program-cards{position:absolute;top:48px;left:30px;display:grid;grid-template-columns:repeat(3,360px);gap:30px}.kalmar-landing-artboard__program-cards a{display:block;width:360px;height:443px;overflow:hidden}.kalmar-landing-artboard__program-cards img{display:block;width:100%;height:100%;object-fit:cover}.kalmar-landing-artboard__program-cta{position:absolute;top:529px;left:470px}.kalmar-landing-artboard__program-divider img{position:absolute;top:-33px;left:0;width:140px;height:140px}
+  .kalmar-landing-artboard__shows h2,.kalmar-landing-artboard__additions h2{position:absolute;top:75px;left:0;width:650px;font-size:31px;line-height:1.08}.kalmar-landing-artboard__shows-grid{position:absolute;top:220px;left:120px;display:grid;grid-template-columns:repeat(4,260px);gap:40px}.kalmar-landing-artboard__show-card,.kalmar-landing-artboard__addition-card{display:block;min-height:337px;overflow:hidden;background:#fff;color:#031818;text-decoration:none}.kalmar-landing-artboard__show-card img,.kalmar-landing-artboard__addition-card img{display:block;width:100%;height:230px;object-fit:cover}.kalmar-landing-artboard__show-card span,.kalmar-landing-artboard__addition-card span{display:block;min-height:56px;padding:10px 12px 3px;font-size:13px;font-weight:800;line-height:1.15}.kalmar-landing-artboard__show-card b,.kalmar-landing-artboard__addition-card b{display:block;padding:0 12px;color:#e72f69;font-size:11px;text-transform:uppercase}.kalmar-landing-artboard__shows-divider img{position:absolute;right:0;top:0;width:310px;height:40px;object-fit:cover;opacity:.8}.kalmar-landing-artboard__additions-viewport{position:absolute;top:226px;left:0;width:1200px;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;scrollbar-width:none}.kalmar-landing-artboard__additions-viewport::-webkit-scrollbar,.kalmar-landing-artboard__hall-viewport::-webkit-scrollbar{display:none}.kalmar-landing-artboard__additions-track{display:flex;width:max-content;min-width:1280px;gap:40px;padding:0 0 30px 120px}.kalmar-landing-artboard__addition-card{width:260px;min-height:332px;flex:0 0 260px;scroll-snap-align:start}.kalmar-landing-artboard__additions :global(.source-artboard-rail__controls){bottom:34px}
+  .kalmar-landing-artboard__hall-heading{background:#fff;color:#031818}.kalmar-landing-artboard__hall-heading h2{position:absolute;top:47px;left:0;width:620px;font-size:33px;line-height:1.06}.kalmar-landing-artboard__hall-heading p{position:absolute;top:151px;left:0;width:590px;font-size:15px;line-height:1.35}.kalmar-landing-artboard__hall{background:#fff;color:#031818}.kalmar-landing-artboard__hall-viewport{width:1200px;height:100%;overflow-x:auto;scroll-behavior:smooth;scroll-snap-type:x mandatory;scrollbar-width:none}.kalmar-landing-artboard__hall-track{display:flex;height:100%;width:max-content}.kalmar-landing-artboard__hall-slide{position:relative;width:1200px;height:100%;flex:0 0 1200px;scroll-snap-align:start}.kalmar-landing-artboard__hall-image{position:absolute;top:8px;left:80px;width:600px;height:400px;overflow:hidden;background:#eee}.kalmar-landing-artboard__hall-image img{position:absolute;inset:0;display:none;width:100%;height:100%;object-fit:cover}.kalmar-landing-artboard__hall-image img.is-current{display:block}.kalmar-landing-artboard__hall-copy{position:absolute;top:28px;left:720px;width:480px}.kalmar-landing-artboard__hall-copy h3{font-size:24px;line-height:1.04}.kalmar-landing-artboard__hall-copy h3 a{color:inherit;text-decoration:none}.kalmar-landing-artboard__hall-copy h3 a:hover{text-decoration:underline}.kalmar-landing-artboard__hall-size{position:absolute;top:390px;left:-640px;width:360px;font-size:14px;font-weight:800}.kalmar-landing-artboard__hall-details{margin-top:24px;font-size:12px;line-height:1.22}.kalmar-landing-artboard__hall-details p{margin:0 0 7px}.kalmar-landing-artboard__hall-details p.is-list-title{margin-top:9px;font-weight:800}.kalmar-landing-artboard__hall-details span{display:block;margin:2px 0}.kalmar-landing-artboard__hall-copy .kalmar-landing-artboard__button{position:absolute;top:424px;left:-19px}.kalmar-landing-artboard__hall :global(.source-artboard-rail__controls){top:506px;right:455px;bottom:auto;left:auto;gap:10px;transform:none;color:#031818}.kalmar-landing-artboard__hall :global(.source-artboard-rail__dots){display:none}.kalmar-landing-artboard__hall :global(.source-artboard-rail__arrow){width:28px;height:28px;border-color:#031818;background:transparent;color:#031818}.kalmar-landing-artboard__hall :global(.source-artboard-rail__status){position:static;width:auto;height:auto;padding:0;overflow:visible;clip:auto;clip-path:none;color:#031818;font-size:13px;font-weight:700;white-space:nowrap}
+  .kalmar-landing-artboard__trust-heading{background:#031818}.kalmar-landing-artboard__trust-heading h2{position:absolute;top:35px;left:0;width:800px;font-size:31px;line-height:1.07}.kalmar-landing-artboard__trust{background:#031818 center/cover no-repeat}.kalmar-landing-artboard__trust::before{position:absolute;inset:0;background:rgba(3,24,24,.43);content:""}.kalmar-landing-artboard__trust-grid{position:absolute;top:0;left:20px;display:grid;width:1120px;grid-template-columns:repeat(4,260px);grid-template-rows:300px 300px;gap:10px 26px}.kalmar-landing-artboard__trust-grid>div{position:relative;overflow:hidden;padding:28px;background:rgba(3,24,24,.8)}.kalmar-landing-artboard__trust-stat small{display:block;font-size:14px;font-weight:700}.kalmar-landing-artboard__trust-stat strong{display:block;margin:12px 0;color:#e72f69;font-size:67px;line-height:.9}.kalmar-landing-artboard__trust-stat p,.kalmar-landing-artboard__trust-safety p{font-size:13px;font-weight:650;line-height:1.22}.kalmar-landing-artboard__trust-mark{display:grid;place-items:center;background:#e72f69!important}.kalmar-landing-artboard__trust-mark img{max-width:82%;max-height:82%;object-fit:contain}.kalmar-landing-artboard__trust-photo{padding:0!important}.kalmar-landing-artboard__trust-photo img{width:100%;height:100%;object-fit:cover}.kalmar-landing-artboard__trust-safety img{width:70px;height:30px;object-fit:contain}.kalmar-landing-artboard__trust-safety strong{display:block;margin:20px 0 8px;font-size:22px}.kalmar-landing-artboard__trust-mark--small{background:#f7f6f4!important}
+  .kalmar-landing-artboard__pink-divider{background:#e72f69}.kalmar-landing-artboard__pink-divider::after{position:absolute;right:0;bottom:-1px;left:0;height:28px;background:#031818;clip-path:polygon(0 0,5% 100%,10% 0,15% 100%,20% 0,25% 100%,30% 0,35% 100%,40% 0,45% 100%,50% 0,55% 100%,60% 0,65% 100%,70% 0,75% 100%,80% 0,85% 100%,90% 0,95% 100%,100% 0,100% 100%,0 100%);content:""}.kalmar-landing-artboard__gift{background:#031818 center/cover no-repeat}.kalmar-landing-artboard__gift-copy{position:absolute;top:132px;left:0;width:570px}.kalmar-landing-artboard__gift h2{font-size:36px;line-height:1.04}.kalmar-landing-artboard__gift p{width:470px;margin-top:24px;font-size:16px;line-height:1.35}.kalmar-landing-artboard__gift .kalmar-landing-artboard__button{margin-top:32px}.kalmar-landing-artboard__gift-art{position:absolute;top:33px;right:-18px;width:650px;height:605px;object-fit:contain}
+  .kalmar-landing-artboard__venues-heading,.kalmar-landing-artboard__venues{background:#031818}.kalmar-landing-artboard__venues-heading h2{position:absolute;top:66px;left:0;width:500px;font-size:41px}.kalmar-landing-artboard__venues ul{position:absolute;top:0;left:0;display:grid;width:100%;grid-template-columns:repeat(3,1fr);gap:11px 16px;margin:0;padding:0;list-style:none}.kalmar-landing-artboard__venues a{display:block;padding:9px 12px;border:1px solid rgba(255,255,255,.76);color:#fff;font-size:11px;font-weight:750;line-height:1.2;text-decoration:none}.kalmar-landing-artboard__venues a:hover,.kalmar-landing-artboard__venues a:focus-visible{border-color:#e72f69;background:#e72f69}.kalmar-landing-artboard__footer-spacer{background:#e72f69}.kalmar-landing-artboard__footer{background:#031818}.kalmar-landing-artboard__footer>.kalmar-landing-artboard__rail{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:30px;padding-top:40px}.kalmar-landing-artboard__footer-brand img{display:block;width:180px;height:80px;object-fit:contain;object-position:left center}.kalmar-landing-artboard__footer-brand a{display:block;margin-top:16px;color:#fff;font-size:15px;font-weight:700;text-decoration:none}.kalmar-landing-artboard__footer ul{margin:8px 0 0;padding:0;list-style:none}.kalmar-landing-artboard__footer li+li{margin-top:13px}.kalmar-landing-artboard__footer li a{color:#fff;font-size:12px;text-decoration:none}.kalmar-landing-artboard__footer li a:hover{text-decoration:underline}.kalmar-landing-artboard__footer-bottom{background:#000}.kalmar-landing-artboard__footer-bottom>.kalmar-landing-artboard__rail{display:flex;align-items:flex-start;gap:34px;padding-top:38px;color:#fff}.kalmar-landing-artboard__footer-bottom p,.kalmar-landing-artboard__footer-bottom a{font-size:12px;line-height:1.3}.kalmar-landing-artboard__footer-bottom a{color:#fff;text-decoration:none}
+  @media (max-width:700px){.kalmar-landing-artboard__record{height:var(--kalmar-record-mobile)}.kalmar-landing-artboard__rail,.kalmar-landing-artboard__hall-rail{width:320px}.kalmar-landing-artboard__button{min-width:271px;height:56px;font-size:11px}.kalmar-landing-artboard__hero-background{width:320px;height:770px}.kalmar-landing-artboard__hero-layer--1{top:343px;left:-143px;width:606px;height:405px}.kalmar-landing-artboard__hero-layer--2{top:434px;left:-60px;width:440px;height:312px}.kalmar-landing-artboard__hero-layer--3{top:571px;left:-240px;width:800px;height:218px}.kalmar-landing-artboard__hero-badge{top:110px;left:-1px;width:35px;height:35px}.kalmar-landing-artboard__hero-gift{top:585px;left:75px;width:180px;font-size:10px}.kalmar-landing-artboard__hero-subtitle{top:219px;left:106px;width:200px;font-size:15px}.kalmar-landing-artboard__hero h1{top:279px;left:-2px;width:315px;font-size:25px;line-height:1.06}.kalmar-landing-artboard__hero-cta{top:629px;left:25px;width:271px}.kalmar-landing-artboard__intro h2{top:1px;left:1px;width:319px;font-size:22px;line-height:1.08}.kalmar-landing-artboard__intro p{top:116px;right:auto;left:0;width:320px;font-size:13px;line-height:1.36}.kalmar-landing-artboard__features h2{top:54px;left:10px;width:310px;font-size:25px;line-height:1.07}.kalmar-landing-artboard__features-photo{top:160px;left:-20px;width:360px;height:221px}.kalmar-landing-artboard__features ul{top:474px;left:43px;width:250px}.kalmar-landing-artboard__features li{min-height:56px;padding-left:28px;font-size:11px}.kalmar-landing-artboard__features li::before{top:-4px;font-size:21px}.kalmar-landing-artboard__features-figure{top:788px;left:230px;width:109px;height:233px}.kalmar-landing-artboard__program-heading h2{top:50px;left:0;width:320px;font-size:25px}.kalmar-landing-artboard__program-cards{top:48px;left:-20px;display:block}.kalmar-landing-artboard__program-cards a{width:360px;height:443px;margin-bottom:20px}.kalmar-landing-artboard__program-cta{top:1447px;left:25px;width:271px}.kalmar-landing-artboard__program-divider img{top:-15px;left:-40px;width:82px;height:82px}.kalmar-landing-artboard__shows h2,.kalmar-landing-artboard__additions h2{top:75px;left:0;width:320px;font-size:24px}.kalmar-landing-artboard__shows-grid{top:209px;left:0;display:block}.kalmar-landing-artboard__show-card{width:350px;min-height:379px;margin:0 -15px 20px 0}.kalmar-landing-artboard__show-card img{height:290px}.kalmar-landing-artboard__shows-divider img{right:-40px;width:160px}.kalmar-landing-artboard__additions-viewport{top:318px;left:-35px;width:390px}.kalmar-landing-artboard__additions-track{min-width:0;gap:10px;padding:0 45px}.kalmar-landing-artboard__addition-card{width:250px;min-height:324px;flex-basis:250px}.kalmar-landing-artboard__addition-card img{height:220px}.kalmar-landing-artboard__additions :global(.source-artboard-rail__controls){bottom:230px}.kalmar-landing-artboard__hall-heading h2{top:48px;left:0;width:320px;font-size:25px}.kalmar-landing-artboard__hall-heading p{top:144px;left:0;width:320px;font-size:12px}.kalmar-landing-artboard__hall-viewport{width:320px}.kalmar-landing-artboard__hall-slide{width:320px;flex-basis:320px}.kalmar-landing-artboard__hall-image{top:416px;left:-24px;width:439px;height:275px}.kalmar-landing-artboard__hall-copy{top:62px;left:-23px;width:320px}.kalmar-landing-artboard__hall-copy h3{font-size:18px}.kalmar-landing-artboard__hall-size{top:394px;left:-6px;width:275px;font-size:12px}.kalmar-landing-artboard__hall-details{margin-top:20px;font-size:10px;line-height:1.16}.kalmar-landing-artboard__hall-copy .kalmar-landing-artboard__button{top:601px;left:2px;width:317px}.kalmar-landing-artboard__hall :global(.source-artboard-rail__controls){top:16px;right:74px}.kalmar-landing-artboard__hall :global(.source-artboard-rail__arrow){width:24px;height:24px;font-size:13px}.kalmar-landing-artboard__trust-heading h2{top:39px;left:0;width:320px;font-size:23px}.kalmar-landing-artboard__trust-grid{top:0;left:0;width:320px;grid-template-columns:repeat(2,145px);grid-template-rows:149px 149px 149px 149px;gap:16px 15px}.kalmar-landing-artboard__trust-grid>div{padding:15px}.kalmar-landing-artboard__trust-stat strong{margin:7px 0;font-size:39px}.kalmar-landing-artboard__trust-stat small,.kalmar-landing-artboard__trust-stat p,.kalmar-landing-artboard__trust-safety p{font-size:9px}.kalmar-landing-artboard__trust-safety strong{margin:8px 0 5px;font-size:14px}.kalmar-landing-artboard__trust-safety img{width:45px;height:18px}.kalmar-landing-artboard__trust-mark img{max-width:90%;max-height:90%}.kalmar-landing-artboard__gift-copy{top:68px;left:0;width:260px}.kalmar-landing-artboard__gift h2{font-size:22px}.kalmar-landing-artboard__gift p{width:245px;margin-top:17px;font-size:11px}.kalmar-landing-artboard__gift .kalmar-landing-artboard__button{margin-top:20px}.kalmar-landing-artboard__gift-art{top:226px;right:-60px;width:385px;height:358px}.kalmar-landing-artboard__venues-heading h2{top:70px;left:0;font-size:31px}.kalmar-landing-artboard__venues ul{grid-template-columns:1fr;gap:8px}.kalmar-landing-artboard__venues a{padding:8px 10px;font-size:10px}.kalmar-landing-artboard__footer>.kalmar-landing-artboard__rail{display:block;padding-top:34px}.kalmar-landing-artboard__footer-brand img{width:150px;height:62px}.kalmar-landing-artboard__footer-brand a{margin-top:7px;font-size:13px}.kalmar-landing-artboard__footer ul{margin-top:25px}.kalmar-landing-artboard__footer li+li{margin-top:8px}.kalmar-landing-artboard__footer li a{font-size:11px}.kalmar-landing-artboard__footer-bottom>.kalmar-landing-artboard__rail{display:block;padding-top:33px}.kalmar-landing-artboard__footer-bottom p,.kalmar-landing-artboard__footer-bottom a{display:block;margin-bottom:16px;font-size:11px}}
+</style>

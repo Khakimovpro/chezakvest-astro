@@ -6,7 +6,7 @@ const root = new URL('../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
 const page = async (slug) => JSON.parse(await read(`src/data/pages/${slug}.json`));
 
-test('uses the documented dark source canvases while preserving the source header on VR and Azkaban', async () => {
+test('uses the documented dark source canvases and lets full artboards own their headers', async () => {
   const [vr, azkaban] = await Promise.all([
     page('den-rozhdeniya-na-vr-arene'),
     page('den-rozhdeniya-uznik-azkabana'),
@@ -14,11 +14,13 @@ test('uses the documented dark source canvases while preserving the source heade
 
   assert.equal(vr.theme, 'vr');
   assert.equal(azkaban.theme, 'azkaban');
-  for (const document of [vr, azkaban]) {
-    const hero = document.sections.find((section) => section.kind === 'hero');
-    assert.notEqual(hero.hideSharedHeader, true);
-    assert.ok(!document.sections.some((section) => section.kind === 'faq'));
-  }
+  const vrHero = vr.sections.find((section) => section.kind === 'hero');
+  const azkabanHero = azkaban.sections.find((section) => section.kind === 'hero');
+  assert.equal(vrHero.hideSharedHeader, true, 'the measured VR canvas owns its 90px source header record');
+  assert.equal(vrHero.composition, 'vr-birthday-artboard');
+  assert.equal(azkabanHero.hideSharedHeader, true, 'the measured Azkaban canvas owns its 90px source header record');
+  assert.equal(azkabanHero.composition, 'azkaban-artboard');
+  for (const document of [vr, azkaban]) assert.ok(!document.sections.some((section) => section.kind === 'faq'));
   assert.equal(vr.showReviews, false);
   assert.ok(azkaban.sections.some((section) => section.kind === 'reviews' && section.title === 'Честные отзывы наших гостей и их родителей'));
   assert.deepEqual(vr.sections[0].buttons.map((button) => button.primary), [false, true]);
@@ -37,11 +39,18 @@ test('preserves source card art and first-frame gallery geometry on the dark cat
 
 test('keeps a source callback before venue chips on holiday pages', async () => {
   const layout = await read('src/layouts/HolidayPage.astro');
-  const callback = layout.indexOf('{page.showCallback !== false && <CallbackForm id="h" />}');
+  // Route-local artboards may add their own opt-out guards.  The invariant for
+  // the shared holiday branch is the visible callback itself and its order,
+  // rather than a frozen list of every bespoke composition.
+  const callback = /page\.showCallback !== false && <CallbackForm id="h" \/>/u.exec(layout)?.index ?? -1;
   const venues = layout.indexOf('<VenuesSection id={`venues-${page.slug}`}');
-  assert.ok(callback >= 0, 'callback rendering is present');
+  assert.ok(callback >= 0, 'generic holiday callback rendering is present');
   assert.ok(venues >= 0, 'venue rendering is present');
   assert.ok(callback < venues, 'source callback comes before venue chips');
+  assert.match(layout, /sourceMaxi\s*=\s*hero\.composition\s*===\s*'maxi-artboard'/u);
+  assert.match(layout, /sourceVrBirthday\s*=\s*hero\.composition\s*===\s*'vr-birthday-artboard'/u);
+  assert.match(layout, /sourceKalmarLanding\s*=\s*hero\.composition\s*===\s*'kalmar-landing-artboard'/u);
+  assert.match(layout, /sourceAzkaban\s*=\s*hero\.composition\s*===\s*'azkaban-artboard'/u);
   assert.match(layout, /hasExplicitHeroPrimary \? b\.primary : i === 0/);
 });
 

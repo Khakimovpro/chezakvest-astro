@@ -19,6 +19,8 @@
   {
    "kind": "hero",
    "variant": "dark",
+   "composition": "azkaban-artboard",
+   "hideSharedHeader": true,
    "h1": "60 минут приключения + банкетная зона на 12 человек в Ростове-на-Дону",
    "up": "",
    "sub": "60 минут приключения и банкетная зона на 12 человек. Подберём программу праздника под любой возраст от 7 лет",
@@ -215,5 +217,154 @@
    "subtitle": "Оставьте контакты — менеджер уточнит детали и соберёт программу под возраст и компанию",
    "cta": "Отправить заявку"
   }
- ]
+ ],
+ "sourceParity": {
+  "kind": "azkaban-artboard",
+  "bookingHref": "#prazdnik",
+  "records": {
+   "header": { "desktop": 90, "mobile": 90 },
+   "hero": { "desktop": 560, "mobile": 680 },
+   "breadcrumbs": { "desktop": 54, "mobile": 78 },
+   "breadcrumbSpacer": { "desktop": 73, "mobile": 73 },
+   "packagesHeading": { "desktop": 165, "mobile": 155 },
+   "packages": { "desktop": 590, "mobile": 1154 },
+   "showsHeading": { "desktop": 210, "mobile": 270 },
+   "shows": { "desktop": 630, "mobile": 454 },
+   "hallHeading": { "desktop": 255, "mobile": 325 },
+   "hall": { "desktop": 505, "mobile": 580 },
+   "quizHeading": { "desktop": 255, "mobile": 305 },
+   "quiz": { "desktop": 710, "mobile": 710 },
+   "dividerBeforeReviews": { "desktop": 50, "mobile": 50 },
+   "reviewsHeading": { "desktop": 165, "mobile": 235 },
+   "dividerAfterReviews": { "desktop": 50, "mobile": 50 },
+   "story": { "desktop": 641, "mobile": 1054 },
+   "features": { "desktop": 572, "mobile": 1501 },
+   "dividerBeforeGallery": { "desktop": 50, "mobile": 50 },
+   "galleryHeading": { "desktop": 114, "mobile": 71 },
+   "gallery": { "desktop": 520, "mobile": 288 },
+   "dividerAfterGallery": { "desktop": 50, "mobile": 50 },
+   "trustHeading": { "desktop": 165, "mobile": 230 },
+   "trust": { "desktop": 640, "mobile": 740 },
+   "dividerBeforeAlternatives": { "desktop": 50, "mobile": 50 },
+   "alternatives": { "desktop": 569, "mobile": 648 },
+   "dividerBeforeBooking": { "desktop": 50, "mobile": 50 },
+   "booking": { "desktop": 551, "mobile": 476 },
+   "dividerAfterBooking": { "desktop": 50, "mobile": 50 },
+   "venuesHeading": { "desktop": 132, "mobile": 111 },
+   "venues": { "desktop": 127, "mobile": 537 },
+   "footerSpacer": { "desktop": 60, "mobile": 60 },
+   "footer": { "desktop": 311, "mobile": 911 },
+   "copyright": { "desktop": 170, "mobile": 246 }
+  },
+  "visual": {
+   "hero": {
+    "title": ["ДЕТСКИЙ ПРАЗДНИК", "в стиле Узник Азкабана"],
+    "summary": "60 минут приключения + банкетная зона на 12 человек в Ростове-на-Дону",
+    "facts": ["2-8", "60 мин.", "7+", "пр-т Нагибина, 14а"]
+   },
+   "shows": [
+    { "t": "Нащупал", "img": "/assets/static.tildacdn.com/tild6230-6463-4838-b865-386137323461/2_.jpg" },
+    { "t": "Мафия", "img": "/assets/static.tildacdn.com/tild3738-3861-4636-b531-376631326334/_.jpg" },
+    { "t": "Угадай мелодию", "img": "/assets/static.tildacdn.com/tild6565-3935-4133-b935-333963313438/_-2.jpg" },
+    { "t": "Импровизация. Громкий разговор", "img": "/assets/static.tildacdn.com/tild6161-3432-4935-b531-653963333264/_.jpg" },
+    { "t": "Попробуй объяснить", "img": "/assets/static.tildacdn.com/tild3666-3363-4430-b737-616439363137/-_.jpg" },
+    { "t": "Угадай порядок", "img": "/assets/static.tildacdn.com/tild3435-3562-4164-a165-336265323434/photo_52245135305926.jpg" },
+    { "t": "Зельеварение", "img": "/assets/static.tildacdn.com/tild3638-6430-4263-a639-616163316136/noroot.png" },
+    { "t": "Импровизация. Без чувств", "img": "/assets/static.tildacdn.com/tild3862-6331-4263-b264-343334343765/_.jpg" }
+   ],
+   "hall": {
+    "image": "/assets/static.tildacdn.com/tild3466-6130-4564-a365-643635333331/__________01-2.jpg",
+    "title": "Зал оборудован:",
+    "equipment": [
+     "Музыкальной колонкой",
+     "Холодильником и микроволновой печью",
+     "Кулером с горячей и холодной водой",
+     "Безлимитный чай/кофе для вас",
+     "Необходимой мебелью: столы, стулья, диванчики"
+    ]
+   },
+   "reviews": {
+    "badges": [
+     "/assets/static.tildacdn.com/tild3665-3238-4465-a464-613766613634/__.png",
+     "/assets/static.tildacdn.com/tild3462-6565-4131-b138-666134393862/__2GIS.webp"
+    ]
+   },
+   "story": {
+    "features": [
+     "Уникальный формат по любимой вселенной",
+     "Локация с банкетной зоной внутри",
+     "Атмосфера книг и фильмов",
+     "Потрясающая атмосфера с полным погружением"
+    ]
+   },
+   "features": {
+    "icons": [
+     "/assets/static.tildacdn.com/tild6635-3731-4935-a137-376234623835/icon.svg",
+     "/assets/static.tildacdn.com/tild3135-3236-4236-a531-636236616333/vector.svg",
+     "/assets/static.tildacdn.com/tild3333-3131-4363-b237-663936636161/icon.svg",
+     "/assets/static.tildacdn.com/tild6533-3236-4162-b061-363934613931/icon.svg"
+    ]
+   },
+   "gallery": {
+    "image": "/assets/q/7c05392bc8.webp"
+   },
+   "trust": {
+    "icon": "/assets/static.tildacdn.com/tild3965-3930-4331-a639-613063303966/photo.svg",
+    "leftImage": "/assets/static.tildacdn.com/tild6235-3038-4537-b664-363437656233/9.png",
+    "rightImage": "/assets/static.tildacdn.com/tild6166-3734-4262-a639-616237656336/_.jpg"
+   },
+   "booking": {
+    "background": "/assets/static.tildacdn.com/tild6337-6433-4035-b265-333837663931/noroot.png",
+    "decorations": [
+     "/assets/static.tildacdn.com/tild3263-6538-4537-b934-343064323136/gift--v1.png",
+     "/assets/static.tildacdn.com/tild3535-6639-4365-a165-343265326163/party-baloons.png",
+     "/assets/static.tildacdn.com/tild3439-6362-4561-a465-303634663163/birthday-cake.png"
+    ]
+   },
+   "venues": [
+    { "title": "Гвардейский пер., 61", "href": "/guardeskypereulog61" },
+    { "title": "ул. Социалистическая, 186", "href": "/socialicheskaya186" },
+    { "title": "ул. Красноармейская, 103", "href": "/krasnormerskaya103" },
+    { "title": "пр-т Соколова, 23", "href": "/sokolova23" },
+    { "title": "пр-т Мира, д. 27", "href": "/mira27" },
+    { "title": "ул. Нансена, 107/1", "href": "/nansena107" },
+    { "title": "ул. Магнитогорская, 1", "href": "/magnitogorskaya1" },
+    { "title": "ул. 40-летия Победы, 216", "href": "/40letpobedy216" },
+    { "title": "пр-т Нагибина, 14А", "href": "/nagibina14" }
+   ],
+   "footer": {
+    "organisation": [
+     ["Детский День рождения", "/kids"],
+     ["Взрослый День рождения", "/prazdniki-pod-kluch"],
+     ["День Рождения в VR", "/den-rozhdeniya-na-vr-arene"],
+     ["Выпускной 2026", "/vypusknoj-kalmar"],
+     ["Корпоратив | Тимбилдинг", "/prazdniki-pod-kluch"],
+     ["Новый год 2027", "/new-year"]
+    ],
+    "entertainment": [
+     ["Квеструмы", "/kvesty-v-rostove-na-donu"],
+     ["VR-арена", "/den-rozhdeniya-na-vr-arene"],
+     ["Активные игры", "/party-games"],
+     ["Прятки в темноте", "/pryatki_v_temnote"],
+     ["Страшные квесты", "/strashnye-kvesty"]
+    ]
+   }
+  },
+  "packages": [
+   { "title": "Стандарт", "src": "/assets/static.tildacdn.com/tild3062-6161-4030-b866-323939616631/_1___-2.png" },
+   { "title": "Супер", "src": "/assets/static.tildacdn.com/tild6566-6363-4439-a438-643461343262/_2___-2.png" },
+   { "title": "Макси", "src": "/assets/static.tildacdn.com/tild3334-6662-4466-b237-386665393934/_3___-2.png" }
+  ],
+  "venues": [
+   { "title": "Гвардейский пер., 61", "href": "/guardeskypereulog61" },
+   { "title": "ул. Социалистическая, 186", "href": "/socialicheskaya186" },
+   { "title": "ул. Красноармейская, 103", "href": "/krasnormerskaya103" },
+   { "title": "пр-т Соколова, 23", "href": "/sokolova23" },
+   { "title": "пр-т Мира, д. 27", "href": "/mira27" },
+   { "title": "ул. Нансена, 107/1", "href": "/nansena107" },
+   { "title": "ул. Магнитогорская, 1", "href": "/magnitogorskaya1" },
+   { "title": "ул. 40-летия Победы, 216", "href": "/40letpobedy216" },
+   { "title": "пр-т Нагибина, 14А", "href": "/nagibina14" }
+  ]
+ }
 }

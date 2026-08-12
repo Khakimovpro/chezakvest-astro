@@ -24,7 +24,8 @@
    "variant": "dark",
    "heightDesktop": 834,
    "heightMobile": 748,
-   "composition": "tilda-artboard",
+   "composition": "vypusknoj-artboard",
+   "hideSharedHeader": true,
    "hidePills": true,
    "artboard": {
     "desktop": { "width": 1200, "height": 856 },
@@ -238,5 +239,222 @@
     "/assets/q/1ec3aacd72.webp"
    ]
   }
- ]
+ ],
+ "sourceParity": {
+  "kind": "vypusknoj-kalmar-artboard",
+  "bookingHref": "#prazdnik",
+  "records": {
+   "spacer": { "id": "rec888951739", "desktop": 58, "mobile": 58 },
+   "hero": { "id": "rec888951742", "desktop": 856, "mobile": 770 },
+   "intro": { "id": "rec888951751", "desktop": 212, "mobile": 282 },
+   "features": { "id": "rec888951757", "desktop": 850, "mobile": 1020 },
+   "scenarioHeading": { "id": "rec888951769", "desktop": 160, "mobile": 150 },
+   "program": { "id": "rec892172401", "desktop": 847, "mobile": 1691 },
+   "dividerAfterProgram": { "id": "rec888951778", "desktop": 30, "mobile": 30 },
+   "scenarios": { "id": "rec888951784", "desktop": 624, "mobile": 563 },
+   "dividerAfterScenarios": { "id": "rec888951790", "desktop": 40, "mobile": 40 },
+   "additions": { "id": "rec888951793", "desktop": 635, "mobile": 722 },
+   "hallHeading": { "id": "rec888951799", "desktop": 260, "mobile": 260 },
+   "hall": { "id": "rec888951802", "desktop": 600, "mobile": 785 },
+   "trustHeading": { "id": "rec888951820", "desktop": 140, "mobile": 220 },
+   "trust": { "id": "rec888951823", "desktop": 770, "mobile": 750 },
+   "maskedReviewTop": { "id": "rec925900196", "desktop": 315, "mobile": 210 },
+   "maskedReviewMiddle": { "id": "rec925900666", "desktop": 255, "mobile": 150 },
+   "maskedReviewBottom": { "id": "rec888951853", "desktop": 73, "mobile": 73 },
+   "gift": { "id": "rec888951859", "desktop": 700, "mobile": 490 },
+   "venuesHeading": { "id": "rec888951868", "desktop": 210, "mobile": 230 },
+   "venues": { "id": "rec888951871", "desktop": 157, "mobile": 567 },
+   "footerSpacer": { "id": "rec888951901", "desktop": 84, "mobile": 85 },
+   "footer": { "id": "rec888951904", "desktop": 341, "mobile": 856 },
+   "footerBottom": { "id": "rec888951907", "desktop": 194, "mobile": 360 }
+  },
+  "desktopFooterRecordTrim": 1,
+  "hero": {
+   "background": "/assets/static.tildacdn.com/tild3130-3432-4231-a166-333333343932/__.jpg",
+   "logo": "/assets/static.tildacdn.com/tild6333-3064-4563-a439-326463353665/photo.svg",
+   "layers": [
+    {
+     "src": "/assets/static.tildacdn.com/tild6162-3633-4565-b664-393366366236/--_mini.png",
+     "desktop": { "top": 94, "left": 404, "width": 1012, "height": 675 },
+     "mobile": { "top": 353, "left": -143, "width": 606, "height": 405 }
+    },
+    {
+     "src": "/assets/static.tildacdn.com/tild3165-3161-4339-a166-353666616432/____mini.png",
+     "desktop": { "top": 243, "left": 550, "width": 733, "height": 518 },
+     "mobile": { "top": 434, "left": -60, "width": 440, "height": 312 }
+    },
+    {
+     "src": "/assets/static.tildacdn.com/tild6364-6337-4137-b135-616333396265/_mini.png",
+     "desktop": { "top": 331, "left": -680, "width": 2560, "height": 699 },
+     "mobile": { "top": 602, "left": -240, "width": 800, "height": 218 }
+    },
+    {
+     "src": "/assets/static.tildacdn.com/tild3035-3661-4434-b462-333032353334/efea3ecc-785e-42ad-9.png",
+     "desktop": { "top": 333, "left": -18, "width": 55, "height": 55 },
+     "mobile": { "top": 210, "left": -13, "width": 40, "height": 41 }
+    }
+   ],
+   "city": "В РОСТОВЕ-НА-ДОНУ",
+   "sub": "В СТИЛЕ СЕРИАЛА",
+   "title": "ВЫПУСКНЫЕ 2026",
+   "benefit": "Ответьте на 3 вопроса и получите подарок",
+   "cta": "ЗАБРОНИРОВАТЬ ДАТУ",
+   "dividerArt": "/assets/static.tildacdn.com/tild6437-6165-4462-a163-383065653238/22.png",
+   "nav": [
+    { "title": "Об игре", "href": "#about" },
+    { "title": "Узнать стоимость", "href": "#prazdnik" },
+    { "title": "Больше развлечений", "href": "/" }
+   ]
+  },
+  "intro": {
+   "title": "ЧЕ ЗА КВЕСТ — МИР ПРИКЛЮЧЕНИЙ И ВЕСЕЛЬЯ",
+   "text": "Место, где каждый сможет почувствовать себя участником игры, поиграть в известные игры, объединиться с друзьями в команду и заполучить главный приз!"
+  },
+  "features": {
+   "background": "/assets/static.tildacdn.com/tild3036-3065-4334-a462-373265623233/_.png",
+   "figure": "/assets/static.tildacdn.com/tild3234-3765-4963-b735-646238303664/_mini.png",
+   "title": "ОКАЖИТЕСЬ В РОЛИ ОДНОГО ИЗ ГЕРОЕВ ИГРЫ В КАЛЬМАРА",
+   "items": [
+    "Огромный лабиринт 150 м2",
+    "Профессиональные актеры-ведущие",
+    "Задания и испытания из сериала",
+    "Участие в известных играх",
+    "Встреча со знаковыми персонажами сериала",
+    "Новые игры и испытания",
+    "Тимбилдинг и работа в команде",
+    "Большие комнаты отдыха на 20 мест",
+    "Тематические шоу-программы и мастер-классы"
+   ]
+  },
+  "program": {
+   "background": "/assets/static.tildacdn.com/tild3464-3462-4065-b462-353931643230/__.jpg",
+   "poster": "/assets/static.tildacdn.com/tild3539-3436-4132-a533-303639653139/__.png",
+   "label": "ПРОГРАММА",
+   "title": "ШОУ-ПРОГРАММЫ НА ВЫБОР",
+   "cta": "ЗАБРОНИРОВАТЬ ДАТУ",
+   "cards": [
+    { "title": "ШОУ ЛЮБИМЫЙ ГЕРОЙ", "src": "/assets/static.tildacdn.com/tild3638-3337-4261-b839-663838356334/_DSC7951_1.jpg" },
+    { "title": "ШОУ КВИЗ ИГРА В КАЛЬМАРА", "src": "/assets/static.tildacdn.com/tild3334-3966-4964-b430-373265343261/159d9f2ed569252f19c5.jpeg" },
+    { "title": "ШОУ КАЖЕТСЯ НАЩУПАЛ", "src": "/assets/static.tildacdn.com/tild3430-3930-4437-b335-623937323737/IMG_7151.jpg" },
+    { "title": "ШОУ МАФИЯ. ИГРА НА ВЫЖИВАНИЕ", "src": "/assets/static.tildacdn.com/tild6436-3264-4361-b838-343639346166/noroot.png" }
+   ]
+  },
+  "scenarios": {
+   "title": "ДРУГИЕ СЦЕНАРИИ ВЫПУСКНОГО",
+   "cta": "ЗАКАЗАТЬ",
+   "items": [
+    { "title": "БЕГУЩИЙ В ЛАБИРИНТЕ", "href": "/beguschij_v_labirinte", "src": "/assets/static.tildacdn.com/tild3464-6665-4961-b665-363365666438/___st_block.png" },
+    { "title": "МАЙНКРАФТ", "href": "/minecraft", "src": "/assets/static.tildacdn.com/tild3462-6361-4331-a530-613138666131/_st_block.png" },
+    { "title": "ГАРРИ ПОТТЕР", "href": "/garri-potter-i-kubok-ognya", "src": "/assets/static.tildacdn.com/tild3563-6236-4435-b539-336539323632/_st_block.png" },
+    { "title": "АМОНГ АС", "href": "/among_us", "src": "/assets/static.tildacdn.com/tild6366-3133-4136-b933-653137333462/_st_block.png" },
+    { "title": "PORTAL STRIKE", "href": "/portal-strike", "src": "/assets/static.tildacdn.com/tild6330-3737-4631-b733-373236626239/Portal_Strike.png" }
+   ]
+  },
+  "additions": {
+   "title": "ДОПОЛНЕНИЯ, КОТОРЫЕ УКРАСЯТ ВАШ ПРАЗДНИК",
+   "cta": "ЗАКАЗАТЬ",
+   "items": [
+    { "title": "Профессиональные актеры", "src": "/assets/static.tildacdn.com/tild3266-6530-4961-b639-656630353465/noroot.png" },
+    { "title": "Вынос торта ведущим", "src": "/assets/static.tildacdn.com/tild3834-6264-4434-b061-333862343963/noroot.png" },
+    { "title": "Тематические торты", "src": "/assets/static.tildacdn.com/tild6236-3065-4339-a437-613732383332/noroot.png" },
+    { "title": "Фотограф на мероприятие", "src": "/assets/static.tildacdn.com/tild3635-3963-4039-b139-663737666633/-_.jpg" }
+   ]
+  },
+  "hall": {
+   "heading": "ПОДБЕРЁМ ЗАЛ КОТОРЫЙ ПОДХОДИТ ВАМ",
+   "subtitle": "4 оборудованных зала, со всем необходимым для успешного проведения выпускного или любого другого праздника",
+   "title": "УЛИЦА 40-ЛЕТИЯ ПОБЕДЫ, 216",
+   "capacity": "2 зала по 30 кв.м",
+   "guests": "До 15 гостей в каждом зале",
+   "format": "Наша новая и самая масштабная площадка для проведения вашего выпускного в формате активной игры в лабиринте или на VR-арене.",
+   "equipmentTitle": "Зал оборудован:",
+   "equipment": [
+    "музыкальной колонкой",
+    "холодильником и микроволновой печью",
+    "кулером с горячей и холодной водой",
+    "необходимой мебелью: столы, стулья, диванчики",
+    "безлимитный чай/кофе для вас"
+   ],
+   "cta": "ЗАБРОНИРОВАТЬ ДАТУ",
+   "previousIcon": "/assets/static.tildacdn.com/tild3536-3232-4837-a430-643364383434/_.svg",
+   "nextIcon": "/assets/static.tildacdn.com/tild3761-6461-4363-b436-653661303937/_.svg",
+   "images": [
+    "/assets/static.tildacdn.com/tild3662-6664-4032-b135-663138643665/photo_2024-06-08_14-.jpg",
+    "/assets/static.tildacdn.com/tild6162-3163-4464-b062-613637353633/photo_2024-06-08_14-.jpg"
+   ]
+  },
+  "trust": {
+   "heading": "ПРИЧИНЫ ДОВЕРИТЬ НАМ ОРГАНИЗАЦИЮ ВАШЕГО ПРАЗДНИКА",
+   "background": "/assets/static.tildacdn.com/tild3830-3366-4161-b636-373562633061/photo_2023-11-20_22-.jpg",
+   "mark": "/assets/static.tildacdn.com/tild3965-3930-4331-a639-613063303966/photo.svg",
+   "cards": [
+    { "prefix": "Уже", "value": "8", "text": "лет создаем волшебные дни рождения" },
+    { "prefix": "Более", "value": "10 000", "text": "восторженных отзывов" },
+    { "value": "9", "text": "современно оборудованных площадок с комнатами отдыха" },
+    { "title": "БЕЗОПАСНО", "text": "На каждом празднике присутствует инструктор, который следит за безопасностью всех участников. ДЕТИ ВСЕГДА ПОД ПРИСМОТРОМ", "src": "/assets/static.tildacdn.com/tild3337-3666-4237-b830-313666316639/IMAGE_2021-11-24_140.jpg" },
+    { "title": "ДЛЯ ВСЕХ ВОЗРАСТОВ", "text": "Каждый сценарий адаптируется под любой возраст участников", "src": "/assets/static.tildacdn.com/tild6231-3732-4435-b437-303934356436/IMG_3527.jpeg" }
+   ]
+  },
+  "gift": {
+   "background": "/assets/static.tildacdn.com/tild6165-3863-4262-a337-346333663664/_.jpg",
+   "art": "/assets/static.tildacdn.com/tild3339-6462-4239-b662-353164363932/-.png",
+   "title": "ГАРАНТИРОВАННО ПОЛУЧИТЕ 1 ИЗ 3 ПАМЯТНЫХ ПОДАРКОВ",
+   "text": "Ответьте на 3 вопроса — и узнайте точную стоимость незабываемого выпускного",
+   "cta": "РАССЧИТАТЬ СТОИМОСТЬ"
+  },
+  "venues": {
+   "heading": "НАШИ ПЛОЩАДКИ",
+   "subtitle": "Выбери одну из 8 современно оборудованных площадок с комнатами отдыха в Ростове-на-Дону",
+   "items": [
+    { "title": "ГВАРДЕЙСКИЙ ПЕР., 61", "href": "/guardeskypereulog61" },
+    { "title": "УЛ. СОЦИАЛИСТИЧЕСКАЯ, 186", "href": "/socialicheskaya186" },
+    { "title": "УЛ. КРАСНОАРМЕЙСКАЯ, 103", "href": "/krasnormerskaya103" },
+    { "title": "ПР-Т СОКОЛОВА, 23", "href": "/sokolova23" },
+    { "title": "ПР-Т МИРА, Д. 27", "href": "/mira27" },
+    { "title": "УЛ. НАНСЕНА, 107/1", "href": "/nansena107" },
+    { "title": "УЛ. МАГНИТОГОРСКАЯ, 1", "href": "/magnitogorskaya1" },
+    { "title": "УЛ. 40-ЛЕТИЯ ПОБЕДЫ, 216", "href": "/40letpobedy216" },
+    { "title": "ПР-Т НАГИБИНА, 14А", "href": "/nagibina14" }
+   ]
+  },
+  "footer": {
+   "organisation": [
+    { "title": "Детский День рождения", "href": "/kids" },
+    { "title": "Взрослый День рождения", "href": "/prazdniki-pod-kluch" },
+    { "title": "День Рождения в VR", "href": "/den-rozhdeniya-na-vr-arene" },
+    { "title": "Выпускной", "href": "/vypusknoj-kalmar" },
+    { "title": "Корпоратив | Тимбилдинг", "href": "/prazdniki-pod-kluch" }
+   ],
+   "entertainment": [
+    { "title": "Квеструмы", "href": "/kvesty-v-rostove-na-donu" },
+    { "title": "VR-арены", "href": "/den-rozhdeniya-na-vr-arene" },
+    { "title": "Активные игры", "href": "/party-games" },
+    { "title": "Прятки в темноте", "href": "/pryatki_v_temnote" },
+    { "title": "Страшные квесты", "href": "/strashnye-kvesty" }
+   ],
+   "venues": [
+    { "title": "ПЕР. ГВАРДЕЙСКИЙ, 61", "href": "/guardeskypereulog61" },
+    { "title": "УЛ. СОЦИАЛИСТИЧЕСКАЯ, 186", "href": "/socialicheskaya186" },
+    { "title": "УЛ. КРАСНОАРМЕЙСКАЯ, 103", "href": "/krasnormerskaya103" },
+    { "title": "ПР-Т СОКОЛОВА, 23", "href": "/sokolova23" },
+    { "title": "УЛ, НАНСЕНА, 107/1", "href": "/nansena107" },
+    { "title": "ПР-Т МИРА, 27", "href": "/mira27" },
+    { "title": "УЛ. МАГНИТОГОРСКАЯ, 1", "href": "/magnitogorskaya1" },
+    { "title": "УЛИЦА 40-ЛЕТИЯ ПОБЕДЫ, 216", "href": "/40letpobedy216" },
+    { "title": "УЛ. НАГИБИНА, 14А", "href": "/nagibina14" }
+   ],
+   "privacy": "Политика обработки персональных данных",
+   "privacyHref": "/privacy",
+   "legal": [
+    "ИП Мелешкин Юрий Иванович",
+    "ИНН 164409771610",
+    "ОГРНИП: 322169000094990"
+   ],
+   "logo": "/assets/static.tildacdn.com/tild6337-6561-4434-a631-626137386564/-_.png",
+   "copyright": "© 2025 ЧЁ ЗА КВЕСТ",
+   "hours": "Работаем с 10:00 до 23:30",
+   "email": "marketing.chezaquest@yandex.ru",
+   "emailHref": "mailto:marketing.chezaquest@yandex.ru"
+  }
+ }
 }

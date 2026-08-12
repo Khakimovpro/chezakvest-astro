@@ -81,7 +81,8 @@
   "title": "Онлайн бронирование",
   "lines": [
    "Точная стоимость – в форме бронирования",
-   "Оплатить участие в квесте можно наличными или переводом в день игры"
+   "Оплатить участие в квесте можно наличными или переводом в день игры",
+   "Выберите и забронируйте свободное время, кликнув по нему"
   ]
  },
  "related": {
@@ -168,7 +169,7 @@
    }
   ]
  },
- "extra": [
+  "extra": [
   {
    "title": "Как у нас проходят праздники",
    "lines": [],
@@ -183,5 +184,21 @@
     "/assets/q/b8c6044d2b.webp"
    ]
   }
- ]
+ ],
+ "sourceParity": {
+  "kind": "vr-source",
+  "features": "t1196",
+  "booking": "t396",
+  "related": "t121",
+  "venue": "t396",
+  "gallery": "t396",
+  "scenarios": "t121",
+  "callback": "t396",
+  "story": { "desktop": 440, "mobile": 594 },
+  "featuresHeight": { "desktop": 341, "mobile": 413 },
+  "scenariosHeight": { "desktop": 615, "mobile": 668 },
+  "storyOffsetMobile": -29,
+  "relatedGap": 40,
+  "afterVenueGap": 50
+ }
 }

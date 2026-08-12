@@ -1,0 +1,332 @@
+---
+import SourceArtboardRailControls from './SourceArtboardRailControls.astro';
+
+// The New Year landing is a source-specific Tilda composition.  It deliberately
+// owns its measured record sequence instead of squeezing its content through
+// generic holiday cards, which have a different visual rhythm and height.
+const { source = {}, asset = (value) => value, href = (value) => value, phoneHref = '#', phone = '' } = Astro.props;
+const records = source.records || {};
+const hero = source.hero || {};
+const hall = source.hall || {};
+const bookingHref = href(source.bookingHref || '#prazdnik');
+const px = (value) => Number.isFinite(value) ? `${value}px` : String(value || '');
+const recordStyle = (record = {}) => [
+  record.desktop !== undefined && `--newyear-record-desktop:${px(record.desktop)}`,
+  record.mobile !== undefined && `--newyear-record-mobile:${px(record.mobile)}`,
+].filter(Boolean).join(';');
+const organisation = [
+  ['Детский День рождения', '/kids'],
+  ['Взрослый День рождения', '/prazdniki-pod-kluch'],
+  ['День Рождения в VR', '/den-rozhdeniya-na-vr-arene'],
+  ['Выпускной 2026', '/vypusknoj-kalmar'],
+  ['Корпоратив | Тимбилдинг', '/prazdniki-pod-kluch'],
+  ['Новый год 2027', '/new-year'],
+];
+const entertainment = [
+  ['Квеструмы', '/kvesty-v-rostove-na-donu'],
+  ['VR-арена', '/den-rozhdeniya-na-vr-arene'],
+  ['Активные игры', '/party-games'],
+  ['Прятки в темноте', '/pryatki_v_temnote'],
+  ['Страшные квесты', '/strashnye-kvesty'],
+];
+---
+
+<div class="newyear-artboard" id="about">
+  <div class="newyear-artboard__spacer" style={recordStyle(records.spacer)} aria-hidden="true"></div>
+
+  <section class="newyear-artboard__hero" style={recordStyle(records.hero)} aria-labelledby="newyear-hero-title">
+    <div class="newyear-artboard__hero-panel" style={`background-image:url('${asset(hero.background)}')`}>
+      {hero.foreground && <img class="newyear-artboard__hero-foreground" src={asset(hero.foreground)} alt="" aria-hidden="true" width="480" height="769" fetchpriority="high" decoding="async" />}
+      <div class="newyear-artboard__hero-copy">
+        <h1 id="newyear-hero-title">{hero.title}</h1>
+        <p class="newyear-artboard__hero-city">{hero.city}</p>
+        <a class="newyear-artboard__orange-button" href={bookingHref}>{hero.cta}</a>
+        <p class="newyear-artboard__hero-text">{hero.text}</p>
+      </div>
+    </div>
+  </section>
+
+  <nav class="newyear-artboard__breadcrumb" style={recordStyle(records.breadcrumb)} aria-label="Хлебные крошки">
+    <a href={href('/')}>Главная</a><span>/</span><a href={href('/kids')}>Проведение праздников</a><span>/</span><span>Новый год 2027</span>
+  </nav>
+
+  <section class="newyear-artboard__heading newyear-artboard__heading--benefits" style={recordStyle(records.benefitsHeading)} aria-labelledby="newyear-benefits-title">
+    <h2 id="newyear-benefits-title">Преимущества для организаторов</h2>
+  </section>
+  <section class="newyear-artboard__benefits" style={recordStyle(records.benefits)} aria-label="Преимущества для организаторов">
+    <ul class="newyear-artboard__benefit-grid">
+      {(source.benefits || []).map((item, index) => (
+        <li>
+          <span class={`newyear-artboard__benefit-icon newyear-artboard__benefit-icon--${index + 1}`} aria-hidden="true"></span>
+          <p>{item}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="newyear-artboard__heading newyear-artboard__heading--program" style={recordStyle(records.programHeading)} aria-labelledby="newyear-program-heading">
+    <h2 id="newyear-program-heading">Программа и сценарии</h2>
+  </section>
+  <section class="newyear-artboard__program" style={recordStyle(records.program)} aria-labelledby="newyear-program-title">
+    <div class="newyear-artboard__program-canvas">
+      {source.program?.photo && <img class="newyear-artboard__program-photo" src={asset(source.program.photo)} alt="Дед Мороз и Снегурочка" width="484" height="416" loading="lazy" decoding="async" />}
+      {source.program?.decor && <img class="newyear-artboard__program-decor" src={asset(source.program.decor)} alt="" aria-hidden="true" width="285" height="551" loading="lazy" decoding="async" />}
+      <h2 id="newyear-program-title">{source.program?.title}</h2>
+      <ol>
+        {(source.program?.items || []).map((item) => (<li>{item}</li>))}
+      </ol>
+      <div class="newyear-artboard__program-arrows" aria-hidden="true"><span>‹</span><span>›</span></div>
+    </div>
+  </section>
+
+  <div class="newyear-artboard__divider" style={recordStyle(records.dividerAfterProgram)} aria-hidden="true"></div>
+  <section class="newyear-artboard__scenarios" style={recordStyle(records.scenarios)} aria-labelledby="newyear-scenarios-title" data-source-artboard-rail data-source-artboard-rail-id="newyear-scenarios">
+    <h2 id="newyear-scenarios-title">Выберите один из <em>популярных сценариев</em></h2>
+    <p>детского праздника или семейного мероприятия</p>
+    <div class="newyear-artboard__scenario-window" id="newyear-scenarios-viewport" data-source-artboard-rail-viewport tabindex="0" role="region" aria-roledescription="carousel" aria-label="Популярные сценарии">
+      <div class="newyear-artboard__scenario-track">
+        {(source.scenarios || []).map((item, index) => (
+          <a class="newyear-artboard__scenario-card" href={href(item.href)} id={`newyear-scenarios-slide-${index + 1}`} data-source-artboard-rail-slide>
+            <img src={asset(item.src)} alt={item.title} width="360" height="320" loading="lazy" decoding="async" />
+            <span>Новый год в стиле<br />{item.title}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+    <SourceArtboardRailControls railId="newyear-scenarios" label="Популярные сценарии" items={source.scenarios || []} />
+  </section>
+
+  <section class="newyear-artboard__hall-heading" style={recordStyle(records.hallHeading)} aria-labelledby="newyear-hall-heading">
+    <h2 id="newyear-hall-heading">Мы проводим праздники в просторных залах, рассчитанных на большие коллективы:</h2>
+  </section>
+  <section class="newyear-artboard__hall" style={recordStyle(records.hall)} aria-labelledby="newyear-hall-title">
+    <div class="newyear-artboard__hall-canvas">
+      {hall.photo && <img class="newyear-artboard__hall-photo" src={asset(hall.photo)} alt="Зал для новогоднего праздника" width="600" height="400" loading="lazy" decoding="async" />}
+      <article class="newyear-artboard__hall-copy">
+        <h2 id="newyear-hall-title"><a href={href(hall.href)}>{hall.address}</a></h2>
+        <p class="newyear-artboard__hall-size">{hall.size}</p>
+        <p><b>{hall.capacity}</b></p>
+        <p>{hall.format}</p>
+        <p><b>Арена оборудована:</b></p>
+        <ul>{(hall.equipment || []).map((item) => (<li>{item}</li>))}</ul>
+        <a class="newyear-artboard__orange-button newyear-artboard__hall-button" href={bookingHref}>Забронировать дату</a>
+      </article>
+    </div>
+  </section>
+
+  <div class="newyear-artboard__divider" style={recordStyle(records.dividerAfterHall)} aria-hidden="true"></div>
+  <section class="newyear-artboard__shows-heading" style={recordStyle(records.showsHeading)} aria-labelledby="newyear-shows-title">
+    <h2 id="newyear-shows-title">Увлекательная шоу-программа - неотъемлемая часть <em>яркого праздника</em></h2>
+    <p>Подберите ту, что порадует именно вашего ребенка</p>
+  </section>
+  <section class="newyear-artboard__shows" style={recordStyle(records.shows)} aria-label="Шоу-программы" data-source-artboard-rail data-source-artboard-rail-id="newyear-shows">
+    <div class="newyear-artboard__show-grid" id="newyear-shows-viewport" data-source-artboard-rail-viewport tabindex="0" role="region" aria-roledescription="carousel" aria-label="Шоу-программы">
+      {(source.shows || []).map((item, index) => (
+        <a class="newyear-artboard__show-card" href={bookingHref} id={`newyear-shows-slide-${index + 1}`} data-source-artboard-rail-slide>
+          <img src={asset(item.src)} alt={item.title} width="300" height="300" loading="lazy" decoding="async" />
+          <span>{item.title}</span>
+        </a>
+      ))}
+    </div>
+    <SourceArtboardRailControls railId="newyear-shows" label="Шоу-программы" items={source.shows || []} />
+  </section>
+
+  <div class="newyear-artboard__divider" style={recordStyle(records.dividerAfterShows)} aria-hidden="true"></div>
+  <section class="newyear-artboard__help-heading" style={recordStyle(records.helpHeading)} aria-labelledby="newyear-help-heading">
+    <h2 id="newyear-help-heading">Поможем подобрать <em>праздничную программу</em></h2>
+    <p>Ответьте на несколько вопросов, и наш менеджер подберет под вас праздничную программу и сообщит стоимость.</p>
+  </section>
+  <section class="newyear-artboard__help" style={recordStyle(records.help)} aria-label="Подбор праздничной программы">
+    <div class="newyear-artboard__help-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    <a class="newyear-artboard__help-link" href={bookingHref}>Рассчитать стоимость праздника</a>
+  </section>
+
+  <div class="newyear-artboard__divider" style={recordStyle(records.dividerAfterHelp)} aria-hidden="true"></div>
+  <section class="newyear-artboard__additions-heading" style={recordStyle(records.additionsHeading)} aria-labelledby="newyear-additions-title">
+    <h2 id="newyear-additions-title">Ваш праздник можно сделать еще <em>ярче!</em></h2>
+    <p>Выберите дополнения, украшающие его</p>
+  </section>
+  <section class="newyear-artboard__media-rail" style={recordStyle(records.additions)} aria-label="Дополнения к празднику" data-source-artboard-rail data-source-artboard-rail-id="newyear-additions">
+    <div class="newyear-artboard__media-track" id="newyear-additions-viewport" data-source-artboard-rail-viewport tabindex="0" role="region" aria-roledescription="carousel" aria-label="Дополнения к празднику">
+      {(source.additions || []).map((item, index) => (
+        <a class="newyear-artboard__media-card" href={bookingHref} id={`newyear-additions-slide-${index + 1}`} data-source-artboard-rail-slide>
+          <img src={asset(item.src)} alt={item.title} width="312" height="312" loading="lazy" decoding="async" />
+          <span>{item.title}</span>
+        </a>
+      ))}
+    </div>
+    <SourceArtboardRailControls railId="newyear-additions" label="Дополнения к празднику" items={source.additions || []} />
+  </section>
+  <section class="newyear-artboard__masters" style={recordStyle(records.masters)} aria-labelledby="newyear-masters-title" data-source-artboard-rail data-source-artboard-rail-id="newyear-masters">
+    <h2 id="newyear-masters-title">Мастер-классы</h2>
+    <div class="newyear-artboard__media-track" id="newyear-masters-viewport" data-source-artboard-rail-viewport tabindex="0" role="region" aria-roledescription="carousel" aria-label="Мастер-классы">
+      {(source.masters || []).map((item, index) => (
+        <a class="newyear-artboard__media-card" href={bookingHref} id={`newyear-masters-slide-${index + 1}`} data-source-artboard-rail-slide>
+          <img src={asset(item.src)} alt={item.title} width="312" height="312" loading="lazy" decoding="async" />
+          <span>{item.title}</span>
+        </a>
+      ))}
+    </div>
+    <SourceArtboardRailControls railId="newyear-masters" label="Мастер-классы" items={source.masters || []} />
+  </section>
+
+  <div class="newyear-artboard__divider" style={recordStyle(records.dividerAfterMasters)} aria-hidden="true"></div>
+  <section class="newyear-artboard__reviews-heading" style={recordStyle(records.reviewsHeading)} aria-labelledby="newyear-reviews-title">
+    <h2 id="newyear-reviews-title">Честные отзывы наших гостей и их родителей</h2>
+  </section>
+  <div class="newyear-artboard__divider" style={recordStyle(records.dividerAfterReviews)} aria-hidden="true"></div>
+
+  <section class="newyear-artboard__faq-heading" style={recordStyle(records.faqHeading)} aria-labelledby="newyear-faq-title">
+    <h2 id="newyear-faq-title">Часто задаваемые вопросы:</h2>
+  </section>
+  <section class="newyear-artboard__faq" style={recordStyle(records.faq)} aria-label="Часто задаваемые вопросы">
+    <div>
+      {(source.faq || []).map((item) => (
+        <details><summary>{item.q}<span aria-hidden="true">＋</span></summary><p>{item.a}</p></details>
+      ))}
+    </div>
+  </section>
+
+  <div class="newyear-artboard__divider" style={recordStyle(records.dividerAfterFaq)} aria-hidden="true"></div>
+  <section class="newyear-artboard__callback" style={recordStyle(records.callback)} aria-labelledby="newyear-callback-title">
+    <div class="newyear-artboard__callback-card">
+      <h2 id="newyear-callback-title">Есть вопрос?</h2>
+      <p>Перезвоним и ответим на него как можно скорее</p>
+      <a class="newyear-artboard__orange-button" href={bookingHref}>Жду звонка!</a>
+    </div>
+  </section>
+
+  <div class="newyear-artboard__divider" style={recordStyle(records.dividerAfterCallback)} aria-hidden="true"></div>
+  <section class="newyear-artboard__venues-heading" style={recordStyle(records.venuesHeading)} aria-labelledby="newyear-venues-title">
+    <h2 id="newyear-venues-title">Наши площадки</h2>
+    <p>9 современно оборудованных площадок с квест-комнатами и зонами отдыха в Ростове-на-Дону</p>
+  </section>
+  <section class="newyear-artboard__venues" style={recordStyle(records.venues)} aria-label="Адреса площадок">
+    <div>{(source.venues || []).map((item) => (<a href={href(item.href)}>{item.title}</a>))}</div>
+  </section>
+
+  <div class="newyear-artboard__footer-spacer" style={recordStyle(records.footerSpacer)} aria-hidden="true"></div>
+  <footer class="newyear-artboard__footer" style={recordStyle(records.footer)}>
+    <div class="newyear-artboard__footer-grid">
+      <section><h2>ОРГАНИЗАЦИЯ МЕРОПРИЯТИЙ</h2>{organisation.map(([title, itemHref]) => (<a href={href(itemHref)}>{title}</a>))}</section>
+      <section><h2>ВИДЫ РАЗВЛЕЧЕНИЙ</h2>{entertainment.map(([title, itemHref]) => (<a href={href(itemHref)}>{title}</a>))}</section>
+      <section><h2>НАШИ ПЛОЩАДКИ</h2>{(source.venues || []).map((item) => (<a href={href(item.href)}>{item.title}</a>))}</section>
+      <section class="newyear-artboard__footer-legal">
+        {phone && <a href={phoneHref}>{phone}</a>}
+        <p>Работаем c 10:00 до 23:30<br /><br />ИП Мелешкин Юрий Иванович<br />ИНН 164409771610<br />ОГРНИП 322169000094990</p>
+        <a href={href('/privacy')}>Политика обработки персональных данных</a>
+      </section>
+    </div>
+  </footer>
+  <div class="newyear-artboard__footer-bottom" style={recordStyle(records.footerBottom)}>
+    <a href={href('/')}>ЧЁ ЗА КВЕСТ</a><span>© 2025 ЧЁ ЗА КВЕСТ</span>
+  </div>
+</div>
+
+<style is:global>
+  .newyear-artboard__booking .pform{display:none}
+  .newyear-artboard__booking .pform:target{display:block}
+</style>
+
+<style>
+  .newyear-artboard{overflow:hidden;background:#fafaf6;color:#303030;font-family:Montserrat,Arial,sans-serif}
+  .newyear-artboard a{color:inherit;text-decoration:none}
+  .newyear-artboard__spacer{height:var(--newyear-record-desktop,90px);background:#fff}
+  .newyear-artboard__hero{height:var(--newyear-record-desktop,688px);box-sizing:border-box;padding-top:20px;background:#fff}
+  .newyear-artboard__hero-panel{position:relative;width:1160px;height:550px;margin:auto;overflow:hidden;border-radius:18px;background-color:#073a2f;background-repeat:no-repeat;background-position:center;background-size:cover}
+  .newyear-artboard__hero-foreground{position:absolute;right:30px;bottom:-8px;width:250px;height:auto;object-fit:contain;pointer-events:none}
+  .newyear-artboard__hero-copy{position:relative;z-index:1;width:470px;padding:65px 0 0 54px;color:#fff}
+  .newyear-artboard__hero-copy h1{max-width:350px;margin:0;font:800 38px/.98 Montserrat,Arial,sans-serif;letter-spacing:-.035em}
+  .newyear-artboard__hero-city{margin:12px 0 22px;font:500 15px/1.2 Montserrat,Arial,sans-serif}
+  .newyear-artboard__orange-button{display:inline-flex;box-sizing:border-box;min-width:226px;min-height:43px;align-items:center;justify-content:center;border-radius:24px;background:#fd5a10;color:#fff!important;font:700 11px/1.1 Montserrat,Arial,sans-serif;text-align:center;transition:filter .2s ease,transform .2s ease}
+  .newyear-artboard__orange-button:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .newyear-artboard__hero-text{position:absolute;top:360px;left:54px;width:420px;margin:0;color:#b43931;font:500 13px/1.35 Montserrat,Arial,sans-serif}
+  .newyear-artboard__breadcrumb{display:flex;box-sizing:border-box;width:1160px;height:var(--newyear-record-desktop,54px);margin:auto;align-items:center;gap:7px;color:#999;font:400 12px/1 Montserrat,Arial,sans-serif}
+  .newyear-artboard__breadcrumb a:first-child{color:#5d8b6d}
+  .newyear-artboard__heading{display:flex;height:var(--newyear-record-desktop,114px);align-items:center;justify-content:center;text-align:center}
+  .newyear-artboard__heading h2,.newyear-artboard__hall-heading h2,.newyear-artboard__shows-heading h2,.newyear-artboard__help-heading h2,.newyear-artboard__additions-heading h2,.newyear-artboard__reviews-heading h2,.newyear-artboard__faq-heading h2,.newyear-artboard__venues-heading h2{margin:0;color:#538b66;font:800 26px/1.15 Montserrat,Arial,sans-serif;letter-spacing:-.025em}
+  .newyear-artboard__benefits{height:var(--newyear-record-desktop,748px)}
+  .newyear-artboard__benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;width:1160px;margin:0 auto;padding:0;list-style:none}
+  .newyear-artboard__benefit-grid li{position:relative;box-sizing:border-box;min-height:236px;padding:106px 35px 26px;border-radius:12px;background:#fff;box-shadow:0 6px 16px rgba(59,69,59,.08)}
+  .newyear-artboard__benefit-grid p{margin:0;font:700 17px/1.28 Montserrat,Arial,sans-serif}
+  .newyear-artboard__benefit-grid p::first-line{color:#e35242}
+  .newyear-artboard__benefit-icon{position:absolute;top:36px;left:36px;width:44px;height:44px;border:2px solid #59896b;border-radius:50%}
+  .newyear-artboard__benefit-icon::before{position:absolute;inset:9px;border-radius:5px;background:#59896b;content:''}
+  .newyear-artboard__benefit-icon--2{border-style:dashed}.newyear-artboard__benefit-icon--3::before{border-radius:50% 50% 0 50%}.newyear-artboard__benefit-icon--4{border-color:#777}.newyear-artboard__benefit-icon--5{border-color:#e35242}.newyear-artboard__benefit-icon--6{border-color:#e35242}
+  .newyear-artboard__heading--program{height:var(--newyear-record-desktop,114px)}
+  .newyear-artboard__program{height:var(--newyear-record-desktop,799px);overflow:hidden}
+  .newyear-artboard__program-canvas{position:relative;width:1160px;height:100%;margin:auto}
+  .newyear-artboard__program h2{position:absolute;top:58px;left:0;width:395px;margin:0;color:#ec543e;font:800 32px/.98 Montserrat,Arial,sans-serif;letter-spacing:-.04em}
+  .newyear-artboard__program-photo{position:absolute;top:205px;left:20px;width:390px;height:335px;object-fit:cover;border-radius:12px}
+  .newyear-artboard__program-decor{position:absolute;right:2px;bottom:-2px;width:210px;height:auto;object-fit:contain}
+  .newyear-artboard__program ol{position:absolute;top:58px;right:0;display:grid;gap:11px;width:600px;margin:0;padding:0;list-style:none;counter-reset:newyear-step}
+  .newyear-artboard__program li{position:relative;box-sizing:border-box;min-height:54px;padding:15px 30px 12px 70px;border-radius:28px;background:#007044;color:#fff;font:500 13px/1.15 Montserrat,Arial,sans-serif}
+  .newyear-artboard__program li::before{position:absolute;left:20px;counter-increment:newyear-step;content:counter(newyear-step);font-weight:800}
+  .newyear-artboard__program-arrows{position:absolute;top:572px;left:0;display:flex;gap:310px;color:#4d8963;font:800 40px/1 Arial,sans-serif}
+  .newyear-artboard__divider{height:var(--newyear-record-desktop,50px);background:#fafaf6}
+  .newyear-artboard__scenarios{position:relative;height:var(--newyear-record-desktop,563px);overflow:hidden;text-align:center;--source-artboard-rail-control-bg:rgba(255,255,255,.92);--source-artboard-rail-control-color:#4d8963;--source-artboard-rail-control-border:#4d8963;--source-artboard-rail-control-active:#e35242;--source-artboard-rail-dot:#c9c9c2;--source-artboard-rail-dot-active:#e35242;--source-artboard-rail-focus:#4d8963}
+  .newyear-artboard__scenarios h2{margin:43px 0 7px;color:#5a8966;font:800 26px/1.1 Montserrat,Arial,sans-serif;letter-spacing:-.025em}
+  .newyear-artboard__scenarios em,.newyear-artboard__shows-heading em,.newyear-artboard__help-heading em,.newyear-artboard__additions-heading em{color:#e35242;font-style:normal}
+  .newyear-artboard__scenarios p{margin:0;color:#666;font:400 12px/1.25 Montserrat,Arial,sans-serif}
+  .newyear-artboard__scenario-window{width:1160px;margin:34px auto 0;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x}
+  .newyear-artboard__scenario-window::-webkit-scrollbar,.newyear-artboard__show-grid::-webkit-scrollbar,.newyear-artboard__media-track::-webkit-scrollbar{display:none}
+  .newyear-artboard__scenario-track{display:flex;gap:22px;width:max-content}
+  .newyear-artboard__scenario-card{position:relative;display:block;flex:0 0 260px;overflow:hidden;width:260px;height:285px;border-radius:12px;background:#111;color:#fff!important;text-align:left;scroll-snap-align:start}
+  .newyear-artboard__scenario-card img{display:block;width:100%;height:100%;object-fit:cover}
+  .newyear-artboard__scenario-card::after{position:absolute;right:0;bottom:0;left:0;height:82px;background:linear-gradient(transparent,rgba(0,0,0,.84));content:''}
+  .newyear-artboard__scenario-card span{position:absolute;z-index:1;right:15px;bottom:15px;left:15px;font:700 12px/1.2 Montserrat,Arial,sans-serif}
+  .newyear-artboard__hall-heading{display:flex;height:var(--newyear-record-desktop,215px);box-sizing:border-box;align-items:flex-end;justify-content:center;padding:0 20px 45px;text-align:center}
+  .newyear-artboard__hall-heading h2{max-width:790px}
+  .newyear-artboard__hall{height:var(--newyear-record-desktop,570px);overflow:hidden}
+  .newyear-artboard__hall-canvas{position:relative;width:1160px;height:100%;margin:auto}
+  .newyear-artboard__hall-photo{position:absolute;top:0;left:0;width:590px;height:392px;object-fit:cover;border-radius:13px}
+  .newyear-artboard__hall-copy{position:absolute;top:54px;right:0;box-sizing:border-box;width:590px;min-height:420px;padding:45px 48px;border-radius:13px;background:#fff;box-shadow:0 7px 18px rgba(54,67,58,.1)}
+  .newyear-artboard__hall-copy h2{margin:0 0 28px;color:#e35242;font:800 17px/1.2 Montserrat,Arial,sans-serif;text-transform:uppercase}
+  .newyear-artboard__hall-copy p{margin:6px 0;font:400 12px/1.25 Montserrat,Arial,sans-serif}.newyear-artboard__hall-size{color:#e35242;font-weight:800!important;text-transform:uppercase}
+  .newyear-artboard__hall-copy ul{margin:7px 0 17px;padding-left:18px;font:400 11px/1.26 Montserrat,Arial,sans-serif}.newyear-artboard__hall-copy li::marker{color:#e35242}
+  .newyear-artboard__hall-button{position:absolute;right:46px;bottom:28px;min-width:188px;min-height:38px}
+  .newyear-artboard__shows-heading{display:flex;height:var(--newyear-record-desktop,180px);box-sizing:border-box;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center}
+  .newyear-artboard__shows-heading h2{max-width:780px}.newyear-artboard__shows-heading p,.newyear-artboard__help-heading p,.newyear-artboard__additions-heading p{margin:10px 0 0;color:#777;font:400 13px/1.3 Montserrat,Arial,sans-serif}
+  .newyear-artboard__shows{position:relative;height:var(--newyear-record-desktop,735px);overflow:hidden;--source-artboard-rail-control-bg:rgba(255,255,255,.92);--source-artboard-rail-control-color:#4d8963;--source-artboard-rail-control-border:#4d8963;--source-artboard-rail-control-active:#e35242;--source-artboard-rail-dot:#c9c9c2;--source-artboard-rail-dot-active:#e35242;--source-artboard-rail-focus:#4d8963}
+  .newyear-artboard__show-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;width:1160px;margin:auto;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x}
+  .newyear-artboard__show-card{position:relative;display:block;overflow:hidden;height:270px;border-radius:11px;background:#222;color:#fff!important;scroll-snap-align:start}
+  .newyear-artboard__show-card img{width:100%;height:100%;object-fit:cover}.newyear-artboard__show-card::after{position:absolute;right:0;bottom:0;left:0;height:78px;background:linear-gradient(transparent,rgba(0,0,0,.88));content:''}
+  .newyear-artboard__show-card span{position:absolute;z-index:1;right:16px;bottom:15px;left:16px;font:800 15px/1.13 Montserrat,Arial,sans-serif}
+  .newyear-artboard__help-heading{display:flex;height:var(--newyear-record-desktop,215px);box-sizing:border-box;flex-direction:column;align-items:center;justify-content:flex-end;padding:20px 20px 42px;text-align:center}
+  .newyear-artboard__help-heading h2{max-width:530px}.newyear-artboard__help-heading p{max-width:650px}
+  .newyear-artboard__help{position:relative;height:var(--newyear-record-desktop,630px);overflow:hidden}
+  .newyear-artboard__help-dots{position:absolute;top:46%;left:50%;display:flex;gap:10px;transform:translate(-50%,-50%)}.newyear-artboard__help-dots i{width:10px;height:10px;border-radius:50%;background:#bbb}.newyear-artboard__help-dots i:first-child{background:#e35242}
+  .newyear-artboard__help-link{position:absolute;top:calc(46% + 35px);left:50%;color:#d74e3f!important;font:700 12px/1.2 Montserrat,Arial,sans-serif;transform:translateX(-50%)}
+  .newyear-artboard__additions-heading{display:flex;height:var(--newyear-record-desktop,175px);box-sizing:border-box;flex-direction:column;align-items:center;justify-content:flex-end;padding:20px 20px 35px;text-align:center}
+  .newyear-artboard__media-rail,.newyear-artboard__masters{position:relative;overflow:hidden;--source-artboard-rail-control-bg:rgba(255,255,255,.92);--source-artboard-rail-control-color:#4d8963;--source-artboard-rail-control-border:#4d8963;--source-artboard-rail-control-active:#e35242;--source-artboard-rail-dot:#c9c9c2;--source-artboard-rail-dot-active:#e35242;--source-artboard-rail-focus:#4d8963}.newyear-artboard__media-rail{height:var(--newyear-record-desktop,405px)}.newyear-artboard__masters{height:var(--newyear-record-desktop,500px)}
+  .newyear-artboard__masters h2{margin:0;padding:32px 0 25px;color:#333;text-align:center;font:800 20px/1.2 Montserrat,Arial,sans-serif}
+  .newyear-artboard__media-track{display:flex;box-sizing:border-box;gap:15px;width:1160px;margin:auto;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x}.newyear-artboard__media-card{display:block;width:220px;flex:0 0 220px;color:#333!important;text-align:center;font:700 10px/1.2 Montserrat,Arial,sans-serif;scroll-snap-align:start}.newyear-artboard__media-card img{display:block;width:220px;height:220px;margin-bottom:10px;object-fit:cover;border-radius:9px;background:#fff}
+  .newyear-artboard__reviews-heading{display:flex;height:var(--newyear-record-desktop,115px);align-items:center;justify-content:center;text-align:center}.newyear-artboard__reviews-heading h2{font-size:22px}
+  .newyear-artboard__faq-heading{display:flex;height:var(--newyear-record-desktop,124px);box-sizing:border-box;align-items:center;justify-content:center;padding-top:17px;text-align:center}.newyear-artboard__faq-heading h2{font-size:23px}
+  .newyear-artboard__faq{height:var(--newyear-record-desktop,381px);overflow:hidden}.newyear-artboard__faq>div{width:880px;margin:auto}.newyear-artboard__faq details{border-bottom:1px solid #e1e1e1}.newyear-artboard__faq summary{display:flex;align-items:center;justify-content:space-between;padding:20px 2px;cursor:pointer;font:700 13px/1.25 Montserrat,Arial,sans-serif;list-style:none}.newyear-artboard__faq summary::-webkit-details-marker{display:none}.newyear-artboard__faq summary span{color:#e35242;font-size:20px}.newyear-artboard__faq p{margin:0 0 15px;font:400 12px/1.35 Montserrat,Arial,sans-serif}
+  .newyear-artboard__callback{display:flex;height:var(--newyear-record-desktop,480px);box-sizing:border-box;align-items:center;justify-content:center;padding:30px}.newyear-artboard__callback-card{box-sizing:border-box;width:1000px;min-height:280px;padding:65px 85px;border-radius:13px;background:#f4d5c7;text-align:center}.newyear-artboard__callback-card h2{margin:0;color:#3a3a3a;font:800 26px/1.15 Montserrat,Arial,sans-serif}.newyear-artboard__callback-card p{margin:10px 0 28px;color:#777;font:400 13px/1.3 Montserrat,Arial,sans-serif}
+  .newyear-artboard__venues-heading{display:flex;height:var(--newyear-record-desktop,132px);box-sizing:border-box;flex-direction:column;align-items:center;justify-content:flex-end;padding:20px 20px 18px;text-align:center}.newyear-artboard__venues-heading h2{font-size:24px}.newyear-artboard__venues-heading p{margin:8px 0 0;color:#777;font:400 12px/1.25 Montserrat,Arial,sans-serif}
+  .newyear-artboard__venues{height:var(--newyear-record-desktop,191px);overflow:hidden}.newyear-artboard__venues>div{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:1000px;margin:22px auto}.newyear-artboard__venues a{padding:10px 15px;border:1px solid #ccc;border-radius:18px;background:#fff;font:600 11px/1 Montserrat,Arial,sans-serif}
+  .newyear-artboard__footer-spacer{height:var(--newyear-record-desktop,60px);background:#333}
+  .newyear-artboard__footer{height:var(--newyear-record-desktop,310px);box-sizing:border-box;background:#333;color:#fff}.newyear-artboard__footer-grid{display:grid;grid-template-columns:1.1fr 1fr 1.1fr 1fr;gap:35px;width:1160px;margin:auto;padding-top:42px}.newyear-artboard__footer section{display:flex;flex-direction:column;gap:7px}.newyear-artboard__footer h2{margin:0 0 7px;color:#fb6912;font:800 13px/1.15 Montserrat,Arial,sans-serif}.newyear-artboard__footer a,.newyear-artboard__footer p{margin:0;color:#fff;font:400 10px/1.25 Montserrat,Arial,sans-serif}.newyear-artboard__footer-legal>a:first-child{font-weight:700;font-size:14px}
+  .newyear-artboard__footer-bottom{display:flex;height:var(--newyear-record-desktop,170px);box-sizing:border-box;align-items:center;justify-content:space-between;padding:0 calc((100% - 1160px)/2);background:#333;border-top:1px solid #555;color:#fff}.newyear-artboard__footer-bottom a{color:#fb6912;font:800 17px/1 Montserrat,Arial,sans-serif}.newyear-artboard__footer-bottom span{font:400 11px/1 Montserrat,Arial,sans-serif}
+  @media (max-width:700px){
+    .newyear-artboard__spacer{height:var(--newyear-record-mobile,90px)}
+    .newyear-artboard__hero{height:var(--newyear-record-mobile,767px);padding:0;background:#fff}.newyear-artboard__hero-panel{width:320px;height:100%;border-radius:0;background-position:center top;background-size:479px 220px}.newyear-artboard__hero-foreground{right:-56px;bottom:267px;width:248px}.newyear-artboard__hero-copy{box-sizing:border-box;width:320px;padding:30px 22px 0}.newyear-artboard__hero-copy h1{width:190px;font-size:22px}.newyear-artboard__hero-city{margin:8px 0 18px;font-size:10px}.newyear-artboard__orange-button{min-width:166px;min-height:31px;font-size:7px}.newyear-artboard__hero-text{top:337px;left:22px;width:276px;font-size:10px;line-height:1.4}
+    .newyear-artboard__breadcrumb{width:320px;height:var(--newyear-record-mobile,54px);gap:3px;font-size:7px}
+    .newyear-artboard__heading{height:var(--newyear-record-mobile,135px)}.newyear-artboard__heading h2,.newyear-artboard__hall-heading h2,.newyear-artboard__shows-heading h2,.newyear-artboard__help-heading h2,.newyear-artboard__additions-heading h2,.newyear-artboard__reviews-heading h2,.newyear-artboard__faq-heading h2,.newyear-artboard__venues-heading h2{font-size:15px}
+    .newyear-artboard__benefits{height:var(--newyear-record-mobile,1426px)}.newyear-artboard__benefit-grid{grid-template-columns:1fr;gap:15px;width:278px}.newyear-artboard__benefit-grid li{min-height:219px;padding:90px 25px 22px;border-radius:9px}.newyear-artboard__benefit-grid p{font-size:13px}.newyear-artboard__benefit-icon{top:29px;left:24px;width:35px;height:35px}.newyear-artboard__benefit-icon::before{inset:7px}
+    .newyear-artboard__heading--program{height:var(--newyear-record-mobile,115px)}.newyear-artboard__program{height:var(--newyear-record-mobile,1010px)}.newyear-artboard__program-canvas{width:320px}.newyear-artboard__program h2{top:20px;left:20px;width:180px;font-size:20px}.newyear-artboard__program-photo{top:179px;left:20px;width:205px;height:176px}.newyear-artboard__program-decor{right:-19px;bottom:13px;width:100px}.newyear-artboard__program ol{top:390px;right:20px;gap:7px;width:280px}.newyear-artboard__program li{min-height:39px;padding:11px 15px 8px 42px;border-radius:20px;font-size:8px}.newyear-artboard__program li::before{left:14px}.newyear-artboard__program-arrows{top:360px;left:18px;gap:164px;font-size:27px}
+    .newyear-artboard__divider{height:var(--newyear-record-mobile,50px)}.newyear-artboard__scenarios{height:var(--newyear-record-mobile,563px)}.newyear-artboard__scenarios h2{margin:32px auto 6px;width:278px;font-size:15px}.newyear-artboard__scenarios p{font-size:7px}.newyear-artboard__scenario-window{width:320px;margin-top:27px}.newyear-artboard__scenario-track{gap:12px;padding-left:20px}.newyear-artboard__scenario-card{flex-basis:158px;width:158px;height:200px;border-radius:8px}.newyear-artboard__scenario-card span{right:9px;bottom:9px;left:9px;font-size:7px}
+    .newyear-artboard__hall-heading{height:var(--newyear-record-mobile,215px);padding:0 20px 35px}.newyear-artboard__hall-heading h2{max-width:268px}.newyear-artboard__hall{height:var(--newyear-record-mobile,755px)}.newyear-artboard__hall-canvas{width:320px}.newyear-artboard__hall-photo{top:0;left:0;width:225px;height:150px;border-radius:0 9px 9px 0}.newyear-artboard__hall-copy{top:125px;right:12px;width:284px;min-height:500px;padding:29px 25px;border-radius:9px}.newyear-artboard__hall-copy h2{margin-bottom:17px;font-size:11px}.newyear-artboard__hall-copy p{font-size:8px}.newyear-artboard__hall-copy ul{padding-left:14px;font-size:7px}.newyear-artboard__hall-button{right:22px;bottom:22px;min-width:145px;min-height:29px}
+    .newyear-artboard__shows-heading{height:var(--newyear-record-mobile,250px);padding:25px 25px 38px}.newyear-artboard__shows-heading h2{max-width:285px}.newyear-artboard__shows-heading p,.newyear-artboard__help-heading p,.newyear-artboard__additions-heading p{font-size:8px}.newyear-artboard__shows{height:var(--newyear-record-mobile,469px)}.newyear-artboard__show-grid{display:flex;gap:10px;width:320px;padding-left:10px}.newyear-artboard__show-card{flex:0 0 148px;width:148px;height:145px;border-radius:7px}.newyear-artboard__show-card span{right:8px;bottom:8px;left:8px;font-size:8px}
+    .newyear-artboard__help-heading{height:var(--newyear-record-mobile,215px);padding:20px 22px 33px}.newyear-artboard__help-heading h2{max-width:250px}.newyear-artboard__help{height:var(--newyear-record-mobile,630px)}.newyear-artboard__help-dots i{width:7px;height:7px}.newyear-artboard__help-link{font-size:8px}
+    .newyear-artboard__additions-heading{height:var(--newyear-record-mobile,175px);padding:20px 20px 29px}.newyear-artboard__media-rail{height:var(--newyear-record-mobile,535px)}.newyear-artboard__masters{height:var(--newyear-record-mobile,600px)}.newyear-artboard__masters h2{padding:25px 0 22px;font-size:15px}.newyear-artboard__media-track{gap:12px;width:320px;padding-left:20px}.newyear-artboard__media-card{width:158px;flex-basis:158px;font-size:7px}.newyear-artboard__media-card img{width:158px;height:158px;margin-bottom:7px;border-radius:7px}
+    .newyear-artboard__reviews-heading{height:var(--newyear-record-mobile,195px)}.newyear-artboard__reviews-heading h2{width:250px;font-size:13px}.newyear-artboard__faq-heading{height:var(--newyear-record-mobile,135px);padding-top:12px}.newyear-artboard__faq-heading h2{font-size:14px}.newyear-artboard__faq{height:var(--newyear-record-mobile,367px)}.newyear-artboard__faq>div{width:280px}.newyear-artboard__faq summary{padding:15px 0;font-size:8px}.newyear-artboard__faq summary span{font-size:14px}.newyear-artboard__faq p{font-size:7px}
+    .newyear-artboard__callback{height:var(--newyear-record-mobile,630px);padding:20px}.newyear-artboard__callback-card{width:280px;min-height:260px;padding:60px 20px;border-radius:8px}.newyear-artboard__callback-card h2{font-size:18px}.newyear-artboard__callback-card p{font-size:9px}.newyear-artboard__venues-heading{height:var(--newyear-record-mobile,111px);padding:15px 18px}.newyear-artboard__venues-heading h2{font-size:15px}.newyear-artboard__venues-heading p{font-size:7px}.newyear-artboard__venues{height:var(--newyear-record-mobile,537px)}.newyear-artboard__venues>div{width:280px;margin:18px auto;gap:8px}.newyear-artboard__venues a{padding:8px 11px;font-size:7px}
+    .newyear-artboard__footer-spacer{height:var(--newyear-record-mobile,60px)}.newyear-artboard__footer{height:var(--newyear-record-mobile,910px)}.newyear-artboard__footer-grid{grid-template-columns:1fr;gap:29px;width:280px;padding-top:42px}.newyear-artboard__footer h2{font-size:11px}.newyear-artboard__footer a,.newyear-artboard__footer p{font-size:8px}.newyear-artboard__footer-legal>a:first-child{font-size:12px}.newyear-artboard__footer-bottom{height:var(--newyear-record-mobile,246px);box-sizing:border-box;flex-direction:column;align-items:flex-start;justify-content:center;gap:16px;padding:0 55px}.newyear-artboard__footer-bottom a{font-size:14px}.newyear-artboard__footer-bottom span{font-size:8px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .newyear-artboard__scenario-window,.newyear-artboard__show-grid,.newyear-artboard__media-track{scroll-behavior:auto}
+  }
+</style>

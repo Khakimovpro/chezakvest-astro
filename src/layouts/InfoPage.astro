@@ -5,8 +5,6 @@ import Layout from './Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
-import CallbackForm from '../components/CallbackForm.astro';
-import VenuesSection from '../components/VenuesSection.astro';
 import site from '../data/site.json';
 import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
@@ -24,7 +22,11 @@ const raw = page.contacts?.raw || [];
 const links = page.contacts?.links || [];
 const email = links.find((l) => l.href.startsWith('mailto:'));
 const vk = links.find((l) => l.href.includes('vk.com'));
-const hours = raw.find((t) => /(?:график работы|часы работы|работаем)/iu.test(t)) || 'График работы уточняйте при бронировании';
+const instagram = links.find((l) => /instagram/iu.test(l.t || l.href));
+const messenger = links.find((l) => /написать в мессенджер/iu.test(l.t));
+// The live page uses a call-tracking number. Keep the verified, normalized
+// number from site.json while retaining the source's visible contact order.
+const hours = raw.find((t) => /работаем/u.test(t)) || 'Работаем с 10:00 до 23:30';
 
 const jsonld = [
   {
@@ -61,29 +63,44 @@ const jsonld = [
   <main>
     <Breadcrumbs items={breadcrumbs} />
 
-    <section class="info">
+    <section class="info info--source">
       <div class="container">
         <h1 class="section-title">{seo.h1}</h1>
-        <div class="info__grid">
-          <div class="info__card">
-            <div class="info__label">Телефон</div>
-            <a class="info__value info__value--big" href={site.header.phoneHref}>{site.header.phone}</a>
-            <div class="info__hours">{hours}</div>
-          </div>
-          {email && (
-            <div class="info__card">
-              <div class="info__label">Почта</div>
-              <a class="info__value" href={email.href}>{email.href.replace('mailto:', '')}</a>
+        <div class="info__source-grid">
+          <div class="info__source-column">
+            <div class="info__source-group">
+              <div class="info__label">Телефон</div>
+              <a class="info__value info__value--big" href={site.header.phoneHref}>{site.header.phone}</a>
             </div>
-          )}
-          <div class="info__card">
-            <div class="info__label">Мессенджеры и соцсети</div>
-            <div class="info__row">
-              <a class="info__chip" href={site.header.wa} target="_blank" rel="noopener">WhatsApp</a>
-              {vk && <a class="info__chip" href={vk.href} target="_blank" rel="noopener">ВКонтакте</a>}
+            <div class="info__source-group">
+              <div class="info__label">Часы работы:</div>
+              <div class="info__hours">{hours}</div>
+            </div>
+          </div>
+          <div class="info__source-column">
+            {email && (
+              <div class="info__source-group">
+                <div class="info__label">Email:</div>
+                <a class="info__value" href={email.href}>{email.href.replace('mailto:', '')}</a>
+              </div>
+            )}
+            <div class="info__source-group">
+              <div class="info__label">Мессенджеры:</div>
+              <a class="info__messenger" href={messenger?.href || site.header.wa} target="_blank" rel="noopener">{messenger?.t || 'Написать в мессенджер 💬'}</a>
+            </div>
+          </div>
+          <div class="info__source-column">
+            <div class="info__source-group">
+              <div class="info__label">Социальные сети</div>
+              <div class="info__socials">
+                {vk && <a href={vk.href} target="_blank" rel="noopener">VK</a>}
+                {instagram && <span>{instagram.t}</span>}
+              </div>
             </div>
           </div>
         </div>
+
+        {page.note && <p class="info__note">{page.note}</p>}
 
         {venues.length > 0 && (
           <div class="info__venues">
@@ -93,13 +110,8 @@ const jsonld = [
             </ul>
           </div>
         )}
-
       </div>
     </section>
-
-    <VenuesSection id={`venues-${page.slug}`} base={base} />
-
-    <CallbackForm id="i" />
   </main>
 
   <Footer />

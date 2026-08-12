@@ -1,0 +1,333 @@
+---
+// The source landing uses a Tilda artboard for its opening composition.  Keep
+// that geometry local to this opt-in component instead of forcing it through
+// the ordinary shared holiday hero.
+const { hero = {}, programs = {}, asset = (value) => value, href = (value) => value } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const graphics = (hero.layers || []).filter((layer) => layer.type !== 'video');
+const videos = (hero.layers || []).filter((layer) => layer.type === 'video');
+const primary = hero.buttons?.[0] || {};
+
+const px = (value) => Number.isFinite(value) ? `${value}px` : String(value || '');
+const layerStyle = (layer) => {
+  const desktop = layer.desktop || {};
+  const mobile = layer.mobile || {};
+  return [
+    ['--podkluch-layer-top', desktop.top],
+    ['--podkluch-layer-left', desktop.left],
+    ['--podkluch-layer-width', desktop.width],
+    ['--podkluch-layer-height', desktop.height],
+    ['--podkluch-layer-top-mobile', mobile.top],
+    ['--podkluch-layer-left-mobile', mobile.left],
+    ['--podkluch-layer-width-mobile', mobile.width],
+    ['--podkluch-layer-height-mobile', mobile.height],
+  ].filter(([, value]) => value !== undefined && value !== null && value !== '')
+    .map(([name, value]) => `${name}:${px(value)}`).join(';');
+};
+const packageStyle = (item) => `--podkluch-package-button:${item.buttonWidth || 74.7}%`;
+const heroStyle = [
+  hero.heightDesktop && `--podkluch-hero-height:${hero.heightDesktop}px`,
+  hero.heightMobile && `--podkluch-hero-height-mobile:${hero.heightMobile}px`,
+].filter(Boolean).join(';');
+---
+
+<style is:inline>{`
+  @font-face {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 200 1000;
+    font-display: swap;
+    src: url('${base}/assets/fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofIMeaBXso.woff2') format('woff2');
+    unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  }
+
+  @font-face {
+    font-family: 'Montserratblack';
+    font-style: normal;
+    font-weight: 400 900;
+    font-display: swap;
+    src: url('${base}/assets/static.tildacdn.com/tild3134-3738-4465-a238-656132666435/Montserrat.woff2') format('woff2');
+  }
+`}</style>
+
+<section class="podkluch-hero" aria-labelledby="podkluch-hero-title" style={heroStyle}>
+  <div class="podkluch-hero__artboard">
+    {graphics.map((layer) => (
+      <img
+        class:list={['podkluch-hero__graphic', `podkluch-hero__graphic--${layer.key}`]}
+        src={asset(layer.src)}
+        alt=""
+        width={layer.intrinsic?.width || 1}
+        height={layer.intrinsic?.height || 1}
+        style={layerStyle(layer)}
+        decoding="async"
+        aria-hidden="true"
+      />
+    ))}
+
+    <div class="podkluch-hero__copy">
+      <h1 id="podkluch-hero-title">{hero.h1}</h1>
+      {hero.city && <p class="podkluch-hero__city">{hero.city}</p>}
+      {hero.sub && <p class="podkluch-hero__sub">{hero.sub}</p>}
+      {hero.benefit && <p class="podkluch-hero__benefit">{hero.benefit}</p>}
+      {primary.t && <a class="podkluch-hero__cta" href={href(primary.href)}>{primary.t}</a>}
+    </div>
+
+    {hero.videoLabel && <p class="podkluch-hero__video-label">{hero.videoLabel}</p>}
+    {videos.map((layer) => (
+      <a
+        class:list={['podkluch-hero__video', `podkluch-hero__video--${layer.key}`]}
+        href={href(primary.href)}
+        aria-label={layer.label}
+        style={layerStyle(layer)}
+      >
+        <img src={asset(layer.src)} alt="" width={layer.intrinsic?.width || 1} height={layer.intrinsic?.height || 1} decoding="async" />
+      </a>
+    ))}
+  </div>
+</section>
+
+{programs?.items?.length > 0 && (
+  <section class="podkluch-programs" aria-labelledby="podkluch-programs-title">
+    <div class="podkluch-programs__heading">
+      <h2 id="podkluch-programs-title">{programs.title}</h2>
+    </div>
+    <div class="podkluch-programs__canvas">
+      <ul class="podkluch-programs__grid">
+        {programs.items.map((item) => (
+          <li class="podkluch-programs__item" style={packageStyle(item)}>
+            <img
+              class="podkluch-programs__image"
+              src={asset(item.src)}
+              alt={`Программа «${item.name}»`}
+              width={item.intrinsic?.width || 1}
+              height={item.intrinsic?.height || 1}
+              loading="lazy"
+              decoding="async"
+            />
+            <a class="podkluch-programs__cta" href={href(programs.href)}>{programs.cta}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .podkluch-hero{
+    --podkluch-hero-height:910px;
+    --podkluch-hero-height-mobile:1100px;
+    height:var(--podkluch-hero-height);
+    overflow:hidden;
+    background:#fff;
+    color:#3e3e3e;
+  }
+  .podkluch-hero__artboard{
+    position:relative;
+    width:1200px;
+    height:100%;
+    margin-inline:auto;
+  }
+  .podkluch-hero__graphic,
+  .podkluch-hero__video{
+    position:absolute;
+    top:var(--podkluch-layer-top);
+    left:var(--podkluch-layer-left);
+    width:var(--podkluch-layer-width);
+    height:var(--podkluch-layer-height);
+  }
+  .podkluch-hero__graphic{z-index:2;object-fit:contain;pointer-events:none}
+  .podkluch-hero__graphic--kids{z-index:1}
+  .podkluch-hero__graphic--balloon{z-index:4}
+  .podkluch-hero__graphic--confetti,
+  .podkluch-hero__graphic--burst{z-index:3}
+  .podkluch-hero__graphic--cta-icon{z-index:7}
+  .podkluch-hero__copy{
+    position:static;
+  }
+  .podkluch-hero h1{
+    position:absolute;
+    z-index:6;
+    top:140px;
+    left:20px;
+    width:642px;
+    max-width:642px;
+    margin:0;
+    color:transparent;
+    background-image:linear-gradient(0turn,#ff9415 0%,#ffc709 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    font-family:Montserratblack,Arial,sans-serif;
+    font-size:50px;
+    font-weight:900;
+    line-height:normal;
+    text-transform:uppercase;
+  }
+  .podkluch-hero__city{
+    position:absolute;
+    z-index:6;
+    top:278px;
+    left:22px;
+    width:402px;
+    margin:0;
+    color:#3e3e3e;
+    font:700 28px/1.25 Nunito,Arial,sans-serif;
+    text-transform:uppercase;
+  }
+  .podkluch-hero__sub{
+    position:absolute;
+    z-index:6;
+    top:340px;
+    left:20px;
+    width:433px;
+    margin:0;
+    font:400 18px/1.35 Nunito,Arial,sans-serif;
+  }
+  .podkluch-hero__benefit{
+    position:absolute;
+    z-index:6;
+    top:404px;
+    left:20px;
+    width:398px;
+    margin:0;
+    font:400 18px/1.55 Nunito,Arial,sans-serif;
+    text-transform:uppercase;
+  }
+  .podkluch-hero__cta,
+  .podkluch-programs__cta{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-sizing:border-box;
+    border:1px solid #ffb500;
+    border-radius:999px;
+    color:#fff;
+    background:linear-gradient(0turn,#ff6900 0%,#f9ce29 100%);
+    font-family:Nunito,Arial,sans-serif;
+    font-weight:600;
+    text-align:center;
+    text-decoration:none;
+    text-transform:uppercase;
+    transition:filter .2s ease,transform .2s ease;
+  }
+  .podkluch-hero__cta{
+    position:absolute;
+    z-index:6;
+    top:499px;
+    left:22px;
+    width:300px;
+    height:60px;
+    margin:0;
+    font-size:20px;
+    text-transform:none;
+    background:linear-gradient(.5turn,#f9ce29 0%,#e67e19 100%);
+  }
+  .podkluch-hero__cta:hover,
+  .podkluch-programs__cta:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .podkluch-hero__video-label{
+    position:absolute;
+    z-index:6;
+    top:586px;
+    left:22px;
+    margin:0;
+    color:#3e3e3e;
+    font:700 18px/24px Nunito,Arial,sans-serif;
+  }
+  .podkluch-hero__video{z-index:5;display:block;overflow:hidden;border-radius:9px}
+  .podkluch-hero__video img{display:block;width:100%;height:100%;object-fit:cover}
+  .podkluch-hero__video::after{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:67px;
+    height:67px;
+    border-radius:50%;
+    background:rgba(255,255,255,.92);
+    content:'';
+    transform:translate(-50%,-50%);
+  }
+  .podkluch-hero__video::before{
+    position:absolute;
+    z-index:1;
+    top:50%;
+    left:50%;
+    width:0;
+    height:0;
+    border-top:14px solid transparent;
+    border-bottom:14px solid transparent;
+    border-left:20px solid #f7a400;
+    content:'';
+    transform:translate(-38%,-50%);
+  }
+
+  .podkluch-programs{background:#fff;color:#3e3e3e;overflow:hidden}
+  .podkluch-programs__heading{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    box-sizing:border-box;
+    min-height:130px;
+    padding:49px 20px 20px;
+    text-align:center;
+  }
+  .podkluch-programs h2{
+    max-width:1003px;
+    margin:0;
+    color:#474747;
+    font:700 clamp(38px,3.17vw,45.6px)/1.2 Montserratblack,Arial,sans-serif;
+  }
+  .podkluch-programs__canvas{width:min(100%,1440px);margin-inline:auto}
+  .podkluch-programs__grid{
+    display:grid;
+    grid-template-columns:repeat(3,31.016%);
+    justify-content:space-between;
+    align-items:start;
+    box-sizing:border-box;
+    min-height:clamp(570px,47.5vw,684px);
+    margin:0;
+    padding:clamp(46px,3.83vw,55px) 3.25% clamp(13px,1.08vw,16px);
+    list-style:none;
+  }
+  .podkluch-programs__item{min-width:0}
+  .podkluch-programs__image{display:block;width:100%;height:auto}
+  .podkluch-programs__cta{
+    width:var(--podkluch-package-button);
+    height:clamp(58px,4.83vw,70px);
+    margin:clamp(23px,1.92vw,28px) auto 0;
+    font-size:clamp(14px,0.97vw,14px);
+  }
+
+  @media (max-width:639px){
+    .podkluch-hero{height:var(--podkluch-hero-height-mobile)}
+    .podkluch-hero__artboard{width:320px}
+    .podkluch-hero__graphic,
+    .podkluch-hero__video{
+      top:var(--podkluch-layer-top-mobile,var(--podkluch-layer-top));
+      left:var(--podkluch-layer-left-mobile,var(--podkluch-layer-left));
+      width:var(--podkluch-layer-width-mobile,var(--podkluch-layer-width));
+      height:var(--podkluch-layer-height-mobile,var(--podkluch-layer-height));
+    }
+    .podkluch-hero h1{top:120px;left:0;width:339px;font-size:36px;font-weight:900;line-height:normal}
+    .podkluch-hero__city{top:186px;left:10px;width:240px;font-size:22px}
+    .podkluch-hero__sub{top:230px;left:0;width:206px;font-size:18px;line-height:normal}
+    .podkluch-hero__benefit{top:654px;left:0;width:300px;font-size:18px;line-height:1.55}
+    .podkluch-hero__cta{top:774px;left:-6px;width:300px;height:60px}
+    .podkluch-hero__video-label{top:859px;left:0;font-size:20px;font-weight:400}
+    .podkluch-hero__video{border-radius:7px}
+    .podkluch-hero__video::after{width:49px;height:49px}
+    .podkluch-hero__video::before{border-top-width:10px;border-bottom-width:10px;border-left-width:15px}
+
+    .podkluch-programs__heading{min-height:170px;padding:43px 0 20px}
+    .podkluch-programs h2{max-width:320px;font-size:28px;line-height:1.2}
+    .podkluch-programs__canvas{width:320px}
+    .podkluch-programs__grid{
+      grid-template-columns:348px;
+      justify-content:start;
+      min-height:1665px;
+      gap:32px;
+      padding:44px 0 0;
+      margin-left:-14px;
+    }
+    .podkluch-programs__cta{width:300px;height:58px;margin:23px 0 0 24px;font-size:14px}
+  }
+</style>

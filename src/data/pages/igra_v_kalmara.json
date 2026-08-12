@@ -85,6 +85,7 @@
  },
  "booking": {
   "title": "Онлайн бронирование",
+  "sourceHeight": { "desktop": 290, "mobile": 260 },
   "calendarId": 87,
   "lines": [
    "Точная стоимость – в форме бронирования",

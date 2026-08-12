@@ -1,0 +1,188 @@
+---
+import ZoomImg from './ZoomImg.astro';
+
+const { hall, address, asset, ctaHref } = Astro.props;
+const [capacity = '', format = '', equipment = '', ...equipmentItems] = hall.lines || [];
+const splitLabel = (line) => {
+  const separator = line.indexOf(':');
+  return separator === -1
+    ? { label: line, value: '' }
+    : { label: `${line.slice(0, separator + 1)} `, value: line.slice(separator + 1).trimStart() };
+};
+const capacityLine = splitLabel(capacity);
+const formatLine = splitLabel(format);
+const galleryId = 'magnit-hall-gallery';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const sourceFontCss = `
+  @font-face {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 200 1000;
+    font-display: swap;
+    src: url('${base}/assets/fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofIMeaBXso.woff2') format('woff2');
+    unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  }
+
+  @font-face {
+    font-family: 'Montserratblack';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('${base}/assets/static.tildacdn.com/tild3134-3738-4465-a238-656132666435/Montserrat.woff2') format('woff2');
+  }
+`;
+---
+
+<section class="magnit-hall">
+  <div class="container magnit-hall__heading">
+    {hall.title && <h2 class="magnit-hall__title">{hall.title}</h2>}
+    {hall.subtitle && <p class="magnit-hall__subtitle">{hall.subtitle}</p>}
+  </div>
+
+  <div class="container magnit-hall__artboard">
+    <figure class="magnit-hall__gallery">
+      <div class="magnit-hall__photos" data-t396-gallery role="region" aria-roledescription="carousel"
+           aria-label={`Фотографии зала: ${address}`} aria-live="off">
+        <div class="magnit-hall__track" data-t396-gallery-track>
+          {(hall.photos || []).map((photo, photoIndex) => (
+            <div class="magnit-hall__photo-slide" id={`${galleryId}-slide-${photoIndex + 1}`}
+                 data-t396-gallery-slide aria-hidden={photoIndex === 0 ? 'false' : 'true'}>
+              <ZoomImg
+                src={asset(photo)}
+                group="venue-hall-magnitogorskaya1"
+                buttonClass="magnit-hall__zoom"
+                imageClass="magnit-hall__photo"
+                alt={`Зал для праздника — ${address}`}
+                loading="lazy"
+                decoding="async"
+                width="600"
+                height="400"
+              />
+            </div>
+          ))}
+        </div>
+        {(hall.photos || []).length > 1 && (
+          <div class="magnit-hall__dots" role="tablist" aria-label="Выбор фотографии зала">
+            {(hall.photos || []).map((_, photoIndex) => (
+              <button type="button" class="magnit-hall__dot" role="tab" data-t396-gallery-dot
+                      aria-label={`Фото ${photoIndex + 1} из ${(hall.photos || []).length}`}
+                      aria-controls={`${galleryId}-slide-${photoIndex + 1}`}
+                      aria-selected={photoIndex === 0 ? 'true' : 'false'}
+                      aria-current={photoIndex === 0 ? 'true' : 'false'}></button>
+            ))}
+          </div>
+        )}
+      </div>
+      {hall.caption && <figcaption class="magnit-hall__caption">{hall.caption}</figcaption>}
+    </figure>
+
+    <h3 class="magnit-hall__address">{hall.address}</h3>
+    <div class="magnit-hall__panel" aria-hidden="true"></div>
+    <div class="magnit-hall__copy">
+      {capacity && <p><strong>{capacityLine.label}</strong>{capacityLine.value}</p>}
+      {format && <p><strong>{formatLine.label}</strong>{formatLine.value}</p>}
+      {equipment && <p><strong>{equipment}</strong></p>}
+      {equipmentItems.length > 0 && (
+        <ul>
+          {equipmentItems.map((item) => <li>{item}</li>)}
+        </ul>
+      )}
+    </div>
+    <a class="magnit-hall__cta" href={ctaHref}>{hall.cta}</a>
+  </div>
+</section>
+
+<script>
+  import '../scripts/t396-gallery.js';
+</script>
+
+<style is:inline set:html={sourceFontCss}></style>
+
+<style>
+  .magnit-hall{padding:50px 0 0;overflow:clip}
+  .magnit-hall__heading{height:165px;padding-top:46px}
+  .magnit-hall__title{width:1114px;max-width:100%;color:#000;font-size:38px;font-weight:700;line-height:44px}
+  .magnit-hall__subtitle{width:672px;max-width:100%;margin-top:7px;color:#333;font-family:'Nunito',Arial,sans-serif;font-size:20px;font-weight:400;line-height:23px}
+  .magnit-hall__artboard{position:relative;height:539px}
+  .magnit-hall__gallery{position:absolute;top:8px;left:80px;width:600px;height:400px}
+  .magnit-hall__photos{position:relative;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;border-radius:30px;scrollbar-width:none}
+  .magnit-hall__photos::-webkit-scrollbar{display:none}
+  .magnit-hall__photos.is-ready{overflow:hidden}
+  .magnit-hall__track{display:flex;width:100%;height:100%;transition:transform .3s ease}
+  .magnit-hall__photo-slide{display:block;flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start}
+  .magnit-hall__photos :global(.magnit-hall__zoom){display:block;flex:0 0 100%;width:100%;height:100%;padding:0;border:0;background:none}
+  .magnit-hall__photos :global(.magnit-hall__photo){display:block;width:100%;height:100%;object-fit:cover}
+  .magnit-hall__dots{position:absolute;z-index:4;bottom:10px;left:50%;display:flex;gap:10px;transform:translateX(-50%)}
+  .magnit-hall__dot{width:8px;height:8px;padding:0;border:0;border-radius:50%;background:#474747;cursor:pointer}
+  .magnit-hall__dot[aria-selected="true"]{background:#ff6900}
+  .magnit-hall__dot:focus-visible{outline:2px solid #fff;outline-offset:3px}
+  .magnit-hall__caption{position:absolute;z-index:3;top:416px;left:0;width:441px;color:#333;font-family:'Montserratblack','Montserrat',Arial,sans-serif;font-size:22px;font-weight:400;line-height:29px;text-transform:uppercase;opacity:.3}
+  .magnit-hall__address{position:absolute;top:27px;left:720px;width:399px;color:#333;font-family:'Montserratblack','Montserrat',Arial,sans-serif;font-size:26px;font-weight:400;line-height:40px;text-transform:uppercase}
+  .magnit-hall__panel{position:absolute;z-index:1;top:138px;left:581px;width:540px;min-height:341px;border-radius:20px;background:rgba(255,255,255,.8);box-shadow:0 0 12px rgba(71,71,71,.3);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+  .magnit-hall__copy{position:absolute;z-index:2;top:158px;left:610px;width:493px;color:#474747;font-family:'Nunito',Arial,sans-serif;font-size:18px;font-weight:400;line-height:22px}
+  .magnit-hall__copy p + p{margin-top:22px}
+  .magnit-hall__copy strong{font-weight:700}
+  .magnit-hall__copy ul{margin:0;padding-left:20px;list-style:disc}
+  .magnit-hall__cta{position:absolute;z-index:3;top:451px;left:720px;display:flex;align-items:center;justify-content:center;width:300px;height:55px;border-radius:30px;background-image:linear-gradient(0deg,#ff6900 0%,#f9ce29 100%);box-shadow:0 2px 3px rgba(71,71,71,.2);color:#fff;font-family:'Nunito',Arial,sans-serif;font-size:16px;font-weight:400;line-height:24.8px;text-transform:uppercase}
+
+  @media (min-width:901px) and (max-width:1199px){
+    .magnit-hall__heading{height:190px;padding-top:29px}
+    .magnit-hall__title{width:720px}
+    .magnit-hall__subtitle{width:688px;margin-top:54px}
+    .magnit-hall__artboard{height:528px}
+    .magnit-hall__gallery{top:0;left:12px}
+    .magnit-hall__caption{top:416px;left:-2px;width:403px;font-size:18px;line-height:23px}
+    .magnit-hall__address{top:16px;left:630px;width:321px;font-size:24px;line-height:32px}
+    .magnit-hall__panel{top:109px;left:489px;width:462px;min-height:350px}
+    .magnit-hall__copy{top:130px;left:511px;width:424px;font-size:16px;line-height:22px}
+    .magnit-hall__cta{top:431px;left:570px}
+  }
+
+  @media (max-width:900px){
+    .magnit-hall__heading{width:100%;max-width:none;height:235px;padding:42px 35px 0}
+    .magnit-hall__title{width:300px;font-size:22px;line-height:25px}
+    .magnit-hall__subtitle{width:300px;margin-top:10px;font-size:18px;line-height:21px}
+    .magnit-hall__artboard{width:100%;max-width:none;height:755px;padding:0}
+    .magnit-hall__gallery{top:415px;left:-24px;width:439px;height:275px}
+    .magnit-hall__photos{border-radius:37px}
+    .magnit-hall__caption{top:10px;left:54px;width:332px;font-size:17.0625px;line-height:21.9375px}
+    .magnit-hall__address{top:62px;left:12px;width:367px;font-size:24.375px;line-height:37.78125px}
+    .magnit-hall__panel{top:149px;left:12px;right:12px;width:auto;min-height:318px}
+    .magnit-hall__copy{top:166px;left:34px;width:324px;font-size:14.625px;line-height:17.0625px}
+    .magnit-hall__copy p + p{margin-top:17.0625px}
+    .magnit-hall__copy ul{padding-left:24.375px}
+    .magnit-hall__cta{top:663px;left:37px;width:317px;height:56px;font-size:14px;line-height:21.7px}
+  }
+
+  @media (min-width:640px) and (max-width:900px){
+    .magnit-hall__heading{height:220px;padding:35px 30px 0}
+    .magnit-hall__title{width:510px;font-size:30px;line-height:35px}
+    .magnit-hall__subtitle{width:510px;margin-top:16px;font-size:22px;line-height:25px}
+    .magnit-hall__artboard{height:417px}
+    .magnit-hall__gallery{top:11px;left:10px;width:380px;height:250px}
+    .magnit-hall__photos{border-radius:30px}
+    .magnit-hall__caption{top:272px;left:0;width:241px;font-size:16px;line-height:21px}
+    .magnit-hall__address{top:28px;left:410px;width:219px;font-size:18px;line-height:28px}
+    .magnit-hall__panel{top:95px;left:310px;right:auto;width:320px;min-height:280px}
+    .magnit-hall__copy{top:106px;left:329px;width:294px;font-size:12px;line-height:15.6px}
+    .magnit-hall__copy p + p{margin-top:16px}
+    .magnit-hall__cta{top:352px;left:355px;width:230px;height:41px;font-size:14px}
+  }
+
+  @media (min-width:480px) and (max-width:639px){
+    .magnit-hall__heading{height:250px;padding:42px 30px 0}
+    .magnit-hall__title{width:449px;font-size:32px;line-height:37px}
+    .magnit-hall__subtitle{width:449px;margin-top:49px;font-size:20px;line-height:23px}
+    .magnit-hall__artboard{height:510px}
+    .magnit-hall__gallery{top:261px;left:10px;width:460px;height:220px}
+    .magnit-hall__photos{border-radius:30px}
+    .magnit-hall__caption{top:3px;left:61px;width:340px;font-size:16px;line-height:19px}
+    .magnit-hall__address{top:20px;left:10px;width:461px;font-size:18px;line-height:28px;text-align:center}
+    .magnit-hall__panel{top:57px;left:51px;right:auto;width:379px;min-height:291px}
+    .magnit-hall__copy{top:70px;left:71px;width:340px;font-size:18px;line-height:22px}
+    .magnit-hall__copy p + p{margin-top:22px}
+    .magnit-hall__cta{top:327px;left:140px;width:200px;height:46px;font-size:16px}
+  }
+
+  @media (prefers-reduced-motion:reduce){.magnit-hall__track{transition:none}}
+</style>

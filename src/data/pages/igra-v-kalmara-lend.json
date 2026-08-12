@@ -10,6 +10,180 @@
     "keywords": "день рождения игра в кальмара ростов-на-дону, праздник кальмар ростов, квест игра в кальмара детям, выпускной кальмар",
     "h1": "Детские праздники и дни рождения в стиле сериала «Игра в Кальмара» в Ростове-на-Дону"
   },
+  "sourceParity": {
+    "kind": "kalmar-landing-artboard",
+    "bookingHref": "#prazdnik",
+    "records": {
+      "hero": { "desktop": 856, "mobile": 770 },
+      "intro": { "desktop": 212, "mobile": 282 },
+      "features": { "desktop": 850, "mobile": 1020 },
+      "programHeading": { "desktop": 140, "mobile": 150 },
+      "program": { "desktop": 638, "mobile": 1549 },
+      "programDivider": { "desktop": 30, "mobile": 30 },
+      "shows": { "desktop": 633, "mobile": 1891 },
+      "showsDivider": { "desktop": 40, "mobile": 40 },
+      "additions": { "desktop": 635, "mobile": 722 },
+      "hallHeading": { "desktop": 260, "mobile": 260 },
+      "hall": { "desktop": 600, "mobile": 785 },
+      "trustHeading": { "desktop": 140, "mobile": 220 },
+      "trust": { "desktop": 770, "mobile": 750 },
+      "pinkDivider": { "desktop": 73, "mobile": 73 },
+      "gift": { "desktop": 700, "mobile": 490 },
+      "venuesHeading": { "desktop": 210, "mobile": 230 },
+      "venues": { "desktop": 157, "mobile": 567 },
+      "footerSpacer": { "desktop": 84, "mobile": 85 },
+      "footer": { "desktop": 277, "mobile": 780 },
+      "footerBottom": { "desktop": 194, "mobile": 360 }
+    },
+    "hero": {
+      "background": "/assets/static.tildacdn.com/tild3130-3432-4231-a166-333333343932/__.jpg",
+      "badge": "/assets/static.tildacdn.com/tild3035-3661-4434-b462-333032353334/efea3ecc-785e-42ad-9.png",
+      "layers": [
+        "/assets/static.tildacdn.com/tild6162-3633-4565-b664-393366366236/--_mini.png",
+        "/assets/static.tildacdn.com/tild3165-3161-4339-a166-353666616432/____mini.png",
+        "/assets/static.tildacdn.com/tild6364-6337-4137-b135-616333396265/_mini.png"
+      ],
+      "gift": "Ответьте на 3 вопроса и получите подарок",
+      "subtitle": "Проверь себя на выживание!",
+      "title": "ДЕТСКИЕ ПРАЗДНИКИИ ДНИ РОЖДЕНИЯ В СТИЛЕ СЕРИАЛА «ИГРА В КАЛЬМАРА» В РОСТОВЕ-НА-ДОНУ",
+      "cta": "ЗАБРОНИРОВАТЬ ИГРУ"
+    },
+    "intro": {
+      "title": "ЧЕ ЗА КВЕСТ — МИР ПРИКЛЮЧЕНИЙ И ВЕСЕЛЬЯ",
+      "text": "Место, где каждый сможет почувствовать себя участником игры, пройти известные испытания, объединиться с друзьями и стать героем своего праздника."
+    },
+    "features": {
+      "background": "/assets/static.tildacdn.com/tild3036-3065-4334-a462-373265623233/_.png",
+      "photo": "/assets/static.tildacdn.com/tild6337-6637-4666-b132-333337386234/_03-2.jpg",
+      "figure": "/assets/static.tildacdn.com/tild3234-3765-4963-b735-646238303664/_mini.png",
+      "title": "ОКАЖИСЬ В РОЛИ ОДНОГО ИЗ ГЕРОЕВ «ИГРЫ В КАЛЬМАРА»",
+      "items": [
+        "Огромный лабиринт 150 м2",
+        "Профессиональные актеры-ведущие",
+        "Задания и испытания из сериала",
+        "Участие в известных играх",
+        "Встреча со знаковыми персонажами сериала",
+        "Новые игры и испытания",
+        "Тимбилдинг и работа в команде",
+        "Большие комнаты отдыха на 20 мест",
+        "Тематические шоу-программы и мастер-классы"
+      ]
+    },
+    "program": {
+      "background": "/assets/static.tildacdn.com/tild3837-3861-4633-a635-656137656437/freepik__expand__303.jpeg",
+      "title": "ВЫБЕРИТЕ ПРОГРАММУ ПРАЗДНИКА",
+      "cta": "УЗНАТЬ СТОИМОСТЬ",
+      "decoration": "/assets/static.tildacdn.com/tild6437-6165-4462-a163-383065653238/22.png",
+      "items": [
+        { "title": "СТАНДАРТ", "src": "/assets/static.tildacdn.com/tild3837-3831-4363-a463-353239383431/_1___-2.png" },
+        { "title": "СУПЕР", "src": "/assets/static.tildacdn.com/tild3935-6561-4936-a239-633335383335/_2___-2.png" },
+        { "title": "МАКСИ", "src": "/assets/static.tildacdn.com/tild3530-6466-4838-b832-353262336136/_3___-2.png" }
+      ]
+    },
+    "shows": [
+      { "title": "Шоу Любимый герой", "src": "/assets/static.tildacdn.com/tild6435-6639-4664-b761-636665353737/_DSC7951_1.jpg" },
+      { "title": "Шоу Квиз Игра в кальмара", "src": "/assets/static.tildacdn.com/tild6262-3562-4465-b662-626437306266/noroot.png" },
+      { "title": "Шоу Кажется нащупал", "src": "/assets/static.tildacdn.com/tild3561-3266-4635-b264-643032336637/IMG_7151.jpg" },
+      { "title": "Шоу мафия. Игра на выживание", "src": "/assets/static.tildacdn.com/tild3136-3766-4930-b332-366335366262/IMG_7124_1.jpg" }
+    ],
+    "showsDecoration": "/assets/static.tildacdn.com/tild3537-6261-4833-a161-303633303830/_.png",
+    "additions": [
+      { "title": "Вынос торта ведущим", "src": "/assets/static.tildacdn.com/tild3834-6264-4434-b061-333862343963/noroot.png" },
+      { "title": "Тематические торты", "src": "/assets/static.tildacdn.com/tild6236-3065-4339-a437-613732383332/noroot.png" },
+      { "title": "Фотограф на мероприятие", "src": "/assets/static.tildacdn.com/tild3635-3963-4039-b139-663737666633/-_.jpg" },
+      { "title": "Профессиональные актеры", "src": "/assets/static.tildacdn.com/tild3266-6530-4961-b639-656630353465/noroot.png" }
+    ],
+    "hall": {
+      "title": "ПОДБЕРЁМ ЗАЛ КОТОРЫЙ ПОДХОДИТ ВАМ!",
+      "subtitle": "4 оборудованных зала, со всем необходимым для успешного проведения детского праздника или семейного мероприятия",
+      "cta": "ЗАБРОНИРОВАТЬ ДАТУ",
+      "slides": [
+        {
+          "count": "1 из 2",
+          "title": "УЛИЦА 40-ЛЕТИЯ ПОБЕДЫ, 216",
+          "href": "/40letpobedy216",
+          "size": "2 ЗАЛА ПО 30 КВ.М",
+          "details": [
+            "Вместимость: до 15 гостей в каждом зале",
+            "Формат: Наша новая и самая масштабная площадка для проведения вашего праздника в формате активной виртуальной игры с полным погружением.",
+            "Арена оборудована:",
+            "музыкальной колонкой",
+            "холодильником и микроволновой печью",
+            "кулером с горячей и холодной водой",
+            "необходимой мебелью: столы, стулья, диванчики",
+            "безлимитный чай/кофе для вас"
+          ],
+          "images": [
+            "/assets/static.tildacdn.com/tild6135-6666-4833-a238-613334643035/photo_53980772950812.jpg",
+            "/assets/static.tildacdn.com/tild6465-3532-4239-b038-303633376665/photo_53980772950812.jpg",
+            "/assets/static.tildacdn.com/tild3262-6633-4261-b034-306663306138/photo_53980772950812.jpg",
+            "/assets/static.tildacdn.com/tild3462-3338-4131-b463-323965323630/photo_53980772950812.jpg",
+            "/assets/static.tildacdn.com/tild3232-3631-4834-a636-396533313730/photo_53980772950812.jpg",
+            "/assets/static.tildacdn.com/tild6636-6630-4862-a431-376564633636/photo_53980772950812.jpg"
+          ]
+        },
+        {
+          "count": "2 из 2",
+          "title": "УЛИЦА МАГНИТОГОРСКАЯ, 1",
+          "href": "/magnitogorskaya1",
+          "size": "2 ЗАЛА ПО 30 КВ.М",
+          "details": [
+            "Вместимость: до 15 гостей в каждом зале",
+            "Формат: Можно выбрать один из 3-х залов. Они подходят для шоу-программ и мастер-классов; на площадке большой выбор активных игр и пряток.",
+            "Арена оборудована:",
+            "музыкальной колонкой",
+            "холодильником и микроволновой печью",
+            "кулером с горячей и холодной водой",
+            "необходимой мебелью: столы, стулья, диванчики",
+            "безлимитный чай/кофе для вас"
+          ],
+          "images": [
+            "/assets/static.tildacdn.com/tild3664-6666-4330-b165-666161616538/photo_53980772950812.jpg",
+            "/assets/static.tildacdn.com/tild6439-3965-4533-b232-356563643863/photo_54360476578361.jpg",
+            "/assets/static.tildacdn.com/tild3935-3636-4335-a530-393030656534/photo_53980772950812.jpg",
+            "/assets/static.tildacdn.com/tild3930-3837-4631-b939-373738376664/photo_53980772950812.jpg",
+            "/assets/static.tildacdn.com/tild6136-3633-4134-b134-643032326232/photo_53980772950812.jpg",
+            "/assets/static.tildacdn.com/tild3865-3663-4265-a638-323935656638/photo_53980772950812.jpg",
+            "/assets/static.tildacdn.com/tild3161-6434-4064-b737-343166373335/photo_53980772950812.jpg",
+            "/assets/static.tildacdn.com/tild6637-3865-4332-b833-623334326465/photo_53980772950812.jpg"
+          ]
+        }
+      ]
+    },
+    "trust": {
+      "title": "ПРИЧИНЫ ДОВЕРИТЬ НАМ ОРГАНИЗАЦИЮ ВАШЕГО ПРАЗДНИКА",
+      "background": "/assets/static.tildacdn.com/tild3830-3366-4161-b636-373562633061/photo_2023-11-20_22-.jpg",
+      "mark": "/assets/static.tildacdn.com/tild3965-3930-4331-a639-613063303966/photo.svg",
+      "leftPhoto": "/assets/static.tildacdn.com/tild3337-3666-4237-b830-313666316639/IMAGE_2021-11-24_140.jpg",
+      "rightPhoto": "/assets/static.tildacdn.com/tild6231-3732-4435-b437-303934356436/IMG_3527.jpeg",
+      "divider": "/assets/static.tildacdn.com/tild3162-3233-4138-b238-363139356262/-_.png",
+      "cards": [
+        { "prefix": "Уже", "value": "8", "text": "лет создаем волшебные дни рождения" },
+        { "prefix": "Более", "value": "10 000", "text": "восторженных отзывов" },
+        { "prefix": "", "value": "9", "text": "современно оборудованных площадок с комнатами отдыха" },
+        { "prefix": "БЕЗОПАСНО", "value": "", "text": "На каждом празднике присутствует инструктор, который следит за безопасностью всех участников." }
+      ]
+    },
+    "gift": {
+      "background": "/assets/static.tildacdn.com/tild6165-3863-4262-a337-346333663664/_.jpg",
+      "art": "/assets/static.tildacdn.com/tild3339-6462-4239-b662-353164363932/-.png",
+      "title": "ГАРАНТИРОВАННО ПОЛУЧИТЕ 1 ИЗ 3 ПАМЯТНЫХ ПОДАРКОВ",
+      "text": "Ответьте на 3 вопроса — и узнайте точную стоимость волшебного дня рождения для вашего ребёнка",
+      "cta": "РАССЧИТАТЬ СТОИМОСТЬ"
+    },
+    "venues": [
+      { "title": "ГВАРДЕЙСКИЙ ПЕР., 61", "href": "/guardeskypereulog61" },
+      { "title": "УЛ. СОЦИАЛИСТИЧЕСКАЯ, 186", "href": "/socialicheskaya186" },
+      { "title": "УЛ. КРАСНОАРМЕЙСКАЯ, 103", "href": "/krasnormerskaya103" },
+      { "title": "ПР-Т СОКОЛОВА, 23", "href": "/sokolova23" },
+      { "title": "ПР-Т МИРА, Д. 27", "href": "/mira27" },
+      { "title": "УЛ. НАНСЕНА, 107/1", "href": "/nansena107" },
+      { "title": "УЛ. МАГНИТОГОРСКАЯ, 1", "href": "/magnitogorskaya1" },
+      { "title": "УЛ. 40-ЛЕТИЯ ПОБЕДЫ, 216", "href": "/40letpobedy216" },
+      { "title": "ПР-Т НАГИБИНА, 14А", "href": "/nagibina14" }
+    ],
+    "footerLogo": "/assets/static.tildacdn.com/tild6337-6561-4434-a631-626137386564/-_.png"
+  },
   "breadcrumbs": [
     { "t": "Главная", "href": "/" },
     { "t": "Проведение праздников", "href": "/kids" },
@@ -25,7 +199,7 @@
       "copyPosition": "top",
       "heightDesktop": 856,
       "heightMobile": 770,
-      "composition": "tilda-artboard",
+      "composition": "kalmar-landing-artboard",
       "hidePills": true,
       "artboard": {
         "desktop": { "width": 1200, "height": 856 },
@@ -95,43 +269,42 @@
       ]
     },
     {
-      "kind": "packages",
+      "kind": "kalmar-programs",
       "id": "program",
-      "title": "Выберите программу праздника",
-      "subtitle": "Отправьте заявку — менеджер подскажет свободную дату и соберёт программу",
+      "heading": {
+        "prefix": "Выберите",
+        "accent": "программу праздника"
+      },
+      "background": {
+        "src": "/assets/static.tildacdn.com/tild3837-3861-4633-a635-656137656437/freepik__expand__303.jpeg",
+        "intrinsic": { "width": 1472, "height": 832 }
+      },
       "cta": "Узнать стоимость",
+      "href": "#prazdnik",
       "items": [
         {
           "name": "Стандарт",
-          "duration": "1,5 часа",
-          "includes": [
-            { "t": "Тематический квест", "time": "60 мин." },
-            { "t": "Комната отдыха", "time": "30 мин." }
-          ],
-          "bullets": ["Ведущий квеста", "Чай и кофе без ограничений", "Электронные пригласительные"]
+          "src": "/assets/static.tildacdn.com/tild3837-3831-4363-a463-353239383431/_1___-2.png",
+          "intrinsic": { "width": 1080, "height": 1330 },
+          "frame": { "width": 360, "height": 443 }
         },
         {
           "name": "Супер",
-          "badge": "Хит продаж",
-          "duration": "2 часа",
-          "includes": [
-            { "t": "Тематический квест", "time": "60 мин." },
-            { "t": "Комната отдыха", "time": "30 мин." },
-            { "t": "Шоу-программа на выбор", "time": "30 мин." }
-          ],
-          "bullets": ["Костюмированный ведущий", "Сервировка праздничной посудой", "Торжественный вынос торта"]
+          "src": "/assets/static.tildacdn.com/tild3935-6561-4936-a239-633335383335/_2___-2.png",
+          "intrinsic": { "width": 1080, "height": 1330 },
+          "frame": { "width": 360, "height": 443 }
         },
         {
           "name": "Макси",
-          "duration": "2,5 часа",
-          "includes": [
-            { "t": "Тематический квест", "time": "60 мин." },
-            { "t": "Комната отдыха", "time": "60 мин." },
-            { "t": "Две шоу-программы", "time": "60 мин." }
-          ],
-          "bullets": ["Подарки всем участникам", "Электронные пригласительные", "Ведущий и инструктор"]
+          "src": "/assets/static.tildacdn.com/tild3530-6466-4838-b832-353262336136/_3___-2.png",
+          "intrinsic": { "width": 1080, "height": 1330 },
+          "frame": { "width": 360, "height": 443 }
         }
-      ]
+      ],
+      "decoration": {
+        "src": "/assets/static.tildacdn.com/tild6437-6165-4462-a163-383065653238/22.png",
+        "intrinsic": { "width": 140, "height": 140 }
+      }
     },
     {
       "kind": "tiles",

@@ -1,0 +1,37 @@
+---
+const { railId, label, items = [] } = Astro.props;
+const list = Array.isArray(items) ? items : [];
+const itemLabel = (item, index) => item?.title || item?.label || `Карточка ${index + 1}`;
+---
+
+<div class="source-artboard-rail__controls" data-source-artboard-rail-controls aria-label={`Управление: ${label}`} hidden>
+  <button class="source-artboard-rail__arrow" type="button" data-source-artboard-rail-prev aria-controls={`${railId}-viewport`} aria-label={`Предыдущая карточка: ${label}`}><span aria-hidden="true">←</span></button>
+  <div class="source-artboard-rail__dots" role="tablist" aria-label={label}>
+    {list.map((item, index) => (
+      <button class="source-artboard-rail__dot" type="button" role="tab" data-source-artboard-rail-dot
+        aria-controls={`${railId}-slide-${index + 1}`} aria-label={`Показать: ${itemLabel(item, index)}`}
+        aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1}></button>
+    ))}
+  </div>
+  <button class="source-artboard-rail__arrow" type="button" data-source-artboard-rail-next aria-controls={`${railId}-viewport`} aria-label={`Следующая карточка: ${label}`}><span aria-hidden="true">→</span></button>
+  <span class="source-artboard-rail__status" data-source-artboard-rail-status aria-live="polite">1 из {list.length}</span>
+</div>
+
+<script>
+  import { initSourceArtboardRails } from '../scripts/source-artboard-rail.js';
+
+  initSourceArtboardRails();
+  document.addEventListener('astro:page-load', () => initSourceArtboardRails());
+</script>
+
+<style>
+  .source-artboard-rail__controls{position:absolute;z-index:8;bottom:14px;left:50%;display:flex;align-items:center;gap:11px;transform:translateX(-50%)}
+  .source-artboard-rail__arrow{display:grid;width:28px;height:28px;padding:0;place-items:center;border:1px solid var(--source-artboard-rail-control-border,currentColor);border-radius:50%;background:var(--source-artboard-rail-control-bg,rgba(20,20,20,.72));color:var(--source-artboard-rail-control-color,#fff);font:600 15px/1 Arial,sans-serif;cursor:pointer}
+  .source-artboard-rail__arrow:hover,.source-artboard-rail__arrow:focus-visible{background:var(--source-artboard-rail-control-active,#ff6900);outline:2px solid var(--source-artboard-rail-focus,#fff);outline-offset:2px}
+  .source-artboard-rail__dots{display:flex;align-items:center;gap:7px}
+  .source-artboard-rail__dot{display:block;width:8px;height:8px;padding:0;border:0;border-radius:50%;background:var(--source-artboard-rail-dot,#9a9a9a);cursor:pointer}
+  .source-artboard-rail__dot[aria-selected="true"]{background:var(--source-artboard-rail-dot-active,#ff6900)}
+  .source-artboard-rail__dot:focus-visible{outline:2px solid var(--source-artboard-rail-focus,#fff);outline-offset:3px}
+  .source-artboard-rail__status{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;clip-path:inset(50%)}
+  @media (prefers-reduced-motion:reduce){.source-artboard-rail__arrow{transition:none}}
+</style>

@@ -14,13 +14,15 @@
     { "t": "Новый год 2027", "href": null }
   ],
   "reviewsTitle": "Честные отзывы наших гостей и их родителей",
+  "showCallback": false,
   "sections": [
     {
       "kind": "hero",
       "variant": "dark",
       "heightDesktop": 688,
       "heightMobile": 767,
-      "composition": "tilda-artboard",
+      "composition": "newyear-artboard",
+      "hideSharedHeader": true,
       "hidePills": true,
       "artboard": {
         "desktop": { "width": 1200, "height": 688 },
@@ -167,5 +169,136 @@
       ]
     },
     { "kind": "party-form" }
-  ]
+  ],
+  "sourceParity": {
+    "kind": "newyear-artboard",
+    "bookingHref": "#prazdnik",
+    "records": {
+      "spacer": { "desktop": 90, "mobile": 90 },
+      "hero": { "desktop": 688, "mobile": 767 },
+      "breadcrumb": { "desktop": 54, "mobile": 54 },
+      "benefitsHeading": { "desktop": 114, "mobile": 135 },
+      "benefits": { "desktop": 748, "mobile": 1426 },
+      "programHeading": { "desktop": 114, "mobile": 115 },
+      "program": { "desktop": 799, "mobile": 1010 },
+      "dividerAfterProgram": { "desktop": 15, "mobile": 15 },
+      "scenarios": { "desktop": 563, "mobile": 563 },
+      "hallHeading": { "desktop": 215, "mobile": 215 },
+      "hall": { "desktop": 570, "mobile": 755 },
+      "dividerAfterHall": { "desktop": 50, "mobile": 50 },
+      "showsHeading": { "desktop": 180, "mobile": 250 },
+      "shows": { "desktop": 735, "mobile": 469 },
+      "dividerAfterShows": { "desktop": 50, "mobile": 50 },
+      "helpHeading": { "desktop": 215, "mobile": 215 },
+      "help": { "desktop": 630, "mobile": 630 },
+      "dividerAfterHelp": { "desktop": 50, "mobile": 50 },
+      "additionsHeading": { "desktop": 175, "mobile": 175 },
+      "additions": { "desktop": 405, "mobile": 535 },
+      "masters": { "desktop": 500, "mobile": 600 },
+      "dividerAfterMasters": { "desktop": 50, "mobile": 50 },
+      "reviewsHeading": { "desktop": 115, "mobile": 195 },
+      "dividerAfterReviews": { "desktop": 50, "mobile": 50 },
+      "faqHeading": { "desktop": 124, "mobile": 135 },
+      "faq": { "desktop": 381, "mobile": 367 },
+      "dividerAfterFaq": { "desktop": 50, "mobile": 50 },
+      "callback": { "desktop": 480, "mobile": 630 },
+      "dividerAfterCallback": { "desktop": 50, "mobile": 50 },
+      "venuesHeading": { "desktop": 132, "mobile": 111 },
+      "venues": { "desktop": 191, "mobile": 537 },
+      "footerSpacer": { "desktop": 60, "mobile": 60 },
+      "footer": { "desktop": 310, "mobile": 910 },
+      "footerBottom": { "desktop": 170, "mobile": 246 }
+    },
+    "hero": {
+      "background": "/assets/static.tildacdn.com/tild3262-6437-4163-a664-323535303334/_-2.jpg",
+      "foreground": "/assets/static.tildacdn.com/tild3161-6535-4831-b364-303861663861/__320-480px.png",
+      "title": "Новогодний праздник для школьников",
+      "city": "В Ростове-на-Дону",
+      "cta": "Рассчитать стоимость праздника",
+      "text": "Яркое новогоднее приключение для вашей группы: от весёлых квестов в лабиринте, шоу-программ с актёрами, до подарков каждому ребёнку. Для школьных классов, и детских коллективов от 10 до 25 детей."
+    },
+    "benefits": [
+      "Все хлопоты по организации — на нас",
+      "Программы для больших групп детей",
+      "Дружелюбные ведущие и опытные актёры",
+      "Безопасность и забота о каждом ребёнке",
+      "Подарки, шоу-программы и фотоотчёт включены",
+      "Мы успешно провели уже более 200 праздников для школ и классов"
+    ],
+    "program": {
+      "photo": "/assets/static.tildacdn.com/tild3663-3435-4437-b134-323835643532/tempImageRF9AD7_1-2.png",
+      "decor": "/assets/static.tildacdn.com/tild3036-3666-4734-b263-613930383463/image_3.png",
+      "title": "«КЛАССНЫЙ НОВЫЙ ГОД» — СЦЕНАРИЙ ПО ШАГАМ:",
+      "items": [
+        "Тематические шоу-программы и мастер-классы",
+        "Программы подходят для групп от 10 до 25 детей.",
+        "Групповое фото на память",
+        "Вручение подарков каждому ребенку",
+        "Диско-танцы",
+        "Интерактивная шоу-программа",
+        "Новогодний квест с любимыми героями",
+        "Встреча с Дедом Морозом и Снегурочкой",
+        "Украшенный банкетный зал на 3 часа"
+      ]
+    },
+    "scenarios": [
+      { "title": "Гарри Поттер и Кубок огня", "href": "/garri-potter-i-kubok-ognya", "src": "/assets/static.tildacdn.com/tild6561-3234-4761-b931-343461393236/download_12.png" },
+      { "title": "Игра в Кальмара", "href": "/igra-v-kalmara-lend", "src": "/assets/static.tildacdn.com/tild3364-3332-4138-a232-613136353466/8.png" },
+      { "title": "Майнкрафт", "href": "/minecraft-lend", "src": "/assets/static.tildacdn.com/tild6661-6530-4362-a163-613339313330/__.jpg" },
+      { "title": "Роблокс", "href": "/roblox-land", "src": "/assets/static.tildacdn.com/tild6232-6135-4636-a665-613063653162/_03.jpg" },
+      { "title": "Амонг Ас", "href": "/amongus-land", "src": "/assets/static.tildacdn.com/tild6364-3764-4731-b439-316133666666/photo.jpg" }
+    ],
+    "hall": {
+      "photo": "/assets/static.tildacdn.com/tild3731-6330-4232-a339-393461633861/photo_53980772950812.jpg",
+      "address": "Улица 40-летия Победы, 216",
+      "href": "/40letpobedy216",
+      "size": "2 зала по 30 кв.м",
+      "capacity": "Вместимость: до 25 гостей",
+      "format": "Наша новая и самая масштабная площадка для проведения вашего праздника в формате активной игры в лабиринте и виртуальной игры с полным погружением.",
+      "equipment": [
+        "музыкальной колонкой",
+        "холодильником и микроволновой печью",
+        "кулером с горячей и холодной водой",
+        "необходимой мебелью: столы, стулья, диванчики",
+        "безлимитным чаем и кофе"
+      ]
+    },
+    "shows": [
+      { "title": "Нащупал", "src": "/assets/static.tildacdn.com/tild6230-6463-4838-b865-386137323461/2_.jpg" },
+      { "title": "Мафия", "src": "/assets/static.tildacdn.com/tild3738-3861-4636-b531-376631326334/_.jpg" },
+      { "title": "Угадай мелодию", "src": "/assets/static.tildacdn.com/tild6165-3563-4637-a661-396264623634/_-2.jpg" },
+      { "title": "Попробуй объяснить", "src": "/assets/static.tildacdn.com/tild3666-3363-4430-b737-616439363137/-_.jpg" },
+      { "title": "Любимый герой", "src": "/assets/static.tildacdn.com/tild3764-6439-4433-a266-633336383865/-_.jpg" },
+      { "title": "НЕигры", "src": "/assets/static.tildacdn.com/tild6131-6564-4735-b639-353532663239/photo.jpg" },
+      { "title": "Импровизация. Без чувств", "src": "/assets/static.tildacdn.com/tild3862-6331-4263-b264-343334343765/_.jpg" },
+      { "title": "Флешмоб (Дискотека)", "src": "/assets/static.tildacdn.com/tild3535-3437-4837-b939-646237636439/photo.jpg" }
+    ],
+    "additions": [
+      { "title": "Вынос торта любимым героем", "src": "/assets/static.tildacdn.com/tild6538-3631-4730-a232-633036643535/-_.jpg" },
+      { "title": "Банкетное меню", "src": "/assets/static.tildacdn.com/tild3931-3963-4736-a263-653163353463/_.jpg" },
+      { "title": "Тематические торты", "src": "/assets/static.tildacdn.com/tild3635-3962-4134-b738-353735346234/noroot.png" },
+      { "title": "Профессиональные актёры", "src": "/assets/static.tildacdn.com/tild3834-3730-4065-b561-363835313731/noroot.png" },
+      { "title": "Профессиональный фотограф", "src": "/assets/static.tildacdn.com/tild3830-3130-4662-b562-386630333361/noroot.png" }
+    ],
+    "masters": [
+      { "title": "Сливочное пиво", "src": "/assets/static.tildacdn.com/tild6537-6330-4733-b338-313332316637/noroot.png" },
+      { "title": "Волшебные палочки", "src": "/assets/static.tildacdn.com/tild3836-6134-4037-a337-623736643465/_.jpg" },
+      { "title": "Космос в банке", "src": "/assets/static.tildacdn.com/tild3231-6564-4735-a239-353165663535/noroot.png" },
+      { "title": "Тай-дай", "src": "/assets/static.tildacdn.com/tild6436-3363-4164-b133-643933383861/noroot.png" },
+      { "title": "Роспись", "src": "/assets/static.tildacdn.com/tild6638-3366-4663-a232-313261333339/noroot.png" }
+    ],
+    "faq": [
+      { "q": "Как узнать стоимость и забронировать дату для нашего класса?", "a": "Просто нажмите на кнопку «Рассчитать стоимость» — мы быстро свяжемся, обсудим детали, всё объясним и рассчитаем стоимость!" },
+      { "q": "Какой возраст детей подходит?", "a": "Программы адаптируем под любые коллективы 6−14 лет" },
+      { "q": "Можно ли принести свои угощения и торт?", "a": "Да! У нас есть специально оборудованная банкетная комната, которую мы украсим и накроем стол праздничной посудой." },
+      { "q": "Сколько длится праздник?", "a": "Длительность праздника 3 часа. Более подробно расскажет наш менеджер во время расчёта стоимости." }
+    ],
+    "venues": [
+      { "title": "пр-т Соколова, 23", "href": "/sokolova23" },
+      { "title": "ул. Красноармейская, 103", "href": "/krasnormerskaya103" },
+      { "title": "ул. Социалистическая, 186", "href": "/socialicheskaya186" },
+      { "title": "Гвардейский пер., 61", "href": "/guardeskypereulog61" },
+      { "title": "ул. 40-летия Победы, 216", "href": "/40letpobedy216" }
+    ]
+  }
 }

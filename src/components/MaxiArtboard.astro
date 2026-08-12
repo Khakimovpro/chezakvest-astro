@@ -1,0 +1,403 @@
+---
+// Captured records from /prazdnik-maxi/.  This composition is deliberately
+// isolated from the generic HolidayPage: the live landing is a dark Tilda
+// artboard with fixed desktop/mobile record heights, not a card-template skin.
+import site from '../data/site.json';
+
+const { source = {}, asset = (value) => value, href = (value) => value } = Astro.props;
+const records = source.records || {};
+const bookingHref = href(source.bookingHref || '#callback');
+const hall = source.hall || {};
+const hallSlides = hall.slides || [];
+const callback = source.callback || {};
+const mobileFooterSeam = Number(source.mobileFooterSeam) || 0;
+const recordStyle = (record = {}) => [
+  record.desktop && `--maxi-record-desktop:${Number(record.desktop)}px`,
+  record.mobile && `--maxi-record-mobile:${Number(record.mobile)}px`,
+].filter(Boolean).join(';');
+const artboardStyle = [
+  source.background && `--maxi-background:url('${asset(source.background)}')`,
+  `--maxi-mobile-footer-seam:${mobileFooterSeam}px`,
+].filter(Boolean).join(';');
+---
+
+<div class="maxi-artboard" style={artboardStyle}>
+  <div class="maxi-artboard__header-space" data-parity-record={records.header?.id} style={recordStyle(records.header)} aria-hidden="true"></div>
+
+  <nav class="maxi-artboard__breadcrumbs" data-parity-record={records.breadcrumbs?.id} style={recordStyle(records.breadcrumbs)} aria-label="Хлебные крошки">
+    <div class="maxi-artboard__hero-rail">
+      {(source.breadcrumbs || []).map((item, index) => (
+        <>
+          {index > 0 && <span aria-hidden="true">/</span>}
+          {item.href ? <a href={href(item.href)}>{item.title}</a> : <span>{item.title}</span>}
+        </>
+      ))}
+    </div>
+  </nav>
+
+  <section class="maxi-artboard__hero" data-parity-record={records.hero?.id} style={recordStyle(records.hero)} aria-labelledby="maxi-hero-title">
+    <div class="maxi-artboard__hero-rail">
+      <div class="maxi-artboard__hero-image" style={source.hero?.background ? `background-image:url('${asset(source.hero.background)}')` : ''}>
+        <div class="maxi-artboard__hero-copy">
+          <h1 id="maxi-hero-title">{(source.hero?.title || []).map((line, index) => <span class:list={{ 'is-accent': index === 1 }}>{line}</span>)}</h1>
+          <p>{source.hero?.subtitle}</p>
+          <a class="maxi-artboard__button" href={bookingHref}>{source.hero?.cta}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__price" data-parity-record={records.price?.id} style={recordStyle(records.price)} aria-label="Стоимость программы">
+    <div class="maxi-artboard__rail">
+      <div class="maxi-artboard__price-card">
+        <div class="maxi-artboard__price-copy">
+          <span class="maxi-artboard__pill">{source.price?.label}</span>
+          <strong>{source.price?.value}</strong>
+          <span class="maxi-artboard__price-for">♟ {source.price?.for}</span>
+          <small>{source.price?.note}</small>
+        </div>
+        <h2>{source.price?.title}</h2>
+      </div>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__intro" data-parity-record={records.intro?.id} style={recordStyle(records.intro)} aria-labelledby="maxi-intro-title">
+    <div class="maxi-artboard__rail">
+      <p class="maxi-artboard__eyebrow">{source.intro?.eyebrow}</p>
+      <h2 id="maxi-intro-title">{source.intro?.title}</h2>
+      <p class="maxi-artboard__lead">{source.intro?.text}</p>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__features" data-parity-record={records.features?.id} style={recordStyle(records.features)} aria-label="Состав праздника">
+    <div class="maxi-artboard__features-window" data-maxi-rail="features">
+      <ul id="maxi-features-viewport" data-maxi-rail-viewport tabindex="0" aria-label="Состав праздника: листайте карточки">
+        {(source.features || []).map((item) => (
+          <li><strong>{item.title}</strong><span>{item.text}</span></li>
+        ))}
+      </ul>
+      <div class="maxi-artboard__rail-controls" data-maxi-rail-controls>
+        <button type="button" data-maxi-rail-prev aria-label="Предыдущие карточки состава праздника" aria-controls="maxi-features-viewport">‹</button>
+        <span class="maxi-artboard__rail-status" data-maxi-rail-status aria-live="polite"></span>
+        <button type="button" data-maxi-rail-next aria-label="Следующие карточки состава праздника" aria-controls="maxi-features-viewport">›</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__timeline" data-parity-record={records.timeline?.id} style={recordStyle(records.timeline)} aria-labelledby="maxi-timeline-title">
+    <div class="maxi-artboard__rail">
+      <p class="maxi-artboard__eyebrow">{source.timeline?.eyebrow}</p>
+      <h2 id="maxi-timeline-title">{source.timeline?.title}</h2>
+      <p class="maxi-artboard__lead">{source.timeline?.text}</p>
+      <div class="maxi-artboard__timeline-window" data-maxi-rail="timeline">
+        <ol id="maxi-timeline-viewport" data-maxi-rail-viewport tabindex="0" aria-label="Тайминг праздника: листайте этапы">
+          {(source.timeline?.items || []).map((item, index) => (
+            <li>
+              <p><span>{String(index + 1).padStart(2, '0')}</span> / <b>{item.time}</b></p>
+              <h3>{item.title}</h3>
+              <small>{item.text}</small>
+            </li>
+          ))}
+        </ol>
+        <div class="maxi-artboard__rail-controls" data-maxi-rail-controls>
+          <button type="button" data-maxi-rail-prev aria-label="Предыдущие этапы тайминга" aria-controls="maxi-timeline-viewport">‹</button>
+          <span class="maxi-artboard__rail-status" data-maxi-rail-status aria-live="polite"></span>
+          <button type="button" data-maxi-rail-next aria-label="Следующие этапы тайминга" aria-controls="maxi-timeline-viewport">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__program-cta" data-parity-record={records.programCta?.id} style={recordStyle(records.programCta)}>
+    <div class="maxi-artboard__rail"><a class="maxi-artboard__button" href={bookingHref}>Получить полную программу праздника</a></div>
+  </section>
+
+  <section class="maxi-artboard__catalog-heading" data-parity-record={records.questsHeading?.id} style={recordStyle(records.questsHeading)} aria-labelledby="maxi-quests-title">
+    <div class="maxi-artboard__rail">
+      <p class="maxi-artboard__eyebrow">ОСНОВНАЯ ЧАСТЬ ПРОГРАММЫ</p>
+      <h2 id="maxi-quests-title">Тематический <span>квест в лабиринте</span> на выбор</h2>
+      <p class="maxi-artboard__lead">Адаптированный под возраст, интересы ребёнка и состав гостей.</p>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__quests" data-parity-record={records.quests?.id} style={recordStyle(records.quests)} aria-label="Сценарии квестов">
+    <div class="maxi-artboard__rail">
+      <ul>
+        {(source.quests || []).map((item) => (
+          <li>
+            <a href={bookingHref} aria-label={`${item.title}: подобрать программу`}>
+              <img src={asset(item.src)} alt="" width="480" height="480" loading="lazy" decoding="async" />
+              <strong>{item.title}</strong><span aria-hidden="true">›</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__catalog-heading maxi-artboard__catalog-heading--shows" data-parity-record={records.showsHeading?.id} style={recordStyle(records.showsHeading)} aria-labelledby="maxi-shows-title">
+    <div class="maxi-artboard__rail">
+      <p class="maxi-artboard__eyebrow">ДЕЛАЕМ ПРАЗДНИК ВЕСЕЛЕЕ</p>
+      <h2 id="maxi-shows-title"><span>2 шоу-программы</span> уже включены</h2>
+      <p class="maxi-artboard__lead">В программу входят сразу две шоу-программы, поэтому праздник получается не однообразным, а насыщенным.</p>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__shows" data-parity-record={records.shows?.id} style={recordStyle(records.shows)} aria-label="Шоу-программы">
+    <div class="maxi-artboard__shows-window" data-maxi-rail="shows">
+      <ul id="maxi-shows-viewport" data-maxi-rail-viewport tabindex="0" aria-label="Шоу-программы: листайте карточки">
+        {(source.shows || []).map((item) => (
+          <li class:list={{ 'maxi-artboard__show-card--consult': !item.src }}>
+            {item.src && <img src={asset(item.src)} alt="" width="312" height="240" loading="lazy" decoding="async" />}
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+              {item.video && <a href={bookingHref}>● Видео</a>}
+              {item.cta && <a class="maxi-artboard__button" href={bookingHref}>{item.cta}</a>}
+            </div>
+          </li>
+        ))}
+      </ul>
+      <div class="maxi-artboard__rail-controls" data-maxi-rail-controls>
+        <button type="button" data-maxi-rail-prev aria-label="Предыдущие шоу-программы" aria-controls="maxi-shows-viewport">‹</button>
+        <span class="maxi-artboard__rail-status" data-maxi-rail-status aria-live="polite"></span>
+        <button type="button" data-maxi-rail-next aria-label="Следующие шоу-программы" aria-controls="maxi-shows-viewport">›</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__package" data-parity-record={records.package?.id} style={recordStyle(records.package)} aria-labelledby="maxi-package-title">
+    <div class="maxi-artboard__rail">
+      <p class="maxi-artboard__eyebrow">{source.package?.eyebrow}</p>
+      <h2 id="maxi-package-title">{source.package?.title}</h2>
+      <p class="maxi-artboard__lead">{source.package?.text}</p>
+      <div class="maxi-artboard__package-window" data-maxi-rail="package">
+        <ul id="maxi-package-viewport" data-maxi-rail-viewport tabindex="0" aria-label="Состав пакета: листайте карточки">
+          {(source.package?.items || []).map((item, index) => (
+            <li class:list={{ 'maxi-artboard__package-card--wide': index === (source.package?.items?.length || 0) - 1 }}>
+              <h3>{item.title}{item.accent && <> — <span>{item.accent}</span></>}</h3>
+              <p>{item.text}</p>
+            </li>
+          ))}
+        </ul>
+        <div class="maxi-artboard__rail-controls" data-maxi-rail-controls>
+          <button type="button" data-maxi-rail-prev aria-label="Предыдущие пункты пакета" aria-controls="maxi-package-viewport">‹</button>
+          <span class="maxi-artboard__rail-status" data-maxi-rail-status aria-live="polite"></span>
+          <button type="button" data-maxi-rail-next aria-label="Следующие пункты пакета" aria-controls="maxi-package-viewport">›</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__booking-cta" data-parity-record={records.bookingCta?.id} style={recordStyle(records.bookingCta)}>
+    <a class="maxi-artboard__button" href={bookingHref}>Забронировать праздник</a>
+  </section>
+
+  <section class="maxi-artboard__hall-heading" data-parity-record={records.hallHeading?.id} style={recordStyle(records.hallHeading)} aria-labelledby="maxi-hall-title">
+    <div class="maxi-artboard__rail">
+      <p class="maxi-artboard__eyebrow">{hall.eyebrow}</p>
+      <h2 id="maxi-hall-title">{hall.title}</h2>
+      <p class="maxi-artboard__lead">{hall.text}</p>
+    </div>
+  </section>
+
+  <div class="maxi-artboard__hall-spacer" data-parity-record={records.hallSpacer?.id} style={recordStyle(records.hallSpacer)} aria-hidden="true"></div>
+
+  <section class="maxi-artboard__hall" data-parity-record={records.hall?.id} style={recordStyle(records.hall)} aria-label="Зал на улице 40-летия Победы">
+    <div class="maxi-artboard__hall-inner" data-maxi-hall>
+      {hallSlides.map((slide) => <span hidden data-maxi-hall-source data-src={asset(slide)}></span>)}
+      {hallSlides[0] && <img class="maxi-artboard__hall-image" data-maxi-hall-image src={asset(hallSlides[0])} alt="Зал для праздника на улице 40-летия Победы" width="600" height="400" loading="lazy" decoding="async" />}
+      <span class="maxi-artboard__hall-caption">{hall.caption}</span>
+      <div class="maxi-artboard__hall-copy">
+        <h3>{hall.address}</h3>
+        <div>
+          {(hall.details || []).map((line, index) => index > 2 ? <span>• {line}</span> : <p class:list={{ 'is-list-title': index === 2 }}>{line}</p>)}
+        </div>
+        <a class="maxi-artboard__button" href={bookingHref}>Узнать свободные даты</a>
+      </div>
+      {hallSlides.length > 1 && <div class="maxi-artboard__hall-controls">
+        <button type="button" data-maxi-hall-prev aria-label="Предыдущее фото">‹</button>
+        <span data-maxi-hall-count>1 из {hallSlides.length}</span>
+        <button type="button" data-maxi-hall-next aria-label="Следующее фото">›</button>
+      </div>}
+    </div>
+  </section>
+
+  <section class="maxi-artboard__media-heading" data-parity-record={records.videoHeading?.id} style={recordStyle(records.videoHeading)} aria-labelledby="maxi-video-title">
+    <div class="maxi-artboard__rail">
+      <p class="maxi-artboard__eyebrow">{source.video?.eyebrow}</p>
+      <h2 id="maxi-video-title">{source.video?.title}</h2>
+      <p class="maxi-artboard__lead">{source.video?.text}</p>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__video" data-parity-record={records.video?.id} style={recordStyle(records.video)} aria-label="Видеорепортажи с праздников">
+    <div class="maxi-artboard__video-window" data-maxi-rail="video">
+      <div id="maxi-video-viewport" data-maxi-rail-viewport tabindex="0" aria-label="Видеорепортажи с праздников: листайте видео"><div class="maxi-artboard__video-track">
+        {(source.video?.items || []).map((item) => <a href={bookingHref}><img src={asset(item)} alt="Видеорепортаж с праздника" width="700" height="500" loading="lazy" decoding="async" /><span aria-hidden="true">▶</span></a>)}
+      </div></div>
+      <div class="maxi-artboard__rail-controls" data-maxi-rail-controls>
+        <button type="button" data-maxi-rail-prev aria-label="Предыдущее видео" aria-controls="maxi-video-viewport">‹</button>
+        <span class="maxi-artboard__rail-status" data-maxi-rail-status aria-live="polite"></span>
+        <button type="button" data-maxi-rail-next aria-label="Следующее видео" aria-controls="maxi-video-viewport">›</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__reviews-heading" data-parity-record={records.reviewsHeading?.id} style={recordStyle(records.reviewsHeading)} aria-labelledby="maxi-reviews-title">
+    <div class="maxi-artboard__rail"><p class="maxi-artboard__eyebrow">{source.reviews?.eyebrow}</p><h2 id="maxi-reviews-title">{source.reviews?.title}</h2></div>
+  </section>
+
+  <section class="maxi-artboard__gallery-heading" data-parity-record={records.galleryHeading?.id} style={recordStyle(records.galleryHeading)} aria-labelledby="maxi-gallery-title">
+    <div class="maxi-artboard__rail"><p class="maxi-artboard__eyebrow">{source.gallery?.eyebrow}</p><h2 id="maxi-gallery-title">{source.gallery?.title}</h2></div>
+  </section>
+
+  <section class="maxi-artboard__gallery" data-parity-record={records.gallery?.id} style={recordStyle(records.gallery)} aria-label="Фотогалерея" data-maxi-rail="gallery">
+    <div id="maxi-gallery-viewport" data-maxi-rail-viewport tabindex="0" aria-label="Фотогалерея: листайте фотографии"><ul>{(source.gallery?.items || []).map((item) => <li><img src={asset(item)} alt="Фотография с праздника" width="480" height="480" loading="lazy" decoding="async" /></li>)}</ul></div>
+    <div class="maxi-artboard__rail-controls" data-maxi-rail-controls>
+      <button type="button" data-maxi-rail-prev aria-label="Предыдущие фотографии" aria-controls="maxi-gallery-viewport">‹</button>
+      <span class="maxi-artboard__rail-status" data-maxi-rail-status aria-live="polite"></span>
+      <button type="button" data-maxi-rail-next aria-label="Следующие фотографии" aria-controls="maxi-gallery-viewport">›</button>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__callback" id="callback" data-parity-record={records.callback?.id} style={recordStyle(records.callback)} aria-labelledby="maxi-callback-title">
+    <div class="maxi-artboard__callback-card">
+      <div><h2 id="maxi-callback-title">{callback.title}</h2><p>{callback.text}</p></div>
+      <form data-lead-form data-lead-kind="callback" data-lead-target={site.header.wa} data-lead-recipient={site.leads?.recipient || ''} aria-describedby="maxi-callback-status">
+        <label for="maxi-callback-name"><span>Ваше Имя</span><input id="maxi-callback-name" name="name" type="text" autocomplete="name" minlength="2" maxlength="80" required /></label>
+        <label for="maxi-callback-phone"><span>Телефон</span><input id="maxi-callback-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="24" required /></label>
+        <label class="maxi-artboard__consent"><input name="consent" type="checkbox" required /><span>Согласен с <a href={href('/privacy')}>Политикой обработки персональных данных</a></span></label>
+        <button class="maxi-artboard__button" type="button" data-lead-submit>{callback.cta}</button>
+        <p id="maxi-callback-status" data-lead-status role="status" aria-live="polite" hidden></p>
+      </form>
+    </div>
+  </section>
+
+  <section class="maxi-artboard__venues-heading" data-parity-record={records.venuesHeading?.id} style={recordStyle(records.venuesHeading)} aria-labelledby="maxi-venues-title">
+    <div class="maxi-artboard__rail"><p class="maxi-artboard__eyebrow">№1 В РОСТОВЕ-НА-ДОНУ</p><h2 id="maxi-venues-title">Наши площадки</h2><p class="maxi-artboard__lead">9 современно оборудованных площадок с квест-комнатами и зонами отдыха в Ростове-на-Дону.</p></div>
+  </section>
+
+  <section class="maxi-artboard__venues" data-parity-record={records.venues?.id} style={recordStyle(records.venues)} aria-label="Адреса площадок"><div>{(source.venues || []).map((item) => <a href={href(item.href)}>{item.title}</a>)}</div></section>
+  <div class="maxi-artboard__footer-spacer" data-parity-record={records.footerSpacer?.id} style={recordStyle(records.footerSpacer)} aria-hidden="true"></div>
+
+  <footer class="maxi-artboard__footer" data-parity-record={records.footer?.id} style={recordStyle(records.footer)}>
+    <div><section><h2>ОРГАНИЗАЦИЯ МЕРОПРИЯТИЙ</h2><a href={href('/kids')}>Детский День рождения</a><a href={href('/den-rozhdeniya-na-vr-arene')}>День Рождения в VR</a><a href={href('/vypusknoj-kalmar')}>Выпускной 2026</a></section><section><h2>ВИДЫ РАЗВЛЕЧЕНИЙ</h2><a href={href('/kvesty-v-rostove-na-donu')}>Квеструмы</a><a href={href('/den-rozhdeniya-na-vr-arene')}>VR-арена</a><a href={href('/party-games')}>Активные игры</a></section><section><h2>НАШИ ПЛОЩАДКИ</h2>{(source.venues || []).slice(6).map((item) => <a href={href(item.href)}>{item.title}</a>)}</section><section><a href={href('/privacy')}>Политика обработки персональных данных</a><a href={site.header.phoneHref}>{site.header.phone}</a></section></div>
+  </footer>
+  <div class="maxi-artboard__copyright" data-parity-record={records.copyright?.id} style={recordStyle(records.copyright)}><span>© 2026 ЧЁ ЗА КВЕСТ</span><a href={href('/')}>ЧЁ ЗА!КВЕСТ</a></div>
+</div>
+
+<script>
+  import '../scripts/lead-form.js';
+  import '../scripts/maxi-artboard-rails.js';
+
+  const initMaxiHall = () => {
+    document.querySelectorAll('[data-maxi-hall]').forEach((hall) => {
+      if (hall.dataset.ready) return;
+      const sources = Array.from(hall.querySelectorAll('[data-maxi-hall-source]'), (source) => source.dataset.src).filter(Boolean);
+      const image = hall.querySelector('[data-maxi-hall-image]');
+      const count = hall.querySelector('[data-maxi-hall-count]');
+      if (!image || sources.length < 2) return;
+      hall.dataset.ready = 'true';
+      let current = 0;
+      const render = () => {
+        image.src = sources[current];
+        if (count) count.textContent = `${current + 1} из ${sources.length}`;
+      };
+      hall.querySelector('[data-maxi-hall-prev]')?.addEventListener('click', () => {
+        current = (current + sources.length - 1) % sources.length;
+        render();
+      });
+      hall.querySelector('[data-maxi-hall-next]')?.addEventListener('click', () => {
+        current = (current + 1) % sources.length;
+        render();
+      });
+    });
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initMaxiHall, { once: true });
+  else initMaxiHall();
+</script>
+
+<style>
+  .maxi-artboard{overflow:hidden;background-color:#0c0e10;background-image:var(--maxi-background);background-repeat:repeat;background-position:center top;background-size:1254px auto;color:#fff;font-family:Montserrat,Arial,sans-serif}
+  .maxi-artboard a{color:inherit;text-decoration:none}
+  .maxi-artboard__header-space{height:var(--maxi-record-desktop,90px)}
+  .maxi-artboard__rail{position:relative;width:1160px;height:100%;margin:auto}
+  .maxi-artboard__hero-rail{width:1200px;height:100%;margin:auto}
+  .maxi-artboard__breadcrumbs{height:var(--maxi-record-desktop,38px);color:#a3a3a3;font:400 13px/1.2 Montserrat,Arial,sans-serif}
+  .maxi-artboard__breadcrumbs > div{display:flex;height:100%;align-items:center;gap:11px}
+  .maxi-artboard__breadcrumbs a:hover{color:#fff}
+  .maxi-artboard__hero{height:var(--maxi-record-desktop,570px)}
+  .maxi-artboard__hero-image{position:relative;height:100%;overflow:hidden;border-radius:0 0 14px 14px;background-color:#101320;background-position:center;background-size:cover;background-repeat:no-repeat}
+  .maxi-artboard__hero-copy{position:absolute;top:63px;left:60px;width:625px}
+  .maxi-artboard__hero h1{margin:0;color:#fff;font:900 52px/1.19 Montserrat,Arial,sans-serif;letter-spacing:-.045em;text-transform:uppercase}
+  .maxi-artboard__hero h1 span{display:block}
+  .maxi-artboard__hero h1 .is-accent,.maxi-artboard h2 span{background:linear-gradient(90deg,#ff0086 2%,#ff4e65 48%,#ff9200 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .maxi-artboard__hero-copy > p{width:310px;margin:45px 0 41px;background:linear-gradient(90deg,#ff0086,#ff9500);-webkit-background-clip:text;background-clip:text;color:transparent;font:400 26px/1.1 Montserrat,Arial,sans-serif}
+  .maxi-artboard__button{display:inline-flex;box-sizing:border-box;min-height:62px;align-items:center;justify-content:center;padding:0 30px;border:0;border-radius:32px;background:linear-gradient(100deg,#fd087f,#ff455c 48%,#ff9300);box-shadow:0 6px 18px rgba(255,58,89,.18);color:#fff;font:400 18px/1.15 Montserrat,Arial,sans-serif;text-align:center;transition:filter .2s ease,transform .2s ease}
+  .maxi-artboard__button:hover{filter:brightness(1.1);transform:translateY(-1px)}
+  .maxi-artboard [data-maxi-rail-viewport]{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-behavior:smooth;scroll-snap-type:x mandatory;overscroll-behavior-x:contain}
+  .maxi-artboard [data-maxi-rail-viewport]::-webkit-scrollbar{display:none}
+  .maxi-artboard__rail-controls{position:absolute;right:12px;bottom:12px;z-index:5;display:flex;align-items:center;gap:6px;padding:5px 7px;border:1px solid rgba(255,255,255,.24);border-radius:999px;background:rgba(8,8,10,.78);box-shadow:0 4px 16px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .18s ease}
+  .maxi-artboard [data-maxi-rail]:hover .maxi-artboard__rail-controls,.maxi-artboard [data-maxi-rail]:focus-within .maxi-artboard__rail-controls{opacity:1;pointer-events:auto}
+  .maxi-artboard__rail-controls[hidden]{display:none}
+  .maxi-artboard__rail-controls button{display:grid;width:27px;height:27px;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;color:#fff;font:700 24px/.8 Arial,sans-serif;cursor:pointer}
+  .maxi-artboard__rail-controls button:disabled{opacity:.35;cursor:default}
+  .maxi-artboard__rail-controls button:focus-visible{outline:2px solid #ff1689;outline-offset:2px}
+  .maxi-artboard__rail-status{min-width:38px;color:#fff;font:600 10px/1 Montserrat,Arial,sans-serif;text-align:center;white-space:nowrap}
+  .maxi-artboard__price{height:var(--maxi-record-desktop,452px)}
+  .maxi-artboard__price-card{position:relative;top:32px;display:flex;height:242px;align-items:center;justify-content:space-between;box-sizing:border-box;padding:42px 45px;border-radius:20px;background:radial-gradient(circle at 90% 90%,rgba(196,0,95,.72),transparent 30%),#1b1b1c;box-shadow:inset 0 0 0 1px rgba(255,255,255,.03)}
+  .maxi-artboard__price-copy{display:flex;width:350px;flex-direction:column;align-items:flex-start}
+  .maxi-artboard__pill{display:inline-block;padding:7px 15px;border-radius:6px;background:linear-gradient(90deg,#fd087f,#ff9300);font:700 12px/1 Montserrat,Arial,sans-serif;letter-spacing:.06em}
+  .maxi-artboard__price-copy strong{margin-top:18px;font:900 43px/1 Montserrat,Arial,sans-serif;letter-spacing:-.04em}
+  .maxi-artboard__price-for{margin-top:22px;color:#c8c8c8;font:400 14px/1 Montserrat,Arial,sans-serif}
+  .maxi-artboard__price-copy small{margin-top:11px;color:#a7a7a7;font:400 12px/1.3 Montserrat,Arial,sans-serif}
+  .maxi-artboard__price h2{width:510px;margin:0;background:linear-gradient(115deg,#ff0086,#ff5671 48%,#ff9600);-webkit-background-clip:text;background-clip:text;color:transparent;font:900 64px/1.1 Montserrat,Arial,sans-serif;letter-spacing:-.045em}
+  .maxi-artboard__intro{height:var(--maxi-record-desktop,320px)}
+  .maxi-artboard__intro .maxi-artboard__eyebrow{padding-top:37px}
+  .maxi-artboard__eyebrow{margin:0;color:#fb1088;font:700 12px/1 Montserrat,Arial,sans-serif;letter-spacing:.16em}
+  .maxi-artboard h2{margin:23px 0 0;color:#fff;font:900 52px/1.1 Montserrat,Arial,sans-serif;letter-spacing:-.045em}
+  .maxi-artboard__intro h2{max-width:1080px}
+  .maxi-artboard__lead{max-width:930px;margin:22px 0 0;color:#a7a7aa;font:400 19px/1.48 Montserrat,Arial,sans-serif}
+  .maxi-artboard__features{height:var(--maxi-record-desktop,155px);overflow:hidden}
+  .maxi-artboard__features-window{position:relative;width:1160px;margin:auto;overflow:visible}
+  .maxi-artboard__features ul{display:flex;width:100%;margin:0;padding:0;gap:20px;list-style:none}
+  .maxi-artboard__features li{display:flex;width:205px;height:84px;flex:0 0 205px;flex-direction:column;justify-content:center;box-sizing:border-box;padding:15px 20px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(32,32,34,.85);box-shadow:0 7px 18px rgba(0,0,0,.18);scroll-snap-align:start}.maxi-artboard__features li:last-child{scroll-snap-align:end}
+  .maxi-artboard__features strong{font:700 13px/1.1 Montserrat,Arial,sans-serif}.maxi-artboard__features span{margin-top:9px;color:#9b9b9d;font:400 11px/1 Montserrat,Arial,sans-serif}
+  .maxi-artboard__timeline{height:var(--maxi-record-desktop,539px)}
+  .maxi-artboard__timeline .maxi-artboard__eyebrow{padding-top:60px}.maxi-artboard__timeline h2{margin-top:17px}.maxi-artboard__timeline .maxi-artboard__lead{margin-top:17px}
+  .maxi-artboard__timeline-window{position:absolute;top:328px;right:-140px;left:31px;overflow:visible}
+  .maxi-artboard__timeline ol{display:flex;width:100%;margin:0;padding:0;gap:82px;list-style:none}
+  .maxi-artboard__timeline li{width:258px;height:212px;flex:0 0 258px;box-sizing:border-box;padding:25px 21px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(10,10,11,.82);scroll-snap-align:start}.maxi-artboard__timeline li:last-child{scroll-snap-align:end}
+  .maxi-artboard__timeline li > p{margin:0;color:#fff;font:700 11px/1 Montserrat,Arial,sans-serif}.maxi-artboard__timeline li > p span{color:#fff}.maxi-artboard__timeline li > p b{color:#ff1689;font-weight:700}
+  .maxi-artboard__timeline h3{margin:20px 0 14px;font:700 16px/1.2 Montserrat,Arial,sans-serif}.maxi-artboard__timeline small{display:block;color:#a4a4a7;font:400 12px/1.4 Montserrat,Arial,sans-serif}
+  .maxi-artboard__program-cta{height:var(--maxi-record-desktop,154px)}.maxi-artboard__program-cta .maxi-artboard__rail{display:flex;align-items:center}.maxi-artboard__program-cta .maxi-artboard__button{width:486px}
+  .maxi-artboard__catalog-heading{height:var(--maxi-record-desktop,279px)}.maxi-artboard__catalog-heading .maxi-artboard__eyebrow{padding-top:86px}.maxi-artboard__catalog-heading h2{max-width:1000px;margin-top:19px}.maxi-artboard__catalog-heading .maxi-artboard__lead{margin-top:15px}
+  .maxi-artboard__quests{height:var(--maxi-record-desktop,797px)}.maxi-artboard__quests ul{display:grid;grid-template-columns:repeat(3,374px);gap:20px;margin:0;padding:0;list-style:none}.maxi-artboard__quests li,.maxi-artboard__quests a{display:block;width:374px;height:373px}.maxi-artboard__quests a{position:relative;overflow:hidden;border-radius:16px;background:#111}.maxi-artboard__quests img{display:block;width:100%;height:100%;object-fit:cover}.maxi-artboard__quests a::after{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.52),transparent 42%);content:''}.maxi-artboard__quests strong,.maxi-artboard__quests a > span{position:absolute;z-index:1;top:29px}.maxi-artboard__quests strong{right:48px;left:30px;font:900 22px/1.24 Montserrat,Arial,sans-serif}.maxi-artboard__quests a > span{right:23px;font:400 35px/1 Montserrat,Arial,sans-serif}
+  .maxi-artboard__catalog-heading--shows{height:var(--maxi-record-desktop,217px)}.maxi-artboard__catalog-heading--shows .maxi-artboard__eyebrow{padding-top:87px}.maxi-artboard__catalog-heading--shows h2{margin-top:16px}.maxi-artboard__catalog-heading--shows .maxi-artboard__lead{margin-top:10px}
+  .maxi-artboard__shows{height:var(--maxi-record-desktop,1024px)}.maxi-artboard__shows-window{position:relative;width:1160px;margin:auto;overflow:visible}.maxi-artboard__shows ul{display:grid;grid-template-columns:repeat(4,260px);gap:40px;margin:0;padding:0;list-style:none}.maxi-artboard__shows li{display:flex;overflow:hidden;width:260px;height:337px;flex-direction:column;border-radius:15px;background:#343434;scroll-snap-align:start}.maxi-artboard__shows li:last-child{scroll-snap-align:end}.maxi-artboard__shows li > img{display:block;width:260px;height:200px;object-fit:cover}.maxi-artboard__shows li > div{display:flex;min-height:0;flex:1;flex-direction:column;padding:17px 17px 15px}.maxi-artboard__shows h3{margin:0;color:#ff1689;font:700 18px/1.05 Montserrat,Arial,sans-serif}.maxi-artboard__shows p{margin:12px 0 0;color:#e2e2e2;font:400 12px/1.4 Montserrat,Arial,sans-serif}.maxi-artboard__shows li > div > a:not(.maxi-artboard__button){margin-top:auto;color:#fff;font:400 13px/1 Montserrat,Arial,sans-serif}.maxi-artboard__show-card--consult{justify-content:flex-end}.maxi-artboard__show-card--consult h3{font-size:18px}.maxi-artboard__show-card--consult .maxi-artboard__button{width:100%;min-height:43px;margin-top:auto;padding:0 10px;font-size:12px}
+  .maxi-artboard__package{height:var(--maxi-record-desktop,1313px)}.maxi-artboard__package .maxi-artboard__eyebrow{padding-top:92px}.maxi-artboard__package h2{margin-top:18px}.maxi-artboard__package .maxi-artboard__lead{margin-top:18px;max-width:740px}.maxi-artboard__package-window{position:relative;margin-top:47px;overflow:visible}.maxi-artboard__package ul{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:0;padding:0;list-style:none}.maxi-artboard__package li{height:89px;box-sizing:border-box;padding:20px 23px;border:1px solid rgba(255,255,255,.13);border-radius:16px;background:rgba(27,27,29,.88);scroll-snap-align:start}.maxi-artboard__package li:last-child{scroll-snap-align:end}.maxi-artboard__package li h3{margin:0;font:700 15px/1.12 Montserrat,Arial,sans-serif}.maxi-artboard__package li h3 span{color:#ff1689}.maxi-artboard__package li p{margin:10px 0 0;color:#aaa;font:400 12px/1.2 Montserrat,Arial,sans-serif}.maxi-artboard__package-card--wide{grid-column:1 / -1}
+  .maxi-artboard__booking-cta{display:flex;height:var(--maxi-record-desktop,124px);align-items:center;justify-content:center}.maxi-artboard__booking-cta .maxi-artboard__button{width:329px;min-height:64px}
+  .maxi-artboard__hall-heading{height:var(--maxi-record-desktop,217px)}.maxi-artboard__hall-heading .maxi-artboard__eyebrow{padding-top:30px}.maxi-artboard__hall-heading h2{margin-top:18px}.maxi-artboard__hall-heading .maxi-artboard__lead{margin-top:11px}.maxi-artboard__hall-spacer{height:var(--maxi-record-desktop,60px)}
+  .maxi-artboard__hall{height:var(--maxi-record-desktop,560px)}.maxi-artboard__hall-inner{position:relative;width:1040px;height:100%;margin:auto}.maxi-artboard__hall-image{position:absolute;top:8px;left:0;display:block;width:600px;height:400px;border-radius:12px;object-fit:cover}.maxi-artboard__hall-caption{position:absolute;top:418px;left:0;color:#888;font:700 18px/1 Montserrat,Arial,sans-serif}.maxi-artboard__hall-copy{position:absolute;top:138px;left:501px;box-sizing:border-box;width:540px;height:341px;padding:27px 30px;border:1px solid rgba(255,255,255,.26);border-radius:17px;background:radial-gradient(circle at 100% 100%,rgba(149,48,0,.7),transparent 52%),rgba(9,9,10,.92);box-shadow:0 7px 22px rgba(0,0,0,.42)}.maxi-artboard__hall-copy h3{width:300px;margin:0 0 23px;font:900 24px/1.1 Montserrat,Arial,sans-serif}.maxi-artboard__hall-copy p{margin:0 0 9px;font:400 12px/1.2 Montserrat,Arial,sans-serif}.maxi-artboard__hall-copy .is-list-title{margin-top:14px;font-weight:700}.maxi-artboard__hall-copy span{display:block;font:400 12px/1.22 Montserrat,Arial,sans-serif}.maxi-artboard__hall-copy .maxi-artboard__button{position:absolute;right:60px;bottom:20px;width:300px;min-height:55px;font-size:13px}.maxi-artboard__hall-controls{position:absolute;top:493px;left:331px;display:flex;align-items:center;gap:7px;color:#fff;font:400 12px/1 Montserrat,Arial,sans-serif}.maxi-artboard__hall-controls button{padding:0;border:0;background:transparent;color:#ff5372;font:700 32px/.7 Arial,sans-serif;cursor:pointer}
+  .maxi-artboard__media-heading{height:var(--maxi-record-desktop,188px)}.maxi-artboard__media-heading .maxi-artboard__eyebrow{padding-top:38px}.maxi-artboard__media-heading h2{margin-top:17px}.maxi-artboard__media-heading .maxi-artboard__lead{margin-top:12px}.maxi-artboard__video{height:var(--maxi-record-desktop,540px)}.maxi-artboard__video-window{position:relative;overflow:hidden;width:100%;height:100%}.maxi-artboard__video-window > [data-maxi-rail-viewport]{width:100%;height:100%}.maxi-artboard__video-track{display:flex;width:max-content;gap:0;transform:translateX(calc(50vw - 769px))}.maxi-artboard__video a{position:relative;display:block;width:663px;height:463px;flex:0 0 663px;scroll-snap-align:start}.maxi-artboard__video a:last-child{scroll-snap-align:end}.maxi-artboard__video img{display:block;width:663px;height:463px;object-fit:cover}.maxi-artboard__video span{position:absolute;top:50%;left:50%;display:grid;width:70px;height:70px;place-items:center;transform:translate(-50%,-50%);border-radius:50%;background:rgba(0,0,0,.48);font-size:26px}
+  .maxi-artboard__reviews-heading,.maxi-artboard__gallery-heading{height:var(--maxi-record-desktop,159px)}.maxi-artboard__reviews-heading .maxi-artboard__eyebrow,.maxi-artboard__gallery-heading .maxi-artboard__eyebrow{padding-top:50px}.maxi-artboard__reviews-heading h2,.maxi-artboard__gallery-heading h2{margin-top:17px}
+  .maxi-artboard__gallery{position:relative;height:var(--maxi-record-desktop,440px)}.maxi-artboard__gallery > div{width:100%}.maxi-artboard__gallery ul{display:flex;width:max-content;margin:0;gap:10px;padding:0;transform:translateX(calc(50vw - 714px));list-style:none}.maxi-artboard__gallery li,.maxi-artboard__gallery img{display:block;width:356px;height:350px}.maxi-artboard__gallery li{flex:0 0 356px;scroll-snap-align:start}.maxi-artboard__gallery li:last-child{scroll-snap-align:end}.maxi-artboard__gallery img{object-fit:cover}
+  .maxi-artboard__callback{display:flex;height:var(--maxi-record-desktop,480px);align-items:center;justify-content:center;background:rgba(27,27,28,.9)}.maxi-artboard__callback-card{display:flex;width:1080px;min-height:274px;align-items:center;justify-content:space-between;box-sizing:border-box;padding:47px 60px;border-radius:20px;background:#fff;color:#272727}.maxi-artboard__callback-card h2{margin:0;color:#191919;font-size:42px}.maxi-artboard__callback-card > div > p{width:330px;margin:19px 0 0;color:#666;font:400 16px/1.45 Montserrat,Arial,sans-serif}.maxi-artboard__callback form{display:grid;width:525px;grid-template-columns:1fr 1fr;gap:13px}.maxi-artboard__callback label{display:block}.maxi-artboard__callback label > span{display:block;margin:0 0 7px;color:#555;font:400 12px/1 Montserrat,Arial,sans-serif}.maxi-artboard__callback input[type="text"],.maxi-artboard__callback input[type="tel"]{width:100%;height:46px;box-sizing:border-box;padding:0 12px;border:1px solid #ddd;border-radius:7px;background:#fff;font:400 14px Montserrat,Arial,sans-serif}.maxi-artboard__callback .maxi-artboard__consent{grid-column:1 / -1}.maxi-artboard__callback .maxi-artboard__consent > span{display:inline;margin-left:6px;line-height:1.25}.maxi-artboard__callback .maxi-artboard__consent input{margin:0}.maxi-artboard__callback .maxi-artboard__consent a{color:#ff1689;text-decoration:underline}.maxi-artboard__callback .maxi-artboard__button{width:185px;min-height:46px;padding:0 12px;font-size:14px}
+  .maxi-artboard__venues-heading{height:var(--maxi-record-desktop,188px)}.maxi-artboard__venues-heading .maxi-artboard__eyebrow{padding-top:36px}.maxi-artboard__venues-heading h2{margin-top:16px}.maxi-artboard__venues-heading .maxi-artboard__lead{margin-top:10px}.maxi-artboard__venues{height:var(--maxi-record-desktop,206px);box-sizing:border-box;padding:32px max(20px,calc((100% - 1160px) / 2));background:rgba(28,28,29,.88)}.maxi-artboard__venues > div{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}.maxi-artboard__venues a{box-sizing:border-box;min-width:206px;padding:14px 16px;border:1px solid rgba(255,255,255,.52);border-radius:999px;font:400 13px/1 Montserrat,Arial,sans-serif;text-align:center}.maxi-artboard__footer-spacer{height:var(--maxi-record-desktop,60px);background:#333}.maxi-artboard__footer{height:var(--maxi-record-desktop,311px);box-sizing:border-box;padding:48px max(20px,calc((100% - 1160px) / 2));background:#333}.maxi-artboard__footer > div{display:grid;grid-template-columns:1.2fr 1.1fr 1.25fr 1fr;gap:45px}.maxi-artboard__footer h2{margin:0 0 19px;color:#ff1689;font:700 14px/1.25 Montserrat,Arial,sans-serif;letter-spacing:.02em}.maxi-artboard__footer section > a{display:block;margin-top:10px;color:#d1d1d1;font:400 13px/1.15 Montserrat,Arial,sans-serif}.maxi-artboard__footer section:last-child{padding-top:2px}.maxi-artboard__footer section:last-child a{font-size:14px;line-height:1.45}.maxi-artboard__copyright{display:flex;height:var(--maxi-record-desktop,170px);align-items:center;justify-content:space-between;box-sizing:border-box;padding:0 max(20px,calc((100% - 1160px) / 2));background:#333;color:#888;font:400 13px/1 Montserrat,Arial,sans-serif}.maxi-artboard__copyright a{color:#fff;font:900 18px/1 Montserrat,Arial,sans-serif}
+
+  @media (max-width:639px){
+    .maxi-artboard{background-size:625px auto}.maxi-artboard__header-space{height:var(--maxi-record-mobile,90px)}.maxi-artboard__rail,.maxi-artboard__hero-rail{width:360px}.maxi-artboard__breadcrumbs{height:var(--maxi-record-mobile,61px);font-size:9px}.maxi-artboard__breadcrumbs > div{gap:6px;align-items:flex-start;padding-top:11px;box-sizing:border-box;flex-wrap:wrap;line-height:1.5}.maxi-artboard__hero{height:var(--maxi-record-mobile,690px)}.maxi-artboard__hero-image{border-radius:0 0 12px 12px;background-position:center top}.maxi-artboard__hero-copy{top:36px;left:9px;width:310px}.maxi-artboard__hero h1{font-size:28px;line-height:1.02;letter-spacing:-.04em}.maxi-artboard__hero-copy > p{width:235px;margin:16px 0 17px;font-size:16px;line-height:1.12}.maxi-artboard__button{min-height:56px;padding:0 20px;border-radius:29px;font-size:14px}.maxi-artboard__hero-copy .maxi-artboard__button{width:210px}
+    .maxi-artboard__price{height:var(--maxi-record-mobile,533px)}.maxi-artboard__price-card{top:32px;display:block;width:360px;height:274px;padding:26px}.maxi-artboard__pill{padding:6px 12px;font-size:10px}.maxi-artboard__price-copy strong{margin-top:16px;font-size:29px}.maxi-artboard__price-for{margin-top:20px;font-size:11px}.maxi-artboard__price-copy small{width:180px;margin-top:10px;font-size:9px;line-height:1.45}.maxi-artboard__price h2{position:absolute;right:24px;bottom:25px;width:195px;font-size:30px;line-height:1.04}
+    .maxi-artboard__intro{height:var(--maxi-record-mobile,478px)}.maxi-artboard__intro .maxi-artboard__eyebrow{padding-top:55px}.maxi-artboard__eyebrow{font-size:9px;letter-spacing:.17em}.maxi-artboard h2{font-size:26px;line-height:1.1;letter-spacing:-.04em}.maxi-artboard__intro h2{margin-top:19px}.maxi-artboard__lead{margin-top:18px;font-size:14px;line-height:1.55}.maxi-artboard__features{height:var(--maxi-record-mobile,157px)}.maxi-artboard__features-window{width:100%;overflow:visible}.maxi-artboard__features ul{width:100%;padding-left:15px;gap:15px}.maxi-artboard__features li{width:145px;height:78px;flex-basis:145px;padding:13px 12px;border-radius:10px}.maxi-artboard__features strong{font-size:10px}.maxi-artboard__features span{margin-top:7px;font-size:8px}
+    .maxi-artboard__timeline{height:var(--maxi-record-mobile,627px)}.maxi-artboard__timeline .maxi-artboard__eyebrow{padding-top:49px}.maxi-artboard__timeline h2{margin-top:16px}.maxi-artboard__timeline .maxi-artboard__lead{margin-top:20px}.maxi-artboard__timeline-window{top:316px;right:auto;left:0;width:100vw}.maxi-artboard__timeline ol{width:100%;gap:16px}.maxi-artboard__timeline li{width:220px;height:253px;flex-basis:220px;padding:24px 19px;border-radius:13px}.maxi-artboard__timeline li:first-child{margin-left:0}.maxi-artboard__timeline h3{margin:18px 0 13px;font-size:15px}.maxi-artboard__timeline small{font-size:10px;line-height:1.5}.maxi-artboard__program-cta{height:var(--maxi-record-mobile,178px)}.maxi-artboard__program-cta .maxi-artboard__button{width:360px;min-height:70px;padding:0 25px;font-size:14px}
+    .maxi-artboard__catalog-heading{height:var(--maxi-record-mobile,292px)}.maxi-artboard__catalog-heading .maxi-artboard__eyebrow{padding-top:39px}.maxi-artboard__catalog-heading h2{margin-top:16px}.maxi-artboard__catalog-heading .maxi-artboard__lead{margin-top:14px}.maxi-artboard__quests{height:var(--maxi-record-mobile,2190px)}.maxi-artboard__quests ul{grid-template-columns:360px;gap:18px}.maxi-artboard__quests li,.maxi-artboard__quests a{width:360px;height:350px}.maxi-artboard__quests strong,.maxi-artboard__quests a > span{top:23px}.maxi-artboard__quests strong{right:48px;left:20px;font-size:16px}.maxi-artboard__quests a > span{right:18px;font-size:29px}
+    .maxi-artboard__catalog-heading--shows{height:var(--maxi-record-mobile,313px)}.maxi-artboard__catalog-heading--shows .maxi-artboard__eyebrow{padding-top:53px}.maxi-artboard__catalog-heading--shows h2{margin-top:17px}.maxi-artboard__catalog-heading--shows .maxi-artboard__lead{margin-top:14px}.maxi-artboard__shows{height:var(--maxi-record-mobile,564px)}.maxi-artboard__shows-window{width:100%;overflow:visible}.maxi-artboard__shows ul{display:flex;width:100%;margin:0;padding-left:15px;gap:20px;scroll-snap-type:x proximity}.maxi-artboard__shows li{width:350px;height:460px;flex:0 0 350px;border-radius:13px}.maxi-artboard__shows li > img{width:350px;height:270px}.maxi-artboard__shows li > div{padding:17px 20px}.maxi-artboard__shows h3{font-size:17px}.maxi-artboard__shows p{font-size:11px}.maxi-artboard__show-card--consult .maxi-artboard__button{min-height:44px}
+    .maxi-artboard__package{height:var(--maxi-record-mobile,657px)}.maxi-artboard__package .maxi-artboard__eyebrow{padding-top:45px}.maxi-artboard__package h2{max-width:315px;margin-top:17px}.maxi-artboard__package .maxi-artboard__lead{max-width:310px;margin-top:17px}.maxi-artboard__package-window{width:100vw;margin-top:25px;overflow:visible}.maxi-artboard__package ul{display:flex;width:100%;padding-left:15px;gap:12px;scroll-snap-type:x proximity}.maxi-artboard__package li{width:177px;height:140px;flex:0 0 177px;padding:16px;border-radius:12px}.maxi-artboard__package li h3{font-size:11px}.maxi-artboard__package li p{margin-top:11px;font-size:10px;line-height:1.35}.maxi-artboard__package-card--wide{grid-column:auto}.maxi-artboard__booking-cta{height:var(--maxi-record-mobile,124px);justify-content:flex-start;padding-left:15px}.maxi-artboard__booking-cta .maxi-artboard__button{width:360px;min-height:56px}
+    .maxi-artboard__hall-heading{height:var(--maxi-record-mobile,284px)}.maxi-artboard__hall-heading .maxi-artboard__eyebrow{padding-top:42px}.maxi-artboard__hall-heading h2{margin-top:15px}.maxi-artboard__hall-heading .maxi-artboard__lead{margin-top:13px}.maxi-artboard__hall-spacer{height:var(--maxi-record-mobile,60px)}.maxi-artboard__hall{height:var(--maxi-record-mobile,755px)}.maxi-artboard__hall-inner{width:360px}.maxi-artboard__hall-image{top:400px;left:0;width:360px;height:240px;border-radius:0;object-fit:cover}.maxi-artboard__hall-caption{top:615px;left:14px;font-size:13px}.maxi-artboard__hall-copy{top:82px;left:0;width:360px;height:363px;padding:21px 18px;border-radius:16px}.maxi-artboard__hall-copy h3{width:270px;margin-bottom:18px;font-size:19px}.maxi-artboard__hall-copy p{margin-bottom:7px;font-size:10px}.maxi-artboard__hall-copy .is-list-title{margin-top:10px}.maxi-artboard__hall-copy span{font-size:10px;line-height:1.16}.maxi-artboard__hall-copy .maxi-artboard__button{right:0;bottom:-257px;width:360px;min-height:56px;font-size:12px}.maxi-artboard__hall-controls{top:16px;left:115px;font-size:11px}.maxi-artboard__hall-controls button{font-size:30px}
+    .maxi-artboard__media-heading{height:var(--maxi-record-mobile,226px)}.maxi-artboard__media-heading .maxi-artboard__eyebrow{padding-top:38px}.maxi-artboard__media-heading h2{margin-top:14px}.maxi-artboard__media-heading .maxi-artboard__lead{margin-top:12px}.maxi-artboard__video{height:var(--maxi-record-mobile,670px)}.maxi-artboard__video-track{gap:12px;transform:translateX(15px)}.maxi-artboard__video a,.maxi-artboard__video img{width:350px;height:500px}.maxi-artboard__video a{flex-basis:350px}.maxi-artboard__video span{width:58px;height:58px;font-size:20px}
+    .maxi-artboard__reviews-heading,.maxi-artboard__gallery-heading{height:var(--maxi-record-mobile,168px)}.maxi-artboard__reviews-heading .maxi-artboard__eyebrow,.maxi-artboard__gallery-heading .maxi-artboard__eyebrow{padding-top:48px}.maxi-artboard__reviews-heading h2,.maxi-artboard__gallery-heading h2{margin-top:15px}.maxi-artboard__gallery{height:var(--maxi-record-mobile,340px)}.maxi-artboard__gallery ul{gap:10px;transform:translateX(-160px)}.maxi-artboard__gallery li,.maxi-artboard__gallery img{width:280px;height:275px}.maxi-artboard__gallery li{flex-basis:280px}
+    .maxi-artboard__callback{height:var(--maxi-record-mobile,630px);align-items:flex-start;padding-top:35px}.maxi-artboard__callback-card{display:block;width:360px;min-height:0;padding:30px 22px;border-radius:16px}.maxi-artboard__callback-card h2{font-size:30px}.maxi-artboard__callback-card > div > p{width:auto;margin-top:13px;font-size:14px}.maxi-artboard__callback form{width:100%;margin-top:24px;grid-template-columns:1fr}.maxi-artboard__callback .maxi-artboard__consent{grid-column:auto}.maxi-artboard__callback .maxi-artboard__button{width:100%;min-height:50px}.maxi-artboard__venues-heading{height:var(--maxi-record-mobile,246px)}.maxi-artboard__venues-heading .maxi-artboard__eyebrow{padding-top:42px}.maxi-artboard__venues-heading h2{margin-top:16px}.maxi-artboard__venues-heading .maxi-artboard__lead{margin-top:15px}.maxi-artboard__venues{height:var(--maxi-record-mobile,552px);padding:28px 15px}.maxi-artboard__venues > div{display:grid;grid-template-columns:1fr;gap:11px}.maxi-artboard__venues a{min-width:0;padding:12px;font-size:12px}.maxi-artboard__footer-spacer{height:var(--maxi-record-mobile,60px)}.maxi-artboard__footer{height:var(--maxi-record-mobile,853px);padding:45px 35px}.maxi-artboard__footer > div{display:grid;grid-template-columns:1fr 1fr;gap:38px 20px}.maxi-artboard__footer h2{font-size:12px}.maxi-artboard__footer section > a{font-size:11px}.maxi-artboard__copyright{height:var(--maxi-record-mobile,246px);align-items:flex-start;flex-direction:column;justify-content:center;margin-top:var(--maxi-mobile-footer-seam,0px);padding:0 35px;gap:24px}.maxi-artboard__copyright a{font-size:16px}
+  }
+</style>

@@ -1,0 +1,19 @@
+/*
+ * The live `/ono/` Tilda records do not use the generic QuestPage proportions:
+ * T347 renders a 560×315 video frame and T121 uses a larger horizontal card
+ * rail. Both selectors require a route-data opt-in, so other quest routes keep
+ * their existing shared geometry.
+ */
+.qvideo--source-t347 .qvideo__frame{width:100%;max-width:560px;aspect-ratio:16/9;margin:26px auto 0}
+.qvideo--source-t347 .qvideo__poster,.qvideo--source-t347 .qvideo__player{width:100%;height:100%;object-fit:cover}
+
+.cards--source-t121 .cards__title{max-width:none}
+.cards--source-t121 .cards__row{gap:40px}
+.cards--source-t121 .card,.cards--source-t121 .card__img{width:360px;height:360px}
+
+@media (max-width:900px){
+  .qvideo--source-t347 .qvideo__frame{max-width:350px}
+  .cards--source-t121 .cards__title,.cards--source-t121 .cards__sub{max-width:280px}
+  .cards--source-t121 .cards__row{gap:10px}
+  .cards--source-t121 .card,.cards--source-t121 .card__img{width:280px;height:280px}
+}

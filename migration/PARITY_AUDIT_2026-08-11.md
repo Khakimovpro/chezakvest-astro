@@ -1,5 +1,54 @@
 # Аудит parity Tilda → Astro — 11.08.2026
 
+## Финальный технический статус — 12.08.2026 UTC
+
+> **Parity-приёмка не сертифицирована.** Последний полный, непрерывно собранный
+> набор доказательств — R27; он охватывает все 67 маршрутов и все 268 обязательных
+> кадров, но не проходит визуальные пороги. R28 был начат после следующей волны
+> source-backed исправлений, однако внешний останов прервал его на **238 из 268**
+> кадров до записи visual-detail.json и canonical matrix. Эти частичные кадры не
+> слиты с R27 и не выданы за чистый круг.
+
+### Что подтверждено
+
+| Проверка | Факт |
+| --- | --- |
+| Полнота | Реестр: 67 маршрутов (65 done, 2 redirect); свежая pages-matrix.csv: 181 URL, ok=64, redirect_ok=96, dead_orig=20, extra_clone=1, missing=0. |
+| Полный visual evidence | R27: 67 строк visual-matrix.csv, 268 кадров (67 × 2 × original/clone), 1440×900 и 390×844, DPR 2, mobile touch. |
+| R27 verdict | needs_fix=64, redirect_ok=2, extra_clone=1; медианы pixel similarity **65,285 %** desktop и **63,155 %** mobile при требованиях ≥90/≥88. |
+| Семантика/геометрия R27 | 23 строки с непарными секциями, 13 с пропущенным текстом, 0 с пропущенным изображением; 21 desktop и 6 mobile страниц выше 10 % page-height. |
+| Runtime R27 | Все нули: overflow, console errors, failed/external requests, broken links, missing image dimensions и first-screen lazy images. |
+| Реестр сознательных замен | known-gaps.csv: 126 URL+section scoped строк для только booking/map/reviews, без wildcard. |
+| Fresh source drift | content-drift.csv: 180 наблюдений, 3 изменённых live поля; отдельная таблица встроена в HTML-отчёт. |
+| Код после R27 | Полный npm run ci прошёл в 00:26 UTC (209 tests, build, redirects, SEO, assets, production, audit, GitHub Pages); после него npm test прошёл 211/211, verify:production, verify:assets и git diff --check прошли. |
+
+### Что было сделано после R27, но не может считаться измеренным финальным кругом
+
+В исходниках добавлены route-scoped source-artboards и/или source-record fixes для
+campaign/Kids/Azkaban/VR/Brawl/Zapad/Pod Kluch/Maxi/Vypusk, common Quest booking,
+главной T604/T395, контактов, карточек и локальных gallery controls. Их TDD,
+локальные asset/DOM проверки и обоснования находятся в decisions.md; R28 должен
+был стать их полным контрольным пересъёмом, но не завершился. Поэтому этот аудит
+не приписывает им повышение R27-метрик.
+
+### Lighthouse
+
+Новый mobile Lighthouse запуск 12.08.2026 не получил соединение с локальным Chrome
+(Unable to connect to Chrome), поэтому новых чисел не заявляется. Последняя полная
+R15-таблица ниже остаётся исторической и уже показывает непрохождение требований:
+Performance ≥95 не был достигнут на всех пяти обязательных URL, а SEO 100 не был
+достигнут на /strashnye-kvesty/.
+
+### HTML и публикация
+
+Самодостаточный HTML собран по полному R27, а не по неполному R28:
+migration/parity/parity-report.html, **3 245 356 bytes** (< 40 MiB),
+67 маршрутов, 268 data-URI thumbnails, Screenshot unavailable=0, 3 строки
+content drift. Он загружен в
+s3://khakimov-demo-72h/chezakvest/parity-2026-08-11/index.html; проверка
+presigned URL вернула HTTP 200. Срок ссылки — 259200 секунд, до
+**2026-08-15T00:43:53Z**.
+
 > **Финальный статус R15: пороги визуальной parity и требуемой mobile-производительности
 > не достигнуты; этот документ не является сертификатом готовности.** В нём сохранён
 > исторический исходный круг R8 и добавлены заново измеренные результаты полного

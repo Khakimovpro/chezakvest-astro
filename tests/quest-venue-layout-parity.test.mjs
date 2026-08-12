@@ -115,7 +115,8 @@ test('keeps the complete three-record source inventory for the 40-let venue grid
     json('src/data/pages/40letpobedy216.json'),
   ]);
 
-  assert.match(venue, /const gameGroups = \[\]/);
+  assert.match(venue, /import \{ groupVenueGameItems \} from '\.\.\/lib\/venue-games\.js';/);
+  assert.match(venue, /const gameGroups = groupVenueGameItems\(page\.games\?\.items, page\.games\?\.groups\);/);
   assert.match(venue, /items=\{canonicalGameItems\(group\.items\)\}/);
   assert.deepEqual(forty.games.groups.map((group) => group.size), [6, 7, 3]);
   assert.equal(forty.games.items.length, 16);

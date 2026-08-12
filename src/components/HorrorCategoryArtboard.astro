@@ -1,0 +1,148 @@
+---
+// `/strashnye-kvesty/` carries a measured Tilda artboard stack.  It is kept
+// separate from CategoryPage so its source record heights and horror-only
+// certificate / venue composition never affect another catalogue category.
+import Header from './Header.astro';
+import CallbackForm from './CallbackForm.astro';
+import ZoomImg from './ZoomImg.astro';
+import MessengerFab from './MessengerFab.astro';
+import site from '../data/site.json';
+
+const { page = {}, source = {}, games = [], asset = (value) => value, href = (value) => value } = Astro.props;
+const records = source.records || {};
+const hero = page.hero || {};
+const gallery = page.gallery || {};
+const certificate = page.cert || {};
+const venues = page.venues?.items || [];
+const gamesByHref = new Map(games.map((game) => [game.href, game]));
+const cards = (source.cardOrder || []).map((cardHref) => gamesByHref.get(cardHref)).filter(Boolean);
+const footer = site.footer || {};
+const sourceHero = hero.bgset?.['1600'] || hero.bgset?.['1200'] || hero.bg;
+const anchor = (value) => String(value || '').startsWith('#') ? value : href(value);
+const recordStyle = (name) => {
+  const record = records[name] || {};
+  return [
+    Number.isFinite(record.desktop) && `--horror-record-desktop:${record.desktop}px`,
+    Number.isFinite(record.mobile) && `--horror-record-mobile:${record.mobile}px`,
+  ].filter(Boolean).join(';');
+};
+const footerHref = (item) => item?.ext ? item.href : href(item?.href);
+---
+
+<div class="horror-category-artboard" data-source-artboard="horror-category">
+  <section class="horror-category-artboard__record horror-category-artboard__header" data-parity-record={records.header?.id} style={recordStyle('header')}>
+    <Header />
+  </section>
+
+  <main class="horror-category-artboard__main">
+    <section class="horror-category-artboard__record horror-category-artboard__hero" data-parity-record={records.hero?.id} style={recordStyle('hero')} aria-labelledby="horror-category-title">
+      <div class="horror-category-artboard__rail">
+        <div class="horror-category-artboard__hero-panel">
+          {sourceHero && <img class="horror-category-artboard__hero-image" src={asset(sourceHero)} alt={page.seo?.h1 || ''} width="1200" height="550" fetchpriority="high" decoding="async" />}
+          {hero.foreground?.src && <img class="horror-category-artboard__hero-foreground" src={asset(hero.foreground.src)} alt="" aria-hidden="true" width={hero.foreground.width} height={hero.foreground.height} fetchpriority="high" decoding="async" />}
+          <div class="horror-category-artboard__hero-shade" aria-hidden="true"></div>
+          <div class="horror-category-artboard__hero-copy">
+            <h1 id="horror-category-title">{hero.h1 || page.seo?.h1}</h1>
+            {hero.sub && <p>{hero.sub}</p>}
+            <div class="horror-category-artboard__hero-actions">
+              {(hero.buttons || []).map((button, index) => (
+                <a class:list={['horror-category-artboard__hero-action', { 'horror-category-artboard__hero-action--primary': button.primary || index === 1 }]} href={anchor(button.href)} data-quiz={button.primary ? site.quiz.main : undefined}>{button.t}</a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <nav class="horror-category-artboard__record horror-category-artboard__breadcrumbs" data-parity-record={records.breadcrumbs?.id} style={recordStyle('breadcrumbs')} aria-label="Хлебные крошки">
+      <ol class="horror-category-artboard__rail">
+        {(page.breadcrumbs || []).map((crumb, index) => (
+          <li>{crumb.href ? <a href={href(crumb.href)}>{crumb.t}</a> : <span aria-current="page">{crumb.t}</span>}{index < page.breadcrumbs.length - 1 && <i aria-hidden="true">/</i>}</li>
+        ))}
+      </ol>
+    </nav>
+
+    <section class="horror-category-artboard__record horror-category-artboard__games-heading" data-parity-record={records.gamesHeading?.id} style={recordStyle('gamesHeading')} aria-labelledby="horror-games-title">
+      <div class="horror-category-artboard__rail"><h2 id="horror-games-title">{page.games?.title}</h2></div>
+    </section>
+
+    <section class="horror-category-artboard__record horror-category-artboard__games" data-parity-record={records.games?.id} style={recordStyle('games')} id="kvesty" aria-label={page.games?.title}>
+      <ul class="horror-category-artboard__rail horror-category-artboard__game-grid">
+        {cards.map((card) => (
+          <li class="horror-category-artboard__game" data-source-card={card.href}>
+            <a class="horror-category-artboard__game-link" href={href(card.href)}>
+              {card.img && <img src={asset(card.imgSet?.['760'] || card.img)} alt={card.t} width="380" height="315" loading="lazy" decoding="async" />}
+              {card.difficulty && <span class="horror-category-artboard__game-keys" aria-label={`Сложность ${card.difficulty} из 5`}>{Array.from({ length: 5 }, (_, index) => <span class:list={{ 'is-active': index < card.difficulty }} aria-hidden="true">◆</span>)}</span>}
+              {card.age && <span class="horror-category-artboard__game-age">{card.age}</span>}
+              <span class="horror-category-artboard__game-title">{card.t}</span>
+              {(card.people || card.time) && <span class="horror-category-artboard__game-meta">
+                {card.people && <span>{card.people} чел.</span>}
+                {card.time && <span>{card.time}</span>}
+              </span>}
+            </a>
+            {card.venue && <a class="horror-category-artboard__game-venue" href={href('/' + card.venue.slug)}>{card.addr}</a>}
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="horror-category-artboard__record horror-category-artboard__gallery" data-parity-record={records.gallery?.id} style={recordStyle('gallery')} aria-labelledby="horror-gallery-title">
+      <div class="horror-category-artboard__rail">
+        <h2 id="horror-gallery-title">{gallery.title}</h2>
+        <div class="horror-category-artboard__gallery-rail" tabindex="0" aria-label="Фотографии со страшных квестов">
+          {(gallery.photos || []).map((photo, index) => <ZoomImg src={asset(photo)} group="horror-category-gallery" alt={`${page.seo?.h1} — фото ${index + 1}`} width="900" height="604" loading="lazy" decoding="async" reveal />)}
+        </div>
+      </div>
+    </section>
+
+    <section class="horror-category-artboard__record horror-category-artboard__certificate" data-parity-record={records.certificate?.id} style={recordStyle('certificate')} aria-labelledby="horror-certificate-title">
+      <div class="horror-category-artboard__rail horror-category-artboard__certificate-inner">
+        {(source.certificate?.ornaments || []).map((ornament, index) => <img class:list={['horror-category-artboard__ornament', `horror-category-artboard__ornament--${index + 1}`]} src={asset(ornament)} alt="" aria-hidden="true" width="86" height="86" loading="lazy" decoding="async" />)}
+        <h2 id="horror-certificate-title">{certificate.title}</h2>
+        {(certificate.lines || []).map((line) => <p>{line}</p>)}
+        {source.certificate?.image && <ZoomImg src={asset(source.certificate.image)} group="horror-category-certificate" imageClass="horror-category-artboard__certificate-image" alt="Подарочный сертификат «Чё за Квест»" width="1200" height="855" loading="lazy" decoding="async" reveal />}
+        <a class="horror-category-artboard__certificate-action" href={site.header.phoneHref}>{certificate.cta}</a>
+      </div>
+    </section>
+
+    <div class="horror-category-artboard__record horror-category-artboard__certificate-divider" data-parity-record={records.certificateDivider?.id} style={recordStyle('certificateDivider')} aria-hidden="true"></div>
+
+    <CallbackForm id="horror-category" sectionId="callback" recordId={records.callback?.id} />
+
+    <section class="horror-category-artboard__record horror-category-artboard__venues-heading" data-parity-record={records.venuesHeading?.id} style={recordStyle('venuesHeading')} aria-labelledby="horror-venues-title">
+      <div class="horror-category-artboard__rail"><h2 id="horror-venues-title">{page.venues?.title}</h2><p>{page.venues?.subtitle}</p></div>
+    </section>
+    <section class="horror-category-artboard__record horror-category-artboard__venues" data-parity-record={records.venues?.id} style={recordStyle('venues')} aria-label="Площадки Чё за Квест">
+      <div class="horror-category-artboard__rail horror-category-artboard__venue-chips">
+        {venues.map((venue) => <a href={href(venue.href)}>{venue.t}</a>)}
+      </div>
+    </section>
+    <div class="horror-category-artboard__record horror-category-artboard__footer-spacer" data-parity-record={records.footerSpacer?.id} style={recordStyle('footerSpacer')} aria-hidden="true"></div>
+  </main>
+
+  <footer class="horror-category-artboard__footer">
+    <div class="horror-category-artboard__record horror-category-artboard__footer-main" data-parity-record={records.footer?.id} style={recordStyle('footer')}>
+      <div class="horror-category-artboard__rail horror-category-artboard__footer-columns">
+        {(footer.cols || []).map((column) => (
+          <section class="horror-category-artboard__footer-column">
+            <h2>{column.title}</h2>
+            <ul>{(column.links || []).map((item) => <li>{item.href ? <a href={footerHref(item)} {...(item.ext ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{item.t}</a> : <span>{item.t}</span>}</li>)}</ul>
+          </section>
+        ))}
+        <section class="horror-category-artboard__footer-column horror-category-artboard__footer-contacts">
+          <a href={footer.phoneHref}>{footer.phone}</a>
+          <p>{footer.hours}</p>
+          <div>{(footer.req || []).map((line) => <span>{line}</span>)}</div>
+          <a href={href(footer.privacyHref)}>{footer.privacy}</a>
+        </section>
+      </div>
+    </div>
+    <div class="horror-category-artboard__record horror-category-artboard__footer-bottom" data-parity-record={records.footerContinuation?.id} style={recordStyle('footerContinuation')}>
+      <div class="horror-category-artboard__rail horror-category-artboard__footer-bottom-inner">
+        <div><a href={href(footer.logoHref)} aria-label="Чё за Квест — на главную"><img src={asset(footer.logo)} alt="Чё за Квест" width="125" height="52" loading="lazy" /></a><p>{footer.copyright}</p></div>
+        <div class="horror-category-artboard__footer-social"><button type="button" data-messenger-open aria-label="Написать нам в мессенджер">WA</button><a href={site.header.vk} target="_blank" rel="noopener noreferrer">VK</a><a href={footer.email}>@</a></div>
+      </div>
+    </div>
+  </footer>
+  <MessengerFab />
+</div>

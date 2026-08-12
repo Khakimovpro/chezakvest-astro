@@ -1,0 +1,307 @@
+---
+// Captured records from /minecraft-lend/.  This is intentionally independent
+// from the generic HolidayPage blocks: the source is a dark, fixed-artboard
+// campaign with a different record sequence at desktop and mobile widths.
+import SourceArtboardRailControls from './SourceArtboardRailControls.astro';
+import site from '../data/site.json';
+
+const { source = {}, asset = (value) => value, href = (value) => value } = Astro.props;
+const records = source.records || {};
+const bookingHref = href(source.bookingHref || '#prazdnik');
+const recordStyle = (record = {}) => [
+  record.desktop && `--minecraft-record-desktop:${Number(record.desktop)}px`,
+  record.mobile && `--minecraft-record-mobile:${Number(record.mobile)}px`,
+].filter(Boolean).join(';');
+const backgroundStyle = (src, overlay = '') => src
+  ? `background-image:${overlay ? `${overlay},` : ''}url('${asset(src)}')`
+  : '';
+const hero = source.hero || {};
+const intro = source.intro || {};
+const trust = source.trust || {};
+const gift = source.gift || {};
+---
+
+<div class="minecraft-artboard">
+  <div class="minecraft-artboard__record minecraft-artboard__header" style={recordStyle(records.header)} aria-hidden="true"></div>
+
+  <section class="minecraft-artboard__record minecraft-artboard__hero" style={recordStyle(records.hero)} aria-labelledby="minecraft-hero-title">
+    <div class="minecraft-artboard__hero-frame" style={backgroundStyle(hero.background)}>
+      <h1 id="minecraft-hero-title">{(hero.title || []).map((line, index) => <span class:list={{ 'is-accent': index === 1 }}>{line}{index < (hero.title || []).length - 1 && ' '}</span>)}</h1>
+      <h2>{hero.subtitle}</h2>
+      <a class="minecraft-artboard__button" href={bookingHref}>{hero.cta}</a>
+      {hero.gift && <img class="minecraft-artboard__hero-gift" src={asset(hero.gift)} alt="" width="330" height="256" decoding="async" />}
+    </div>
+  </section>
+
+  <section class="minecraft-artboard__record minecraft-artboard__intro" style={recordStyle(records.intro)} aria-labelledby="minecraft-intro-title">
+    <h2 id="minecraft-intro-title">Че За Квест — <span>мир приключений и веселья</span></h2>
+    <p class="minecraft-artboard__intro-lead">{intro.lead}</p>
+    {intro.photo && <img class="minecraft-artboard__intro-photo" src={asset(intro.photo)} alt="Праздник в стиле Майнкрафт" width="657" height="451" loading="lazy" decoding="async" />}
+    {intro.character && <img class="minecraft-artboard__intro-character" src={asset(intro.character)} alt="" width="600" height="449" loading="lazy" decoding="async" />}
+    <div class="minecraft-artboard__intro-features"><b>ДЛЯ ВАС:</b><ul>{(intro.features || []).map((item) => <li>{item}</li>)}</ul></div>
+  </section>
+
+  <section class="minecraft-artboard__record minecraft-artboard__heading minecraft-artboard__heading--program" style={recordStyle(records.programHeading)} aria-labelledby="minecraft-program-title">
+    <h2 id="minecraft-program-title">Выберите <span>программу праздника</span></h2>
+  </section>
+
+  <section class="minecraft-artboard__record minecraft-artboard__programs" style={recordStyle(records.programs)} aria-label="Программы праздника">
+    <div class="minecraft-artboard__programs-background" style={backgroundStyle(source.programBackground, 'linear-gradient(rgba(51,51,51,.94),rgba(51,51,51,.38))')}></div>
+    <div class="minecraft-artboard__programs-grid">
+      {(source.programs || []).map((program) => (
+        <a href={bookingHref} aria-label={`${program.title}: узнать стоимость`}><img src={asset(program.src)} alt={program.title} width="1620" height="1677" loading="lazy" decoding="async" /></a>
+      ))}
+    </div>
+    <a class="minecraft-artboard__button minecraft-artboard__programs-cta" href={bookingHref}>Узнать стоимость</a>
+    {source.grass && <img class="minecraft-artboard__grass minecraft-artboard__grass--programs" src={asset(source.grass)} alt="" width="2560" height="176" loading="lazy" decoding="async" />}
+  </section>
+
+  <div class="minecraft-artboard__record minecraft-artboard__spacer" style={recordStyle(records.programSpacer)} aria-hidden="true"></div>
+
+  <section class="minecraft-artboard__record minecraft-artboard__shows" style={recordStyle(records.shows)} aria-labelledby="minecraft-shows-title">
+    <h2 id="minecraft-shows-title">Шоу и <span>мастер-классы</span></h2>
+    <div class="minecraft-artboard__show-grid">
+      {(source.shows || []).map((item) => (
+        <article><img src={asset(item.src)} alt={item.title} width="700" height="700" loading="lazy" decoding="async" /><h3>{item.title}</h3><a href={bookingHref}>ЗАКАЗАТЬ →</a></article>
+      ))}
+    </div>
+  </section>
+
+  <div class="minecraft-artboard__record minecraft-artboard__spacer" style={recordStyle(records.showsSpacer)} aria-hidden="true"></div>
+
+  <section class="minecraft-artboard__record minecraft-artboard__additions" style={recordStyle(records.additions)} aria-labelledby="minecraft-additions-title" data-source-artboard-rail data-source-artboard-rail-id="minecraft-additions">
+    <h2 id="minecraft-additions-title">Дополнения, которые <span>украсят ваш праздник</span></h2>
+    <div class="minecraft-artboard__addition-window" id="minecraft-additions-viewport" data-source-artboard-rail-viewport tabindex="0" role="region" aria-roledescription="carousel" aria-label="Дополнения к празднику">
+      <div class="minecraft-artboard__addition-rail">
+        {(source.additions || []).map((item, index) => (
+          <article id={`minecraft-additions-slide-${index + 1}`} data-source-artboard-rail-slide><img src={asset(item.src)} alt={item.title} width="700" height="700" loading="lazy" decoding="async" /><h3>{item.title}</h3><a href={bookingHref}>ЗАКАЗАТЬ →</a></article>
+        ))}
+      </div>
+    </div>
+    <SourceArtboardRailControls railId="minecraft-additions" label="Дополнения к празднику" items={source.additions || []} />
+  </section>
+
+  <section class="minecraft-artboard__record minecraft-artboard__heading minecraft-artboard__heading--trust" style={recordStyle(records.trustHeading)} aria-labelledby="minecraft-trust-title">
+    <h2 id="minecraft-trust-title">Причины <span>доверить нам организацию<br />вашего праздника</span></h2>
+  </section>
+
+  <section class="minecraft-artboard__record minecraft-artboard__trust" style={recordStyle(records.trust)} aria-label="Причины доверить праздник Чё За Квест">
+    <div class="minecraft-artboard__trust-background" style={backgroundStyle(trust.background, 'linear-gradient(rgba(51,51,51,.88),rgba(0,0,0,.88))')}></div>
+    <div class="minecraft-artboard__trust-grid">
+      {(trust.stats || []).map((stat) => <article class="minecraft-artboard__stat"><p>{stat.top}</p><strong>{stat.value}</strong><span>{stat.bottom}</span></article>)}
+      <article class="minecraft-artboard__trust-icon">{trust.icon && <img src={asset(trust.icon)} alt="" width="240" height="240" loading="lazy" decoding="async" />}</article>
+      <article class="minecraft-artboard__trust-photo">{trust.photo && <img src={asset(trust.photo)} alt="" width="1280" height="853" loading="lazy" decoding="async" />}</article>
+      <article class="minecraft-artboard__trust-copy"><h3>БЕЗОПАСНО</h3><p>На каждом празднике присутствует инструктор, который следит за безопасностью всех участников.</p><b>ДЕТИ ВСЕГДА<br />ПОД ПРИСМОТРОМ</b></article>
+      <article class="minecraft-artboard__trust-copy"><h3>ДЛЯ ВСЕХ<br />ВОЗРАСТОВ</h3><p>Каждый сценарий адаптируется под любой возраст участников.</p></article>
+      <article class="minecraft-artboard__trust-character">{trust.character && <img src={asset(trust.character)} alt="" width="240" height="240" loading="lazy" decoding="async" />}</article>
+    </div>
+    {source.grass && <img class="minecraft-artboard__grass minecraft-artboard__grass--trust" src={asset(source.grass)} alt="" width="2560" height="176" loading="lazy" decoding="async" />}
+  </section>
+
+  <section class="minecraft-artboard__record minecraft-artboard__heading minecraft-artboard__heading--gallery" style={recordStyle(records.galleryHeading)} aria-labelledby="minecraft-gallery-title">
+    <h2 id="minecraft-gallery-title">Фото с наших <span>мероприятий</span></h2>
+  </section>
+  <section class="minecraft-artboard__record minecraft-artboard__gallery" style={recordStyle(records.gallery)} aria-label="Фотографии с мероприятий" data-source-artboard-rail data-source-artboard-rail-id="minecraft-gallery">
+    <div class="minecraft-artboard__gallery-window" id="minecraft-gallery-viewport" data-source-artboard-rail-viewport tabindex="0" role="region" aria-roledescription="carousel" aria-label="Фотографии с мероприятий">
+      <div class="minecraft-artboard__gallery-track">{(source.gallery || []).map((image, index) => <img id={`minecraft-gallery-slide-${index + 1}`} data-source-artboard-rail-slide src={asset(image)} alt="Фотография с праздника в стиле Майнкрафт" width="1200" height="900" loading="lazy" decoding="async" />)}</div>
+    </div>
+    <SourceArtboardRailControls railId="minecraft-gallery" label="Фотографии с мероприятий" items={source.gallery || []} />
+  </section>
+  <div class="minecraft-artboard__record minecraft-artboard__gallery-spacer" style={recordStyle(records.gallerySpacer)} aria-hidden="true"></div>
+
+  <section class="minecraft-artboard__record minecraft-artboard__gift" style={`${recordStyle(records.gift)};${backgroundStyle(gift.background, 'linear-gradient(rgba(0,0,0,.82),rgba(0,0,0,.32))')}`} aria-labelledby="minecraft-gift-title">
+    <div><h2 id="minecraft-gift-title">{gift.title}</h2><p>{gift.text}</p><a class="minecraft-artboard__button" href={bookingHref}>{gift.cta}</a>{gift.image && <img src={asset(gift.image)} alt="" width="330" height="256" loading="lazy" decoding="async" />}</div>
+  </section>
+
+  <section class="minecraft-artboard__record minecraft-artboard__venues-heading" style={recordStyle(records.venuesHeading)} aria-labelledby="minecraft-venues-title"><h2 id="minecraft-venues-title">Наши площадки</h2><p>Выбери одну из 9 современно оборудованных площадок с комнатами отдыха в Ростове-на-Дону</p></section>
+  <section class="minecraft-artboard__record minecraft-artboard__venues" style={recordStyle(records.venues)} aria-label="Адреса площадок"><div>{(source.venues || []).map((venue) => <a href={href(venue.href)}>{venue.title}</a>)}</div></section>
+  <div class="minecraft-artboard__record minecraft-artboard__footer-spacer" style={recordStyle(records.footerSpacer)} aria-hidden="true"></div>
+
+  <footer class="minecraft-artboard__record minecraft-artboard__footer" style={recordStyle(records.footer)}>
+    <div class="minecraft-artboard__footer-grid">
+      <section><h2>ОРГАНИЗАЦИЯ<br />МЕРОПРИЯТИЙ</h2><a href={href('/kids')}>Детский День рождения</a><a href={href('/den-rozhdeniya-na-vr-arene')}>День Рождения в VR</a><a href={href('/vypusknoj-kalmar')}>Выпускной</a><a href={href('/contacts')}>Корпоратив | Тимбилдинг</a></section>
+      <section><h2>ВИДЫ РАЗВЛЕЧЕНИЙ</h2><a href={href('/kvesty-v-rostove-na-donu')}>Квеструмы</a><a href={href('/den-rozhdeniya-na-vr-arene')}>VR-арены</a><a href={href('/party-games')}>Активные игры</a><a href={href('/pryatki_v_temnote')}>Прятки в темноте</a></section>
+      <section><h2>НАШИ ПЛОЩАДКИ</h2>{(source.venues || []).slice(0, 7).map((venue) => <a href={href(venue.href)}>{venue.title}</a>)}</section>
+      <section class="minecraft-artboard__footer-legal"><a href={href('/privacy')}>Политика обработки персональных данных</a><p>ИП Мелешкин Юрий Иванович<br />ОГРНИП: 322169000094990</p></section>
+    </div>
+  </footer>
+  <div class="minecraft-artboard__record minecraft-artboard__copyright" style={recordStyle(records.copyright)}>
+    {source.footerLogo && <a href={href('/')}><img src={asset(source.footerLogo)} alt="Чё За Квест" width="125" height="52" loading="lazy" decoding="async" /></a>}
+    <div><span>© 2025 ЧЁ ЗА КВЕСТ</span><a href={site.header.phoneHref}>{site.header.phone}</a><span>Работаем c 10:00 до 23:30</span><a href="mailto:marketing.chezaquest@yandex.ru">marketing.chezaquest@yandex.ru</a></div>
+  </div>
+</div>
+
+<style is:global>
+  .minecraft-artboard,
+  .minecraft-artboard * { box-sizing:border-box; }
+  .minecraft-artboard { overflow:hidden; color:#fff; background:#333; font-family:var(--font-main, Arial, sans-serif); font-weight:500; }
+  .minecraft-artboard__record { position:relative; height:var(--minecraft-record-desktop); overflow:hidden; }
+  .minecraft-artboard h1,.minecraft-artboard h2,.minecraft-artboard h3,.minecraft-artboard p { margin:0; }
+  .minecraft-artboard a { color:inherit; text-decoration:none; }
+  .minecraft-artboard__header,.minecraft-artboard__spacer { background:#333; }
+  .minecraft-artboard__button { display:grid; place-items:center; min-width:251px; height:64px; padding:0 25px; color:#242424!important; background:#ffc000; border-radius:7px; font-size:16px; font-weight:800; line-height:1; text-align:center; text-transform:none; }
+  .minecraft-artboard__button:hover { background:#ffce2e; }
+  .minecraft-artboard__hero { background:#333; }
+  .minecraft-artboard__hero-frame { position:relative; width:1200px; height:100%; margin:auto; background-position:center; background-size:cover; }
+  .minecraft-artboard__hero h1 { position:absolute; top:54px; left:60px; width:702px; font-size:45px; font-weight:900; line-height:1.09; letter-spacing:-.8px; }
+  .minecraft-artboard__hero h1 span { display:block; }
+  .minecraft-artboard__hero h1 .is-accent,.minecraft-artboard__hero h2 span,.minecraft-artboard__heading span,.minecraft-artboard__shows h2 span,.minecraft-artboard__additions h2 span,.minecraft-artboard__intro h2 span { color:#ffbf00; }
+  .minecraft-artboard__hero h2 { position:absolute; top:245px; left:60px; width:532px; font-size:20px; font-weight:700; line-height:1.3; }
+  .minecraft-artboard__hero .minecraft-artboard__button { position:absolute; top:434px; left:60px; }
+  .minecraft-artboard__hero-gift { position:absolute; top:423px; left:275px; width:115px; height:auto; }
+  .minecraft-artboard__intro { background:#333; }
+  .minecraft-artboard__intro h2 { position:absolute; top:64px; left:50%; width:841px; transform:translateX(-50%); font-size:30px; font-weight:900; line-height:1.25; text-align:center; }
+  .minecraft-artboard__intro-lead { position:absolute; top:116px; left:50%; width:936px; transform:translateX(-50%); color:#e6e6e6; font-size:14px; line-height:1.45; text-align:center; }
+  .minecraft-artboard__intro-photo { position:absolute; top:188px; left:calc(50% - 580px); width:657px; height:451px; border-radius:10px; object-fit:cover; }
+  .minecraft-artboard__intro-character { position:absolute; top:118px; left:calc(50% + 241px); width:343px; height:auto; object-fit:contain; }
+  .minecraft-artboard__intro-features { position:absolute; top:338px; left:calc(50% + 120px); width:431px; color:#fff; font-size:12px; line-height:1.34; }
+  .minecraft-artboard__intro-features b { color:#ffbf00; font-weight:900; }
+  .minecraft-artboard__intro-features ul { margin:9px 0 0; padding:0; list-style:none; }
+  .minecraft-artboard__intro-features li { margin:0 0 4px; }
+  .minecraft-artboard__intro-features li::before { content:'•'; margin-right:6px; color:#ffbf00; }
+  .minecraft-artboard__heading { display:grid; place-items:center; background:#333; text-align:center; }
+  .minecraft-artboard__heading h2 { font-size:34px; font-weight:900; line-height:1.15; }
+  .minecraft-artboard__heading--program h2 { margin-top:7px; }
+  .minecraft-artboard__programs { background:#333; }
+  .minecraft-artboard__programs-background { position:absolute; inset:0; background-position:center; background-size:cover; }
+  .minecraft-artboard__programs-grid { position:absolute; top:48px; left:50%; display:grid; grid-template-columns:repeat(3, 360px); gap:30px; transform:translateX(-50%); }
+  .minecraft-artboard__programs-grid a { display:block; width:360px; height:373px; }
+  .minecraft-artboard__programs-grid img { display:block; width:100%; height:100%; object-fit:contain; }
+  .minecraft-artboard__programs-cta { position:absolute; top:461px; left:50%; transform:translateX(-50%); min-width:260px; }
+  .minecraft-artboard__grass { position:absolute; display:block; max-width:none; object-fit:fill; }
+  .minecraft-artboard__grass--programs { bottom:0; left:50%; width:2560px; height:128px; transform:translateX(-50%); }
+  .minecraft-artboard__shows { background:#333; }
+  .minecraft-artboard__shows h2,.minecraft-artboard__additions h2 { position:absolute; top:75px; left:20px; right:20px; font-size:34px; font-weight:900; line-height:1.15; text-align:center; }
+  .minecraft-artboard__show-grid { position:absolute; top:216px; left:50%; display:grid; width:1160px; grid-template-columns:repeat(4, 260px); column-gap:40px; row-gap:76px; transform:translateX(-50%); }
+  .minecraft-artboard__show-grid article { min-height:301px; text-align:center; }
+  .minecraft-artboard__show-grid img { display:block; width:260px; height:200px; border-radius:8px; object-fit:cover; background:#222; }
+  .minecraft-artboard__show-grid h3,.minecraft-artboard__addition-rail h3 { min-height:41px; margin:15px 0 5px; font-size:15px; font-weight:800; line-height:1.15; }
+  .minecraft-artboard__show-grid a,.minecraft-artboard__addition-rail a { color:#ffc000; font-size:10px; font-weight:900; }
+  .minecraft-artboard__additions { background:#333; --source-artboard-rail-control-bg:rgba(35,35,35,.86); --source-artboard-rail-control-color:#ffc000; --source-artboard-rail-control-border:#ffc000; --source-artboard-rail-control-active:#5a4800; --source-artboard-rail-dot:#8a8a8a; --source-artboard-rail-dot-active:#ffc000; --source-artboard-rail-focus:#fff; }
+  .minecraft-artboard__addition-window { position:absolute; top:210px; left:50%; width:1160px; overflow-x:auto; overscroll-behavior-inline:contain; scroll-snap-type:x mandatory; scrollbar-width:none; touch-action:pan-x; transform:translateX(-50%); }
+  .minecraft-artboard__addition-window::-webkit-scrollbar,.minecraft-artboard__gallery-window::-webkit-scrollbar { display:none; }
+  .minecraft-artboard__addition-rail { display:flex; gap:40px; width:max-content; }
+  .minecraft-artboard__addition-rail article { flex:0 0 260px; text-align:center; scroll-snap-align:start; }
+  .minecraft-artboard__addition-rail img { display:block; width:260px; height:195px; border-radius:8px; object-fit:cover; background:#222; }
+  .minecraft-artboard__heading--trust h2 { font-size:34px; }
+  .minecraft-artboard__trust { background:#333; }
+  .minecraft-artboard__trust-background { position:absolute; inset:0; background-position:center; background-size:cover; }
+  .minecraft-artboard__trust-grid { position:absolute; top:106px; left:50%; display:grid; width:1160px; grid-template-columns:repeat(4,260px); grid-template-rows:260px 260px; gap:40px; transform:translateX(-50%); }
+  .minecraft-artboard__trust-grid article { position:relative; overflow:hidden; border-radius:10px; border:1px solid rgba(255,255,255,.42); background:rgba(24,24,24,.54); }
+  .minecraft-artboard__stat { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:22px; text-align:center; }
+  .minecraft-artboard__stat p { color:#eee; font-size:14px; }
+  .minecraft-artboard__stat strong { color:#ff9e00; font-size:58px; font-weight:900; line-height:1; }
+  .minecraft-artboard__stat span { max-width:210px; color:#eee; font-size:12px; line-height:1.2; }
+  .minecraft-artboard__trust-icon { display:grid; place-items:center; background:linear-gradient(#f9ce29,#e67e19)!important; }
+  .minecraft-artboard__trust-icon img { width:224px; height:224px; object-fit:contain; }
+  .minecraft-artboard__trust-photo img { width:100%; height:100%; object-fit:cover; }
+  .minecraft-artboard__trust-copy { display:flex; flex-direction:column; justify-content:center; padding:24px; text-align:center; }
+  .minecraft-artboard__trust-copy h3,.minecraft-artboard__trust-copy b { color:#ffbf00; font-size:20px; font-weight:900; line-height:1.1; }
+  .minecraft-artboard__trust-copy p { margin:12px 0; font-size:12px; line-height:1.25; }
+  .minecraft-artboard__trust-character { display:grid; place-items:end center; background:linear-gradient(#f9ce29,#ff6900)!important; }
+  .minecraft-artboard__trust-character img { width:100%; height:100%; object-fit:contain; }
+  .minecraft-artboard__grass--trust { bottom:0; left:50%; width:2560px; height:128px; transform:translateX(-50%); }
+  .minecraft-artboard__heading--gallery h2 { margin-top:2px; }
+  .minecraft-artboard__gallery { background:#333; --source-artboard-rail-control-bg:rgba(35,35,35,.86); --source-artboard-rail-control-color:#ffc000; --source-artboard-rail-control-border:#ffc000; --source-artboard-rail-control-active:#5a4800; --source-artboard-rail-dot:#8a8a8a; --source-artboard-rail-dot-active:#ffc000; --source-artboard-rail-focus:#fff; }
+  .minecraft-artboard__gallery-window { width:100%; height:100%; overflow-x:auto; overscroll-behavior-inline:contain; scroll-snap-type:x mandatory; scrollbar-width:none; touch-action:pan-x; }
+  .minecraft-artboard__gallery-track { display:flex; width:100%; height:100%; }
+  .minecraft-artboard__gallery img { display:block; flex:0 0 33.333%; width:33.333%; height:100%; object-fit:cover; scroll-snap-align:start; }
+  .minecraft-artboard__gallery-spacer { background:#ffc000; clip-path:polygon(0 35%,2% 0,4% 35%,6% 0,8% 35%,10% 0,12% 35%,14% 0,16% 35%,18% 0,20% 35%,22% 0,24% 35%,26% 0,28% 35%,30% 0,32% 35%,34% 0,36% 35%,38% 0,40% 35%,42% 0,44% 35%,46% 0,48% 35%,50% 0,52% 35%,54% 0,56% 35%,58% 0,60% 35%,62% 0,64% 35%,66% 0,68% 35%,70% 0,72% 35%,74% 0,76% 35%,78% 0,80% 35%,82% 0,84% 35%,86% 0,88% 35%,90% 0,92% 35%,94% 0,96% 35%,98% 0,100% 35%,100% 100%,0 100%); }
+  .minecraft-artboard__gift { background-position:center; background-size:cover; }
+  .minecraft-artboard__gift > div { position:relative; width:1154px; height:100%; margin:auto; padding-top:181px; }
+  .minecraft-artboard__gift h2 { width:593px; font-size:34px; font-weight:900; line-height:1.13; }
+  .minecraft-artboard__gift p { width:407px; margin-top:42px; color:#f3f3f3; font-size:15px; line-height:1.35; }
+  .minecraft-artboard__gift .minecraft-artboard__button { margin-top:48px; }
+  .minecraft-artboard__gift img { position:absolute; top:434px; left:225px; width:115px; height:auto; }
+  .minecraft-artboard__venues-heading { display:flex; flex-direction:column; align-items:center; justify-content:center; background:#333; text-align:center; }
+  .minecraft-artboard__venues-heading h2 { font-size:34px; font-weight:900; line-height:1.1; }
+  .minecraft-artboard__venues-heading p { max-width:780px; margin-top:20px; font-size:18px; line-height:1.25; }
+  .minecraft-artboard__venues { background:#333; }
+  .minecraft-artboard__venues > div { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; width:1120px; margin:0 auto; padding-top:30px; }
+  .minecraft-artboard__venues a { display:grid; min-height:44px; padding:0 18px; place-items:center; border:1px solid #eee; border-radius:24px; font-size:12px; font-weight:800; text-align:center; }
+  .minecraft-artboard__venues a:hover { border-color:#ffc000; color:#ffc000; }
+  .minecraft-artboard__footer-spacer { background:linear-gradient(135deg,#333 25%,#4a4a4a 25%,#4a4a4a 50%,#333 50%,#333 75%,#4a4a4a 75%); background-size:64px 64px; }
+  .minecraft-artboard__footer { border-top:3px solid #ffc000; border-radius:32px 32px 0 0; background:#333; }
+  .minecraft-artboard__footer-grid { display:grid; grid-template-columns:1.1fr 1fr 1.1fr 1.1fr; gap:30px; width:1160px; margin:0 auto; padding-top:50px; }
+  .minecraft-artboard__footer h2 { margin:0 0 12px; color:#ffc000; font-size:12px; font-weight:900; line-height:1.15; }
+  .minecraft-artboard__footer a { display:block; margin:0 0 7px; color:#eee; font-size:11px; line-height:1.15; }
+  .minecraft-artboard__footer a:hover { color:#ffc000; }
+  .minecraft-artboard__footer-legal p { margin:18px 0; color:#bbb; font-size:10px; line-height:1.35; }
+  .minecraft-artboard__copyright { display:flex; align-items:flex-start; gap:36px; width:1160px; margin:auto; padding-top:15px; background:#333; }
+  .minecraft-artboard__copyright > a { flex:none; display:block; width:125px; }
+  .minecraft-artboard__copyright img { display:block; width:125px; height:auto; }
+  .minecraft-artboard__copyright > div { display:flex; flex-wrap:wrap; gap:10px 22px; padding-top:8px; color:#bbb; font-size:11px; line-height:1.35; }
+  .minecraft-artboard__copyright a:hover { color:#ffc000; }
+  .minecraft-artboard__booking .pform { display:none; }
+  .minecraft-artboard__booking .pform:target { display:block; }
+
+  @media (max-width:700px) {
+    .minecraft-artboard__record { height:var(--minecraft-record-mobile); }
+    .minecraft-artboard__button { min-width:194px; height:56px; padding:0 16px; border-radius:6px; font-size:12px; }
+    .minecraft-artboard__hero-frame { width:320px; }
+    .minecraft-artboard__hero h1 { top:59px; left:0; width:310px; font-size:20px; line-height:1.18; letter-spacing:-.25px; }
+    .minecraft-artboard__hero h2 { top:358px; left:44px; width:232px; font-size:12px; line-height:1.35; text-align:center; }
+    .minecraft-artboard__hero .minecraft-artboard__button { top:432px; left:41px; }
+    .minecraft-artboard__hero-gift { top:424px; left:216px; width:98px; }
+    .minecraft-artboard__intro h2 { top:90px; width:280px; font-size:20px; line-height:1.16; }
+    .minecraft-artboard__intro-lead { top:145px; width:350px; font-size:10px; line-height:1.35; }
+    .minecraft-artboard__intro-photo { top:213px; left:15px; width:360px; height:255px; }
+    .minecraft-artboard__intro-character { top:418px; left:138px; width:241px; }
+    .minecraft-artboard__intro-features { top:510px; left:20px; width:350px; font-size:9px; line-height:1.22; }
+    .minecraft-artboard__intro-features ul { margin-top:6px; }
+    .minecraft-artboard__intro-features li { margin-bottom:3px; }
+    .minecraft-artboard__heading h2 { font-size:25px; line-height:1.16; }
+    .minecraft-artboard__heading--program h2 { margin-top:-1px; }
+    .minecraft-artboard__programs-grid { top:48px; grid-template-columns:320px; gap:32px; }
+    .minecraft-artboard__programs-grid a { width:320px; height:320px; }
+    .minecraft-artboard__programs-cta { top:1123px; min-width:260px; }
+    .minecraft-artboard__grass--programs { width:1423px; height:71px; }
+    .minecraft-artboard__shows h2,.minecraft-artboard__additions h2 { top:75px; font-size:25px; }
+    .minecraft-artboard__show-grid { top:209px; width:350px; grid-template-columns:350px; row-gap:0; }
+    .minecraft-artboard__show-grid article { min-height:399px; }
+    .minecraft-artboard__show-grid img { width:350px; height:269px; }
+    .minecraft-artboard__show-grid h3 { min-height:28px; margin:18px 0 8px; font-size:14px; }
+    .minecraft-artboard__addition-window { top:260px; left:0; width:320px; transform:none; }
+    .minecraft-artboard__addition-rail { width:max-content; gap:60px; padding-left:70px; }
+    .minecraft-artboard__addition-rail article { flex-basis:250px; }
+    .minecraft-artboard__addition-rail img { width:250px; height:188px; }
+    .minecraft-artboard__addition-rail h3 { min-height:31px; margin:14px 0 6px; font-size:13px; }
+    .minecraft-artboard__heading--trust h2 { font-size:24px; }
+    .minecraft-artboard__trust-grid { top:38px; width:320px; grid-template-columns:repeat(2,154px); grid-template-rows:150px 150px 150px 150px; gap:12px; }
+    .minecraft-artboard__trust-grid article { border-radius:7px; }
+    .minecraft-artboard__stat { padding:10px; }
+    .minecraft-artboard__stat p { font-size:10px; }
+    .minecraft-artboard__stat strong { font-size:35px; }
+    .minecraft-artboard__stat span { font-size:9px; }
+    .minecraft-artboard__trust-icon img { width:132px; height:132px; }
+    .minecraft-artboard__trust-copy { padding:12px; }
+    .minecraft-artboard__trust-copy h3,.minecraft-artboard__trust-copy b { font-size:14px; }
+    .minecraft-artboard__trust-copy p { margin:8px 0; font-size:9px; }
+    .minecraft-artboard__grass--trust { width:1423px; height:71px; }
+    .minecraft-artboard__heading--gallery h2 { font-size:26px; }
+    .minecraft-artboard__gallery-track { width:max-content; }
+    .minecraft-artboard__gallery img { flex:0 0 300px; width:300px; height:450px; }
+    .minecraft-artboard__gallery-spacer { clip-path:polygon(0 25%,5% 0,10% 25%,15% 0,20% 25%,25% 0,30% 25%,35% 0,40% 25%,45% 0,50% 25%,55% 0,60% 25%,65% 0,70% 25%,75% 0,80% 25%,85% 0,90% 25%,95% 0,100% 25%,100% 100%,0 100%); }
+    .minecraft-artboard__gift { background-position:center; }
+    .minecraft-artboard__gift > div { width:300px; padding-top:43px; }
+    .minecraft-artboard__gift h2 { width:301px; font-size:24px; line-height:1.18; }
+    .minecraft-artboard__gift p { width:270px; margin-top:26px; font-size:11px; line-height:1.35; }
+    .minecraft-artboard__gift .minecraft-artboard__button { margin-top:28px; }
+    .minecraft-artboard__gift img { top:391px; left:175px; width:98px; }
+    .minecraft-artboard__venues-heading h2 { font-size:25px; }
+    .minecraft-artboard__venues-heading p { width:320px; margin-top:17px; font-size:13px; }
+    .minecraft-artboard__venues > div { display:flex; flex-direction:column; align-items:center; gap:20px; width:auto; padding-top:30px; }
+    .minecraft-artboard__venues a { min-height:40px; padding:0 16px; font-size:10px; }
+    .minecraft-artboard__footer-spacer { background-size:42px 42px; }
+    .minecraft-artboard__footer { border-width:2px; border-radius:22px 22px 0 0; }
+    .minecraft-artboard__footer-grid { grid-template-columns:1fr; gap:18px; width:350px; padding-top:30px; }
+    .minecraft-artboard__footer h2 { font-size:11px; }
+    .minecraft-artboard__footer a { margin-bottom:6px; font-size:10px; }
+    .minecraft-artboard__footer-legal p { margin:14px 0; font-size:9px; }
+    .minecraft-artboard__copyright { display:block; width:350px; padding-top:15px; }
+    .minecraft-artboard__copyright > div { gap:7px 14px; padding-top:13px; font-size:10px; }
+  }
+  @media (prefers-reduced-motion:reduce) {
+    .minecraft-artboard__addition-window,.minecraft-artboard__gallery-window { scroll-behavior:auto; }
+  }
+</style>

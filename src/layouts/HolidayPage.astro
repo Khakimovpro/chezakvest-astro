@@ -11,10 +11,26 @@ import CardsRow from '../components/CardsRow.astro';
 import PartyForm from '../components/PartyForm.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import ZoomImg from '../components/ZoomImg.astro';
+import PodKluchArtboard from '../components/PodKluchArtboard.astro';
+import PodKluchGameGrid from '../components/PodKluchGameGrid.astro';
+import PodKluchServices from '../components/PodKluchServices.astro';
+import PodKluchClosingArtboard from '../components/PodKluchClosingArtboard.astro';
+import KalmarPrograms from '../components/KalmarPrograms.astro';
+import KalmarLandingArtboard from '../components/KalmarLandingArtboard.astro';
+import VypusknojKalmarArtboard from '../components/VypusknojKalmarArtboard.astro';
+import MaxiArtboard from '../components/MaxiArtboard.astro';
+import MinecraftArtboard from '../components/MinecraftArtboard.astro';
+import NewYearArtboard from '../components/NewYearArtboard.astro';
+import AmongUsArtboard from '../components/AmongUsArtboard.astro';
+import RobloxArtboard from '../components/RobloxArtboard.astro';
+import VrBirthdayArtboard from '../components/VrBirthdayArtboard.astro';
+import AzkabanArtboard from '../components/AzkabanArtboard.astro';
+import KidsArtboard from '../components/KidsArtboard.astro';
 import Reviews from '../components/Reviews.astro';
 import VenuesSection from '../components/VenuesSection.astro';
 import site from '../data/site.json';
 import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { canonicalizeCardItems } from '../lib/card-items.js';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
@@ -30,7 +46,21 @@ const path = '/' + page.slug;
 const seo = page.seo;
 const sections = page.sections || [];
 const hero = sections.find((s) => s.kind === 'hero') || {};
-const rest = sections.filter((s) => s.kind !== 'hero');
+const sourcePodKluch = hero.composition === 'podkluch-artboard';
+const sourceVypusknoj = hero.composition === 'vypusknoj-artboard';
+const sourceMaxi = hero.composition === 'maxi-artboard';
+const sourceMinecraft = hero.composition === 'minecraft-artboard';
+const sourceNewYear = hero.composition === 'newyear-artboard';
+const sourceAmongUs = hero.composition === 'amongus-artboard';
+const sourceRoblox = hero.composition === 'roblox-artboard';
+const sourceVrBirthday = hero.composition === 'vr-birthday-artboard';
+const sourceKalmarLanding = hero.composition === 'kalmar-landing-artboard';
+const sourceAzkaban = hero.composition === 'azkaban-artboard';
+const sourceKids = hero.composition === 'kids-artboard';
+const podKluchPrograms = sections.find((s) => s.kind === 'podkluch-programs');
+const rest = sourceVypusknoj || sourceMaxi || sourceMinecraft || sourceNewYear || sourceAmongUs || sourceRoblox || sourceVrBirthday || sourceKalmarLanding || sourceAzkaban || sourceKids
+  ? []
+  : sections.filter((s) => s.kind !== 'hero' && s.kind !== 'podkluch-programs');
 const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
 const pageVenueSlugs = new Set(page.venueSlugs || []);
 const listedVenues = pageVenueSlugs.size > 0
@@ -39,14 +69,7 @@ const listedVenues = pageVenueSlugs.size > 0
 const venuesSubtitle = page.venuesSubtitle
   || `${listedVenues.length} оборудованных площадок с квест-комнатами и зонами отдыха в Ростове-на-Дону`;
 const pagesBySlug = new Map(index.map((item) => [item.slug, item]));
-const canonicalCardItems = (items = []) => items.map((item) => {
-  const slug = String(item.href || '').split(/[?#]/, 1)[0].replace(/^\/+|\/+$/g, '');
-  return {
-    ...item,
-    img: pagesBySlug.get(slug)?.img || item.img,
-    imgSet: pagesBySlug.get(slug)?.imgSet || null,
-  };
-});
+const canonicalCardItems = (items = []) => canonicalizeCardItems(items, pagesBySlug);
 
 // ---- Schema.org: услуга «организация праздника» + цена, если она названа на странице ----
 // цена для разметки: явное поле страницы или первое число из ценника пакета
@@ -55,7 +78,7 @@ const priceBlock = sections.find((s) => s.kind === 'packages' && s.items?.some((
 const firstPrice = (t) => Number((String(t).match(/\d[\d  ]*/) || [''])[0].replace(/\D/g, '')) || null;
 const minPrice = page.priceFrom
   || (priceBlock ? Math.min(...priceBlock.items.filter((i) => i.price).map((i) => firstPrice(i.price)).filter(Boolean)) : null);
-const faq = sections.find((s) => s.kind === 'faq');
+const faq = sourceVypusknoj ? null : sections.find((s) => s.kind === 'faq');
 const reviewSection = sections.find((s) => s.kind === 'reviews');
 
 const jsonld = [
@@ -179,8 +202,36 @@ const bodyClass = page.theme ? `theme-dark holiday-theme holiday-theme--${page.t
 
   <main>
     <!-- ============ ГЕРОЙ ============ -->
-    {/* светлый вариант: фото-вырезка справа на фирменном фоне (как /kids на оригинале) */}
-    {hero.variant === 'light' ? (
+    {/* One source uses a complete local Tilda artboard, including its video rail
+        and package PNGs; it intentionally opts out of the shared card hero. */}
+    {sourceKids ? (
+      <KidsArtboard source={page.sourceParity} page={page} asset={asset} href={heroLink} />
+    ) : sourceAzkaban ? (
+      <AzkabanArtboard source={page.sourceParity} page={page} asset={asset} href={heroLink} />
+    ) : sourceKalmarLanding ? (
+      <KalmarLandingArtboard source={page.sourceParity} asset={asset} href={heroLink}
+        phoneHref={site.header.phoneHref} phone={site.header.phone} />
+    ) : sourceVrBirthday ? (
+      <VrBirthdayArtboard source={page.sourceParity} asset={asset} href={heroLink} />
+    ) : sourceMaxi ? (
+      <MaxiArtboard source={page.sourceParity} asset={asset} href={heroLink} />
+    ) : sourceMinecraft ? (
+      <MinecraftArtboard source={page.sourceParity} asset={asset} href={heroLink} />
+    ) : sourceVypusknoj ? (
+      <VypusknojKalmarArtboard source={page.sourceParity} asset={asset} href={heroLink}
+        phoneHref={site.header.phoneHref} phone={site.header.phone} />
+    ) : sourceNewYear ? (
+      <NewYearArtboard source={page.sourceParity} asset={asset} href={heroLink}
+        phoneHref={site.header.phoneHref} phone={site.header.phone} />
+    ) : sourceAmongUs ? (
+      <AmongUsArtboard source={page.sourceParity} asset={asset} href={heroLink}
+        phoneHref={site.header.phoneHref} phone={site.header.phone} />
+    ) : sourceRoblox ? (
+      <RobloxArtboard source={page.sourceParity} asset={asset} href={heroLink}
+        phoneHref={site.header.phoneHref} phone={site.header.phone} />
+    ) : sourcePodKluch ? (
+      <PodKluchArtboard hero={hero} programs={podKluchPrograms} asset={asset} href={heroLink} />
+    ) : hero.variant === 'light' ? (
       <section class:list={['lhero', { 'lhero--source-fullbleed': hero.fullBleed }]} style={heroStyle}>
         <div class="container lhero__inner">
           <div class="lhero__text">
@@ -251,7 +302,7 @@ const bodyClass = page.theme ? `theme-dark holiday-theme holiday-theme--${page.t
       </section>
     )}
 
-    <Breadcrumbs items={breadcrumbs} />
+    {!sourcePodKluch && !sourceVypusknoj && !sourceMaxi && !sourceMinecraft && !sourceNewYear && !sourceAmongUs && !sourceRoblox && !sourceVrBirthday && !sourceKalmarLanding && !sourceAzkaban && !sourceKids && <Breadcrumbs items={breadcrumbs} />}
 
     {rest.map((s, sectionIndex) => (
       <>
@@ -478,6 +529,11 @@ const bodyClass = page.theme ? `theme-dark holiday-theme holiday-theme--${page.t
           </section>
         )}
 
+        {/* ---- captured T396 programme artboard; opt-in only for Igra v Kalmara ---- */}
+        {s.kind === 'kalmar-programs' && (
+          <KalmarPrograms programs={s} asset={asset} href={heroLink} />
+        )}
+
         {/* ---- тайминг праздника ---- */}
         {s.kind === 'timeline' && (
           <section class="htime">
@@ -504,6 +560,22 @@ const bodyClass = page.theme ? `theme-dark holiday-theme holiday-theme--${page.t
         {s.kind === 'cards' && (
           <CardsRow title={s.title} subtitle={s.subtitle} items={canonicalCardItems(s.items)} id={s.id || ''}
                     variant={s.variant || 'square'} uptitle={s.uptitle || ''} />
+        )}
+
+        {/* T395 plus four captured T396 game artboards; only Pod Kluch opts in. */}
+        {sourcePodKluch && s.kind === 'podkluch-games' && (
+          <PodKluchGameGrid catalogue={s} asset={asset} href={link} />
+        )}
+
+        {/* ---- captured Pod Kluch T017 + T774 additional-services catalog ---- */}
+        {s.kind === 'podkluch-services' && (
+          <PodKluchServices services={s} asset={asset} href={heroLink} />
+        )}
+
+        {/* Remaining T829/T396/T662 source records; this guard keeps the
+            bespoke closeout isolated from every other holiday route. */}
+        {sourcePodKluch && s.kind === 'podkluch-closing' && (
+          <PodKluchClosingArtboard closing={s} asset={asset} href={heroLink} />
         )}
 
         {/* ---- плитки без ссылок (шоу-программы, дополнения) ---- */}
@@ -681,16 +753,28 @@ const bodyClass = page.theme ? `theme-dark holiday-theme holiday-theme--${page.t
 
     {!reviewSection && page.showReviews && <Reviews title={page.reviewsTitle || 'Отзывы наших гостей'} limit={8} />}
 
-    {page.showCallback !== false && <CallbackForm id="h" />}
+    {!sourceMaxi && !sourceMinecraft && !sourceVrBirthday && !sourceKalmarLanding && !sourceAzkaban && !sourceKids && page.showCallback !== false && <CallbackForm id="h" />}
 
     <!-- The source landing pages place the contact hand-off before the address
          strip.  Keeping the shared components in that order restores the
          visible record sequence without duplicating either block. -->
-    {listedVenues.length > 0 && <VenuesSection id={`venues-${page.slug}`} base={base}
+    {!sourceVypusknoj && !sourceMaxi && !sourceMinecraft && !sourceNewYear && !sourceAmongUs && !sourceRoblox && !sourceVrBirthday && !sourceKalmarLanding && !sourceAzkaban && !sourceKids && listedVenues.length > 0 && <VenuesSection id={`venues-${page.slug}`} base={base}
       title="Наши площадки" subtitle={venuesSubtitle} />}
   </main>
 
-  <Footer />
+  {sourceVypusknoj && <div class="vypusknoj-artboard__booking"><PartyForm id="vypusknoj" sectionId="prazdnik"
+    title="Узнать стоимость выпускного" subtitle="Оставьте контакты — подберём дату и программу выпускного." cta="Отправить заявку" /></div>}
+  {sourceMinecraft && <div class="minecraft-artboard__booking"><PartyForm id="minecraft" sectionId="prazdnik"
+    title="Рассчитать стоимость праздника" subtitle="Оставьте контакты — подберём дату и программу в стиле Майнкрафт." cta="Отправить заявку" /></div>}
+  {sourceNewYear && <div class="newyear-artboard__booking"><PartyForm id="newyear" sectionId="prazdnik"
+    title="Рассчитать стоимость праздника" subtitle="Оставьте контакты — поможем подобрать дату и новогоднюю программу." cta="Отправить заявку" /></div>}
+  {sourceAmongUs && <div class="amongus-artboard__booking"><PartyForm id="amongus" sectionId="prazdnik"
+    title="Рассчитать стоимость праздника" subtitle="Оставьте контакты — подберём программу праздника в стиле Амонг Ас." cta="Отправить заявку" /></div>}
+  {sourceRoblox && <div class="roblox-artboard__booking"><PartyForm id="roblox" sectionId="prazdnik"
+    title="Рассчитать стоимость праздника" subtitle="Оставьте контакты — подберём программу праздника в стиле Roblox." cta="Отправить заявку" /></div>}
+  {sourceKalmarLanding && <div class="kalmar-landing-artboard__booking"><PartyForm id="kalmar" sectionId="prazdnik"
+    title="Рассчитать стоимость праздника" subtitle="Оставьте контакты — подберём программу и свободную дату." cta="Отправить заявку" /></div>}
+  {!sourceVypusknoj && !sourceMaxi && !sourceMinecraft && !sourceNewYear && !sourceAmongUs && !sourceRoblox && !sourceVrBirthday && !sourceKalmarLanding && !sourceAzkaban && !sourceKids && <Footer />}
 </Layout>
 
 <script>

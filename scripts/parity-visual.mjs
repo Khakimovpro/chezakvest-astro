@@ -19,6 +19,11 @@ const BROWSER = '/home/claude/.cache/ms-playwright/chromium-1228/chrome-linux64/
 const ROUND = Number(process.env.PARITY_ROUND ?? '1');
 const OUTPUT_SUFFIX = (process.env.PARITY_OUTPUT_SUFFIX ?? '').replace(/[^a-z0-9_-]/giu, '');
 const WAIT_AFTER_SCROLL_MS = Number(process.env.PARITY_WAIT_MS ?? '2500');
+// The current live Tilda slider prepends a duplicate of the final banner at
+// index 0.  Its first real banner is therefore index 1.  The Astro carousel
+// has the equivalent artwork at its second array position.  This is capture
+// state only: production carousel data remains untouched.
+const HOME_PROMO_CANONICAL_INDEX = 1;
 const VIEWPORTS = [
   { name: '1440', width: 1440, height: 900, mobile: false },
   { name: '390', width: 390, height: 844, mobile: true },
@@ -43,6 +48,39 @@ const ROUND_DIR = join(PARITY_DIR, `round-${ROUND}${OUTPUT_SUFFIX ? `-${OUTPUT_S
 const MATRIX_PATH = join(PARITY_DIR, OUTPUT_SUFFIX ? `visual-matrix-${OUTPUT_SUFFIX}.csv` : 'visual-matrix.csv');
 
 const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+// A masked third-party widget can leave Playwright waiting indefinitely for a
+// section raster.  Section crops are supplementary evidence; a timed-out crop
+// is recorded as unavailable while the mandatory full-page pair still runs.
+const SECTION_SCREENSHOT_TIMEOUT_MS = 15_000;
+
+function canonicalPromoState({ activeIndex, position, visible = true } = {}, targetIndex = HOME_PROMO_CANONICAL_INDEX) {
+  const active = Number(activeIndex);
+  const hasPosition = position !== null && position !== undefined && position !== '';
+  const sliderPosition = Number(position);
+  return Number.isInteger(active)
+    && active === targetIndex
+    && (!hasPosition || (Number.isFinite(sliderPosition) && sliderPosition === targetIndex))
+    && visible === true;
+}
+
+// A translated lazy slide can have the right ARIA state while Chromium has not
+// decoded its image yet. Treat rendering readiness as a separate hard capture
+// contract so a blank banner cannot be certified as canonical.
+function decodedPromoImageReady({ complete, naturalWidth, currentSrc, visible = true } = {}) {
+  return complete === true
+    && Number.isFinite(Number(naturalWidth))
+    && Number(naturalWidth) > 0
+    && typeof currentSrc === 'string'
+    && currentSrc.trim().length > 0
+    && visible === true;
+}
+
+function promoBackgroundReady({ backgroundImage, complete, naturalWidth, currentSrc, loaded, visible = true } = {}) {
+  return typeof backgroundImage === 'string'
+    && backgroundImage !== 'none'
+    && loaded === true
+    && decodedPromoImageReady({ complete, naturalWidth, currentSrc, visible });
+}
 
 function csvEscape(value) {
   const text = String(value ?? '');
@@ -172,6 +210,15 @@ function semanticAnchor(section) {
 }
 
 function sectionMatch(source, target) {
+  // A source-artboard can preserve the exact Tilda record identifier. This is
+  // stronger than textual heuristics for deliberate blank spacers and media
+  // records, but it is not a visual waiver: the paired crop still has to meet
+  // the same pixel and height gates below.
+  if (target.parity_record) {
+    return source.id === target.parity_record
+      ? { score: 1, matchable: true, evidence: 'record' }
+      : { score: 0, matchable: false, evidence: '' };
+  }
   if (source.role === 'header' || target.role === 'header') {
     return source.role === 'header' && target.role === 'header'
       ? { score: 1, matchable: true, evidence: 'role:header' }
@@ -295,12 +342,13 @@ function macroSectionMatch(parts, target) {
  * semantic evidence and never crosses an already selected pair.
  */
 function sectionPairs(original, clone) {
+  const explicitTargetRecords = new Set(clone.map((section) => section.parity_record).filter(Boolean));
   const source = original
     .map((section, index) => ({ ...section, index: Number.isInteger(section.index) ? section.index : index }))
-    .filter(semanticAnchor);
+    .filter((section) => semanticAnchor(section) || explicitTargetRecords.has(section.id));
   const target = clone
     .map((section, index) => ({ ...section, index: Number.isInteger(section.index) ? section.index : index }))
-    .filter(semanticAnchor);
+    .filter((section) => semanticAnchor(section) || Boolean(section.parity_record));
   const score = Array.from({ length: source.length + 1 }, () => Array(target.length + 1).fill(0));
   const steps = Array.from({ length: source.length + 1 }, () => Array(target.length + 1).fill(null));
 
@@ -464,6 +512,179 @@ async function fullMacroScreenshot(capture, sections) {
   return compactSectionScreenshot(crop);
 }
 
+// Both original and clone normalizers run in page context. Install browser-side
+// primitives once per captured page so their visibility/decode contracts stay
+// exactly alike rather than drifting in two copied implementations.
+async function installPromoDomHelpers(page) {
+  await page.evaluate(() => {
+    if (window.__parityPromoCaptureHelpers) return;
+    const isVisiblyRendered = (element, clip) => {
+      if (!(element instanceof HTMLElement)) return false;
+      const style = window.getComputedStyle(element);
+      const rect = element.getBoundingClientRect();
+      const clipRect = clip instanceof HTMLElement ? clip.getBoundingClientRect() : null;
+      const inViewport = rect.right > 0 && rect.bottom > 0 && rect.left < window.innerWidth && rect.top < window.innerHeight;
+      const inClip = !clipRect || (rect.right > clipRect.left && rect.left < clipRect.right && rect.bottom > clipRect.top && rect.top < clipRect.bottom);
+      return rect.width > 0 && rect.height > 0 && inViewport && inClip
+        && style.display !== 'none' && style.visibility !== 'hidden' && Number(style.opacity) > 0;
+    };
+    const decodeImageOrFail = async (image, label) => {
+      let timeoutId;
+      try {
+        await Promise.race([
+          image.decode(),
+          new Promise((_, reject) => {
+            timeoutId = window.setTimeout(() => reject(new Error(`${label} decode timed out`)), 5000);
+          }),
+        ]);
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+      if (!image.complete || image.naturalWidth <= 0 || !image.currentSrc) {
+        throw new Error(`${label} did not produce a decoded image`);
+      }
+    };
+    window.__parityPromoCaptureHelpers = { decodeImageOrFail, isVisiblyRendered };
+  });
+}
+
+function assertCanonicalPromoReadiness(kind, state, mediaReady) {
+  if (state.present && (!canonicalPromoState(state) || !mediaReady(state))) {
+    throw new Error(`Unable to normalise ${kind} home promo slider: ${JSON.stringify(state)}`);
+  }
+}
+
+async function sourcePromoNavigationState(page) {
+  return page.evaluate(async (targetIndex) => {
+    const root = document.querySelector('#rec958749021');
+    if (!(root instanceof HTMLElement)) return { present: false };
+    const wrapper = root.querySelector('.t-slds__items-wrapper');
+    const previous = root.querySelector('.t-slds__arrow-left');
+    const target = root.querySelector(`[data-slide-index="${targetIndex}"]`);
+    if (!(wrapper instanceof HTMLElement) || !(previous instanceof HTMLElement) || !(target instanceof HTMLElement)) {
+      return { present: true, activeIndex: null, position: null, visible: false };
+    }
+    const intervalId = Number(wrapper.dataset.sliderIntervalId);
+    if (Number.isFinite(intervalId)) {
+      window.clearInterval(intervalId);
+      window.clearTimeout(intervalId);
+    }
+    const total = root.querySelectorAll('[data-slide-index]').length;
+    for (let attempt = 0; attempt <= total; attempt += 1) {
+      const active = Number(root.querySelector('.t-slds__item_active')?.getAttribute('data-slide-index'));
+      if (active === targetIndex) break;
+      previous.click();
+      // Tilda transitions for 300ms; a 360ms wait avoids the old 40ms race.
+      await new Promise((resolve) => window.setTimeout(resolve, 360));
+    }
+    const activeItem = root.querySelector('.t-slds__item_active');
+    return {
+      present: true,
+      activeIndex: activeItem?.getAttribute('data-slide-index') ?? null,
+      position: wrapper.dataset.sliderPos ?? null,
+      visible: activeItem?.getAttribute('aria-hidden') === 'false',
+    };
+  }, HOME_PROMO_CANONICAL_INDEX);
+}
+
+async function sourcePromoBackgroundReadiness(page) {
+  return page.evaluate(async (targetIndex) => {
+    const helpers = window.__parityPromoCaptureHelpers;
+    if (!helpers) throw new Error('Promo capture helpers were not installed');
+    const root = document.querySelector('#rec958749021');
+    const activeTarget = root?.querySelector(`.t-slds__item_active[data-slide-index="${targetIndex}"]`);
+    const backgroundNode = activeTarget instanceof HTMLElement
+      ? [activeTarget, ...activeTarget.querySelectorAll('*')].find((node) => (
+        node instanceof HTMLElement && window.getComputedStyle(node).backgroundImage !== 'none'
+      ))
+      : null;
+    const backgroundImage = backgroundNode instanceof HTMLElement
+      ? window.getComputedStyle(backgroundNode).backgroundImage
+      : 'none';
+    const backgroundMatch = backgroundImage.match(/url\((['"]?)(.*?)\1\)/u);
+    if (!(backgroundNode instanceof HTMLElement) || !backgroundMatch?.[2] || !(root instanceof HTMLElement)) {
+      return { backgroundImage, complete: false, currentSrc: '', loaded: false, naturalWidth: 0, visible: false };
+    }
+    const probe = new Image();
+    probe.src = new URL(backgroundMatch[2], document.baseURI).href;
+    await helpers.decodeImageOrFail(probe, 'source canonical promo background');
+    return {
+      backgroundImage,
+      complete: probe.complete,
+      currentSrc: probe.currentSrc,
+      loaded: true,
+      naturalWidth: probe.naturalWidth,
+      visible: helpers.isVisiblyRendered(backgroundNode, root),
+    };
+  }, HOME_PROMO_CANONICAL_INDEX);
+}
+
+async function normaliseSourceHomePromoSlider(page) {
+  const state = await sourcePromoNavigationState(page);
+  if (!state.present) return;
+  await installPromoDomHelpers(page);
+  state.background = await sourcePromoBackgroundReadiness(page);
+  assertCanonicalPromoReadiness('source', state, (capture) => promoBackgroundReady(capture.background));
+}
+
+async function clonePromoState(page) {
+  return page.evaluate(async (targetIndex) => {
+    const helpers = window.__parityPromoCaptureHelpers;
+    if (!helpers) throw new Error('Promo capture helpers were not installed');
+    const slider = document.querySelector('#promo-slider');
+    if (!(slider instanceof HTMLElement)) return { present: false };
+    const track = slider.querySelector('.slider__track');
+    const slides = [...slider.querySelectorAll('.slider__slide')];
+    const target = slides[targetIndex];
+    if (!(track instanceof HTMLElement) || !(target instanceof HTMLElement)) {
+      return { present: true, activeIndex: null, position: null, visible: false };
+    }
+    const image = target.querySelector('img');
+    if (image instanceof HTMLImageElement && image.dataset.src) {
+      image.src = image.dataset.src;
+      image.removeAttribute('data-src');
+    }
+    if (!(image instanceof HTMLImageElement)) {
+      return { present: true, activeIndex: null, position: null, visible: false, image: null };
+    }
+    // Decode failures/timeouts are fatal; a translated blank lazy image is not
+    // a canonical slide.
+    await helpers.decodeImageOrFail(image, 'clone canonical promo image');
+    const slideWidth = target.getBoundingClientRect().width;
+    track.style.transition = 'none';
+    track.style.transform = `translate3d(-${targetIndex * slideWidth}px, 0, 0)`;
+    slides.forEach((slide, index) => slide.setAttribute('aria-hidden', index === targetIndex ? 'false' : 'true'));
+    slider.dataset.parityPromoIndex = String(targetIndex);
+    return {
+      present: true,
+      activeIndex: slider.dataset.parityPromoIndex,
+      position: targetIndex,
+      visible: target.getAttribute('aria-hidden') === 'false',
+      image: {
+        complete: image.complete,
+        currentSrc: image.currentSrc,
+        naturalWidth: image.naturalWidth,
+        visible: helpers.isVisiblyRendered(image, slider),
+      },
+    };
+  }, HOME_PROMO_CANONICAL_INDEX);
+}
+
+async function normaliseCloneHomePromoSlider(page) {
+  await installPromoDomHelpers(page);
+  const state = await clonePromoState(page);
+  assertCanonicalPromoReadiness('clone', state, (capture) => decodedPromoImageReady(capture.image));
+}
+
+// Freeze the root carousel on the same source-backed banner before taking a
+// pair. This affects only the capture DOM; production carousel data remains
+// untouched.
+async function normaliseHomePromoSlider(page, kind) {
+  return kind === 'original'
+    ? normaliseSourceHomePromoSlider(page)
+    : normaliseCloneHomePromoSlider(page);
+}
+
 async function settlePage(page, kind) {
   await page.addStyleTag({ content: `
     *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; caret-color: transparent !important; }
@@ -486,21 +707,8 @@ async function settlePage(page, kind) {
   await sleep(WAIT_AFTER_SCROLL_MS);
   await page.evaluate(async () => {
     window.scrollTo(0, 0);
-    const sourceSlider = document.querySelector('#rec958749021');
-    const previous = sourceSlider?.querySelector('.t-slds__arrow-left');
-    if (sourceSlider && previous instanceof HTMLElement) {
-      // Tilda duplicates its last slide at index 0. Its canonical first slide
-      // is therefore data-slide-index=1, not the non-interactive 0th item.
-      for (let attempt = 0; attempt < 8; attempt += 1) {
-        const active = Number(sourceSlider.querySelector('.t-slds__item_active')?.getAttribute('data-slide-index'));
-        if (active === 1) break;
-        previous.click();
-        await new Promise((resolve) => setTimeout(resolve, 40));
-      }
-    }
-    const track = document.querySelector('.slider__track');
-    if (track instanceof HTMLElement) track.style.transform = 'translate3d(0, 0, 0)';
   });
+  await normaliseHomePromoSlider(page, kind);
   await sleep(240);
   await page.evaluate((pageKind) => {
     const text = (element) => String(element.innerText || element.textContent || '')
@@ -604,13 +812,13 @@ async function inspectPage(page, kind, knownRoutes) {
       return '';
     };
     const cloneSections = () => {
-      const result = [];
+      const generic = [];
       const header = document.querySelector('header.hdr');
-      if (header) result.push(header);
+      if (header) generic.push(header);
       const main = document.querySelector('main');
       for (const child of main?.children ?? []) {
         if (child.id !== 'catalog') {
-          if (child.matches('section,article')) result.push(child);
+          if (child.matches('section,article')) generic.push(child);
           continue;
         }
         // Tilda emits one record for a category heading and another for its
@@ -619,16 +827,49 @@ async function inspectPage(page, kind, knownRoutes) {
         for (const block of child.querySelectorAll('.catblock')) {
           const title = block.querySelector('.catblock__title');
           const grid = block.querySelector('.grid');
-          if (title) result.push(title);
-          if (grid) result.push(grid);
+          if (title) generic.push(title);
+          if (grid) generic.push(grid);
         }
       }
       // Review cards also contain semantic <footer>s. Only the site footer is
       // a page section; choosing document.querySelector('footer') consumed a
       // review-card footer and made the real footer appear missing.
       const footer = document.querySelector('body > footer.ft') || document.querySelector('footer.ft');
-      if (footer) result.push(footer);
-      return result;
+      if (footer) generic.push(footer);
+
+      // Source-artboard renderers intentionally expose one node per captured
+      // Tilda record. Those nodes can sit below a non-semantic wrapper inside
+      // <main>, so the direct-child selector above cannot see them. Explicit
+      // records take precedence over a generic ancestor; otherwise a wrapper
+      // and its record would be inspected (and screenshot) twice. Nested
+      // explicit records are implementation detail too: only the outer record
+      // represents a source capture boundary.
+      const explicit = [...document.querySelectorAll('[data-parity-record]')]
+        .filter((element) => !element.parentElement?.closest('[data-parity-record]'));
+      const isArtboardRoot = (element) => element instanceof HTMLElement && (
+        element.hasAttribute('data-source-artboard')
+        || [...element.classList].some((className) => className.endsWith('-artboard'))
+      );
+      // Older source-artboards predate `data-parity-record`, but their direct
+      // children are still the captured record boundaries. Do not descend
+      // farther: nested cards, slides and footer columns are content, not
+      // independent Tilda records.
+      const artboardRoots = [...document.querySelectorAll('[data-source-artboard], [class]')]
+        .filter(isArtboardRoot)
+        .filter((root) => Boolean(root.closest('main')))
+        .filter((root) => {
+          for (let parent = root.parentElement; parent; parent = parent.parentElement) {
+            if (isArtboardRoot(parent)) return false;
+          }
+          return true;
+        });
+      const artboardRecords = artboardRoots.flatMap((root) => [...root.children]
+        .filter((child) => !child.matches('script,style,link,template')));
+      const specificRecords = [...new Set([...explicit, ...artboardRecords])];
+      const outsideSpecificWrappers = generic.filter((candidate) => !specificRecords.some((record) => (
+        candidate !== record && candidate.contains(record)
+      )));
+      return [...new Set([...outsideSpecificWrappers, ...specificRecords])];
     };
     const sectionCandidates = pageKind === 'original'
       ? [...new Set([...document.querySelectorAll('#allrecords > [id^="rec"], #allrecords > .r, [id^="rec"]')])]
@@ -648,7 +889,8 @@ async function inspectPage(page, kind, knownRoutes) {
           .filter(Boolean);
         return {
           index: captureIndex,
-          id: element.id || `${element.tagName.toLowerCase()}.${[...element.classList].slice(0, 3).join('.')}`,
+          parity_record: pageKind === 'clone' ? (element.getAttribute('data-parity-record') || '') : '',
+          id: element.getAttribute('data-parity-record') || element.id || `${element.tagName.toLowerCase()}.${[...element.classList].slice(0, 3).join('.')}`,
           capture_id: captureId,
           heading: normalise(headingText(element)),
           text,
@@ -774,7 +1016,9 @@ async function captureOne(browser, { url, kind, viewport, knownRoutes, path }) {
       const element = await page.locator(`[data-parity-capture-id="${section.capture_id}"]`).elementHandle();
       if (!element) continue;
       try {
-        const buffer = await element.screenshot({ type: 'jpeg', quality: 64, animations: 'disabled', scale: 'css' });
+        const buffer = await element.screenshot({
+          type: 'jpeg', quality: 64, animations: 'disabled', scale: 'css', timeout: SECTION_SCREENSHOT_TIMEOUT_MS,
+        });
         sectionShots[section.capture_id] = await compactSectionScreenshot(buffer);
       } catch {
         sectionShots[section.capture_id] = null;
@@ -933,7 +1177,11 @@ async function main() {
   if (requestedRoutes.length && routes.length !== requestedRoutes.length) {
     throw new Error(`Unknown parity route requested: ${requestedRoutes.filter((route) => !routes.includes(route)).join(', ')}`);
   }
-  const knownRoutes = allRoutes.filter((route) => !inventory.matrix.some((row) => row.route_clone === route && row.verdict === 'redirect_ok'));
+  // A local link to a legacy route is valid when the generated redirect map
+  // owns that route.  Static http.server cannot execute `_redirects`, so keep
+  // those paths in link existence checks; redirect-target-contract.mjs
+  // separately verifies the actual target mapping.
+  const knownRoutes = allRoutes;
   const browser = await chromium.launch({ executablePath: BROWSER, args: ['--no-sandbox', '--disable-gpu'] });
   const detail = { generated_at: new Date().toISOString(), round: ROUND, routes: {} };
   const matrix = [];
@@ -1046,4 +1294,15 @@ async function main() {
 
 if (process.argv[1] === new URL(import.meta.url).pathname) await main();
 
-export { imageKey, imageParity, normaliseText, sectionPairs, sourceHeaderSpacer, visualSimilarity };
+export {
+  canonicalPromoState,
+  decodedPromoImageReady,
+  imageKey,
+  imageParity,
+  inspectPage,
+  normaliseText,
+  promoBackgroundReady,
+  sectionPairs,
+  sourceHeaderSpacer,
+  visualSimilarity,
+};

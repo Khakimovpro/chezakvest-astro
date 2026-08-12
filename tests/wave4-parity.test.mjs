@@ -73,15 +73,28 @@ test('keeps venue maps click-lazy and completes the Magnitogorskaya game list', 
   assert.match(map, /createElement\('iframe'\)/);
 });
 
-test('adds the local review and shared venue sections to audited parity templates', async () => {
+test('keeps shared reviews and venue sections on generic parity templates while Contacts follows source order', async () => {
   const [holiday, category, venue, info] = await Promise.all([
     read('src/layouts/HolidayPage.astro'),
     read('src/layouts/CategoryPage.astro'),
     read('src/layouts/VenuePage.astro'),
     read('src/layouts/InfoPage.astro'),
   ]);
-  for (const template of [holiday, category, venue, info]) assert.match(template, /VenuesSection/);
+  for (const template of [holiday, category, venue]) assert.match(template, /VenuesSection/);
   for (const template of [holiday, category, venue]) assert.match(template, /Reviews/);
+
+  assert.match(info, /class="info info--source"/);
+  assert.doesNotMatch(info, /<VenuesSection/);
+  assert.doesNotMatch(info, /<CallbackForm/);
+  const phone = info.indexOf('Телефон');
+  const hours = info.indexOf('Часы работы:');
+  const email = info.indexOf('Email:');
+  const messenger = info.indexOf('Мессенджеры:');
+  const socials = info.indexOf('Социальные сети');
+  const note = info.indexOf('page.note');
+  const venues = info.indexOf('info__venues');
+  assert.ok(phone < hours && hours < email && email < messenger && messenger < socials);
+  assert.ok(socials < note && note < venues, 'source contact records retain their captured order');
 });
 
 test('keeps audited quest art direction and every source related card', async () => {
@@ -92,7 +105,7 @@ test('keeps audited quest art direction and every source related card', async ()
   ]);
   assert.equal(patologiya.theme, 'dark');
   assert.equal(shizofreniya.theme, 'dark');
-  assert.match(quest, /canonicalizeCardItems\(relatedItems\)/);
+  assert.match(quest, /canonicalizeCardItems\(relatedItems, pagesBySlug\)/);
   assert.doesNotMatch(quest, /filteredRelatedItems/);
 
   const sharedRail = ['puteshestvie', 'pirati', 'pobeg', 'mystery_shack', 'indiana'];

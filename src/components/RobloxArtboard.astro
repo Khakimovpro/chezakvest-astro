@@ -1,0 +1,428 @@
+---
+import SourceArtboardRailControls from './SourceArtboardRailControls.astro';
+
+// `/roblox-land/` is a captured Tilda composition.  The route passes its
+// recorded desktop/mobile heights through data, keeping this renderer opt-in.
+const { source = {}, asset = (value) => value, href = (value) => value, phoneHref = '#', phone = '' } = Astro.props;
+const records = source.records || {};
+const hero = source.hero || {};
+const intro = source.intro || {};
+const video = source.video || {};
+const hall = source.hall || {};
+const trust = source.trust || {};
+const bonus = source.bonus || {};
+const bookingHref = href(source.bookingHref || '#prazdnik');
+const px = (value) => Number.isFinite(value) ? `${value}px` : String(value || '');
+const recordStyle = (record = {}) => [
+  record.desktop !== undefined && `--roblox-record-desktop:${px(record.desktop)}`,
+  record.mobile !== undefined && `--roblox-record-mobile:${px(record.mobile)}`,
+].filter(Boolean).join(';');
+const organisation = [
+  ['Детский День рождения', '/kids'], ['Взрослый День рождения', '/prazdniki-pod-kluch'],
+  ['День Рождения в VR', '/den-rozhdeniya-na-vr-arene'], ['Выпускной', '/vypusknoj-kalmar'],
+  ['Корпоратив | Тимбилдинг', '/prazdniki-pod-kluch'],
+];
+const entertainment = [
+  ['Квеструмы', '/kvesty-v-rostove-na-donu'], ['VR-арены', '/den-rozhdeniya-na-vr-arene'],
+  ['Активные игры', '/party-games'], ['Прятки в темноте', '/pryatki_v_temnote'],
+  ['Страшные квесты', '/strashnye-kvesty'],
+];
+---
+
+<div class="roblox-artboard" id="about">
+  <section class="roblox-artboard__record roblox-artboard__hero" style={recordStyle(records.hero)} aria-labelledby="roblox-hero-title">
+    <div class="roblox-artboard__rail roblox-artboard__hero-canvas">
+      {hero.background && <img class="roblox-artboard__hero-world" src={asset(hero.background)} alt="" aria-hidden="true" width="1680" height="1061" fetchpriority="high" decoding="async" />}
+      {hero.circle && <img class="roblox-artboard__hero-circle" src={asset(hero.circle)} alt="" aria-hidden="true" width="1680" height="1680" fetchpriority="high" decoding="async" />}
+      {hero.avatar && <img class="roblox-artboard__hero-avatar" src={asset(hero.avatar)} alt="" aria-hidden="true" width="996" height="1492" fetchpriority="high" decoding="async" />}
+      {hero.logo && <img class="roblox-artboard__hero-logo" src={asset(hero.logo)} alt="" aria-hidden="true" width="124" height="711" fetchpriority="high" decoding="async" />}
+      {hero.decor && <img class="roblox-artboard__hero-decor" src={asset(hero.decor)} alt="" aria-hidden="true" width="132" height="131" decoding="async" />}
+      {hero.blur && <img class="roblox-artboard__hero-blur" src={asset(hero.blur)} alt="" aria-hidden="true" width="201" height="201" decoding="async" />}
+      <div class="roblox-artboard__hero-copy">
+        <h1 id="roblox-hero-title"><span>{hero.titleLead}</span> {hero.titleMiddle}<b>{hero.titleEnd}</b></h1>
+        <p>{hero.text}</p>
+        <a class="roblox-artboard__red-button" href={bookingHref}>{hero.cta}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="roblox-artboard__record roblox-artboard__intro" style={recordStyle(records.intro)} aria-labelledby="roblox-intro-title">
+    <div class="roblox-artboard__rail roblox-artboard__intro-canvas">
+      <h2 id="roblox-intro-title">{intro.title}</h2>
+      <p class="roblox-artboard__intro-text">{intro.text}</p>
+      <p class="roblox-artboard__intro-label">{intro.label}</p>
+      <ul>{(intro.items || []).map((item) => (<li>{item}</li>))}</ul>
+      {intro.photo && <img class="roblox-artboard__intro-photo" src={asset(intro.photo)} alt="Праздник в стиле Roblox" width="1280" height="853" loading="lazy" decoding="async" />}
+      {intro.decor && <img class="roblox-artboard__intro-decor" src={asset(intro.decor)} alt="" aria-hidden="true" width="130" height="150" loading="lazy" decoding="async" />}
+      {intro.badge && <img class="roblox-artboard__intro-badge" src={asset(intro.badge)} alt="" aria-hidden="true" width="90" height="90" loading="lazy" decoding="async" />}
+    </div>
+  </section>
+
+  <section class="roblox-artboard__record roblox-artboard__video" style={recordStyle(records.video)} aria-labelledby="roblox-video-title">
+    <div class="roblox-artboard__rail roblox-artboard__video-canvas">
+      {video.leftArt && <img class="roblox-artboard__video-left-art" src={asset(video.leftArt)} alt="" aria-hidden="true" width="749" height="782" loading="lazy" decoding="async" />}
+      {video.rightArt && <img class="roblox-artboard__video-right-art" src={asset(video.rightArt)} alt="" aria-hidden="true" width="749" height="782" loading="lazy" decoding="async" />}
+      {video.leftCharacter && <img class="roblox-artboard__video-left-character" src={asset(video.leftCharacter)} alt="" aria-hidden="true" width="834" height="1274" loading="lazy" decoding="async" />}
+      {video.rightCharacter && <img class="roblox-artboard__video-right-character" src={asset(video.rightCharacter)} alt="" aria-hidden="true" width="974" height="1396" loading="lazy" decoding="async" />}
+      <h2 id="roblox-video-title">{video.title}</h2>
+      {video.poster && <a class="roblox-artboard__video-poster" href={bookingHref}><img src={asset(video.poster)} alt="Посмотрите, как проходят праздники" width="1200" height="675" loading="lazy" decoding="async" /><span aria-hidden="true">▶</span></a>}
+    </div>
+  </section>
+
+  <section class="roblox-artboard__record roblox-artboard__packages" style={recordStyle(records.packages)} aria-labelledby="roblox-packages-title">
+    <div class="roblox-artboard__rail roblox-artboard__packages-canvas">
+      {source.packagesDecor && <><img class="roblox-artboard__packages-decor roblox-artboard__packages-decor--one" src={asset(source.packagesDecor)} alt="" aria-hidden="true" width="398" height="352" loading="lazy" decoding="async" /><img class="roblox-artboard__packages-decor roblox-artboard__packages-decor--two" src={asset(source.packagesDecor)} alt="" aria-hidden="true" width="398" height="352" loading="lazy" decoding="async" /></>}
+      <h2 id="roblox-packages-title">ПАКЕТНЫЕ ПРЕДЛОЖЕНИЯ</h2>
+      <div class="roblox-artboard__package-grid">
+        {(source.packages || []).map((pack) => (
+          <article class={`roblox-artboard__package roblox-artboard__package--${pack.tone}`}>
+            {pack.badge && <span class="roblox-artboard__package-badge">{pack.badge}</span>}
+            <header><h3>{pack.title}</h3><span>{pack.duration}</span></header>
+            <h4>В программу входит:</h4>
+            <ul>{(pack.program || []).map((item) => (<li>{item}</li>))}</ul>
+            <h4>В пакет включено:</h4>
+            <ul class="roblox-artboard__package-includes">{(pack.includes || []).map((item) => (<li>{item}</li>))}</ul>
+          </article>
+        ))}
+      </div>
+      <a class="roblox-artboard__red-button roblox-artboard__packages-cta" href={bookingHref}>Узнать стоимость</a>
+    </div>
+  </section>
+
+  <section class="roblox-artboard__record roblox-artboard__shows" style={recordStyle(records.shows)} aria-labelledby="roblox-shows-title">
+    <div class="roblox-artboard__rail">
+      <h2 id="roblox-shows-title">ШОУ-ПРОГРАММЫ И <em>МАСТЕР-КЛАССЫ</em></h2>
+      <div class="roblox-artboard__show-grid">
+        {(source.shows || []).map((item) => (
+          <a class="roblox-artboard__media-card" href={bookingHref}>
+            <img src={asset(item.src)} alt={item.title} width="700" height="467" loading="lazy" decoding="async" />
+            <span>{item.title}</span><b>Заказать</b>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+  <div class="roblox-artboard__record roblox-artboard__show-divider" style={recordStyle(records.showDivider)} aria-hidden="true">{source.showDivider && <img src={asset(source.showDivider)} alt="" width="90" height="120" loading="lazy" decoding="async" />}</div>
+
+  <section class="roblox-artboard__record roblox-artboard__additions" style={recordStyle(records.additions)} aria-labelledby="roblox-additions-title" data-source-artboard-rail data-source-artboard-rail-id="roblox-additions">
+    <div class="roblox-artboard__rail">
+      <h2 id="roblox-additions-title">ДОПОЛНЕНИЯ, КОТОРЫЕ <em>УКРАСЯТ ВАШ ПРАЗДНИК</em></h2>
+      <div class="roblox-artboard__addition-window" id="roblox-additions-viewport" data-source-artboard-rail-viewport tabindex="0" role="region" aria-roledescription="carousel" aria-label="Дополнения к празднику">
+        <div class="roblox-artboard__addition-track">
+          {(source.additions || []).map((item, index) => (
+            <a class="roblox-artboard__media-card" href={bookingHref} id={`roblox-additions-slide-${index + 1}`} data-source-artboard-rail-slide>
+              <img src={asset(item.src)} alt={item.title} width="700" height="467" loading="lazy" decoding="async" />
+              <span>{item.title}</span><b>Заказать</b>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+    <SourceArtboardRailControls railId="roblox-additions" label="Дополнения к празднику" items={source.additions || []} />
+  </section>
+
+  <section class="roblox-artboard__record roblox-artboard__hall-heading" style={recordStyle(records.hallHeading)} aria-labelledby="roblox-hall-title">
+    <div class="roblox-artboard__rail"><h2 id="roblox-hall-title">{hall.title}</h2><p>{hall.subtitle}</p></div>
+  </section>
+  <section class="roblox-artboard__record roblox-artboard__hall" style={recordStyle(records.hall)} aria-label={hall.address}>
+    <div class="roblox-artboard__rail roblox-artboard__hall-canvas">
+      {hall.image && <img class="roblox-artboard__hall-photo" src={asset(hall.image)} alt={hall.address} width="1100" height="740" loading="lazy" decoding="async" />}
+      <article class="roblox-artboard__hall-copy">
+        <h3>{hall.address}</h3><p><b>{hall.size}</b><br />{hall.capacity}</p><p>{hall.format}</p>
+        <p class="roblox-artboard__hall-list-label">Зал оборудован:</p>
+        <ul>{(hall.equipment || []).map((item) => (<li>{item}</li>))}</ul>
+        <a class="roblox-artboard__red-button" href={bookingHref}>{hall.cta}</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="roblox-artboard__record roblox-artboard__trust-heading" style={recordStyle(records.trustHeading)} aria-labelledby="roblox-trust-title"><h2 id="roblox-trust-title">ПРИЧИНЫ <em>ДОВЕРИТЬ</em> НАМ ОРГАНИЗАЦИЮ<br />ВАШЕГО ПРАЗДНИКА</h2></section>
+  <section class="roblox-artboard__record roblox-artboard__trust" style={recordStyle(records.trust)} aria-label="Причины доверить праздник">
+    {trust.decor?.map((item, index) => (<img class={`roblox-artboard__trust-decor roblox-artboard__trust-decor--${index + 1}`} src={asset(item)} alt="" aria-hidden="true" width="130" height="130" loading="lazy" decoding="async" />))}
+    <div class="roblox-artboard__rail roblox-artboard__trust-grid">
+      {(trust.cards || []).map((card) => (
+        <article class={`roblox-artboard__trust-card roblox-artboard__trust-card--${card.kind}`}>
+          {card.src && <img src={asset(card.src)} alt="" aria-hidden="true" width="190" height="190" loading="lazy" decoding="async" />}
+          {card.value && <strong>{card.value}</strong>}
+          {card.title && <h3>{card.title}</h3>}
+          <p>{card.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="roblox-artboard__record roblox-artboard__bonus" style={recordStyle(records.bonus)} aria-labelledby="roblox-bonus-title">
+    {bonus.background && <img class="roblox-artboard__bonus-bg" src={asset(bonus.background)} alt="" aria-hidden="true" width="1680" height="581" loading="lazy" decoding="async" />}
+    <div class="roblox-artboard__rail roblox-artboard__bonus-canvas">
+      <h2 id="roblox-bonus-title">{bonus.title}</h2>
+      <ul>{(bonus.items || []).map((item) => (<li>{item}</li>))}</ul>
+      <a class="roblox-artboard__red-button" href={bookingHref}>{bonus.cta}</a>
+      {bonus.gift && <img class="roblox-artboard__bonus-gift" src={asset(bonus.gift)} alt="" aria-hidden="true" width="120" height="90" loading="lazy" decoding="async" />}
+      {bonus.icon && <img class="roblox-artboard__bonus-icon" src={asset(bonus.icon)} alt="" aria-hidden="true" width="24" height="24" loading="lazy" decoding="async" />}
+      {bonus.art && <img class="roblox-artboard__bonus-art" src={asset(bonus.art)} alt="" aria-hidden="true" width="1336" height="604" loading="lazy" decoding="async" />}
+    </div>
+  </section>
+
+  <section class="roblox-artboard__record roblox-artboard__venues-heading" style={recordStyle(records.venuesHeading)} aria-labelledby="roblox-venues-title"><h2 id="roblox-venues-title">НАШИ ПЛОЩАДКИ</h2><p>Выбери одну из 9 современно оборудованных площадок<br />с комнатами отдыха в Ростове-на-Дону</p></section>
+  <section class="roblox-artboard__record roblox-artboard__venues" style={recordStyle(records.venues)} aria-label="Площадки"><div class="roblox-artboard__rail">{(source.venues || []).map((item) => (<a href={href(item.href)}>{item.title}</a>))}</div></section>
+  <div class="roblox-artboard__record roblox-artboard__venues-gap" style={recordStyle(records.venuesGap)} aria-hidden="true"></div>
+
+  <div class="roblox-artboard__record roblox-artboard__footer-spacer" style={recordStyle(records.footerSpacer)} aria-hidden="true"></div>
+  <footer class="roblox-artboard__record roblox-artboard__footer" style={recordStyle(records.footer)}>
+    <div class="roblox-artboard__rail roblox-artboard__footer-grid">
+      <section><h2>ОРГАНИЗАЦИЯ МЕРОПРИЯТИЙ</h2>{organisation.map(([title, itemHref]) => (<a href={href(itemHref)}>{title}</a>))}</section>
+      <section><h2>ВИДЫ РАЗВЛЕЧЕНИЙ</h2>{entertainment.map(([title, itemHref]) => (<a href={href(itemHref)}>{title}</a>))}</section>
+      <section><h2>НАШИ ПЛОЩАДКИ</h2>{(source.venues || []).slice(0, 6).map((item) => (<a href={href(item.href)}>{item.title}</a>))}</section>
+      <section class="roblox-artboard__footer-legal">{phone && <a href={phoneHref}>{phone}</a>}<p>Работаем c 10:00 до 23:30<br /><br />ИП Мелешкин Юрий Иванович<br />ОГРНИП 322169000094990</p><a href={href('/privacy')}>Политика обработки персональных данных</a></section>
+    </div>
+  </footer>
+  <div class="roblox-artboard__record roblox-artboard__footer-bottom" style={recordStyle(records.footerBottom)}><a href={href('/')}>ЧЁ ЗА КВЕСТ</a><span>© 2025 ЧЁ ЗА КВЕСТ</span></div>
+  <div class="roblox-artboard__document-trim" style={recordStyle(records.documentTrim)} aria-hidden="true"></div>
+</div>
+
+<style is:global>
+  .roblox-artboard__booking .pform{display:none}
+  .roblox-artboard__booking .pform:target{display:block}
+</style>
+
+<style>
+  .roblox-artboard{overflow:hidden;background:#222;color:#fff;font-family:Arial,Helvetica,sans-serif}
+  .roblox-artboard__record{position:relative;height:var(--roblox-record-desktop);overflow:hidden}
+  .roblox-artboard__rail{position:relative;width:min(1200px,100%);height:100%;margin:0 auto}
+  .roblox-artboard h1,.roblox-artboard h2,.roblox-artboard h3,.roblox-artboard h4,.roblox-artboard p{margin:0}
+  .roblox-artboard h2{font-size:34px;line-height:1.04;font-weight:800;text-transform:uppercase}
+  .roblox-artboard em,.roblox-artboard__hero h1 span,.roblox-artboard__hero h1 b{font-style:normal;color:#f6d913}
+  .roblox-artboard__hero h1 b{display:block;color:#e2231a}
+  .roblox-artboard__red-button{display:flex;align-items:center;justify-content:center;width:375px;height:64px;border:0;border-radius:0;background:#e2231a;color:#fff;font-size:16px;font-weight:700;line-height:1;text-transform:uppercase;text-decoration:none;transition:background .2s ease,color .2s ease}
+  .roblox-artboard__red-button:hover{background:#f6d913;color:#222}
+  .roblox-artboard__hero{background:#232323}
+  .roblox-artboard__hero-canvas{overflow:visible}
+  .roblox-artboard__hero-world,.roblox-artboard__hero-circle,.roblox-artboard__hero-avatar,.roblox-artboard__hero-logo,.roblox-artboard__hero-decor,.roblox-artboard__hero-blur{position:absolute;pointer-events:none}
+  .roblox-artboard__hero-world{z-index:0;top:0;left:-343px;width:1485px;height:939px;object-fit:cover}
+  .roblox-artboard__hero-circle{z-index:1;top:-260px;left:709px;width:1277px;height:1277px}
+  .roblox-artboard__hero-avatar{z-index:3;top:192px;left:707px;width:499px;height:747px}
+  .roblox-artboard__hero-logo{z-index:4;top:165px;left:1173px;width:128px;height:734px}
+  .roblox-artboard__hero-decor{z-index:5;top:136px;left:647px;width:117px;height:116px}
+  .roblox-artboard__hero-blur{z-index:5;top:740px;left:1353px;width:199px;height:199px}
+  .roblox-artboard__hero-copy{position:absolute;z-index:6;top:290px;left:17px;width:647px}
+  .roblox-artboard__hero-copy h1{font-size:42px;line-height:.95;font-weight:800;text-transform:uppercase}
+  .roblox-artboard__hero-copy p{width:447px;margin-top:45px;font-size:20px;line-height:1.15}
+  .roblox-artboard__hero-copy .roblox-artboard__red-button{margin-top:55px}
+  .roblox-artboard__intro{background:#232323}
+  .roblox-artboard__intro-canvas h2{position:absolute;top:67px;left:80px;width:700px;text-align:center;font-size:29px}
+  .roblox-artboard__intro-canvas h2::first-line{color:#fff}
+  .roblox-artboard__intro-text{position:absolute;top:134px;left:98px;width:540px;text-align:center;font-size:13px;line-height:1.35;color:#e7e7e7}
+  .roblox-artboard__intro-label{position:absolute;top:234px;left:54px;font-size:14px;font-weight:700}
+  .roblox-artboard__intro ul{position:absolute;top:264px;left:54px;width:610px;padding:0;list-style:none;font-size:13px;line-height:1.54}
+  .roblox-artboard__intro li{position:relative;padding-left:20px}
+  .roblox-artboard__intro li::before{position:absolute;left:0;content:'◆';color:#f6d913;font-size:9px}
+  .roblox-artboard__intro-photo{position:absolute;top:255px;right:53px;width:480px;height:320px;object-fit:cover;border-radius:4px}
+  .roblox-artboard__intro-decor{position:absolute;right:-39px;bottom:-20px;width:154px;transform:rotate(-18deg)}
+  .roblox-artboard__intro-badge{position:absolute;right:500px;bottom:100px;width:63px}
+  .roblox-artboard__video{background:#242424}
+  .roblox-artboard__video-canvas{overflow:visible}
+  .roblox-artboard__video h2{position:absolute;z-index:5;top:85px;left:330px;width:540px;text-align:center}
+  .roblox-artboard__video-poster{position:absolute;z-index:4;top:193px;left:270px;display:block;width:660px;height:371px;overflow:hidden;background:#111}
+  .roblox-artboard__video-poster img{width:100%;height:100%;object-fit:cover}
+  .roblox-artboard__video-poster span{position:absolute;top:50%;left:50%;display:grid;width:70px;height:70px;place-items:center;border-radius:50%;background:#e2231a;color:#fff;transform:translate(-50%,-50%);font-size:24px}
+  .roblox-artboard__video-left-art,.roblox-artboard__video-right-art,.roblox-artboard__video-left-character,.roblox-artboard__video-right-character{position:absolute;pointer-events:none}
+  .roblox-artboard__video-left-art{top:0;left:-220px;width:470px;height:490px}
+  .roblox-artboard__video-right-art{top:0;right:-220px;width:470px;height:490px}
+  .roblox-artboard__video-left-character{z-index:3;top:113px;left:-166px;width:326px;height:498px;object-fit:contain}
+  .roblox-artboard__video-right-character{z-index:3;top:121px;right:-158px;width:325px;height:466px;object-fit:contain}
+  .roblox-artboard__packages{background:#232323}
+  .roblox-artboard__packages-canvas h2{position:absolute;z-index:2;top:66px;left:207px;width:789px;text-align:center;font-size:38px}
+  .roblox-artboard__packages-decor{position:absolute;z-index:1;opacity:.95}
+  .roblox-artboard__packages-decor--one{top:40px;left:-285px;width:399px;height:352px}
+  .roblox-artboard__packages-decor--two{right:-342px;bottom:-145px;width:467px;height:415px}
+  .roblox-artboard__package-grid{position:absolute;z-index:2;top:192px;left:13px;display:grid;width:1174px;grid-template-columns:repeat(3,1fr);gap:13px}
+  .roblox-artboard__package{position:relative;height:795px;box-sizing:border-box;padding:30px 20px;background:#363636;border-radius:8px;color:#fff}
+  .roblox-artboard__package--super{background:#f6d913;color:#222}
+  .roblox-artboard__package--maxi{background:#e2231a}
+  .roblox-artboard__package header{display:flex;align-items:start;justify-content:space-between;border-bottom:1px solid currentColor;padding-bottom:22px}
+  .roblox-artboard__package h3{font-size:28px;line-height:1;text-transform:uppercase}
+  .roblox-artboard__package header span{font-size:17px;font-weight:700;white-space:nowrap}
+  .roblox-artboard__package h4{margin:26px 0 10px;font-size:16px}
+  .roblox-artboard__package ul{margin:0;padding:0;list-style:none;font-size:14px;line-height:1.48}
+  .roblox-artboard__package li{position:relative;margin:4px 0;padding-left:17px}
+  .roblox-artboard__package li::before{position:absolute;left:0;content:'■';color:#f6d913;font-size:9px}
+  .roblox-artboard__package--super li::before{color:#e2231a}
+  .roblox-artboard__package-badge{position:absolute;top:-31px;left:50%;padding:8px 13px;border-radius:2px;background:#e2231a;color:#fff;font-size:12px;font-weight:700;transform:translateX(-50%);white-space:nowrap}
+  .roblox-artboard__packages-cta{position:absolute;z-index:3;bottom:63px;left:443px;width:315px;height:64px}
+  .roblox-artboard__shows{background:#232323}
+  .roblox-artboard__shows h2,.roblox-artboard__additions h2{position:absolute;top:82px;left:110px;width:980px;text-align:center;font-size:29px}
+  .roblox-artboard__shows h2 em,.roblox-artboard__additions h2 em{color:#e2231a}
+  .roblox-artboard__show-grid{position:absolute;top:174px;left:35px;display:grid;width:1130px;grid-template-columns:repeat(4,1fr);gap:18px}
+  .roblox-artboard__media-card{position:relative;display:block;min-width:0;overflow:hidden;border-radius:4px;background:#333;color:#fff;text-decoration:none}
+  .roblox-artboard__media-card img{display:block;width:100%;height:160px;object-fit:cover}
+  .roblox-artboard__media-card span{display:block;min-height:43px;padding:11px 12px 3px;font-size:13px;line-height:1.15;font-weight:700}
+  .roblox-artboard__media-card b{display:block;padding:0 12px 12px;color:#e2231a;font-size:12px;text-transform:uppercase}
+  .roblox-artboard__show-divider{display:flex;justify-content:center;background:#232323}
+  .roblox-artboard__show-divider img{position:relative;top:-22px;width:47px;height:62px;object-fit:contain}
+  .roblox-artboard__additions{background:#232323;--source-artboard-rail-control-bg:rgba(35,35,35,.9);--source-artboard-rail-control-color:#fff;--source-artboard-rail-control-border:#e2231a;--source-artboard-rail-control-active:#e2231a;--source-artboard-rail-dot:#7b7b7b;--source-artboard-rail-dot-active:#f6d913;--source-artboard-rail-focus:#fff}
+  .roblox-artboard__additions h2{top:70px;font-size:26px}
+  .roblox-artboard__addition-window{position:absolute;top:172px;left:35px;width:1130px;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:none;touch-action:pan-x}
+  .roblox-artboard__addition-window::-webkit-scrollbar{display:none}
+  .roblox-artboard__addition-track{display:flex;width:max-content;gap:18px}
+  .roblox-artboard__addition-track .roblox-artboard__media-card{width:269px;flex:0 0 269px;scroll-snap-align:start}
+  .roblox-artboard__addition-track .roblox-artboard__media-card img{height:187px}
+  .roblox-artboard__hall-heading{background:#fff;color:#222}
+  .roblox-artboard__hall-heading h2{position:absolute;top:69px;left:17px;width:690px;font-size:33px}
+  .roblox-artboard__hall-heading h2::first-letter{color:#e2231a}
+  .roblox-artboard__hall-heading p{position:absolute;top:130px;left:18px;width:600px;font-size:17px;line-height:1.2}
+  .roblox-artboard__hall{background:#fff;color:#222}
+  .roblox-artboard__hall-canvas{display:flex;gap:31px;align-items:start;padding-top:10px;box-sizing:border-box}
+  .roblox-artboard__hall-photo{width:590px;height:410px;object-fit:cover;border-radius:8px}
+  .roblox-artboard__hall-copy{width:500px;padding:13px 0;font-size:13px;line-height:1.25}
+  .roblox-artboard__hall-copy h3{margin-bottom:19px;color:#222;font-size:20px;font-weight:800;text-transform:uppercase}
+  .roblox-artboard__hall-copy p{margin:8px 0}
+  .roblox-artboard__hall-list-label{margin-top:17px!important;font-weight:700}
+  .roblox-artboard__hall-copy ul{margin:6px 0 17px;padding-left:18px;line-height:1.35}
+  .roblox-artboard__hall-copy .roblox-artboard__red-button{width:250px;height:44px;font-size:12px}
+  .roblox-artboard__trust-heading{display:flex;align-items:center;justify-content:center;background:#232323;color:#fff;text-align:center}
+  .roblox-artboard__trust-heading h2{font-size:29px}
+  .roblox-artboard__trust{background:#232323}
+  .roblox-artboard__trust-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:10px;padding:8px 0;box-sizing:border-box}
+  .roblox-artboard__trust-card{position:relative;min-height:0;padding:22px 18px;box-sizing:border-box;overflow:hidden;background:#3a3a3a;color:#fff}
+  .roblox-artboard__trust-card strong{display:block;margin-bottom:6px;font-size:44px;line-height:.9;font-weight:800;color:#fff}
+  .roblox-artboard__trust-card h3{margin:4px 0 7px;font-size:17px;line-height:1;font-weight:800}
+  .roblox-artboard__trust-card p{font-size:13px;line-height:1.2}
+  .roblox-artboard__trust-card img{position:absolute;right:-2px;bottom:-2px;width:125px;height:125px;object-fit:contain}
+  .roblox-artboard__trust-card--years{background:#3a3a3a}
+  .roblox-artboard__trust-card--children{background:#f6d913;color:#222}
+  .roblox-artboard__trust-card--children h3,.roblox-artboard__trust-card--children p{color:#222}
+  .roblox-artboard__trust-card--reviews{background:#e2231a}
+  .roblox-artboard__trust-card--venues{background:#f6d913;color:#222}
+  .roblox-artboard__trust-card--venues strong,.roblox-artboard__trust-card--venues p{color:#222}
+  .roblox-artboard__trust-card--safe{border:4px solid #f6d913;padding:17px}
+  .roblox-artboard__trust-card--age{background:#3a3a3a}
+  .roblox-artboard__trust-card--hand{background:#e2231a}
+  .roblox-artboard__trust-card--care{background:#f6d913;color:#222}
+  .roblox-artboard__trust-card--care p{color:#222;font-weight:700}
+  .roblox-artboard__trust-card--photo{padding:0;background:#222}
+  .roblox-artboard__trust-card--photo img{inset:0;width:100%;height:100%;object-fit:cover}
+  .roblox-artboard__trust-card--photo p{display:none}
+  .roblox-artboard__trust-decor{position:absolute;z-index:2;pointer-events:none}
+  .roblox-artboard__trust-decor--1{top:-55px;left:4%;width:120px}
+  .roblox-artboard__trust-decor--2{right:6%;bottom:-43px;width:110px}
+  .roblox-artboard__trust-decor--3{top:40%;right:-18px;width:105px}
+  .roblox-artboard__bonus{background:#242424}
+  .roblox-artboard__bonus-bg{position:absolute;inset:-24px 50% auto;z-index:0;width:2059px;height:712px;max-width:none;transform:translateX(-50%);object-fit:cover}
+  .roblox-artboard__bonus-canvas{position:relative;z-index:1}
+  .roblox-artboard__bonus h2{position:absolute;top:191px;left:60px;width:683px;font-size:34px}
+  .roblox-artboard__bonus ul{position:absolute;top:286px;left:60px;margin:0;padding:0;list-style:none;font-size:15px;line-height:1.6}
+  .roblox-artboard__bonus li::before{content:'✓';margin-right:10px;color:#f6d913;font-weight:800}
+  .roblox-artboard__bonus .roblox-artboard__red-button{position:absolute;top:410px;left:59px;width:405px}
+  .roblox-artboard__bonus-gift{position:absolute;top:387px;left:412px;width:117px;height:87px;object-fit:contain}
+  .roblox-artboard__bonus-icon{position:absolute;top:292px;left:60px;width:20px;height:20px}
+  .roblox-artboard__bonus-art{position:absolute;top:263px;right:-70px;width:667px;height:auto}
+  .roblox-artboard__venues-heading{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#232323;text-align:center}
+  .roblox-artboard__venues-heading h2{font-size:29px}
+  .roblox-artboard__venues-heading p{margin-top:17px;font-size:15px;line-height:1.25}
+  .roblox-artboard__venues{background:#232323}
+  .roblox-artboard__venues .roblox-artboard__rail{display:flex;flex-wrap:wrap;justify-content:center;align-content:flex-start;gap:13px 22px;padding:9px 30px;box-sizing:border-box}
+  .roblox-artboard__venues a{color:#fff;font-size:12px;text-decoration:none;border-bottom:1px solid transparent}
+  .roblox-artboard__venues a:hover{border-color:#f6d913;color:#f6d913}
+  .roblox-artboard__venues-gap{background:#232323}
+  .roblox-artboard__footer-spacer{background:#232323;border-top:4px solid #e2231a;border-radius:48% 48% 0 0}
+  .roblox-artboard__footer{background:#232323;color:#fff}
+  .roblox-artboard__footer-grid{display:grid;grid-template-columns:1.1fr 1.1fr 1.1fr 1.25fr;gap:31px;padding:25px 35px;box-sizing:border-box}
+  .roblox-artboard__footer h2{margin-bottom:12px;font-size:12px;line-height:1.2;color:#e2231a}
+  .roblox-artboard__footer a{display:block;margin:6px 0;color:#bbb;font-size:11px;line-height:1.15;text-decoration:none}
+  .roblox-artboard__footer a:hover{color:#f6d913}
+  .roblox-artboard__footer-legal p{margin:12px 0;color:#aaa;font-size:11px;line-height:1.3}
+  .roblox-artboard__footer-bottom{display:flex;align-items:center;justify-content:center;gap:40px;background:#232323;color:#bbb}
+  .roblox-artboard__footer-bottom a{color:#fff;font-size:18px;font-weight:800;text-decoration:none}
+  .roblox-artboard__footer-bottom span{font-size:12px}
+  .roblox-artboard__document-trim{height:0;margin-bottom:var(--roblox-record-desktop)}
+  @media (max-width:639px){
+    .roblox-artboard__record{height:var(--roblox-record-mobile)}
+    .roblox-artboard__rail{width:320px;max-width:320px}
+    .roblox-artboard h2{font-size:24px}
+    .roblox-artboard__red-button{width:320px;height:64px;font-size:14px}
+    .roblox-artboard__hero-world{top:0;left:-351px;width:1485px;height:939px}
+    .roblox-artboard__hero-circle{top:524px;left:-478px;width:1277px;height:1277px}
+    .roblox-artboard__hero-avatar{top:450px;left:-16px;width:499px;height:747px}
+    .roblox-artboard__hero-logo{top:486px;left:245px;width:75px;height:430px}
+    .roblox-artboard__hero-decor{top:520px;left:-73px;width:117px;height:116px}
+    .roblox-artboard__hero-blur{top:779px;left:313px;width:199px;height:199px}
+    .roblox-artboard__hero-copy{top:110px;left:0;width:320px}
+    .roblox-artboard__hero-copy h1{font-size:24px;line-height:.98}
+    .roblox-artboard__hero-copy p{width:304px;margin-top:45px;font-size:16px;line-height:1.22}
+    .roblox-artboard__hero-copy .roblox-artboard__red-button{margin-top:56px}
+    .roblox-artboard__intro-canvas h2{top:48px;left:0;width:320px;font-size:20px}
+    .roblox-artboard__intro-text{top:120px;left:10px;width:300px;font-size:12px}
+    .roblox-artboard__intro-label{top:225px;left:0;font-size:12px}
+    .roblox-artboard__intro ul{top:250px;left:0;width:316px;font-size:11px;line-height:1.53}
+    .roblox-artboard__intro-photo{top:780px;right:0;width:280px;height:187px}
+    .roblox-artboard__intro-decor{right:-54px;bottom:47px;width:120px}
+    .roblox-artboard__intro-badge{right:264px;bottom:133px;width:48px}
+    .roblox-artboard__video h2{top:55px;left:20px;width:280px;font-size:22px}
+    .roblox-artboard__video-poster{top:192px;left:0;width:320px;height:180px}
+    .roblox-artboard__video-poster span{width:50px;height:50px;font-size:18px}
+    .roblox-artboard__video-left-art{top:108px;left:-290px;width:360px;height:376px}
+    .roblox-artboard__video-right-art{top:109px;right:-286px;width:360px;height:376px}
+    .roblox-artboard__video-left-character{top:266px;left:-166px;width:214px;height:327px}
+    .roblox-artboard__video-right-character{top:275px;right:-165px;width:214px;height:307px}
+    .roblox-artboard__packages-canvas h2{top:86px;left:20px;width:281px;font-size:24px}
+    .roblox-artboard__packages-decor--one{top:-47px;left:-359px;width:399px;height:352px}
+    .roblox-artboard__packages-decor--two{right:-360px;bottom:-90px;width:467px;height:415px}
+    .roblox-artboard__package-grid{top:190px;left:20px;width:280px;grid-template-columns:1fr;gap:34px}
+    .roblox-artboard__package{height:660px;padding:24px 20px}
+    .roblox-artboard__package h3{font-size:25px}
+    .roblox-artboard__package h4{margin-top:20px;font-size:14px}
+    .roblox-artboard__package ul{font-size:12px;line-height:1.35}
+    .roblox-artboard__package li{margin:3px 0}
+    .roblox-artboard__packages-cta{bottom:70px;left:0;width:320px}
+    .roblox-artboard__shows h2,.roblox-artboard__additions h2{top:70px;left:0;width:320px;font-size:20px}
+    .roblox-artboard__show-grid{top:160px;left:20px;width:280px;grid-template-columns:1fr;gap:28px}
+    .roblox-artboard__show-grid .roblox-artboard__media-card{height:355px}
+    .roblox-artboard__show-grid .roblox-artboard__media-card img{height:245px}
+    .roblox-artboard__media-card span{font-size:14px}
+    .roblox-artboard__show-divider img{top:-15px}
+    .roblox-artboard__additions h2{top:58px;font-size:18px}
+    .roblox-artboard__addition-window{top:150px;left:0;width:320px}
+    .roblox-artboard__addition-track{width:max-content;gap:16px;padding-left:20px}
+    .roblox-artboard__addition-track .roblox-artboard__media-card{width:245px;flex-basis:245px}
+    .roblox-artboard__addition-track .roblox-artboard__media-card img{height:170px}
+    .roblox-artboard__hall-heading h2{top:54px;left:0;width:320px;font-size:22px}
+    .roblox-artboard__hall-heading p{top:116px;left:0;width:310px;font-size:14px}
+    .roblox-artboard__hall-canvas{display:block;padding-top:0}
+    .roblox-artboard__hall-photo{width:320px;height:228px;border-radius:0}
+    .roblox-artboard__hall-copy{width:320px;padding:21px 0;font-size:11px;line-height:1.2}
+    .roblox-artboard__hall-copy h3{font-size:15px;margin-bottom:12px}
+    .roblox-artboard__hall-copy p{margin:6px 0}
+    .roblox-artboard__hall-copy ul{margin:5px 0 11px;line-height:1.2}
+    .roblox-artboard__hall-copy .roblox-artboard__red-button{width:250px;height:38px;font-size:10px}
+    .roblox-artboard__trust-heading h2{font-size:21px}
+    .roblox-artboard__trust-grid{width:320px;grid-template-columns:1fr;grid-template-rows:repeat(8,1fr);gap:8px;padding:0}
+    .roblox-artboard__trust-card{height:auto;padding:18px 20px}
+    .roblox-artboard__trust-card strong{font-size:40px}
+    .roblox-artboard__trust-card h3{font-size:16px}
+    .roblox-artboard__trust-card p{max-width:195px;font-size:12px}
+    .roblox-artboard__trust-card img{width:126px;height:126px}
+    .roblox-artboard__trust-decor--1{top:-40px;left:-32px;width:85px}
+    .roblox-artboard__trust-decor--2{right:-32px;width:85px}
+    .roblox-artboard__trust-decor--3{right:-35px;width:82px}
+    .roblox-artboard__bonus-bg{inset:-24px 50% auto;width:802px;height:802px}
+    .roblox-artboard__bonus h2{top:150px;left:0;width:300px;font-size:24px}
+    .roblox-artboard__bonus ul{top:282px;left:0;font-size:13px;line-height:1.52}
+    .roblox-artboard__bonus .roblox-artboard__red-button{top:430px;left:0;width:301px}
+    .roblox-artboard__bonus-gift{top:387px;left:244px;width:78px;height:58px}
+    .roblox-artboard__bonus-icon{top:282px;left:0}
+    .roblox-artboard__bonus-art{top:536px;right:-128px;width:524px}
+    .roblox-artboard__venues-heading h2{font-size:23px}
+    .roblox-artboard__venues-heading p{font-size:12px}
+    .roblox-artboard__venues .roblox-artboard__rail{display:grid;grid-template-columns:1fr;width:320px;gap:12px;padding:8px 0;text-align:center}
+    .roblox-artboard__venues a{font-size:12px}
+    .roblox-artboard__footer-spacer{border-top-width:3px}
+    .roblox-artboard__footer-grid{width:320px;grid-template-columns:1fr 1fr;gap:20px 18px;padding:29px 0}
+    .roblox-artboard__footer h2{font-size:10px}
+    .roblox-artboard__footer a,.roblox-artboard__footer-legal p{font-size:10px}
+    .roblox-artboard__footer-bottom{flex-direction:column;gap:12px;padding:60px 0 0;box-sizing:border-box;align-items:flex-start;width:320px;margin:0 auto}
+    .roblox-artboard__footer-bottom a{font-size:16px}
+    .roblox-artboard__footer-bottom span{font-size:11px}
+    .roblox-artboard__document-trim{margin-bottom:var(--roblox-record-mobile)}
+  }
+  @media (prefers-reduced-motion:reduce){.roblox-artboard__addition-window{scroll-behavior:auto}}
+</style>

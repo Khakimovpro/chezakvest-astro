@@ -1,7 +1,128 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { imageKey, imageParity, normaliseText, sectionPairs, sourceHeaderSpacer } from '../scripts/parity-visual.mjs';
+import { chromium } from 'playwright';
+
+import {
+  canonicalPromoState,
+  decodedPromoImageReady,
+  imageKey,
+  imageParity,
+  inspectPage,
+  normaliseText,
+  promoBackgroundReady,
+  sectionPairs,
+  sourceHeaderSpacer,
+} from '../scripts/parity-visual.mjs';
+
+const BROWSER = '/home/claude/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome';
+
+test('inspects top-level explicit parity records inside an artboard without duplicating nested or generic wrapper sections', async (t) => {
+  const browser = await chromium.launch({ executablePath: BROWSER, args: ['--no-sandbox', '--disable-gpu'] });
+  t.after(async () => browser.close());
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.setContent(`
+    <header class="hdr" style="height:24px">Header</header>
+    <main>
+      <section id="generic" style="height:36px"><h2>Generic section</h2></section>
+      <section id="artboard-wrapper" style="height:70px">
+        <div data-parity-record="rec100" style="height:52px">
+          <h2>Explicit source record</h2>
+          <div data-parity-record="rec101" style="height:20px">Nested record must not be captured twice</div>
+        </div>
+      </section>
+      <div class="fixture-artboard" style="height:72px">
+        <div id="artboard-spacer" style="height:20px" aria-hidden="true"></div>
+        <section id="artboard-record" style="height:52px">
+          <h2>Artboard fallback record</h2>
+          <section id="artboard-nested" style="height:20px">Nested artboard content is not a record boundary</section>
+        </section>
+      </div>
+      <article id="generic-article" style="height:36px"><h2>Generic article</h2></article>
+    </main>
+    <footer class="ft" data-parity-record="rec900" style="height:36px">Footer</footer>
+  `);
+
+  const inspection = await inspectPage(page, 'clone', []);
+  assert.deepEqual(
+    inspection.sections.map((section) => section.id),
+    ['header.hdr', 'generic', 'rec100', 'artboard-spacer', 'artboard-record', 'generic-article', 'rec900'],
+  );
+  assert.equal(inspection.sections.filter((section) => section.id === 'rec100').length, 1);
+  assert.equal(inspection.sections.some((section) => section.id === 'rec101'), false);
+  assert.equal(inspection.sections.some((section) => section.id === 'artboard-wrapper'), false);
+  assert.equal(inspection.sections.some((section) => section.id === 'artboard-nested'), false);
+});
+
+test('accepts a generated legacy redirect as an internal route during link inspection', async (t) => {
+  const browser = await chromium.launch({ executablePath: BROWSER, args: ['--no-sandbox', '--disable-gpu'] });
+  t.after(async () => browser.close());
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.setContent('<main><a href="/legacy-route/">Legacy page</a><a href="/missing-route/">Missing page</a></main>');
+
+  const inspection = await inspectPage(page, 'clone', ['/legacy-route/']);
+  assert.deepEqual(inspection.brokenLinks, ['/missing-route/']);
+});
+
+test('accepts only the explicitly frozen canonical home promo state', () => {
+  assert.equal(canonicalPromoState({ activeIndex: '1', position: '1', visible: true }), true);
+  assert.equal(canonicalPromoState({ activeIndex: '2', position: '2', visible: true }), false);
+  assert.equal(canonicalPromoState({ activeIndex: '1', position: '0', visible: true }), false);
+  assert.equal(canonicalPromoState({ activeIndex: '1', position: null, visible: true }), true);
+  assert.equal(canonicalPromoState({ activeIndex: '1', position: '1', visible: false }), false);
+});
+
+test('requires decoded clone media and a loaded, visible source background for the canonical promo', () => {
+  assert.equal(
+    decodedPromoImageReady({ complete: true, naturalWidth: 1200, currentSrc: '/assets/q/mystery.webp', visible: true }),
+    true,
+  );
+  assert.equal(
+    decodedPromoImageReady({ complete: false, naturalWidth: 1200, currentSrc: '/assets/q/mystery.webp', visible: true }),
+    false,
+  );
+  assert.equal(
+    decodedPromoImageReady({ complete: true, naturalWidth: 0, currentSrc: '/assets/q/mystery.webp', visible: true }),
+    false,
+  );
+  assert.equal(
+    decodedPromoImageReady({ complete: true, naturalWidth: 1200, currentSrc: '', visible: true }),
+    false,
+  );
+  assert.equal(
+    promoBackgroundReady({
+      backgroundImage: 'url("https://cdn.example/mystery.webp")',
+      complete: true,
+      naturalWidth: 1200,
+      currentSrc: 'https://cdn.example/mystery.webp',
+      loaded: true,
+      visible: true,
+    }),
+    true,
+  );
+  assert.equal(
+    promoBackgroundReady({
+      backgroundImage: 'url("https://cdn.example/mystery.webp")',
+      complete: true,
+      naturalWidth: 1200,
+      currentSrc: 'https://cdn.example/mystery.webp',
+      loaded: false,
+      visible: true,
+    }),
+    false,
+  );
+  assert.equal(
+    promoBackgroundReady({
+      backgroundImage: 'none',
+      complete: true,
+      naturalWidth: 1200,
+      currentSrc: 'https://cdn.example/mystery.webp',
+      loaded: true,
+      visible: true,
+    }),
+    false,
+  );
+});
 
 test('normalises call-tracking phones without erasing surrounding parity text', () => {
   assert.equal(normaliseText('Звоните: +7 (928) 216-36-23'), 'звоните <phone>');
@@ -35,6 +156,23 @@ test('pairs ordered sections by text and media signatures', () => {
   );
   assert.equal(pairs[0].cloneIndex, 0);
   assert.equal(pairs[0].orderOk, true);
+});
+
+test('pairs explicit source-record counterparts even when their visual boundary has no semantic copy', () => {
+  const pairs = sectionPairs(
+    [
+      { index: 0, id: 'rec100', heading: '', text: '', images: [] },
+      { index: 1, id: 'rec200', heading: '', text: '', images: [] },
+    ],
+    [
+      { index: 0, id: 'rec100', parity_record: 'rec100', heading: '', text: '', images: [] },
+      { index: 1, id: 'rec200', parity_record: 'rec200', heading: '', text: '', images: [] },
+    ],
+  );
+  assert.deepEqual(
+    pairs.map(({ originalIndex, cloneIndex, evidence }) => [originalIndex, cloneIndex, evidence]),
+    [[0, 0, 'record'], [1, 1, 'record']],
+  );
 });
 
 test('aligns two adjacent Tilda records with one clone macro section only when both copies are present', () => {

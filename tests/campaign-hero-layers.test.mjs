@@ -32,13 +32,21 @@ const sourceLayers = {
   ],
   'new-year': [],
 };
+const compositionBySlug = {
+  'amongus-land': 'amongus-artboard',
+  'roblox-land': 'roblox-artboard',
+  'minecraft-lend': 'minecraft-artboard',
+  'igra-v-kalmara-lend': 'kalmar-landing-artboard',
+  'vypusknoj-kalmar': 'vypusknoj-artboard',
+  'new-year': 'newyear-artboard',
+};
 
 test('keeps the captured Tilda campaign art as local, responsive layered hero data', async () => {
   const documents = await Promise.all(Object.keys(sourceLayers).map(page));
 
   for (const document of documents) {
     const hero = document.sections.find((section) => section.kind === 'hero');
-    assert.equal(hero.composition, 'tilda-artboard', `${document.slug} uses the source artboard renderer`);
+    assert.equal(hero.composition, compositionBySlug[document.slug] || 'tilda-artboard', `${document.slug} uses the source artboard renderer`);
     assert.ok(hero.artboard, `${document.slug} records source artboard geometry`);
     assert.ok(hero.artboard.mobile, `${document.slug} records mobile artboard geometry`);
     assert.ok(Array.isArray(hero.layers), `${document.slug} has an explicit layer list`);

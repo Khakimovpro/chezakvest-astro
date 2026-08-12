@@ -190,5 +190,54 @@
     "href": "/nagibina14"
    }
   ]
+ },
+ "sourceParity": {
+  "kind": "horror-category-artboard",
+  "mobileRecordSeam": 1,
+  "records": {
+   "header": { "id": "rec1205988226", "desktop": 90, "mobile": 90 },
+   "hero": { "id": "rec2221496071", "desktop": 550, "mobile": 470 },
+   "breadcrumbs": { "id": "rec1205900666", "desktop": 54, "mobile": 54 },
+   "gamesHeading": { "id": "rec1202151386", "desktop": 82, "mobile": 102 },
+   "games": { "id": "rec2229792331", "desktop": 2034, "mobile": 4445 },
+   "gallery": { "id": "rec1202221301", "desktop": 496, "mobile": 590 },
+   "certificate": { "id": "rec2233066361", "desktop": 740, "mobile": 620 },
+   "certificateDivider": { "id": "rec1202221266", "desktop": 26, "mobile": 26 },
+   "callback": { "id": "rec2233039911", "desktop": 480, "mobile": 630 },
+   "venuesHeading": { "id": "rec2233216901", "desktop": 132, "mobile": 111 },
+   "venues": { "id": "rec2233216911", "desktop": 191, "mobile": 537 },
+   "footerSpacer": { "id": "rec2233217021", "desktop": 60, "mobile": 60 },
+   "footer": { "id": "rec2233217031", "desktop": 311, "mobile": 910 },
+   "footerContinuation": { "id": "rec2233217041", "desktop": 170, "mobile": 246 }
+  },
+  "cardOrder": [
+   "/kvest_v_realnosti_psihbolnitsa",
+   "/kvest_v_realnosti_wednesday",
+   "/kvest_v_realnosti_koralina",
+   "/tekhasskaya-reznya-benzopiloj",
+   "/zvonok",
+   "/beguschij_v_labirinte",
+   "/kvest_v_realnosti_dom_prizrakov",
+   "/ono",
+   "/igra_v_kalmara",
+   "/kvest_v_realnosti_zamok_drakuly",
+   "/patologiya",
+   "/hostel-podval-pytok",
+   "/shizofreniya"
+  ],
+  "certificate": {
+   "image": "/assets/static.tildacdn.com/tild3032-3630-4539-b636-303163646634/_.png",
+   "ornaments": [
+    "/assets/static.tildacdn.com/tild3666-3139-4239-a333-396537623161/logo2-03.svg",
+    "/assets/static.tildacdn.com/tild6234-3334-4733-a235-646132656433/logo2-04.svg",
+    "/assets/static.tildacdn.com/tild6666-6265-4239-a537-643961396530/logo2-02.svg"
+   ]
+  },
+  "localAssets": [
+   "/assets/static.tildacdn.com/tild3032-3630-4539-b636-303163646634/_.png",
+   "/assets/static.tildacdn.com/tild3666-3139-4239-a333-396537623161/logo2-03.svg",
+   "/assets/static.tildacdn.com/tild6234-3334-4733-a235-646132656433/logo2-04.svg",
+   "/assets/static.tildacdn.com/tild6666-6265-4239-a537-643961396530/logo2-02.svg"
+  ]
  }
 }

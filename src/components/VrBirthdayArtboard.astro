@@ -1,0 +1,344 @@
+---
+// Source Tilda records for /den-rozhdeniya-na-vr-arene/.  This page is a
+// self-contained dark campaign canvas, so keeping its measured records here
+// prevents the shared HolidayPage spacing from changing unrelated routes.
+import site from '../data/site.json';
+
+const { source = {}, asset = (value) => value, href = (value) => value } = Astro.props;
+const records = source.records || {};
+const hero = source.hero || {};
+const hall = source.hall || {};
+const video = source.video || {};
+const certificate = source.certificate || {};
+const bookingHref = href(source.bookingHref || '#callback');
+const recordStyle = (record = {}) => [
+  record.desktop && `--vr-birthday-record-desktop:${Number(record.desktop)}px`,
+  record.mobile && `--vr-birthday-record-mobile:${Number(record.mobile)}px`,
+].filter(Boolean).join(';');
+const backgroundStyle = (desktop, mobile = desktop) => `--vr-birthday-background-desktop:url('${asset(desktop)}');--vr-birthday-background-mobile:url('${asset(mobile)}')`;
+---
+
+<div class="vr-birthday-artboard" data-source-artboard="vr-birthday">
+  <div class="vr-birthday-artboard__record vr-birthday-artboard__header" data-parity-record="rec2237068831" style={recordStyle(records.header)} aria-hidden="true"></div>
+
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__hero" data-parity-record="rec2237068841" style={`${recordStyle(records.hero)};${backgroundStyle(hero.desktop, hero.mobile)}`} aria-labelledby="vr-birthday-hero-title">
+    <div class="vr-birthday-artboard__hero-frame">
+      <h1 id="vr-birthday-hero-title">День рождения<br />на <span>VR-арене</span></h1>
+      <p>{hero.subtitle}</p>
+      <div class="vr-birthday-artboard__hero-actions">
+        <a class="vr-birthday-artboard__outline-button" href={bookingHref}>Рассчитать стоимость праздника</a>
+        <a class="vr-birthday-artboard__gradient-button" href={bookingHref}>Подобрать игру</a>
+      </div>
+    </div>
+  </section>
+
+  <nav class="vr-birthday-artboard__record vr-birthday-artboard__breadcrumbs" data-parity-record="rec2237068851" style={recordStyle(records.breadcrumbs)} aria-label="Хлебные крошки">
+    <a href={href('/')}>Главная</a><span>/</span><a href={href('/kids')}>Проведение праздников</a><span>/</span><span>День рождения на VR-арене</span>
+  </nav>
+
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__games" data-parity-record="rec2238302181" style={recordStyle(records.games)} aria-labelledby="vr-birthday-games-title">
+    <h2 id="vr-birthday-games-title">Выберите <span>VR-игру</span> для своего праздника</h2>
+    <div class="vr-birthday-artboard__games-rail">
+      {(source.games || []).map((game) => (
+        <a href={href(game.href)} class="vr-birthday-artboard__game-card">
+          <img src={asset(game.src)} alt={game.title} width="360" height="480" loading="lazy" decoding="async" />
+          <span>{game.title}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__packages-heading" data-parity-record="rec2242736891" style={recordStyle(records.packagesHeading)} aria-labelledby="vr-birthday-packages-title">
+    <h2 id="vr-birthday-packages-title">Выберите <span>пакетное предложение</span></h2>
+    <p>Повторите успешный опыт наших гостей на выгодных условиях</p>
+  </section>
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__packages" data-parity-record="rec2242738171" style={recordStyle(records.packages)} aria-label="Пакетные предложения">
+    <div class="vr-birthday-artboard__packages-grid">
+      {(source.packages || []).map((item) => (
+        <a href={bookingHref} aria-label={`${item.title}: узнать стоимость`}><img src={asset(item.src)} alt={item.title} width="360" height="443" loading="lazy" decoding="async" /></a>
+      ))}
+    </div>
+    <a class="vr-birthday-artboard__gradient-button vr-birthday-artboard__packages-cta" href={bookingHref}>Узнать стоимость</a>
+  </section>
+
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__shows-heading" data-parity-record="rec2242726831" style={recordStyle(records.showsHeading)} aria-labelledby="vr-birthday-shows-title">
+    <h2 id="vr-birthday-shows-title">Увлекательная шоу-программа —<br /> неотъемлемая часть <span>яркого праздника</span></h2>
+    <p>Подберите ту, что порадует именно вашего ребенка</p>
+  </section>
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__shows" data-parity-record="rec2243142551" style={recordStyle(records.shows)} aria-label="Шоу-программы">
+    <div class="vr-birthday-artboard__shows-grid">
+      {(source.shows || []).map((show) => (
+        <a href={bookingHref} class="vr-birthday-artboard__show-card">
+          <img src={asset(show.src)} alt={show.title} width="360" height="360" loading="lazy" decoding="async" />
+          <span>{show.title}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__hall-heading" data-parity-record="rec2242676401" style={recordStyle(records.hallHeading)} aria-labelledby="vr-birthday-hall-title">
+    <h2 id="vr-birthday-hall-title">Выберите зал, который подходит под <span>ваш праздник!</span></h2>
+    <p>8 оборудованных залов, со всем необходимым для успешного проведения детского праздника или семейного мероприятия</p>
+  </section>
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__hall" data-parity-record="rec2242676411" style={`${recordStyle(records.hall)};${backgroundStyle(hall.desktop, hall.mobile)}`} aria-labelledby="vr-birthday-hall-address">
+    <div class="vr-birthday-artboard__hall-photo" aria-hidden="true"></div>
+    <h3 id="vr-birthday-hall-address">{hall.address}</h3>
+    <p class="vr-birthday-artboard__hall-size">{hall.size}</p>
+    <div class="vr-birthday-artboard__hall-copy">
+      <p>Вместимость: до 15 гостей</p>
+      <p><b>Формат:</b> {hall.description}</p>
+      <b>Арена оборудована:</b>
+      <ul>{(hall.equipment || []).map((item) => <li>{item}</li>)}</ul>
+    </div>
+    <a class="vr-birthday-artboard__gradient-button vr-birthday-artboard__hall-cta" href={bookingHref}>Забронировать дату</a>
+  </section>
+
+  <div class="vr-birthday-artboard__record vr-birthday-artboard__spacer" data-parity-record="rec2248822011" style={recordStyle(records.videoSpacer)} aria-hidden="true"></div>
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__video-heading" data-parity-record="rec2242687381" style={recordStyle(records.videoHeading)} aria-labelledby="vr-birthday-video-title">
+    <h2 id="vr-birthday-video-title">Как у нас проходят <span>праздники</span></h2>
+  </section>
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__video" data-parity-record="rec2242687391" style={recordStyle(records.video)} aria-label="Как проходят праздники на VR-арене">
+    <div class="vr-birthday-artboard__video-frame">
+      <button class="vr-birthday-artboard__video-play" type="button" aria-label="Воспроизвести видео"><span></span></button>
+      <img src={asset(video.poster)} alt="Праздник на VR-арене" width="700" height="500" loading="lazy" decoding="async" />
+      {video.before && <img class="vr-birthday-artboard__video-side vr-birthday-artboard__video-side--before" src={asset(video.before)} alt="" width="700" height="500" loading="lazy" decoding="async" />}
+      {video.after && <img class="vr-birthday-artboard__video-side vr-birthday-artboard__video-side--after" src={asset(video.after)} alt="" width="700" height="500" loading="lazy" decoding="async" />}
+    </div>
+  </section>
+
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__certificate" data-parity-record="rec2237068941" style={recordStyle(records.certificate)} aria-labelledby="vr-birthday-certificate-title">
+    <h2 id="vr-birthday-certificate-title">Подарите незабываемое <span>приключение!</span></h2>
+    <p>Сертификат действует на любом квесте компании «Че за квест» в течении 6-ти месяцев с момента покупки. Возможна доставка в любую точку Ростова-на-Дону</p>
+    {certificate.image && <img class="vr-birthday-artboard__certificate-image" src={asset(certificate.image)} alt="Подарочный сертификат на квест в Ростове-на-Дону" width="503" height="358" loading="lazy" decoding="async" />}
+    {(certificate.ornaments || []).map((image, index) => <img class={`vr-birthday-artboard__ornament vr-birthday-artboard__ornament--${index + 1}`} src={asset(image)} alt="" width="80" height="80" loading="lazy" decoding="async" />)}
+    <a class="vr-birthday-artboard__gradient-button vr-birthday-artboard__certificate-cta" href={bookingHref}>Заказать сертификат</a>
+  </section>
+
+  <div class="vr-birthday-artboard__record vr-birthday-artboard__gallery-spacer" data-parity-record="rec2237068951" style={recordStyle(records.gallerySpacer)} aria-hidden="true"></div>
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__gallery-heading" data-parity-record="rec2237068981" style={recordStyle(records.galleryHeading)} aria-labelledby="vr-birthday-gallery-title"><h2 id="vr-birthday-gallery-title">Фотографии с нашей <span>VR-арены</span></h2></section>
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__gallery" data-parity-record="rec2237068921" style={recordStyle(records.gallery)} aria-label="Фотографии с VR-арены">
+    <div>{(source.gallery || []).map((image, index) => <img src={asset(image)} alt={`Фотография с VR-арены ${index + 1}`} width="623" height="350" loading="lazy" decoding="async" />)}</div>
+  </section>
+
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__callback" data-parity-record="rec2237069021" style={recordStyle(records.callback)} id="callback" aria-labelledby="vr-birthday-callback-title">
+    <form data-lead-form data-lead-kind="callback" data-lead-target={site.header.wa} data-lead-recipient={site.leads?.recipient || ''} aria-describedby="vr-birthday-callback-status">
+      <h2 id="vr-birthday-callback-title">Есть вопрос?</h2>
+      <p>Перезвоним и ответим на него как можно скорее</p>
+      <div class="vr-birthday-artboard__callback-fields">
+        <label for="vr-birthday-callback-name"><span class="vr-birthday-artboard__field-label">Ваше имя</span><input id="vr-birthday-callback-name" name="name" type="text" placeholder="Ваше Имя" autocomplete="name" minlength="2" maxlength="80" required /></label>
+        <label for="vr-birthday-callback-phone"><span class="vr-birthday-artboard__field-label">Телефон</span><input id="vr-birthday-callback-phone" name="phone" type="tel" placeholder="🇷🇺  +7 (000) 000-00-00" inputmode="tel" autocomplete="tel" maxlength="24" required /></label>
+      </div>
+      <label class="vr-birthday-artboard__consent"><input name="consent" type="checkbox" required /><span>Я даю согласие на обработку моих персональных данных в соответствии с <a href={href('/privacy')}>Политикой обработки персональных данных</a></span></label>
+      <button class="vr-birthday-artboard__gradient-button" type="button" data-lead-submit>Жду звонка!</button>
+      <p class="lead-form__status" id="vr-birthday-callback-status" data-lead-status role="status" aria-live="polite" hidden></p>
+      <noscript><p class="lead-form__status">Чтобы оставить заявку, включите JavaScript или позвоните нам по телефону на сайте.</p></noscript>
+    </form>
+  </section>
+
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__venues-heading" data-parity-record="rec2237069031" style={recordStyle(records.venuesHeading)} aria-labelledby="vr-birthday-venues-title"><h2 id="vr-birthday-venues-title">Наши площадки</h2><p>9 современно оборудованных площадок с квест-комнатами и зонами отдыха в Ростове-на-Дону</p></section>
+  <section class="vr-birthday-artboard__record vr-birthday-artboard__venues" data-parity-record="rec2237069041" style={recordStyle(records.venues)} aria-label="Адреса площадок"><div>{(source.venues || []).map((venue) => <a href={href(venue.href)}>{venue.title}</a>)}</div></section>
+  <div class="vr-birthday-artboard__record vr-birthday-artboard__footer-spacer" data-parity-record="rec2237069151" style={recordStyle(records.footerSpacer)} aria-hidden="true"></div>
+
+  <footer class="vr-birthday-artboard__record vr-birthday-artboard__footer" data-parity-record="rec2237069161" style={recordStyle(records.footer)}>
+    <div class="vr-birthday-artboard__footer-grid">
+      <section><h2>ОРГАНИЗАЦИЯ<br />МЕРОПРИЯТИЙ</h2><a href={href('/kids')}>Детский День рождения</a><a href={href('/den-rozhdeniya-na-vr-arene')}>День Рождения в VR</a><a href={href('/vypusknoj-kalmar')}>Выпускной 2026</a><a href={href('/contacts')}>Корпоратив | Тимбилдинг</a><a href={href('/new-year')}>Новый год 2027</a></section>
+      <section><h2>ВИДЫ РАЗВЛЕЧЕНИЙ</h2><a href={href('/kvesty-v-rostove-na-donu')}>Квеструмы</a><a href={href('/den-rozhdeniya-na-vr-arene')}>VR-арена</a><a href={href('/party-games')}>Активные игры</a><a href={href('/pryatki_v_temnote')}>Прятки в темноте</a><a href={href('/strashnye-kvesty')}>Страшные квесты</a></section>
+      <section class="vr-birthday-artboard__footer-venues"><h2>НАШИ ПЛОЩАДКИ</h2>{(source.venues || []).map((venue) => <a href={href(venue.href)}>{venue.title}</a>)}</section>
+      <section class="vr-birthday-artboard__footer-legal"><a href={site.header.phoneHref}>{site.header.phone}</a><p>Работаем с 10:00 до 23:30</p><p>ИП Мелешкин Юрий Иванович<br />ИНН 164409771610<br />ОГРНИП 322169000094990</p><a href={href('/privacy')}>Политика обработки персональных данных</a></section>
+    </div>
+  </footer>
+  <div class="vr-birthday-artboard__record vr-birthday-artboard__copyright" data-parity-record="rec2237069171" style={recordStyle(records.copyright)}>
+    {source.footerLogo && <a href={href('/')}><img src={asset(source.footerLogo)} alt="Чё За Квест" width="125" height="53" loading="lazy" decoding="async" /></a>}
+    <p>© 2026 ЧЁ ЗА КВЕСТ</p>
+  </div>
+</div>
+
+<script>
+  import '../scripts/lead-form.js';
+</script>
+
+<style>
+  .vr-birthday-artboard { --vr-accent:linear-gradient(100deg,#ff0093 0%,#ff6b00 55%,#ffa105 100%); position:relative; overflow:hidden; color:#fff; background:#0b0c0d; font-family:var(--font-main,Arial,sans-serif); isolation:isolate; }
+  .vr-birthday-artboard::before { position:absolute; z-index:-1; inset:0; content:''; opacity:.48; background-image:radial-gradient(circle at 8% 10%,rgba(255,0,147,.2) 0 1px,transparent 2px),radial-gradient(circle at 94% 28%,rgba(255,105,0,.22) 0 1px,transparent 2px),linear-gradient(120deg,rgba(255,255,255,.015) 1px,transparent 1px); background-size:170px 170px,230px 230px,54px 54px; }
+  .vr-birthday-artboard *, .vr-birthday-artboard *::before, .vr-birthday-artboard *::after { box-sizing:border-box; }
+  .vr-birthday-artboard__record { position:relative; display:flow-root; height:var(--vr-birthday-record-desktop); min-height:0; }
+  .vr-birthday-artboard h1,.vr-birthday-artboard h2,.vr-birthday-artboard h3,.vr-birthday-artboard p { margin:0; }
+  .vr-birthday-artboard a { color:inherit; text-decoration:none; }
+  .vr-birthday-artboard h2 span,.vr-birthday-artboard h1 span { background:var(--vr-accent); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .vr-birthday-artboard__gradient-button { display:inline-grid; min-width:292px; min-height:55px; padding:0 28px; place-items:center; border:0; border-radius:60px; background:var(--vr-accent); color:#fff; font:400 20px/1.2 var(--font-main,Arial,sans-serif); text-align:center; cursor:pointer; }
+  .vr-birthday-artboard__gradient-button:hover,.vr-birthday-artboard__gradient-button:focus-visible { filter:brightness(1.1); transform:translateY(-1px); }
+  .vr-birthday-artboard__outline-button { display:inline-grid; min-width:416px; min-height:62px; padding:0 28px; place-items:center; border:2px dotted #fff; border-radius:60px; color:#fff; font-size:20px; text-align:center; }
+  .vr-birthday-artboard__hero-frame { position:relative; width:1200px; height:550px; margin:auto; overflow:hidden; border-radius:20px; background-image:var(--vr-birthday-background-desktop); background-position:center; background-size:cover; }
+  .vr-birthday-artboard__hero h1 { position:absolute; top:45px; left:60px; width:510px; font-size:50px; font-weight:800; line-height:1.08; letter-spacing:-1.5px; }
+  .vr-birthday-artboard__hero p { position:absolute; top:180px; left:60px; width:455px; font-size:28px; line-height:1.18; }
+  .vr-birthday-artboard__hero-actions { position:absolute; top:366px; left:60px; display:flex; flex-direction:column; gap:18px; align-items:flex-start; }
+  .vr-birthday-artboard__hero-actions .vr-birthday-artboard__gradient-button { min-width:320px; min-height:60px; }
+  .vr-birthday-artboard__breadcrumbs { display:flex; align-items:center; gap:14px; width:1160px; margin:auto; color:#bcbcbc; font-size:16px; font-weight:300; white-space:nowrap; }
+  .vr-birthday-artboard__breadcrumbs a:hover { color:#fff; }
+  .vr-birthday-artboard__games h2,.vr-birthday-artboard__packages-heading,.vr-birthday-artboard__shows-heading,.vr-birthday-artboard__hall-heading { width:1160px; margin:auto; }
+  .vr-birthday-artboard__games h2 { padding-top:28px; font-size:42px; font-weight:800; line-height:1.12; }
+  .vr-birthday-artboard__games-rail { display:flex; gap:40px; width:1160px; margin:51px auto 0; }
+  .vr-birthday-artboard__game-card { position:relative; flex:0 0 275px; height:367px; overflow:hidden; border-radius:16px; background:#222; }
+  .vr-birthday-artboard__game-card::after { position:absolute; inset:50% 0 0; content:''; background:linear-gradient(transparent,rgba(0,0,0,.78)); }
+  .vr-birthday-artboard__game-card img { width:100%; height:100%; object-fit:cover; }
+  .vr-birthday-artboard__game-card span { position:absolute; z-index:1; bottom:20px; left:25px; right:18px; font-size:16px; font-weight:500; }
+  .vr-birthday-artboard__packages-heading { padding-top:27px; }
+  .vr-birthday-artboard__packages-heading h2 { font-size:42px; font-weight:800; line-height:1.15; }
+  .vr-birthday-artboard__packages-heading p { margin-top:14px; font-size:28px; line-height:1.2; }
+  .vr-birthday-artboard__packages-grid { display:grid; grid-template-columns:repeat(3,360px); gap:27px; width:1134px; margin:45px auto 0; }
+  .vr-birthday-artboard__packages-grid a,.vr-birthday-artboard__packages-grid img { display:block; width:360px; height:443px; border-radius:28px; }
+  .vr-birthday-artboard__packages-grid img { object-fit:cover; }
+  .vr-birthday-artboard__packages-cta { position:absolute; bottom:40px; left:50%; transform:translateX(-50%); min-width:300px; min-height:58px; font-size:18px; }
+  .vr-birthday-artboard__shows-heading { padding-top:31px; }
+  .vr-birthday-artboard__shows-heading h2 { font-size:42px; font-weight:800; line-height:1.12; }
+  .vr-birthday-artboard__shows-heading p { margin-top:15px; font-size:28px; line-height:1.15; }
+  .vr-birthday-artboard__shows-grid { display:grid; grid-template-columns:repeat(4,276px); gap:10px 19px; width:1160px; margin:44px auto 0; }
+  .vr-birthday-artboard__show-card { position:relative; display:block; width:276px; height:275px; overflow:hidden; border-radius:18px; background:#202020; }
+  .vr-birthday-artboard__show-card::after { position:absolute; inset:0; content:''; background:linear-gradient(180deg,rgba(0,0,0,.14),rgba(0,0,0,.55)); }
+  .vr-birthday-artboard__show-card img { display:block; width:100%; height:100%; object-fit:cover; }
+  .vr-birthday-artboard__show-card span { position:absolute; z-index:1; top:25px; left:25px; right:16px; font-size:22px; font-weight:900; line-height:1.05; text-transform:uppercase; }
+  .vr-birthday-artboard__hall-heading { padding-top:29px; }
+  .vr-birthday-artboard__hall-heading h2 { font-size:38px; font-weight:800; line-height:1.15; }
+  .vr-birthday-artboard__hall-heading p { max-width:1020px; margin-top:12px; font-size:20px; line-height:1.2; }
+  .vr-birthday-artboard__hall-photo { position:absolute; top:8px; left:calc(50% - 520px); width:600px; height:400px; border-radius:20px; background-image:var(--vr-birthday-background-desktop); background-position:center; background-size:cover; }
+  .vr-birthday-artboard__hall h3 { position:absolute; top:17px; left:calc(50% - 10px); width:420px; font-size:26px; font-weight:800; line-height:1.15; text-transform:uppercase; }
+  .vr-birthday-artboard__hall-size { position:absolute; top:418px; left:calc(50% - 520px); color:#848484; font-size:22px; font-weight:900; text-transform:uppercase; }
+  .vr-birthday-artboard__hall-copy { position:absolute; top:110px; left:calc(50% - 120px); width:530px; min-height:285px; padding:20px 27px; border:1px solid rgba(255,255,255,.4); border-radius:20px; background:linear-gradient(100deg,rgba(0,0,0,.86),rgba(66,28,8,.68)); font-size:18px; line-height:1.18; }
+  .vr-birthday-artboard__hall-copy p { margin:0 0 16px; }
+  .vr-birthday-artboard__hall-copy ul { margin:8px 0 0; padding-left:18px; }
+  .vr-birthday-artboard__hall-cta { position:absolute; bottom:25px; left:calc(50% + 0px); min-width:300px; }
+  .vr-birthday-artboard__video-heading { width:1200px; margin:auto; border-radius:20px 20px 0 0; background:#333; }
+  .vr-birthday-artboard__video-heading h2 { padding:30px 20px; font-size:40px; font-weight:800; line-height:1.2; }
+  .vr-birthday-artboard__video { width:1200px; margin:auto; overflow:hidden; border-radius:0 0 20px 20px; background:#333; }
+  .vr-birthday-artboard__video-frame { position:relative; width:100%; height:525px; overflow:hidden; }
+  .vr-birthday-artboard__video-frame > img { position:absolute; top:44px; left:420px; width:663px; height:463px; border-radius:20px; object-fit:cover; }
+  .vr-birthday-artboard__video-frame .vr-birthday-artboard__video-side { opacity:.36; }
+  .vr-birthday-artboard__video-side--before { left:-243px; }
+  .vr-birthday-artboard__video-side--after { left:1083px; }
+  .vr-birthday-artboard__video-play { position:absolute; z-index:2; top:50%; left:140px; display:grid; width:90px; height:90px; place-items:center; border:0; border-radius:50%; background:rgba(255,255,255,.2); color:#fff; cursor:pointer; }
+  .vr-birthday-artboard__video-play span { display:block; width:0; height:0; margin-left:7px; border-top:16px solid transparent; border-bottom:16px solid transparent; border-left:25px solid currentColor; }
+  .vr-birthday-artboard__certificate { text-align:center; }
+  .vr-birthday-artboard__certificate h2 { padding-top:54px; font-size:40px; font-weight:800; line-height:1.2; }
+  .vr-birthday-artboard__certificate > p { width:715px; margin:12px auto 0; font-size:16px; line-height:1.4; }
+  .vr-birthday-artboard__certificate-image { position:absolute; top:191px; left:50%; width:503px; height:358px; transform:translateX(-50%); object-fit:contain; }
+  .vr-birthday-artboard__ornament { position:absolute; width:80px; height:auto; object-fit:contain; }
+  .vr-birthday-artboard__ornament--1 { top:216px; left:calc(50% + 320px); }
+  .vr-birthday-artboard__ornament--2 { bottom:26px; left:calc(50% - 540px); }
+  .vr-birthday-artboard__ornament--3 { right:calc(50% - 540px); bottom:31px; }
+  .vr-birthday-artboard__certificate-cta { position:absolute; bottom:59px; left:50%; transform:translateX(-50%); }
+  .vr-birthday-artboard__gallery-heading { width:1160px; margin:auto; border-top:1px solid rgba(255,105,0,.35); }
+  .vr-birthday-artboard__gallery-heading h2 { padding-top:20px; font-size:40px; font-weight:800; line-height:1.2; }
+  .vr-birthday-artboard__gallery { overflow:hidden; }
+  .vr-birthday-artboard__gallery > div { display:flex; gap:10px; width:max-content; height:350px; margin:0 auto; transform:translateX(-67px); }
+  .vr-birthday-artboard__gallery img { flex:0 0 350px; width:350px; height:350px; border-radius:12px; object-fit:cover; }
+  .vr-birthday-artboard__gallery img:first-child { flex-basis:540px; width:540px; }
+  .vr-birthday-artboard__gallery img:nth-child(2) { flex-basis:240px; width:240px; }
+  .vr-birthday-artboard__callback form { position:absolute; top:51px; left:50%; width:1200px; height:376px; padding:39px 88px; transform:translateX(-50%); border:1px solid rgba(255,255,255,.45); border-radius:20px; background:linear-gradient(100deg,rgba(0,0,0,.9) 28%,rgba(68,28,5,.68) 78%,rgba(0,0,0,.9)); text-align:center; }
+  .vr-birthday-artboard__callback h2 { font-size:34px; font-weight:800; }
+  .vr-birthday-artboard__callback form > p:first-of-type { margin-top:15px; color:#e5e5e5; font-size:24px; font-weight:300; }
+  .vr-birthday-artboard__callback-fields { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:896px; margin:25px auto 14px; }
+  .vr-birthday-artboard__callback-fields label { position:relative; display:block; }
+  .vr-birthday-artboard__field-label { position:absolute; z-index:1; top:7px; left:20px; color:#717171; font-size:10px; line-height:1; pointer-events:none; }
+  .vr-birthday-artboard__callback-fields input { width:100%; height:55px; padding:14px 20px 0; border:0; border-radius:10px; background:#fff; color:#333; font:16px/1 var(--font-main,Arial,sans-serif); }
+  .vr-birthday-artboard__consent { display:flex; width:896px; margin:0 auto 18px; gap:10px; color:#ddd; font-size:14px; line-height:1.25; text-align:left; }
+  .vr-birthday-artboard__consent input { flex:none; width:18px; height:18px; margin:0; accent-color:#ff6b00; }
+  .vr-birthday-artboard__consent a { color:#ff8562; }
+  .vr-birthday-artboard__callback .vr-birthday-artboard__gradient-button { min-width:240px; min-height:55px; font-size:18px; }
+  .vr-birthday-artboard__callback .lead-form__status { width:896px; margin:8px auto 0; color:#fff; font-size:13px; }
+  .vr-birthday-artboard__venues-heading { width:1160px; margin:auto; }
+  .vr-birthday-artboard__venues-heading h2 { padding-top:22px; font-size:40px; font-weight:800; line-height:1.05; }
+  .vr-birthday-artboard__venues-heading p { max-width:780px; margin-top:12px; font-size:20px; line-height:1.2; }
+  .vr-birthday-artboard__venues > div { display:flex; flex-wrap:wrap; gap:20px; width:1160px; margin:auto; padding-top:0; }
+  .vr-birthday-artboard__venues a { display:grid; min-height:44px; padding:0 18px; place-items:center; border-radius:8px; background:#383838; font-size:14px; font-weight:800; text-align:center; }
+  .vr-birthday-artboard__venues a:hover { background:#505050; color:#ffad00; }
+  .vr-birthday-artboard__footer { background:#333; border-radius:32px 32px 0 0; }
+  .vr-birthday-artboard__footer-grid { display:grid; grid-template-columns:1.05fr 1fr 1.25fr 1.1fr; gap:30px; width:1160px; margin:auto; padding-top:44px; }
+  .vr-birthday-artboard__footer h2 { margin:0 0 14px; color:#ff6900; font-size:16px; font-weight:900; line-height:1.15; }
+  .vr-birthday-artboard__footer a { display:block; margin-bottom:9px; color:#f1f1f1; font-size:14px; line-height:1.15; }
+  .vr-birthday-artboard__footer a:hover { color:#ff9e00; }
+  .vr-birthday-artboard__footer-legal p { margin:0 0 18px; color:#e8e8e8; font-size:14px; line-height:1.2; }
+  .vr-birthday-artboard__copyright { display:flex; gap:24px; align-items:flex-start; width:1160px; margin:auto; padding-top:15px; background:#333; color:#aaa; font-size:14px; }
+  .vr-birthday-artboard__copyright img { display:block; width:125px; height:53px; object-fit:contain; }
+  .vr-birthday-artboard__copyright p { padding-top:18px; }
+
+  @media (max-width:700px) {
+    .vr-birthday-artboard__record { height:var(--vr-birthday-record-mobile); }
+    .vr-birthday-artboard__gradient-button { min-width:194px; min-height:50px; padding:0 16px; font-size:14px; }
+    .vr-birthday-artboard__hero-frame { width:320px; height:600px; background-image:var(--vr-birthday-background-mobile); }
+    .vr-birthday-artboard__hero h1 { top:27px; left:20px; width:270px; font-size:20px; line-height:1.15; letter-spacing:-.25px; }
+    .vr-birthday-artboard__hero p { top:92px; left:20px; width:245px; font-size:12px; line-height:1.24; }
+    .vr-birthday-artboard__hero-actions { top:142px; left:20px; gap:8px; }
+    .vr-birthday-artboard__outline-button { min-width:210px; min-height:42px; padding:0 12px; border-width:1px; font-size:11px; }
+    .vr-birthday-artboard__hero-actions .vr-birthday-artboard__gradient-button { min-width:194px; min-height:46px; font-size:12px; }
+    .vr-birthday-artboard__breadcrumbs { gap:7px; width:360px; padding:13px 15px 0; align-items:flex-start; flex-wrap:wrap; font-size:10px; line-height:1.25; white-space:normal; }
+    .vr-birthday-artboard__games h2,.vr-birthday-artboard__packages-heading,.vr-birthday-artboard__shows-heading,.vr-birthday-artboard__hall-heading { width:330px; }
+    .vr-birthday-artboard__games h2 { padding-top:25px; font-size:26px; line-height:1.1; }
+    .vr-birthday-artboard__games-rail { gap:10px; width:auto; margin:82px 0 0 20px; overflow:visible; }
+    .vr-birthday-artboard__game-card { flex-basis:280px; height:373px; border-radius:14px; }
+    .vr-birthday-artboard__game-card span { bottom:19px; left:18px; font-size:12px; }
+    .vr-birthday-artboard__packages-heading { padding-top:26px; }
+    .vr-birthday-artboard__packages-heading h2 { width:300px; font-size:20px; line-height:1.13; }
+    .vr-birthday-artboard__packages-heading p { width:290px; margin-top:9px; font-size:14px; line-height:1.15; }
+    .vr-birthday-artboard__packages-grid { display:flex; flex-direction:column; gap:20px; width:300px; margin:42px auto 0; }
+    .vr-birthday-artboard__packages-grid a,.vr-birthday-artboard__packages-grid img { width:300px; height:373px; border-radius:23px; }
+    .vr-birthday-artboard__packages-cta { bottom:8px; min-width:300px; min-height:50px; font-size:14px; }
+    .vr-birthday-artboard__shows-heading { padding-top:20px; }
+    .vr-birthday-artboard__shows-heading h2 { width:330px; font-size:20px; line-height:1.12; }
+    .vr-birthday-artboard__shows-heading p { width:310px; margin-top:10px; font-size:14px; line-height:1.12; }
+    .vr-birthday-artboard__shows-grid { display:flex; gap:10px; width:max-content; margin:66px 0 0 45px; }
+    .vr-birthday-artboard__show-card { width:280px; height:280px; border-radius:16px; }
+    .vr-birthday-artboard__show-card span { top:22px; left:20px; font-size:18px; }
+    .vr-birthday-artboard__hall-heading { padding-top:24px; }
+    .vr-birthday-artboard__hall-heading h2 { width:310px; font-size:20px; line-height:1.1; }
+    .vr-birthday-artboard__hall-heading p { width:315px; margin-top:11px; font-size:14px; line-height:1.16; }
+    .vr-birthday-artboard__hall-photo { top:auto; bottom:0; left:10px; width:370px; height:247px; border-radius:0; background-image:var(--vr-birthday-background-mobile); }
+    .vr-birthday-artboard__hall h3 { top:29px; left:38px; width:315px; font-size:20px; line-height:1.2; text-align:center; }
+    .vr-birthday-artboard__hall-size { top:462px; left:50%; width:310px; transform:translateX(-50%); font-size:16px; text-align:center; }
+    .vr-birthday-artboard__hall-copy { top:103px; left:20px; width:350px; min-height:342px; padding:17px 15px; border-radius:18px; font-size:12px; line-height:1.17; }
+    .vr-birthday-artboard__hall-copy p { margin-bottom:13px; }
+    .vr-birthday-artboard__hall-copy ul { margin-top:6px; padding-left:15px; }
+    .vr-birthday-artboard__hall-cta { bottom:17px; left:50%; min-width:260px; min-height:50px; transform:translateX(-50%); font-size:14px; }
+    .vr-birthday-artboard__video-heading { width:320px; margin:auto; }
+    .vr-birthday-artboard__video-heading h2 { padding:25px 10px; font-size:20px; line-height:1.25; }
+    .vr-birthday-artboard__video { width:360px; height:670px; margin:auto; border-radius:0 0 20px 20px; }
+    .vr-birthday-artboard__video-frame { height:670px; }
+    .vr-birthday-artboard__video-frame > img { top:300px; left:20px; width:320px; height:260px; border-radius:16px; }
+    .vr-birthday-artboard__video-frame .vr-birthday-artboard__video-side { display:none; }
+    .vr-birthday-artboard__video-play { top:112px; left:135px; width:80px; height:80px; }
+    .vr-birthday-artboard__certificate h2 { width:300px; padding-top:25px; margin:auto; font-size:24px; line-height:1.15; }
+    .vr-birthday-artboard__certificate > p { width:290px; margin-top:10px; font-size:12px; line-height:1.24; }
+    .vr-birthday-artboard__certificate-image { top:256px; width:276px; height:auto; }
+    .vr-birthday-artboard__ornament { width:58px; }
+    .vr-birthday-artboard__ornament--1 { top:421px; left:auto; right:10px; }
+    .vr-birthday-artboard__ornament--2 { bottom:112px; left:-10px; }
+    .vr-birthday-artboard__ornament--3 { right:10px; bottom:84px; }
+    .vr-birthday-artboard__certificate-cta { bottom:25px; width:300px; min-height:45px; font-size:12px; }
+    .vr-birthday-artboard__gallery-heading { width:320px; }
+    .vr-birthday-artboard__gallery-heading h2 { padding-top:13px; font-size:20px; line-height:1.12; }
+    .vr-birthday-artboard__gallery > div { gap:10px; height:350px; margin:0 0 0 14px; transform:none; }
+    .vr-birthday-artboard__gallery img,.vr-birthday-artboard__gallery img:first-child,.vr-birthday-artboard__gallery img:nth-child(2) { flex-basis:350px; width:350px; height:350px; }
+    .vr-birthday-artboard__callback form { top:40px; width:360px; height:561px; padding:40px 20px; border-radius:20px; }
+    .vr-birthday-artboard__callback h2 { font-size:26px; }
+    .vr-birthday-artboard__callback form > p:first-of-type { width:275px; margin:12px auto 0; font-size:16px; line-height:1.2; }
+    .vr-birthday-artboard__callback-fields { grid-template-columns:1fr; gap:10px; width:300px; margin:26px auto 12px; }
+    .vr-birthday-artboard__field-label { top:6px; left:15px; font-size:9px; }
+    .vr-birthday-artboard__callback-fields input { height:45px; padding:12px 15px 0; font-size:12px; }
+    .vr-birthday-artboard__consent { width:300px; margin-bottom:15px; font-size:11px; line-height:1.18; }
+    .vr-birthday-artboard__consent input { width:16px; height:16px; }
+    .vr-birthday-artboard__callback .vr-birthday-artboard__gradient-button { min-width:200px; min-height:46px; font-size:14px; }
+    .vr-birthday-artboard__callback .lead-form__status { width:300px; font-size:11px; }
+    .vr-birthday-artboard__venues-heading { width:360px; padding-left:22px; }
+    .vr-birthday-artboard__venues-heading h2 { padding-top:20px; font-size:20px; }
+    .vr-birthday-artboard__venues-heading p { width:310px; margin-top:6px; font-size:12px; line-height:1.13; }
+    .vr-birthday-artboard__venues > div { flex-direction:column; align-items:flex-start; gap:12px; width:360px; padding:7px 15px 0; }
+    .vr-birthday-artboard__venues a { min-height:32px; padding:0 14px; font-size:11px; }
+    .vr-birthday-artboard__footer { border-radius:28px 28px 0 0; }
+    .vr-birthday-artboard__footer-grid { grid-template-columns:1fr 1fr; gap:45px 30px; width:360px; padding:35px 14px 0; }
+    .vr-birthday-artboard__footer h2 { font-size:11px; margin-bottom:12px; }
+    .vr-birthday-artboard__footer a { margin-bottom:8px; font-size:10px; }
+    .vr-birthday-artboard__footer-venues,.vr-birthday-artboard__footer-legal { display:none; }
+    .vr-birthday-artboard__copyright { width:360px; padding:15px 14px 0; gap:14px; font-size:10px; }
+    .vr-birthday-artboard__copyright img { width:100px; height:auto; }
+    .vr-birthday-artboard__copyright p { padding-top:6px; }
+  }
+</style>
