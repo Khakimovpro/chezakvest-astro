@@ -367,13 +367,15 @@ const bgStyle = (image) => image ? `background-image:url('${asset(image)}')` : '
   .vypusknoj-artboard__hall-copy{position:static}
   .vypusknoj-artboard__hall-copy h2{position:absolute;top:39px;left:720px;width:420px;margin:0;font:700 26px/1.18 Montserrat,Arial,sans-serif;letter-spacing:-.03em}
   .vypusknoj-artboard__hall-details{position:absolute;z-index:1;top:141px;left:580px;box-sizing:border-box;width:540px;height:341px;padding:32px 40px;border-radius:30px;background:rgba(255,255,255,.96);box-shadow:0 6px 22px rgba(3,24,24,.18)}
-  .vypusknoj-artboard__hall-details p{margin:0;font:400 18px/1.25 Montserrat,Arial,sans-serif}
+  /* Список оборудования не помещался в жёсткие 341 px: две последние строки уходили за белую
+     карточку и попадали под розовую кнопку. Текст поджат, кнопка опущена под карточку. */
+  .vypusknoj-artboard__hall-details p{margin:0;font:400 16px/1.25 Montserrat,Arial,sans-serif}
   .vypusknoj-artboard__hall-details strong,.vypusknoj-artboard__hall-details h3{font-weight:700}
-  .vypusknoj-artboard__hall-format{margin-top:26px!important}
-  .vypusknoj-artboard__hall-details h3{margin:22px 0 5px;font:700 18px/1.2 Montserrat,Arial,sans-serif}
-  .vypusknoj-artboard__hall-details ul{margin:0;padding-left:27px;font:400 18px/1.2 Montserrat,Arial,sans-serif}
-  .vypusknoj-artboard__hall-details li+li{margin-top:3px}
-  .vypusknoj-artboard__hall-copy .vypusknoj-artboard__pink-button{position:absolute;z-index:2;top:451px;left:701px;width:300px;height:55px;font:500 16px/1 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__hall-format{margin-top:18px!important}
+  .vypusknoj-artboard__hall-details h3{margin:16px 0 4px;font:700 16px/1.2 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__hall-details ul{margin:0;padding-left:24px;font:400 16px/1.2 Montserrat,Arial,sans-serif}
+  .vypusknoj-artboard__hall-details li+li{margin-top:2px}
+  .vypusknoj-artboard__hall-copy .vypusknoj-artboard__pink-button{position:absolute;z-index:2;top:500px;left:701px;width:300px;height:55px;font:500 16px/1 Montserrat,Arial,sans-serif}
   .vypusknoj-artboard__hall-pager{position:absolute;top:515px;left:555px;display:flex;align-items:center;gap:9px;color:#031818;font:400 13px/1 Montserrat,Arial,sans-serif}
   .vypusknoj-artboard__hall-pager button{display:grid;width:20px;height:21px;padding:0;place-items:center;border:0;background:transparent;color:#ec406b;cursor:pointer}
   .vypusknoj-artboard__hall-pager button img{display:block;width:20px;height:21px;object-fit:contain}
@@ -483,13 +485,17 @@ const bgStyle = (image) => image ? `background-image:url('${asset(image)}')` : '
     .vypusknoj-artboard__hall-canvas{display:block;padding-top:0}
     .vypusknoj-artboard__hall-images{top:405px;left:-59px;width:439px;height:275px;margin:0;border-radius:0}
     .vypusknoj-artboard__hall-copy h2{top:67px;left:0;width:320px;font-size:25px;line-height:1.28;text-align:center}
-    .vypusknoj-artboard__hall-details{top:150px;left:-23px;width:366px;height:352px;padding:20px 23px;border-radius:28px}
-    .vypusknoj-artboard__hall-details p{font-size:16px;line-height:1.28}
-    .vypusknoj-artboard__hall-format{margin-top:24px!important}
-    .vypusknoj-artboard__hall-details h3{margin:20px 0 5px;font-size:16px;line-height:1.22}
-    .vypusknoj-artboard__hall-details ul{padding-left:25px;font-size:16px;line-height:1.22}
+    /* Список оборудования не влезал в жёсткие 352 px и вылезал белым текстом на фото зала —
+       типографика поджата так, чтобы контент помещался в карточку. */
+    .vypusknoj-artboard__hall-details{top:150px;left:-23px;width:366px;height:352px;padding:18px 23px;border-radius:28px}
+    .vypusknoj-artboard__hall-details p{font-size:14px;line-height:1.25}
+    .vypusknoj-artboard__hall-format{margin-top:16px!important}
+    .vypusknoj-artboard__hall-details h3{margin:14px 0 4px;font-size:15px;line-height:1.2}
+    .vypusknoj-artboard__hall-details ul{padding-left:22px;font-size:14px;line-height:1.22}
     .vypusknoj-artboard__hall-details li+li{margin-top:2px}
     .vypusknoj-artboard__hall-copy .vypusknoj-artboard__pink-button{top:649px;left:2px;width:317px;height:56px;font-size:16px}
+    /* Точки переключения фото лежали ровно под кнопкой брони и не нажимались. */
+    .vypusknoj-artboard__hall-dots{bottom:38px}
     .vypusknoj-artboard__hall-pager{top:17px;left:50%;transform:translateX(-50%)}
     .vypusknoj-artboard__section-heading--trust{height:var(--vypusknoj-record-mobile,220px);padding:30px 35px}
     .vypusknoj-artboard__section-heading--trust h2{font-size:24px;line-height:1.25}

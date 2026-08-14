@@ -169,6 +169,55 @@ const hrefFor = (item) => item.external ? item.href : link(item.href);
     });
   };
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initMobileMenu, { once: true });
-  else initMobileMenu();
+  // Десктопное мега-меню: hover в CSS работает и без JS, здесь добавляется только «липкость» —
+  // панель не закрывается мгновенно, пока курсор идёт от пункта к ссылкам внутри неё.
+  const initMegaMenu = () => {
+    const items = Array.from(document.querySelectorAll('.nav__item.has-mega'));
+    if (!items.length || document.body.dataset.megaReady) return;
+    document.body.dataset.megaReady = 'true';
+
+    const CLOSE_DELAY = 320;
+    let timer;
+    const closeAll = () => items.forEach((item) => item.classList.remove('is-open'));
+
+    items.forEach((item) => {
+      item.addEventListener('mouseenter', () => {
+        clearTimeout(timer);
+        closeAll();
+        item.classList.add('is-open');
+      });
+      item.addEventListener('mouseleave', () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => item.classList.remove('is-open'), CLOSE_DELAY);
+      });
+      // Переход по ссылке внутри панели закрывает её сразу, иначе она висит поверх новой страницы
+      // при возврате назад из истории браузера.
+      item.querySelectorAll('a').forEach((anchor) => anchor.addEventListener('click', () => {
+        clearTimeout(timer);
+        closeAll();
+      }));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        clearTimeout(timer);
+        closeAll();
+      }
+    });
+    // Клик мимо шапки и уход курсора за пределы окна тоже закрывают панель.
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.nav__item.has-mega')) {
+        clearTimeout(timer);
+        closeAll();
+      }
+    });
+    document.addEventListener('mouseleave', () => {
+      clearTimeout(timer);
+      timer = setTimeout(closeAll, CLOSE_DELAY);
+    });
+  };
+
+  const init = () => { initMobileMenu(); initMegaMenu(); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
+  else init();
 </script>

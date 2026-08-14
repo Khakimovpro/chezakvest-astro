@@ -116,7 +116,7 @@
 .hpack__head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .hpack__name{font-size:30px;font-weight:700;text-transform:uppercase;line-height:1}
 .hpack__badge{background:#e02f2f;border-radius:6px;padding:4px 10px;font-size:12px;font-weight:700;text-transform:uppercase}
-.hpack__dur{margin-left:auto;background:rgba(255,255,255,.9);color:var(--dark);border-radius:40px;
+.hpack__dur{margin-left:auto;background:rgba(255,255,255,.9);color:var(--on-light);border-radius:40px;
   padding:6px 14px;font-size:14px;font-weight:700;white-space:nowrap}
 .hpack__price{margin-top:14px;font-size:26px;font-weight:700}
 .hpack__pricenote{margin-top:4px;font-size:14px;opacity:.95}

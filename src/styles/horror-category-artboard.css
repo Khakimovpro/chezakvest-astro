@@ -8,7 +8,9 @@
 .horror-category-artboard__record{position:relative;height:var(--horror-record-desktop,auto);overflow:hidden}
 .horror-category-artboard__main{display:block}
 
-.horror-category-artboard__header{z-index:20;background:#242424}
+/* Запись артборда режет всё, что вылезает за её высоту, — из-за этого выпадающее меню шапки
+   обрезалось полосой в 90 px. Шапке обрезка не нужна. */
+.horror-category-artboard__header{z-index:20;overflow:visible;background:#242424}
 .horror-category-artboard__header .hdr{height:100%;padding-top:10px;background:transparent}
 .horror-category-artboard__header .hdr__inner{height:80px;max-width:1200px;border-color:rgba(255,255,255,.32);background-image:linear-gradient(36.72deg,rgba(28,28,28,.76) 37%,rgba(150,62,0,.69) 73%,rgba(28,28,28,.76) 100%)}
 .horror-category-artboard__header .mega{top:80px}

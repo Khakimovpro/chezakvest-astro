@@ -5,6 +5,7 @@
   --orange-text:#9b3800;   /* AA-safe orange for text on light surfaces */
   --cta-ink:#1f2933;       /* AA-safe text on the brand orange */
   --dark:#333333;
+  --on-light:#333333;      /* текст на белых плашках: не меняется в тёмной теме */
   --ink:#333333;
   --muted:#474747;
   --grey:#ababab;

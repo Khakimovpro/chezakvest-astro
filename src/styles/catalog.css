@@ -3,7 +3,7 @@
 .catalog-page__eyebrow{margin-bottom:10px;color:var(--orange-text);font-weight:700;font-size:14px;letter-spacing:.04em;text-transform:uppercase}
 .catalog-page__intro{margin-top:12px;font-size:18px;line-height:1.55;color:var(--muted)}
 .catalog-page__filters{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-.catalog-page__filter{min-height:44px;border:1px solid var(--orange-text);border-radius:999px;padding:9px 18px;background:#fff;color:var(--dark);font:700 14px/1 'Montserrat',Arial,sans-serif;transition:background-color .2s ease,color .2s ease,border-color .2s ease}
+.catalog-page__filter{min-height:44px;border:1px solid var(--orange-text);border-radius:999px;padding:9px 18px;background:#fff;color:var(--on-light);font:700 14px/1 'Montserrat',Arial,sans-serif;transition:background-color .2s ease,color .2s ease,border-color .2s ease}
 .catalog-page__filter:hover,.catalog-page__filter[aria-pressed="true"]{border-color:var(--orange);background:var(--orange);color:var(--cta-ink)}
 .catalog-page__count{margin-top:18px;color:var(--muted);font-size:15px}
 .catalog-page__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin-top:28px;padding:0;list-style:none}
