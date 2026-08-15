@@ -1222,6 +1222,27 @@ async function captureOne(browser, { url, kind, viewport, knownRoutes, path }) {
   }
 }
 
+async function captureWithFreshBrowser(chromium, options) {
+  let lastError;
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const browser = await chromium.launch({
+      executablePath: BROWSER,
+      args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'],
+    });
+    try {
+      return await captureOne(browser, options);
+    } catch (error) {
+      lastError = error;
+      const browserCrash = /(?:browser has been closed|context or browser has been closed|target page.*closed|target crashed)/iu.test(String(error));
+      if (!browserCrash || attempt === 2) throw error;
+      await sleep(750);
+    } finally {
+      await browser.close().catch(() => {});
+    }
+  }
+  throw lastError;
+}
+
 function sourceForRoute(inventory, route) {
   const match = inventory.records.find((record) => record.clone_path === route && Number(record.http_orig) === 200);
   return match?.url ?? `${ORIGIN}${withoutTrailingSlash(route) || '/'}`;
@@ -1368,16 +1389,25 @@ async function main() {
   // separately verifies the actual target mapping.
   const knownRoutes = allRoutes;
   const localServer = await startLocalDistServer();
-  const detail = { generated_at: new Date().toISOString(), round: ROUND, routes: {} };
-  const matrix = [];
+  await mkdir(ROUND_DIR, { recursive: true });
+  const checkpointPath = join(ROUND_DIR, 'visual-checkpoint.json');
+  let detail = { generated_at: new Date().toISOString(), round: ROUND, routes: {} };
+  let matrix = [];
+  if (process.env.PARITY_RESUME === '1') {
+    const checkpoint = JSON.parse(await readFile(checkpointPath, 'utf8'));
+    if (checkpoint.round !== ROUND || JSON.stringify(checkpoint.routes) !== JSON.stringify(routes)) {
+      throw new Error('Visual parity checkpoint does not match the requested round and route set.');
+    }
+    detail = checkpoint.detail;
+    matrix = checkpoint.matrix;
+  }
+  const completedRoutes = new Set(matrix.map((row) => row.url));
   try {
     for (const route of routes) {
-      // Chromium retains decoded tall-page surfaces after a context closes. A
-      // fresh process per route gives the 67-route acceptance run a bounded
-      // memory ceiling while preserving the four original/clone captures and
-      // their shared state inside each route.
-      const browser = await chromium.launch({ executablePath: BROWSER, args: ['--no-sandbox', '--disable-gpu'] });
-      try {
+      if (completedRoutes.has(route)) {
+        console.log(`${route} checkpoint (${matrix.length}/${routes.length})`);
+        continue;
+      }
       const redirect = redirectTarget(inventory, route);
       const matrixEntry = inventory.matrix.find((row) => row.route_clone === route);
       const scope = redirect ? 'redirect' : (matrixEntry?.verdict === 'extra_clone' ? 'extra_clone' : 'page');
@@ -1390,8 +1420,8 @@ async function main() {
         const suffix = `${slug}--r${ROUND}--${viewport.name}`;
         const originalPath = join(SHOTS_DIR, `${suffix}--original.webp`);
         const clonePath = join(SHOTS_DIR, `${suffix}--clone.webp`);
-        const original = await captureOne(browser, { url: originalUrl, kind: 'original', viewport, knownRoutes, path: originalPath });
-        const clone = await captureOne(browser, { url: cloneUrl, kind: 'clone', viewport, knownRoutes, path: clonePath });
+        const original = await captureWithFreshBrowser(chromium, { url: originalUrl, kind: 'original', viewport, knownRoutes, path: originalPath });
+        const clone = await captureWithFreshBrowser(chromium, { url: cloneUrl, kind: 'clone', viewport, knownRoutes, path: clonePath });
         const compared = await compareCaptures(original, clone);
         captures[viewport.mobile ? 'mobile' : 'desktop'] = { original, clone, compared, original_url: originalUrl, clone_url: cloneUrl };
       }
@@ -1469,14 +1499,13 @@ async function main() {
         },
         };
         console.log(`${route} ${verdict} (${matrix.length}/${routes.length})`);
-      } finally {
-        await browser.close().catch(() => {});
-      }
+        await writeFile(checkpointPath, `${JSON.stringify({ round: ROUND, routes, detail, matrix })}\n`);
     }
   } finally {
     await stopLocalDistServer(localServer);
   }
-  await mkdir(ROUND_DIR, { recursive: true });
+  const routeOrder = new Map(routes.map((route, index) => [route, index]));
+  matrix.sort((left, right) => routeOrder.get(left.url) - routeOrder.get(right.url));
   await Promise.all([
     writeFile(join(ROUND_DIR, 'visual-detail.json'), `${JSON.stringify(detail, null, 2)}\n`),
     writeFile(MATRIX_PATH, csv(CSV_HEADERS, matrix)),

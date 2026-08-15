@@ -38,8 +38,10 @@ test('recreates specialised slider geometry and deterministic parity capture sta
   assert.match(parity, /async function normaliseTildaSliders/u);
   assert.match(parity, /wrapper\.dataset\.sliderStopped = 'true'/u);
   assert.match(parity, /async function normaliseT552Marquees/u);
-  assert.match(parity, /fresh process per route/u);
-  assert.match(parity, /for \(const route of routes\) \{[\s\S]*?const browser = await chromium\.launch/u);
+  assert.match(parity, /async function captureWithFreshBrowser/u);
+  assert.match(parity, /--disable-dev-shm-usage/u);
+  assert.match(parity, /process\.env\.PARITY_RESUME === '1'/u);
+  assert.match(parity, /visual-checkpoint\.json/u);
   assert.match(parity, /async function startLocalDistServer/u);
   assert.match(parity, /PARITY_SERVE_DIST requires a loopback/u);
   assert.match(parity, /await stopLocalDistServer\(localServer\)/u);
