@@ -189,7 +189,7 @@ const preload = hero.bg
   preloadImage={preload}
   bodyClass={questBodyClass}
 >
-  {!isZapadSource && <Header />}
+  <Header />
 
   <main style={vrFlowStyle}>
     {isZapadSource ? <ZapadSourceArtboard page={page} source={sourceParity} asset={asset} href={link} /> : (

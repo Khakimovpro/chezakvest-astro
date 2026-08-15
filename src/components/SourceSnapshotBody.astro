@@ -1,0 +1,324 @@
+---
+import Header from './Header.astro';
+import '../styles/page.css';
+
+const { snapshot } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/u, '');
+const asset = (path) => `${base}${path}`;
+const html = snapshot.html.replaceAll('__SITE_BASE__', base);
+const runtime = snapshot.runtime.map(asset);
+const pageScript = snapshot.pageScript?.replace('__SITE_BASE__', base) ?? '';
+---
+
+<Header />
+<main
+  class="source-snapshot-shell"
+  data-source-site-base={base}
+  data-source-route={snapshot.route}
+  style={`--source-flags-url: url("${asset('/assets/static.tildacdn.com/lib/flags/flags7.png')}")`}
+  aria-label="Содержимое страницы"
+>
+  <div class="source-snapshot-content" set:html={html} />
+</main>
+
+<section class="source-booking" id="source-booking" aria-labelledby="source-booking-title">
+  <a class="source-booking__backdrop" href="#" aria-label="Закрыть форму"></a>
+  <form class="source-booking__dialog" data-local-source-form>
+    <a class="source-booking__close" href="#" aria-label="Закрыть форму">×</a>
+    <h2 id="source-booking-title">Забронировать игру</h2>
+    <label>Имя<input name="name" autocomplete="name" required /></label>
+    <label>Телефон<input name="phone" type="tel" autocomplete="tel" required /></label>
+    <label class="source-booking__consent"><input name="consent" type="checkbox" required /> Я согласен на обработку персональных данных</label>
+    <button type="submit">Отправить заявку</button>
+    <p class="source-booking__success" data-local-form-success hidden role="status">Спасибо! Заявка принята.</p>
+  </form>
+</section>
+
+<script is:inline>
+  (() => {
+    const siteBase = document.querySelector('[data-source-site-base]')?.dataset.sourceSiteBase || '';
+    const localHosts = new Set([
+      'static.tildacdn.com', 'optim.tildacdn.com', 'thb.tildacdn.com',
+      'thb.tildacdn.net', 'neo.tildacdn.com', 'ws.tildacdn.com',
+      'fonts.gstatic.com', 'chezakvest.ru',
+    ]);
+    const localise = (value) => {
+      if (typeof value !== 'string' || !/^https?:\/\//i.test(value)) return value;
+      try {
+        const url = new URL(value);
+        const host = url.hostname.replace(/^www\./, '');
+        return localHosts.has(host) ? `${siteBase}/assets/${host}${decodeURI(url.pathname)}` : value;
+      } catch {
+        return value;
+      }
+    };
+    const nativeSetAttribute = Element.prototype.setAttribute;
+    Element.prototype.setAttribute = function patchedSetAttribute(name, value) {
+      return nativeSetAttribute.call(this, name, /^(?:src|href)$/i.test(name) ? localise(String(value)) : value);
+    };
+    for (const [Constructor, property] of [
+      [HTMLScriptElement, 'src'], [HTMLLinkElement, 'href'], [HTMLImageElement, 'src'],
+    ]) {
+      const descriptor = Object.getOwnPropertyDescriptor(Constructor.prototype, property);
+      if (!descriptor?.get || !descriptor?.set) continue;
+      Object.defineProperty(Constructor.prototype, property, {
+        configurable: descriptor.configurable,
+        enumerable: descriptor.enumerable,
+        get: descriptor.get,
+        set(value) { descriptor.set.call(this, localise(String(value))); },
+      });
+    }
+  })();
+  window.t_lazyload_update = () => {};
+  window.t_initZoom = () => {};
+  window.tooltipster = () => {};
+  window.t_onReady = (callback) => {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', callback, { once: true });
+    else callback();
+  };
+  window.t_onFuncLoad = (name, callback) => {
+    if (typeof window[name] === 'function') callback();
+  };
+</script>
+{runtime.map((source) => <script is:inline src={source}></script>)}
+{pageScript && <script is:inline src={pageScript}></script>}
+<script is:inline>
+  (() => {
+    const safeCall = (name, ...args) => {
+      try {
+        if (typeof window[name] === 'function') window[name](...args);
+      } catch (error) {
+        console.warn(`[source-snapshot] ${name} skipped: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    };
+
+    const initialise = () => {
+      document.querySelectorAll('[data-source-snapshot] > [id^="rec"][data-record-type]').forEach((record) => {
+        const recId = record.id.slice(3);
+        const type = record.dataset.recordType;
+        // Current exports use T396 for Zero Blocks, while a number of legacy
+        // pages (notably the home-page card grids) declare the same artboard as
+        // T121. Initialise by the actual markup contract so responsive group
+        // coordinates are applied for both record generations.
+        const hasZeroArtboard = record.querySelector(':scope > .t396 > .t396__artboard');
+        if (hasZeroArtboard && !record.dataset.sourceZeroReady) {
+          safeCall('t396_init', recId);
+          record.dataset.sourceZeroReady = 'true';
+        }
+        // Some legacy exports contain zero-block form elements in records whose
+        // declared type is not 396 (for example, T121 on the Zapad landing).
+        record.querySelectorAll('[data-elem-type="form"][data-elem-id]:not([data-form-ready])').forEach((formElement) => {
+          safeCall('t_zeroForms__init', recId, formElement.dataset.elemId);
+        });
+        if (!record.dataset.sourceBlockReady && !['270', '360', '396', '674', '702'].includes(type)) {
+          if (type === '979') {
+            safeCall(
+              't979_init',
+              recId,
+              record.dataset.sourceT979RowHeight,
+              record.dataset.sourceT979Gutter,
+            );
+          } else {
+            safeCall(`t${type}_init`, recId);
+          }
+          record.dataset.sourceBlockReady = 'true';
+        }
+      });
+
+      document.querySelectorAll('[data-source-snapshot] .t-slds').forEach((slider) => {
+        if (slider.dataset.sourceReady) return;
+        const recordId = slider.closest('[id^="rec"]')?.id.slice(3);
+        safeCall('t_sldsInit', recordId);
+        slider.dataset.sourceReady = 'true';
+        slider.style.visibility = 'visible';
+      });
+
+      document.querySelectorAll('[data-source-snapshot] img').forEach((image) => {
+        image.loading = 'eager';
+        if (!image.src && image.dataset.original) image.src = image.dataset.original;
+      });
+      document.querySelectorAll('[data-source-snapshot] [data-original]').forEach((element) => {
+        if (!(element instanceof HTMLElement) || element instanceof HTMLImageElement) return;
+        const source = element.dataset.original;
+        if (source && !element.style.backgroundImage) element.style.backgroundImage = `url("${source}")`;
+        element.classList.add('loaded');
+      });
+    };
+
+    const submitLocally = (form) => {
+      const success = form.querySelector('[data-local-form-success], .js-successbox');
+      if (success instanceof HTMLElement) {
+        success.hidden = false;
+        success.style.display = 'block';
+        success.textContent = 'Спасибо! Заявка принята.';
+      }
+      form.dataset.submitted = 'true';
+    };
+
+    document.addEventListener('submit', (event) => {
+      const form = event.target;
+      if (!(form instanceof HTMLFormElement)) return;
+      event.preventDefault();
+      submitLocally(form);
+    });
+    document.addEventListener('click', (event) => {
+      const nolimControl = event.target instanceof Element
+        ? event.target.closest('[data-source-nolim-slider] a[href="#prev"], [data-source-nolim-slider] a[href="#next"]')
+        : null;
+      if (nolimControl) {
+        event.preventDefault();
+        const current = nolimControl.closest('[data-source-nolim-slider]');
+        const sliderId = current?.getAttribute('data-source-nolim-slider');
+        const slides = sliderId
+          ? [...document.querySelectorAll(`[data-source-nolim-slider="${CSS.escape(sliderId)}"]`)]
+          : [];
+        const activeIndex = slides.findIndex((slide) => !slide.classList.contains('nolimAutoScaleFix'));
+        if (slides.length > 1 && activeIndex >= 0) {
+          const direction = nolimControl.getAttribute('href') === '#prev' ? -1 : 1;
+          const nextIndex = (activeIndex + direction + slides.length) % slides.length;
+          slides.forEach((slide, index) => slide.classList.toggle('nolimAutoScaleFix', index !== nextIndex));
+        }
+        return;
+      }
+      const anchor = event.target instanceof Element ? event.target.closest('a[href^="#popup:"], a[href^="#form:"]') : null;
+      if (!anchor) return;
+      event.preventDefault();
+      location.hash = 'source-booking';
+    });
+
+    initialise();
+    if (document.readyState === 'complete') initialise();
+    else window.addEventListener('load', initialise, { once: true });
+    window.setTimeout(initialise, 80);
+    // A few archived Tilda page scripts rebuild zero-block contents from their
+    // own load callbacks. Re-run after those callbacks so forms stay rendered.
+    window.setTimeout(initialise, 600);
+    window.setTimeout(initialise, 1500);
+  })();
+</script>
+
+<style is:global>
+  @font-face {
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 200 1000;
+    font-display: swap;
+    src: url('/assets/fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofIOOaBXso.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'Montserratblack';
+    font-style: normal;
+    font-weight: 900;
+    font-display: swap;
+    src: url('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1_i6t8kCHKm459W1hyzbi.woff2') format('woff2');
+  }
+  :root {
+    --t-headline-font: 'Montserrat', Arial, sans-serif;
+    --t-text-font: 'Nunito', Arial, sans-serif;
+  }
+  .source-snapshot-page {
+    margin: 0;
+    color: #000;
+    font-family: 'Times New Roman', serif;
+    line-height: normal;
+    overflow-x: clip;
+  }
+  .source-snapshot-page [data-source-snapshot] img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+  }
+  .source-snapshot-page [data-source-snapshot] .t858__img {
+    width: 65px;
+  }
+  .source-snapshot-page .hdr,
+  .source-snapshot-page .hdr *,
+  .source-booking,
+  .source-booking * { box-sizing: border-box; }
+  .source-snapshot-page .hdr {
+    position: fixed;
+    inset: 0 0 auto;
+    width: 100%;
+    color: #333;
+    font-family: 'Montserrat', Arial, sans-serif;
+    line-height: 1.4;
+  }
+  .source-snapshot-page .hdr img { display: block; max-width: 100%; }
+  .source-snapshot-page .hdr a,
+  .source-booking a { color: inherit; text-decoration: none; }
+  .source-snapshot-page .hdr :is(ul, p),
+  .source-booking :is(h2, p) { margin: 0; }
+  .source-snapshot-page .hdr ul { padding: 0; list-style: none; }
+  .source-snapshot-shell,
+  .source-snapshot-content {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+  .source-snapshot-page .t-input-phonemask__options-flag,
+  .source-snapshot-page .t-input-phonemask__select-flag {
+    background-image: var(--source-flags-url) !important;
+  }
+  .source-snapshot-page:has([data-source-route='/vypusknoj-kalmar/']) .hdr {
+    padding-top: 0;
+  }
+  .source-snapshot-page:has([data-source-route='/vypusknoj-kalmar/']) .hdr__inner {
+    height: 58px;
+  }
+  [data-source-snapshot] {
+    opacity: 1 !important;
+  }
+  [data-source-snapshot] .source-widget-anchor {
+    display: block;
+    width: 0;
+    height: 0;
+  }
+  [data-source-snapshot] [data-animate-style],
+  [data-source-snapshot] .t-animate,
+  [data-source-snapshot] .t396__elem--anim-hidden {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  [data-source-snapshot] iframe,
+  [data-source-snapshot] script,
+  [data-source-snapshot] noscript {
+    display: none !important;
+  }
+  .source-booking {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    display: none;
+    place-items: center;
+    padding: 20px;
+  }
+  .source-booking:target { display: grid; }
+  .source-booking__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 72%);
+  }
+  .source-booking__dialog {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 14px;
+    width: min(440px, 100%);
+    padding: 30px;
+    border-radius: 18px;
+    background: #fff;
+    color: #222;
+    font: 600 16px/1.4 'Nunito', sans-serif;
+  }
+  .source-booking__dialog h2 { margin: 0; font: 800 28px/1.15 'Montserrat', sans-serif; }
+  .source-booking__dialog label { display: grid; gap: 6px; }
+  .source-booking__dialog input:not([type='checkbox']) { min-height: 46px; padding: 8px 12px; border: 1px solid #aaa; border-radius: 8px; font: inherit; }
+  .source-booking__dialog button { min-height: 50px; border: 0; border-radius: 9px; background: #ff6900; color: #fff; font: 800 15px 'Montserrat', sans-serif; cursor: pointer; }
+  .source-booking__consent { grid-template-columns: auto 1fr; align-items: start; font-size: 13px; }
+  .source-booking__close { position: absolute; top: 8px; right: 12px; color: #222; font-size: 28px; text-decoration: none; }
+  .source-booking__success { margin: 0; color: #177a3d; }
+</style>

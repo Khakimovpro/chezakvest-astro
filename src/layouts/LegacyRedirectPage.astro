@@ -1,5 +1,7 @@
 ---
 import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 
@@ -13,7 +15,9 @@ const targetHref = siteHref(base, target);
   path={target}
   noindex={true}
   preloadImage={null}
+  bodyClass="legacy-redirect-page source-fixed-header"
 >
+  <Header />
   <main class="legacy-redirect">
     <div class="container">
       <article class="legacy-redirect__card">
@@ -23,6 +27,7 @@ const targetHref = siteHref(base, target);
       </article>
     </div>
   </main>
+  <Footer />
 
   <script define:vars={{ targetHref }}>
     window.location.replace(targetHref);

@@ -5,6 +5,8 @@ import site from '../data/site.json';
 import { canonicalUrl } from '../lib/urls.js';
 import Lightbox from '../components/Lightbox.astro';
 import Analytics from '../components/Analytics.astro';
+import SourceSnapshotBody from '../components/SourceSnapshotBody.astro';
+import { sourceSnapshotFor } from '../lib/source-snapshots.js';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => base + p;              // /assets/x -> /<base>/assets/x
@@ -36,6 +38,10 @@ const {
 } = Astro.props;
 
 const canonical = canonicalUrl(path);
+const sourceSnapshot = sourceSnapshotFor(path);
+// Keep archived source snapshots independent from route-specific legacy theme
+// classes, which otherwise leak backgrounds and sizing into the source DOM.
+const renderedBodyClass = sourceSnapshot ? 'source-snapshot-page' : bodyClass;
 const absoluteAsset = (p) => {
   if (!p) return '';
   if (/^https?:\/\//i.test(p)) return p;
@@ -87,14 +93,17 @@ const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1
             imagesrcset={preloadImage.srcset} imagesizes={preloadImage.sizes} fetchpriority="high" />
     )}
     <link rel="preload" as="font" type="font/woff2" href={montserratCyr} crossorigin />
+    {sourceSnapshot?.styles.map((name) => (
+      <link rel="stylesheet" href={asset(`/assets/source-css/${name}`)} />
+    ))}
 
     {jsonld.map((data) => (
       <script type="application/ld+json" set:html={JSON.stringify(data)} />
     ))}
     <Analytics />
   </head>
-  <body class={bodyClass}>
-    <slot />
-    <Lightbox />
+  <body class={renderedBodyClass}>
+    {sourceSnapshot ? <SourceSnapshotBody snapshot={sourceSnapshot} /> : <slot />}
+    {!sourceSnapshot && <Lightbox />}
   </body>
 </html>

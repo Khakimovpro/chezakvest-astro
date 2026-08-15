@@ -690,6 +690,8 @@ async function settlePage(page, kind) {
     *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; caret-color: transparent !important; }
     .t-popup, .t-popup_show, .t390__carrier, .t390__filter { display: none !important; }
     [data-parity-widget-mask] { display: none !important; }
+    html[data-parity-section-content] #t-header,
+    html[data-parity-section-content] .hdr { visibility: hidden !important; }
   ` });
   await page.evaluate(async () => {
     const pause = document.querySelector('.slider__pause');
@@ -815,6 +817,14 @@ async function inspectPage(page, kind, knownRoutes) {
       const generic = [];
       const header = document.querySelector('header.hdr');
       if (header) generic.push(header);
+      const sourceSnapshotRoot = document.querySelector('[data-source-snapshot]');
+      const sourceSnapshotRecords = sourceSnapshotRoot
+        ? [...sourceSnapshotRoot.querySelectorAll('[id^="rec"]')]
+          .filter((element) => !/^recorddiv/iu.test(element.id))
+          .filter((element) => !element.parentElement?.closest('[id^="rec"]'))
+          .filter((element) => !element.hasAttribute('data-parity-layout-spacer'))
+        : [];
+      if (sourceSnapshotRecords.length) return [...new Set([...generic, ...sourceSnapshotRecords])];
       const main = document.querySelector('main');
       for (const child of main?.children ?? []) {
         if (child.id !== 'catalog') {
@@ -872,7 +882,10 @@ async function inspectPage(page, kind, knownRoutes) {
       return [...new Set([...outsideSpecificWrappers, ...specificRecords])];
     };
     const sectionCandidates = pageKind === 'original'
-      ? [...new Set([...document.querySelectorAll('#allrecords > [id^="rec"], #allrecords > .r, [id^="rec"]')])]
+      ? [...new Set([
+        ...document.querySelectorAll('#t-header .t396__artboard'),
+        ...document.querySelectorAll('#allrecords > [id^="rec"], #allrecords > .r, [id^="rec"]'),
+      ])]
         .filter((element) => !/^recorddiv/iu.test(element.id))
       : cloneSections();
     const sections = sectionCandidates
@@ -889,7 +902,10 @@ async function inspectPage(page, kind, knownRoutes) {
           .filter(Boolean);
         return {
           index: captureIndex,
-          parity_record: pageKind === 'clone' ? (element.getAttribute('data-parity-record') || '') : '',
+          parity_record: pageKind === 'clone'
+            ? (element.getAttribute('data-parity-record')
+              || (element.closest('[data-source-snapshot]') && /^rec\d+$/u.test(element.id) ? element.id : ''))
+            : '',
           id: element.getAttribute('data-parity-record') || element.id || `${element.tagName.toLowerCase()}.${[...element.classList].slice(0, 3).join('.')}`,
           capture_id: captureId,
           heading: normalise(headingText(element)),
@@ -897,8 +913,10 @@ async function inspectPage(page, kind, knownRoutes) {
           images: [...new Set(images)],
           widget,
           role: pageKind === 'clone'
-            ? (element.matches('header.hdr') ? 'header' : (element.matches('footer.ft') ? 'footer' : ''))
-            : (element.querySelector('.t344, .t977, footer') ? 'footer' : ''),
+            ? (element.matches('header.hdr')
+              ? 'header'
+              : (element.matches('footer.ft') || element.querySelector('.t344, .t977, footer') ? 'footer' : ''))
+            : (element.closest('#t-header') ? 'header' : (element.querySelector('.t344, .t977, footer') ? 'footer' : '')),
           top: Math.round(rect.top + window.scrollY),
           height: Math.round(rect.height),
         };
@@ -908,7 +926,7 @@ async function inspectPage(page, kind, knownRoutes) {
         // The live footer is emitted as two neighbouring Tilda records (body
         // and brand/social row). Treat the latter as the first footer's visual
         // continuation instead of falsely matching it to a new Astro section.
-        if (pageKind === 'original' && section.role === 'footer'
+        if (section.role === 'footer'
           && values.slice(0, index).some((previous) => previous.role === 'footer')) {
           return { ...section, index, role: 'footer_continuation' };
         }
@@ -1008,12 +1026,37 @@ async function captureOne(browser, { url, kind, viewport, knownRoutes, path }) {
     });
   }
   try {
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+    let navigationError;
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+        navigationError = null;
+        break;
+      } catch (error) {
+        navigationError = error;
+        if (attempt < 3) await sleep(attempt * 1_000);
+      }
+    }
+    if (navigationError) throw navigationError;
     await settlePage(page, kind);
     const inspection = await inspectPage(page, kind, knownRoutes);
     const sectionShots = {};
     for (const section of inspection.sections) {
-      const element = await page.locator(`[data-parity-capture-id="${section.capture_id}"]`).elementHandle();
+      // A fixed header is compared once as its own section. Hide it while
+      // rasterising content records so Playwright's scroll-into-view position
+      // cannot contaminate arbitrary sections with a floating overlay.
+      await page.evaluate((hideHeader) => {
+        document.documentElement.toggleAttribute('data-parity-section-content', hideHeader);
+      }, section.role !== 'header');
+      let element = await page.locator(`[data-parity-capture-id="${section.capture_id}"]`)
+        .elementHandle({ timeout: 1_500 })
+        .catch(() => null);
+      // Live Tilda callbacks can replace a record after inspection and thereby
+      // discard the temporary capture attribute. Its stable record id remains,
+      // so reacquire that node before treating the supplementary crop as lost.
+      if (!element && /^rec\d+$/u.test(section.id)) {
+        element = await page.locator(`#${section.id}`).elementHandle({ timeout: 1_500 }).catch(() => null);
+      }
       if (!element) continue;
       try {
         const buffer = await element.screenshot({
@@ -1026,6 +1069,10 @@ async function captureOne(browser, { url, kind, viewport, knownRoutes, path }) {
         await element.dispose();
       }
     }
+    await page.evaluate(() => {
+      document.documentElement.removeAttribute('data-parity-section-content');
+      window.scrollTo(0, 0);
+    });
     const screenshotPath = await pageScreenshot(page, path);
     return {
       inspection,

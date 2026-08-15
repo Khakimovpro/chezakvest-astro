@@ -5,7 +5,10 @@ dist/
 # deps
 node_modules/
 # рабочий кэш зеркалирования (сырьё и скриншоты) — не тащим в репо
-_capture/
+_capture/*
+!_capture/extract_artboard_states.py
+!_capture/build_source_snapshots.py
+!_capture/refresh_source_override.mjs
 # ...но инструменты переноса нужны в репозитории
 !_capture/scrape_page.mjs
 !_capture/shot.mjs

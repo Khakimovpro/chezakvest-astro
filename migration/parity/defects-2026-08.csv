@@ -1,0 +1,17 @@
+wave,url,width,type,element,что_не_так,причина,fix_commit,status
+1,/igra-v-kalmara-lend/,768-1512,overlap,hero h1 + CTA,Заголовок перекрывал кнопку и обрезал последнюю строку,Потеряны inline br/color и responsive T396 состояния,pending,fixed
+1,/igra-v-kalmara-lend/,all,missing-content,header/footer,Отсутствовала сквозная навигация и часть source-текста,Route-specific artboard обходил общий layout,pending,fixed
+2,/kids/,390-1512,height,rec844797098,Marquiz frame имел 30/160px вместо 670/130px,External script не запускался и source-геометрия не была материализована,pending,fixed
+2,/den-rozhdeniya-uznik-azkabana/,390,height,rec2094236521,Marquiz frame был 130px вместо 710px,Один generic responsive размер ошибочно применялся к разным Marquiz embeds,pending,fixed
+2,/prazdnik-maxi/,1440,height,NOLIM T552 gallery,Галерея растягивалась до 1516px вместо 440px,Inline extension class не переносился,pending,fixed
+2,/vypusknoj-kalmar/,1440,height,NOLIM galleries,Галереи занимали 1410/1350px вместо 330/270px,Inline extension class не переносился,pending,fixed
+2,/vypusknoj-kalmar/,1440-390,height,shared Header,Header 80px не совпадал с source boundary 58px,Route использует короткий source header spacer,pending,fixed
+2,/kvest_v_realnosti_zapad/,1440-390,missing-content,rec1144740346 form,Не отображались согласие и кнопка Жду звонка,Zero form находилась в record type 121 и пересобиралась после load,pending,fixed
+2,/kvest_v_realnosti_zapad/,1440-390,extra-content,rec1100733981,Локальный snapshot сохранял скрываемую source-карту,Widget removal проверял только прямые children и не видел nested footer records,pending,fixed
+2,multiple,all,external-request,tilda flags/video,Phone mask и video создавали внешние/failed requests,Динамические URL не проходили статическую локализацию,pending,fixed
+4,/,390,responsive-layout,T121 card grids,Карточки оставались на десктопных inline-координатах и медиана была ниже 88,Zero Block init был ограничен record type 396,pending,fixed
+4,/,390,height,T604 promo slider,Секция была 524px вместо 287px и превышала section delta 15%,Browser-captured initialized state фиксировал ширину 1200px,pending,fixed
+4,/,all,broken-link,#otzivy,Ссылка на отзывы не имела локальной цели,Named anchor терял id при безопасной очистке,pending,fixed
+5,/ono/,all,broken-control,NOLIM #prev/#next,Стрелки в статическом снимке меняли только hash,Произвольный NOLIM script не исполнялся и локального controller не было,pending,fixed
+5,multiple,640-900,false-positive,wide T396 text container,Detector считал видимый H1 обрезанным по ширине table-box,Измерялся element box вместо line boxes текста,pending,fixed
+5,/ono/,390-1512,false-positive,T1196 rail and form ornaments,Detector считал offscreen-слайды и обрезанный декор page overflow,Не учитывались собственный horizontal scroller и clipping decorative image,pending,fixed

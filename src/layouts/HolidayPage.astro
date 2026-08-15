@@ -185,7 +185,21 @@ const preload = hero.bg
 // A small group of campaign landings use a complete dark art direction in the
 // live source. Keep the ordinary holiday pages on the paper background, but
 // carry that documented art direction through the shared Astro template.
-const bodyClass = page.theme ? `theme-dark holiday-theme holiday-theme--${page.theme}` : '';
+const sourceHeaderRoutes = new Set([
+  'prazdnik-maxi',
+  'prazdniki-pod-kluch',
+  'den-rozhdeniya-na-vr-arene',
+  'igra-v-kalmara-lend',
+  'new-year',
+  'amongus-land',
+  'vypusknoj-kalmar',
+  'minecraft-lend',
+]);
+const renderSharedHeader = !hero.hideSharedHeader || sourceHeaderRoutes.has(page.slug);
+const bodyClass = [
+  page.theme ? `theme-dark holiday-theme holiday-theme--${page.theme}` : '',
+  sourceHeaderRoutes.has(page.slug) ? 'source-fixed-header' : '',
+].filter(Boolean).join(' ');
 ---
 <Layout
   title={seo.title}
@@ -198,7 +212,7 @@ const bodyClass = page.theme ? `theme-dark holiday-theme holiday-theme--${page.t
   preloadImage={preload}
   bodyClass={bodyClass}
 >
-  {!hero.hideSharedHeader && <Header />}
+  {renderSharedHeader && <Header />}
 
   <main>
     <!-- ============ ГЕРОЙ ============ -->

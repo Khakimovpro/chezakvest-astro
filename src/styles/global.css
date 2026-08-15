@@ -16,9 +16,12 @@
   --radius-card:20px;
 }
 
-*,*::before,*::after{box-sizing:border-box}
+body:not(.source-snapshot-page),
+body:not(.source-snapshot-page) *,
+body:not(.source-snapshot-page) *::before,
+body:not(.source-snapshot-page) *::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{
+body:not(.source-snapshot-page){
   margin:0;
   font-family:'Montserrat',Arial,sans-serif;
   color:var(--ink);
@@ -37,13 +40,13 @@ body.theme-dark .crumbs a,body.theme-dark .crumbs span[aria-current]{color:#caca
 body.theme-dark .cgrid,body.theme-dark .qextra,body.theme-dark .ccert,body.theme-dark .callback{background:transparent}
 body.theme-dark .ccert__inner,body.theme-dark .review-card{background:#242424}
 body.theme-dark .section-sub,body.theme-dark .qextra__line,body.theme-dark .review-card__body{color:#dedede}
-img{max-width:100%;height:auto;display:block}
-a{color:inherit;text-decoration:none}
-h1,h2,h3,p,ul,figure{margin:0}
-ul{padding:0;list-style:none}
-button{font-family:inherit;cursor:pointer}
+body:not(.source-snapshot-page) img{max-width:100%;height:auto;display:block}
+body:not(.source-snapshot-page) a{color:inherit;text-decoration:none}
+body:not(.source-snapshot-page) :is(h1,h2,h3,p,ul,figure){margin:0}
+body:not(.source-snapshot-page) ul{padding:0;list-style:none}
+body:not(.source-snapshot-page) button{font-family:inherit;cursor:pointer}
 
-:is(a,button,input,select,textarea,[tabindex]):focus-visible{
+body:not(.source-snapshot-page) :is(a,button,input,select,textarea,[tabindex]):focus-visible{
   outline:2px solid #fff;
   outline-offset:2px;
   box-shadow:0 0 0 5px var(--cta-ink)!important;
@@ -81,7 +84,7 @@ button{font-family:inherit;cursor:pointer}
 /* визуально скрытый (для a11y) */
 .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
-section{position:relative}
+body:not(.source-snapshot-page) section{position:relative}
 
 /* Local photo viewer. It intentionally reads the clicked image's live src so
    encrypted preview blob URLs keep working without another asset request. */
