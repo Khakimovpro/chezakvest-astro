@@ -1,5 +1,6 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { createServer } from 'node:http';
+import { extname, join } from 'node:path';
 import process from 'node:process';
 
 import sharp from 'sharp';
@@ -13,6 +14,7 @@ sharp.concurrency(1);
 const PROJECT_ROOT = process.cwd();
 const PARITY_DIR = join(PROJECT_ROOT, 'migration', 'parity');
 const SHOTS_DIR = join(PARITY_DIR, 'shots');
+const DIST_DIR = join(PROJECT_ROOT, 'dist');
 const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
 const LOCAL = process.env.PARITY_LOCAL ?? 'http://127.0.0.1:8799';
 const BROWSER = '/home/claude/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome';
@@ -52,6 +54,59 @@ const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, mil
 // section raster.  Section crops are supplementary evidence; a timed-out crop
 // is recorded as unavailable while the mandatory full-page pair still runs.
 const SECTION_SCREENSHOT_TIMEOUT_MS = 15_000;
+const STATIC_MIME = {
+  '.css': 'text/css; charset=utf-8',
+  '.gif': 'image/gif',
+  '.html': 'text/html; charset=utf-8',
+  '.ico': 'image/x-icon',
+  '.jpeg': 'image/jpeg',
+  '.jpg': 'image/jpeg',
+  '.js': 'text/javascript; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.png': 'image/png',
+  '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.xml': 'application/xml; charset=utf-8',
+};
+
+async function startLocalDistServer() {
+  if (process.env.PARITY_SERVE_DIST !== '1') return null;
+  const local = new URL(LOCAL);
+  if (!['127.0.0.1', 'localhost'].includes(local.hostname)) {
+    throw new Error(`PARITY_SERVE_DIST requires a loopback PARITY_LOCAL, received ${LOCAL}`);
+  }
+  const server = createServer(async (request, response) => {
+    try {
+      const pathname = decodeURIComponent(new URL(request.url ?? '/', local).pathname);
+      const relative = pathname.replace(/^\/+|\0/gu, '');
+      let file = join(DIST_DIR, relative);
+      if (!file.startsWith(`${DIST_DIR}/`) && file !== DIST_DIR) throw new Error('unsafe path');
+      try {
+        if ((await stat(file)).isDirectory()) file = join(file, 'index.html');
+      } catch {
+        if (pathname.endsWith('/')) file = join(file, 'index.html');
+      }
+      const body = await readFile(file);
+      response.writeHead(200, { 'content-type': STATIC_MIME[extname(file)] ?? 'application/octet-stream' });
+      response.end(body);
+    } catch {
+      response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
+      response.end('Not found');
+    }
+  });
+  await new Promise((resolve, reject) => {
+    server.once('error', reject);
+    server.listen(Number(local.port || 80), local.hostname, resolve);
+  });
+  return server;
+}
+
+async function stopLocalDistServer(server) {
+  if (!server) return;
+  await new Promise((resolve) => server.close(resolve));
+}
 
 function canonicalPromoState({ activeIndex, position, visible = true } = {}, targetIndex = HOME_PROMO_CANONICAL_INDEX) {
   const active = Number(activeIndex);
@@ -1312,15 +1367,17 @@ async function main() {
   // those paths in link existence checks; redirect-target-contract.mjs
   // separately verifies the actual target mapping.
   const knownRoutes = allRoutes;
+  const localServer = await startLocalDistServer();
   const detail = { generated_at: new Date().toISOString(), round: ROUND, routes: {} };
   const matrix = [];
-  for (const route of routes) {
-    // Chromium retains decoded tall-page surfaces after a context closes. A
-    // fresh process per route gives the 67-route acceptance run a bounded
-    // memory ceiling while preserving the four original/clone captures and
-    // their shared state inside each route.
-    const browser = await chromium.launch({ executablePath: BROWSER, args: ['--no-sandbox', '--disable-gpu'] });
-    try {
+  try {
+    for (const route of routes) {
+      // Chromium retains decoded tall-page surfaces after a context closes. A
+      // fresh process per route gives the 67-route acceptance run a bounded
+      // memory ceiling while preserving the four original/clone captures and
+      // their shared state inside each route.
+      const browser = await chromium.launch({ executablePath: BROWSER, args: ['--no-sandbox', '--disable-gpu'] });
+      try {
       const redirect = redirectTarget(inventory, route);
       const matrixEntry = inventory.matrix.find((row) => row.route_clone === route);
       const scope = redirect ? 'redirect' : (matrixEntry?.verdict === 'extra_clone' ? 'extra_clone' : 'page');
@@ -1395,7 +1452,7 @@ async function main() {
         round: ROUND,
         notes: diagnosticNotes,
       });
-      detail.routes[route] = {
+        detail.routes[route] = {
         desktop: {
           original: detailCapture(captures.desktop.original),
           clone: detailCapture(captures.desktop.clone),
@@ -1410,11 +1467,14 @@ async function main() {
           original_url: captures.mobile.original_url,
           clone_url: captures.mobile.clone_url,
         },
-      };
-      console.log(`${route} ${verdict} (${matrix.length}/${routes.length})`);
-    } finally {
-      await browser.close().catch(() => {});
+        };
+        console.log(`${route} ${verdict} (${matrix.length}/${routes.length})`);
+      } finally {
+        await browser.close().catch(() => {});
+      }
     }
+  } finally {
+    await stopLocalDistServer(localServer);
   }
   await mkdir(ROUND_DIR, { recursive: true });
   await Promise.all([
