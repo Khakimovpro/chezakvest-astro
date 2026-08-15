@@ -6,8 +6,6 @@ const { snapshot } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/u, '');
 const asset = (path) => `${base}${path}`;
 const html = snapshot.html.replaceAll('__SITE_BASE__', base);
-const runtime = snapshot.runtime.map(asset);
-const pageScript = snapshot.pageScript?.replace('__SITE_BASE__', base) ?? '';
 ---
 
 <Header />
@@ -15,7 +13,7 @@ const pageScript = snapshot.pageScript?.replace('__SITE_BASE__', base) ?? '';
   class="source-snapshot-shell"
   data-source-site-base={base}
   data-source-route={snapshot.route}
-  style={`--source-flags-url: url("${asset('/assets/static.tildacdn.com/lib/flags/flags7.png')}")`}
+  style={`--source-flags-url:url(${asset('/assets/static.tildacdn.com/lib/flags/flags7.png')});--source-dark-background-url:url(${asset('/assets/optim.tildacdn.com/tild6333-3137-4862-b434-326332663966/-/format/webp/_GPT_dark.jpg.webp')})`}
   aria-label="Содержимое страницы"
 >
   <div class="source-snapshot-content" set:html={html} />
@@ -36,113 +34,386 @@ const pageScript = snapshot.pageScript?.replace('__SITE_BASE__', base) ?? '';
 
 <script is:inline>
   (() => {
-    const siteBase = document.querySelector('[data-source-site-base]')?.dataset.sourceSiteBase || '';
-    const localHosts = new Set([
-      'static.tildacdn.com', 'optim.tildacdn.com', 'thb.tildacdn.com',
-      'thb.tildacdn.net', 'neo.tildacdn.com', 'ws.tildacdn.com',
-      'fonts.gstatic.com', 'chezakvest.ru',
-    ]);
-    const localise = (value) => {
-      if (typeof value !== 'string' || !/^https?:\/\//i.test(value)) return value;
-      try {
-        const url = new URL(value);
-        const host = url.hostname.replace(/^www\./, '');
-        return localHosts.has(host) ? `${siteBase}/assets/${host}${decodeURI(url.pathname)}` : value;
-      } catch {
-        return value;
-      }
+    const snapshotRoot = document.querySelector('[data-source-snapshot]');
+    if (!(snapshotRoot instanceof HTMLElement)) return;
+
+    const numeric = (value, fallback = 0) => {
+      const parsed = Number.parseFloat(String(value ?? ''));
+      return Number.isFinite(parsed) ? parsed : fallback;
     };
-    const nativeSetAttribute = Element.prototype.setAttribute;
-    Element.prototype.setAttribute = function patchedSetAttribute(name, value) {
-      return nativeSetAttribute.call(this, name, /^(?:src|href)$/i.test(name) ? localise(String(value)) : value);
-    };
-    for (const [Constructor, property] of [
-      [HTMLScriptElement, 'src'], [HTMLLinkElement, 'href'], [HTMLImageElement, 'src'],
-    ]) {
-      const descriptor = Object.getOwnPropertyDescriptor(Constructor.prototype, property);
-      if (!descriptor?.get || !descriptor?.set) continue;
-      Object.defineProperty(Constructor.prototype, property, {
-        configurable: descriptor.configurable,
-        enumerable: descriptor.enumerable,
-        get: descriptor.get,
-        set(value) { descriptor.set.call(this, localise(String(value))); },
-      });
-    }
-  })();
-  window.t_lazyload_update = () => {};
-  window.t_initZoom = () => {};
-  window.tooltipster = () => {};
-  window.t_onReady = (callback) => {
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', callback, { once: true });
-    else callback();
-  };
-  window.t_onFuncLoad = (name, callback) => {
-    if (typeof window[name] === 'function') callback();
-  };
-</script>
-{runtime.map((source) => <script is:inline src={source}></script>)}
-{pageScript && <script is:inline src={pageScript}></script>}
-<script is:inline>
-  (() => {
-    const safeCall = (name, ...args) => {
-      try {
-        if (typeof window[name] === 'function') window[name](...args);
-      } catch (error) {
-        console.warn(`[source-snapshot] ${name} skipped: ${error instanceof Error ? error.message : String(error)}`);
+    const responsiveAttribute = (element, prefix) => {
+      let value = element.getAttribute(`data-${prefix}-value`);
+      for (const [maximum, suffix] of [[1199, 960], [959, 640], [639, 480], [479, 320]]) {
+        if (window.innerWidth <= maximum) {
+          value = element.getAttribute(`data-${prefix}-res-${suffix}-value`) ?? value;
+        }
       }
+      return value;
+    };
+    const artboardAttribute = (artboard, name) => {
+      let value = artboard.getAttribute(`data-artboard-${name}`);
+      for (const [maximum, suffix] of [[1199, 960], [959, 640], [639, 480], [479, 320]]) {
+        if (window.innerWidth <= maximum) {
+          value = artboard.getAttribute(`data-artboard-${name}-res-${suffix}`) ?? value;
+        }
+      }
+      return value;
+    };
+    const artboardWidth = () => {
+      if (window.innerWidth >= 1200) return 1200;
+      if (window.innerWidth >= 960) return 960;
+      if (window.innerWidth >= 640) return 640;
+      if (window.innerWidth >= 480) return 480;
+      return 320;
+    };
+    const elementGeometry = (element) => ({
+      width: numeric(responsiveAttribute(element, 'field-width')),
+      height: numeric(responsiveAttribute(element, 'field-height')),
+      left: numeric(responsiveAttribute(element, 'field-left')),
+      top: numeric(responsiveAttribute(element, 'field-top')),
+      axisX: responsiveAttribute(element, 'field-axisx') || 'left',
+      axisY: responsiveAttribute(element, 'field-axisy') || 'top',
+    });
+    const axisPosition = (axis, offset, size, boundary) => {
+      if (axis === 'center') return boundary / 2 + offset - size / 2;
+      if (axis === 'right') return boundary - offset - size;
+      return offset;
     };
 
-    const initialise = () => {
-      document.querySelectorAll('[data-source-snapshot] > [id^="rec"][data-record-type]').forEach((record) => {
-        const recId = record.id.slice(3);
-        const type = record.dataset.recordType;
-        // Current exports use T396 for Zero Blocks, while a number of legacy
-        // pages (notably the home-page card grids) declare the same artboard as
-        // T121. Initialise by the actual markup contract so responsive group
-        // coordinates are applied for both record generations.
-        const hasZeroArtboard = record.querySelector(':scope > .t396 > .t396__artboard');
-        if (hasZeroArtboard && !record.dataset.sourceZeroReady) {
-          safeCall('t396_init', recId);
-          record.dataset.sourceZeroReady = 'true';
-        }
-        // Some legacy exports contain zero-block form elements in records whose
-        // declared type is not 396 (for example, T121 on the Zapad landing).
-        record.querySelectorAll('[data-elem-type="form"][data-elem-id]:not([data-form-ready])').forEach((formElement) => {
-          safeCall('t_zeroForms__init', recId, formElement.dataset.elemId);
+    const layoutWindowArtboards = () => {
+      const baseWidth = artboardWidth();
+      const scale = window.innerWidth / baseWidth;
+      snapshotRoot.querySelectorAll('.t396__artboard').forEach((artboard) => {
+        if (!(artboard instanceof HTMLElement)) return;
+        const upscale = artboardAttribute(artboard, 'upscale');
+        const customWideGrid = snapshotRoot.dataset.sourceRoute === '/'
+          && window.innerWidth >= 1200
+          && artboard.closest('[data-record-type="121"]');
+        const gridWidth = customWideGrid ? 1360 : baseWidth;
+        const gridOffset = upscale === 'window' ? 0 : (window.innerWidth - gridWidth) / 2;
+        artboard.querySelectorAll(':scope > .t396__group').forEach((group) => {
+          if (!(group instanceof HTMLElement)) return;
+          const groupLeft = numeric(responsiveAttribute(group, 'group-left'));
+          const groupTop = numeric(responsiveAttribute(group, 'group-top'));
+          group.style.left = `${gridOffset + groupLeft}px`;
+          group.style.top = `${groupTop}px`;
+          group.style.zoom = upscale === 'window' ? String(scale) : '';
+          group.querySelectorAll('.t396__elem').forEach((element) => {
+            if (!(element instanceof HTMLElement)) return;
+            const geometry = elementGeometry(element);
+            element.style.left = `${geometry.left - groupLeft}px`;
+            element.style.top = `${geometry.top - groupTop}px`;
+            element.style.width = `${geometry.width}px`;
+            element.style.height = geometry.height > 0
+              && responsiveAttribute(element, 'field-textfit') !== 'autoheight'
+              ? `${geometry.height}px`
+              : 'auto';
+          });
         });
-        if (!record.dataset.sourceBlockReady && !['270', '360', '396', '674', '702'].includes(type)) {
-          if (type === '979') {
-            safeCall(
-              't979_init',
-              recId,
-              record.dataset.sourceT979RowHeight,
-              record.dataset.sourceT979Gutter,
-            );
-          } else {
-            safeCall(`t${type}_init`, recId);
+        if (upscale !== 'window') {
+          artboard.classList.remove('t396__artboard_scale');
+          artboard.style.removeProperty('height');
+          for (const layer of artboard.querySelectorAll(':scope > .t396__carrier, :scope > .t396__filter')) {
+            if (layer instanceof HTMLElement) layer.style.removeProperty('height');
           }
-          record.dataset.sourceBlockReady = 'true';
+          artboard.querySelectorAll(':scope > .t396__elem').forEach((element) => {
+            if (element instanceof HTMLElement) element.removeAttribute('style');
+          });
+          return;
         }
+        const height = numeric(artboardAttribute(artboard, 'height'));
+        artboard.classList.add('rendered', 't396__artboard_scale');
+        artboard.style.setProperty('height', `${height * scale}px`, 'important');
+        for (const layer of artboard.querySelectorAll(':scope > .t396__carrier, :scope > .t396__filter')) {
+          if (layer instanceof HTMLElement) layer.style.setProperty('height', `${height * scale}px`, 'important');
+        }
+        artboard.querySelectorAll(':scope > .t396__elem').forEach((element) => {
+          if (!(element instanceof HTMLElement)) return;
+          const geometry = elementGeometry(element);
+          element.style.width = `${geometry.width}px`;
+          if (geometry.height > 0 && responsiveAttribute(element, 'field-textfit') !== 'autoheight') {
+            element.style.height = `${geometry.height}px`;
+          } else {
+            element.style.height = 'auto';
+          }
+          element.style.left = `${axisPosition(geometry.axisX, geometry.left, geometry.width, baseWidth)}px`;
+          element.style.top = `${axisPosition(geometry.axisY, geometry.top, geometry.height, height)}px`;
+          element.style.zoom = String(scale);
+          element.style.setProperty('--zoom', String(scale));
+        });
       });
+    };
 
-      document.querySelectorAll('[data-source-snapshot] .t-slds').forEach((slider) => {
-        if (slider.dataset.sourceReady) return;
-        const recordId = slider.closest('[id^="rec"]')?.id.slice(3);
-        safeCall('t_sldsInit', recordId);
-        slider.dataset.sourceReady = 'true';
-        slider.style.visibility = 'visible';
+    const mediaReady = async (scope) => {
+      const images = [...scope.querySelectorAll('img')];
+      await Promise.all(images.map(async (image) => {
+        if (image.complete) return;
+        try { await image.decode(); } catch { /* intrinsic dimensions remain usable */ }
+      }));
+    };
+    const sourceRatio = async (scope) => {
+      const image = scope.querySelector('img');
+      if (image instanceof HTMLImageElement) {
+        const width = image.naturalWidth || numeric(image.getAttribute('width'));
+        const height = image.naturalHeight || numeric(image.getAttribute('height'));
+        if (width > 0 && height > 0) return width / height;
+      }
+      const background = scope.querySelector('[data-original]');
+      const source = background?.getAttribute('data-original');
+      if (!source) return 1;
+      return new Promise((resolve) => {
+        const probe = new Image();
+        probe.onload = () => resolve(probe.naturalWidth && probe.naturalHeight ? probe.naturalWidth / probe.naturalHeight : 1);
+        probe.onerror = () => resolve(1);
+        probe.src = source;
       });
+    };
 
-      document.querySelectorAll('[data-source-snapshot] img').forEach((image) => {
+    const sliderStates = new WeakMap();
+    const updateSlider = (state, requestedIndex) => {
+      const index = (requestedIndex + state.items.length) % state.items.length;
+      state.index = index;
+      state.wrapper.style.transform = `translate3d(${-index * state.width}px, 0, 0)`;
+      state.items.forEach((item, itemIndex) => {
+        const active = itemIndex === index;
+        item.classList.toggle('t-slds__item_active', active);
+        item.setAttribute('aria-hidden', String(!active));
+        item.setAttribute('aria-label', `${itemIndex + 1} из ${state.items.length}`);
+      });
+      state.slider.querySelectorAll('.t-slds__bullet').forEach((bullet, bulletIndex) => {
+        bullet.classList.toggle('t-slds__bullet_active', bulletIndex === index);
+        bullet.setAttribute('aria-current', bulletIndex === index ? 'true' : 'false');
+      });
+    };
+    const layoutSlider = async (slider) => {
+      if (!(slider instanceof HTMLElement)) return;
+      const main = slider.querySelector('.t-slds__main');
+      const container = slider.querySelector('.t-slds__container');
+      const wrapper = slider.querySelector('.t-slds__items-wrapper');
+      const items = wrapper ? [...wrapper.querySelectorAll(':scope > .t-slds__item')] : [];
+      if (!(main instanceof HTMLElement) || !(wrapper instanceof HTMLElement) || !items.length) return;
+
+      const galleryElement = slider.closest('.t396__elem[data-elem-type="gallery"]');
+      const isGallery = galleryElement instanceof HTMLElement;
+      let width;
+      let height;
+      if (isGallery) {
+        const geometry = elementGeometry(galleryElement);
+        width = geometry.width;
+        height = geometry.height;
+      } else {
+        main.style.width = '';
+        width = main.clientWidth || slider.clientWidth;
+        if (slider.closest('.t604')) {
+          height = Math.min(500, width * 500 / 1160);
+        } else {
+          const ratio = await sourceRatio(items[0]);
+          height = width / Math.max(ratio, 0.01);
+        }
+      }
+      if (!(width > 0 && height > 0)) return;
+
+      main.style.width = isGallery ? `${width}px` : '';
+      main.style.height = isGallery ? `${height}px` : '';
+      if (container instanceof HTMLElement) {
+        container.style.width = isGallery ? `${width}px` : '';
+        container.style.height = `${height}px`;
+      }
+      wrapper.style.display = 'flex';
+      wrapper.style.width = `${width * items.length}px`;
+      wrapper.style.height = `${height}px`;
+      wrapper.style.transitionDuration = `${numeric(wrapper.dataset.sliderTransition, 300)}ms`;
+      items.forEach((item, index) => {
+        if (!(item instanceof HTMLElement)) return;
+        item.style.display = 'block';
+        item.style.flex = `0 0 ${width}px`;
+        item.style.width = `${width}px`;
+        item.style.height = `${height}px`;
+        item.style.opacity = '1';
+        item.dataset.slideIndex = String(index + 1);
+        item.querySelectorAll('.tn-atom__slds-img, .t-slds__bgimg').forEach((media) => {
+          if (!(media instanceof HTMLElement)) return;
+          media.style.width = isGallery ? `${width}px` : '';
+          media.style.height = isGallery ? `${height}px` : '';
+        });
+      });
+      slider.style.visibility = 'visible';
+      const previous = sliderStates.get(slider);
+      const state = { slider, wrapper, items, width, index: previous?.index || 0 };
+      sliderStates.set(slider, state);
+      updateSlider(state, state.index);
+    };
+
+    const layoutT827 = async (record) => {
+      const container = record.querySelector('.t827__container');
+      const grid = record.querySelector('.t827__grid');
+      const sizer = record.querySelector('.t827__grid-sizer');
+      const gutter = record.querySelector('.t827__gutter-sizer');
+      const items = grid ? [...grid.querySelectorAll(':scope > .t827__grid-item')] : [];
+      if (!(container instanceof HTMLElement) || !(grid instanceof HTMLElement) || !items.length) return;
+      await mediaReady(grid);
+      const containerStyle = getComputedStyle(container);
+      const width = container.clientWidth
+        - numeric(containerStyle.paddingLeft)
+        - numeric(containerStyle.paddingRight);
+      const gap = gutter instanceof HTMLElement ? gutter.offsetWidth : 0;
+      const columns = window.innerWidth >= 1200 ? 3 : 2;
+      const itemWidth = (width - gap * (columns - 1)) / columns;
+      if (!(itemWidth > 0)) return;
+      if (sizer instanceof HTMLElement) sizer.style.width = `${itemWidth}px`;
+      items.forEach((item) => {
+        item.style.position = 'static';
+        item.style.width = `${itemWidth}px`;
+      });
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+      const heights = items.map((item) => item.getBoundingClientRect().height);
+      const columnHeights = Array(columns).fill(0);
+      grid.style.position = 'relative';
+      items.forEach((item, index) => {
+        const column = columnHeights.indexOf(Math.min(...columnHeights));
+        item.style.position = 'absolute';
+        item.style.left = `${column * (itemWidth + gap)}px`;
+        item.style.top = `${columnHeights[column]}px`;
+        columnHeights[column] += heights[index] + gap;
+      });
+      grid.style.height = `${Math.max(...columnHeights) - gap}px`;
+    };
+
+    const layoutT979 = async (record) => {
+      const grid = record.querySelector('.t979__grid');
+      const items = grid ? [...grid.querySelectorAll(':scope > .t979__grid-item')] : [];
+      if (!(grid instanceof HTMLElement) || !items.length) return;
+      await mediaReady(grid);
+      const ratios = await Promise.all(items.map(sourceRatio));
+      const width = grid.clientWidth;
+      const gap = numeric(record.dataset.sourceT979Gutter, 10);
+      const targetHeight = numeric(record.dataset.sourceT979RowHeight, 400);
+      if (!(width > 0)) return;
+      let top = 0;
+      let start = 0;
+      while (start < items.length) {
+        let end = start;
+        let ratioSum = 0;
+        while (end < items.length) {
+          ratioSum += ratios[end];
+          end += 1;
+          if (ratioSum * targetHeight + gap * (end - start - 1) >= width) break;
+        }
+        const isLast = end === items.length;
+        const available = width - gap * (end - start - 1);
+        const rowHeight = isLast && ratioSum * targetHeight < available
+          ? targetHeight
+          : available / Math.max(ratioSum, 0.01);
+        let left = 0;
+        for (let index = start; index < end; index += 1) {
+          const item = items[index];
+          const itemWidth = ratios[index] * rowHeight;
+          item.style.position = 'absolute';
+          item.style.left = `${left}px`;
+          item.style.top = `${top}px`;
+          item.style.width = `${itemWidth}px`;
+          item.style.height = `${rowHeight}px`;
+          const image = item.querySelector('img');
+          if (image instanceof HTMLImageElement) {
+            image.style.width = '100%';
+            image.style.height = '100%';
+            image.style.objectFit = 'cover';
+          }
+          left += itemWidth + gap;
+        }
+        top += rowHeight + gap;
+        start = end;
+      }
+      grid.style.position = 'relative';
+      grid.style.height = `${top - gap}px`;
+    };
+
+    const equaliseT1196 = (record) => {
+      const items = [...record.querySelectorAll('.t1196__item')];
+      if (!items.length) return;
+      const visible = items.filter((item) => {
+        const box = item.getBoundingClientRect();
+        return box.left < window.innerWidth && box.right > 0;
+      });
+      items.forEach((item) => { item.style.height = '1px'; });
+      const heights = visible.map((item) => {
+        item.style.height = '';
+        const height = item.getBoundingClientRect().height;
+        item.style.height = '1px';
+        return height;
+      });
+      const height = Math.max(1, ...heights);
+      items.forEach((item) => {
+        item.style.height = visible.includes(item) ? `${height}px` : '1px';
+      });
+    };
+
+    const layoutT829 = (record) => {
+      const grid = record.querySelector('.t829__grid');
+      const sizer = record.querySelector('.t829__grid-sizer');
+      const gutter = record.querySelector('.t829__gutter-sizer');
+      const items = grid ? [...grid.querySelectorAll(':scope > .t829__grid-item')] : [];
+      if (!(grid instanceof HTMLElement) || !items.length) return;
+      if (window.innerWidth > 960) {
+        const gap = gutter instanceof HTMLElement ? gutter.offsetWidth : 10;
+        const columns = window.innerWidth >= 1200 ? Math.min(5, items.length) : Math.min(4, items.length);
+        const width = grid.clientWidth;
+        const itemWidth = (width - gap * (columns - 1)) / columns;
+        if (!(itemWidth > 0)) return;
+        grid.style.position = 'relative';
+        grid.style.width = `${width}px`;
+        if (sizer instanceof HTMLElement) sizer.style.width = `${itemWidth}px`;
+        items.forEach((item, index) => {
+          if (!(item instanceof HTMLElement)) return;
+          item.style.position = 'absolute';
+          item.style.left = `${(index % columns) * (itemWidth + gap)}px`;
+          item.style.top = '0px';
+          item.style.width = `${itemWidth}px`;
+        });
+        const height = Math.max(...items.map((item) => item.getBoundingClientRect().height));
+        grid.style.height = `${height + gap}px`;
+        return;
+      }
+      if (grid instanceof HTMLElement) grid.removeAttribute('style');
+      if (sizer instanceof HTMLElement) sizer.style.width = '0px';
+      items.forEach((item) => {
+        if (!(item instanceof HTMLElement)) return;
+        item.removeAttribute('style');
+        item.classList.remove('t-animate', 't-animate_started', 't-animate__chain_showed');
+      });
+    };
+
+    const layoutT347 = (record) => {
+      const column = record.querySelector('.t-col');
+      const table = record.querySelector('.t347__table');
+      if (!(column instanceof HTMLElement) || !(table instanceof HTMLElement)) return;
+      column.style.boxSizing = 'border-box';
+      const width = table.getBoundingClientRect().width;
+      const columnWidth = column.getBoundingClientRect().width;
+      const height = window.innerWidth >= 960
+        ? 540 * columnWidth / 960
+        : width * 9 / 16;
+      if (height > 0) table.style.height = `${height}px`;
+    };
+
+    const initialise = async () => {
+      layoutWindowArtboards();
+      snapshotRoot.querySelectorAll('img').forEach((image) => {
         image.loading = 'eager';
         if (!image.src && image.dataset.original) image.src = image.dataset.original;
       });
-      document.querySelectorAll('[data-source-snapshot] [data-original]').forEach((element) => {
+      snapshotRoot.querySelectorAll('[data-original]').forEach((element) => {
         if (!(element instanceof HTMLElement) || element instanceof HTMLImageElement) return;
         const source = element.dataset.original;
         if (source && !element.style.backgroundImage) element.style.backgroundImage = `url("${source}")`;
         element.classList.add('loaded');
       });
+      await Promise.all([...snapshotRoot.querySelectorAll('.t-slds')].map(layoutSlider));
+      await Promise.all([...snapshotRoot.querySelectorAll('[data-record-type="827"]')].map(layoutT827));
+      await Promise.all([...snapshotRoot.querySelectorAll('[data-record-type="979"]')].map(layoutT979));
+      snapshotRoot.querySelectorAll('[data-record-type="1196"]').forEach(equaliseT1196);
+      snapshotRoot.querySelectorAll('[data-record-type="829"]').forEach(layoutT829);
+      snapshotRoot.querySelectorAll('[data-record-type="347"]').forEach(layoutT347);
     };
 
     const submitLocally = (form) => {
@@ -162,6 +433,23 @@ const pageScript = snapshot.pageScript?.replace('__SITE_BASE__', base) ?? '';
       submitLocally(form);
     });
     document.addEventListener('click', (event) => {
+      const sliderControl = event.target instanceof Element
+        ? event.target.closest('.t-slds__arrow_wrapper-left, .t-slds__arrow_wrapper-right, .t-slds__bullet')
+        : null;
+      if (sliderControl) {
+        const slider = sliderControl.closest('.t-slds');
+        const state = slider ? sliderStates.get(slider) : null;
+        if (state) {
+          event.preventDefault();
+          const bullets = [...slider.querySelectorAll('.t-slds__bullet')];
+          const bulletIndex = bullets.indexOf(sliderControl);
+          const nextIndex = bulletIndex >= 0
+            ? bulletIndex
+            : state.index + (sliderControl.classList.contains('t-slds__arrow_wrapper-left') ? -1 : 1);
+          updateSlider(state, nextIndex);
+        }
+        return;
+      }
       const nolimControl = event.target instanceof Element
         ? event.target.closest('[data-source-nolim-slider] a[href="#prev"], [data-source-nolim-slider] a[href="#next"]')
         : null;
@@ -189,11 +477,13 @@ const pageScript = snapshot.pageScript?.replace('__SITE_BASE__', base) ?? '';
     initialise();
     if (document.readyState === 'complete') initialise();
     else window.addEventListener('load', initialise, { once: true });
-    window.setTimeout(initialise, 80);
-    // A few archived Tilda page scripts rebuild zero-block contents from their
-    // own load callbacks. Re-run after those callbacks so forms stay rendered.
-    window.setTimeout(initialise, 600);
-    window.setTimeout(initialise, 1500);
+    window.setTimeout(initialise, 120);
+    window.setTimeout(initialise, 700);
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(initialise, 120);
+    });
   })();
 </script>
 
@@ -224,9 +514,6 @@ const pageScript = snapshot.pageScript?.replace('__SITE_BASE__', base) ?? '';
     overflow-x: clip;
   }
   .source-snapshot-page [data-source-snapshot] img {
-    display: block;
-    width: auto;
-    max-width: 100%;
     height: auto;
   }
   .source-snapshot-page [data-source-snapshot] .t858__img {
@@ -266,6 +553,43 @@ const pageScript = snapshot.pageScript?.replace('__SITE_BASE__', base) ?? '';
   }
   .source-snapshot-page:has([data-source-route='/vypusknoj-kalmar/']) .hdr__inner {
     height: 58px;
+  }
+  @media (min-width: 480px) {
+    .source-snapshot-page:has([data-source-route='/hostel-podval-pytok/']) #rec1100733931,
+    .source-snapshot-page:has([data-source-route='/patologiya/']) #rec1100733931,
+    .source-snapshot-page:has([data-source-route='/shizofreniya/']) #rec1100733931 {
+      opacity: 0 !important;
+    }
+  }
+  .source-snapshot-page:has([data-source-route='/hostel-podval-pytok/']),
+  .source-snapshot-page:has([data-source-route='/patologiya/']),
+  .source-snapshot-page:has([data-source-route='/shizofreniya/']) {
+    background-color: #1c1c1e !important;
+  }
+  .source-snapshot-page :is(
+    [data-source-route='/hostel-podval-pytok/'],
+    [data-source-route='/patologiya/'],
+    [data-source-route='/shizofreniya/']
+  ) .t674__cover-carrier {
+    background-image: var(--source-dark-background-url) !important;
+  }
+  @media (min-width: 960px) and (max-width: 1199px) {
+    .source-snapshot-page:has([data-source-route='/new-year/']) .t959__card-content .t-card__title {
+      width: 100% !important;
+      margin-right: 0 !important;
+      margin-left: 0 !important;
+    }
+  }
+  @media (min-width: 960px) and (max-width: 1200px) {
+    .source-snapshot-page:has([data-source-route='/prazdniki-pod-kluch/']) .t774__textwrapper {
+      padding-right: 5px !important;
+      padding-left: 5px !important;
+    }
+  }
+  @media (min-width: 641px) and (max-width: 959px) {
+    .source-snapshot-page:has([data-source-route='/prazdniki-pod-kluch/']) .t829__textwrapper .t-card__title {
+      font-size: 16px !important;
+    }
   }
   [data-source-snapshot] {
     opacity: 1 !important;

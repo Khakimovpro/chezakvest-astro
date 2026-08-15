@@ -1,16 +1,6 @@
 {
-  "generatedAt": "2026-08-15T13:46:59Z",
-  "runtime": [
-    "/assets/static.tildacdn.com/js/jquery-1.10.2.min.js",
-    "/assets/static.tildacdn.com/js/tilda-zero-1.1.min.js",
-    "/assets/static.tildacdn.com/js/tilda-forms-1.0.min.js",
-    "/assets/static.tildacdn.com/js/tilda-cards-1.0.min.js",
-    "/assets/static.tildacdn.com/js/hammer.min.js",
-    "/assets/static.tildacdn.com/js/tilda-slds-1.4.min.js",
-    "/assets/static.tildacdn.com/js/tilda-zero-gallery-1.0.min.js",
-    "/assets/static.tildacdn.com/js/tilda-zero-forms-1.0.min.js",
-    "/assets/static.tildacdn.com/js/tilda-zero-scale-1.0.min.js"
-  ],
+  "generatedAt": "2026-08-15T16:52:04Z",
+  "runtime": [],
   "routes": {
     "/": {
       "route": "/",
@@ -28,10 +18,9 @@
         "80d709d246c13985.css",
         "3fd4b7595b3f43f4.css",
         "2de7f4dca7f7bfc2.css",
-        "3595d116bc3d5921.css",
-        "01b5eb71d864a506.css"
+        "3595d116bc3d5921.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page41480751.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -68,7 +57,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page72236521.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -99,7 +88,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page41756563.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -135,7 +124,7 @@
         "2de7f4dca7f7bfc2.css",
         "3595d116bc3d5921.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page69116991.min.js",
+      "pageScript": "",
       "recordTypes": [
         "131",
         "215",
@@ -175,7 +164,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page41580663.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -207,7 +196,7 @@
         "d6dfc0a2e0d22083.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page41698377.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "43",
@@ -240,7 +229,7 @@
         "fa470f65bb7f659a.css",
         "3595d116bc3d5921.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page69681277.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "126",
@@ -272,7 +261,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page139478486.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -316,7 +305,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page130472316.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -361,7 +350,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page43576347.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -396,7 +385,7 @@
         "2de7f4dca7f7bfc2.css",
         "3680adb4a483351b.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page17310031.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -425,7 +414,7 @@
         "92f4f52a8c05fe05.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page52282053.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -460,7 +449,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page63266477.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "131",
@@ -500,7 +489,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page41699338.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -536,7 +525,7 @@
         "2ce21cb53ae45362.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page124901416.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -554,7 +543,7 @@
     "/kids/": {
       "route": "/kids/",
       "snapshot": "kids.html",
-      "source": "work/raw/pages/kids--d83abf9788.html",
+      "source": "astro-clone/migration/parity/source-overrides/kids.html",
       "styles": [
         "d329e63da9147b9d.css",
         "4628d57cdb3a5fa8.css",
@@ -573,7 +562,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page60583739.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -612,7 +601,7 @@
         "2de7f4dca7f7bfc2.css",
         "3680adb4a483351b.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page17310819.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -641,7 +630,7 @@
         "76a2ea4c3d11f209.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page14130747.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -676,7 +665,7 @@
         "29767a20595d859f.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page13373127.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -710,7 +699,7 @@
         "29767a20595d859f.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page13375383.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -744,7 +733,7 @@
         "ab85e831d2c1b0c2.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page14131305.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -778,7 +767,7 @@
         "29767a20595d859f.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page13796105.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -813,7 +802,7 @@
         "5582da3d33932de2.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page14131566.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -847,7 +836,7 @@
         "29767a20595d859f.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page13375135.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -882,7 +871,7 @@
         "29767a20595d859f.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page13374157.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -917,7 +906,7 @@
         "29767a20595d859f.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page10748754.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -951,7 +940,7 @@
         "29767a20595d859f.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page13795155.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -985,7 +974,7 @@
         "29767a20595d859f.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page40838990.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1018,7 +1007,7 @@
         "2ce21cb53ae45362.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page13373579.min.js",
+      "pageScript": "",
       "recordTypes": [
         "121",
         "126",
@@ -1050,7 +1039,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page72146667.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -1080,7 +1069,7 @@
         "2de7f4dca7f7bfc2.css",
         "3595d116bc3d5921.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page57307963.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "131",
@@ -1119,7 +1108,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page48035053.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1154,7 +1143,7 @@
         "2de7f4dca7f7bfc2.css",
         "3680adb4a483351b.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page72247599.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -1183,7 +1172,7 @@
         "2ce21cb53ae45362.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page124823456.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -1217,7 +1206,7 @@
         "2de7f4dca7f7bfc2.css",
         "3680adb4a483351b.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page132462436.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -1245,7 +1234,7 @@
         "2de7f4dca7f7bfc2.css",
         "3680adb4a483351b.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page72231515.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -1271,7 +1260,7 @@
         "2de7f4dca7f7bfc2.css",
         "0f328f4f54071e11.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page59359589.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "131",
@@ -1310,7 +1299,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page87839976.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -1350,7 +1339,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page41754675.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1388,7 +1377,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page84687486.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1420,7 +1409,7 @@
         "ab417141522739ad.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page52282441.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1453,7 +1442,7 @@
         "2ce21cb53ae45362.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page124737406.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1488,7 +1477,7 @@
         "2ce21cb53ae45362.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page124909716.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -1524,7 +1513,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page84685576.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1560,7 +1549,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page84672776.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1596,7 +1585,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page86349936.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1633,7 +1622,7 @@
         "42b1bb5d784af0c6.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page141149086.min.js",
+      "pageScript": "",
       "recordTypes": [
         "60",
         "113",
@@ -1678,7 +1667,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page41891214.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "131",
@@ -1712,7 +1701,7 @@
         "fa470f65bb7f659a.css",
         "3595d116bc3d5921.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page51322757.min.js",
+      "pageScript": "",
       "recordTypes": [
         "30",
         "106"
@@ -1739,7 +1728,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page41757142.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1777,7 +1766,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page41761425.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1815,7 +1804,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page41757574.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1852,7 +1841,7 @@
         "2ce21cb53ae45362.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page124907906.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -1888,7 +1877,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page100153266.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -1926,7 +1915,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page64505705.min.js",
+      "pageScript": "",
       "recordTypes": [
         "131",
         "215",
@@ -1965,7 +1954,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page72523225.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -2001,7 +1990,7 @@
         "9356ab95f2c75add.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page52230533.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -2033,7 +2022,7 @@
         "2de7f4dca7f7bfc2.css",
         "739bdbca69ddbd88.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page17308139.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -2061,7 +2050,7 @@
         "2de7f4dca7f7bfc2.css",
         "cb040a4dacff1dee.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page17310869.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -2087,7 +2076,7 @@
         "80d709d246c13985.css",
         "3595d116bc3d5921.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page73249895.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "121",
@@ -2127,7 +2116,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page43578346.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -2164,7 +2153,7 @@
         "2ce21cb53ae45362.css",
         "75c5820094658c95.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page124831566.min.js",
+      "pageScript": "",
       "recordTypes": [
         "3",
         "33",
@@ -2200,7 +2189,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page64699869.min.js",
+      "pageScript": "",
       "recordTypes": [
         "113",
         "131",
@@ -2241,7 +2230,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page134223036.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -2278,7 +2267,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page41753898.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",
@@ -2314,7 +2303,7 @@
         "75c5820094658c95.css",
         "9d4f6ac2c3fb051a.css"
       ],
-      "pageScript": "__SITE_BASE__/assets/static.tildacdn.com/ws/project2135642/tilda-blocks-page43833155.min.js",
+      "pageScript": "",
       "recordTypes": [
         "33",
         "113",

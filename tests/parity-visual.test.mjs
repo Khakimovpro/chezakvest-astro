@@ -9,6 +9,7 @@ import {
   imageKey,
   imageParity,
   inspectPage,
+  maxPairedSectionHeightDelta,
   normaliseText,
   promoBackgroundReady,
   sectionPairs,
@@ -147,6 +148,15 @@ test('reports a missing image only when the clone renders no qualifying images',
   const comparison = imageParity([sourceId], []);
   assert.deepEqual(comparison.missingImages, [sourceId]);
   assert.deepEqual(comparison.unmappedImages, [sourceId]);
+});
+
+test('section height gate measures only real source/clone pairs', () => {
+  assert.equal(maxPairedSectionHeightDelta([
+    { clone: null, height_delta: null },
+    { clone: { id: 'rec200' }, height_delta: 14.25 },
+    { clone: { id: 'rec300' }, height_delta: 3.5 },
+  ]), 14.25);
+  assert.equal(maxPairedSectionHeightDelta([{ clone: null, height_delta: null }]), 0);
 });
 
 test('pairs ordered sections by text and media signatures', () => {

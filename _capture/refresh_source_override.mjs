@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 import { chromium } from 'playwright';
 
-const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
+const ORIGIN = (process.env.SOURCE_ORIGIN || 'https://xn--80aehcht5ci1b.xn--p1ai').replace(/\/$/u, '');
 const PROJECT = new URL('../', import.meta.url).pathname;
 const route = process.argv[2] || '/';
 const slug = route === '/' ? 'home' : route.replace(/^\/+|\/+$/gu, '').replaceAll('/', '__');
@@ -15,7 +15,7 @@ const browser = await chromium.launch({
 });
 
 try {
-  const page = await browser.newPage();
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   let response;
   let lastError;
   for (let attempt = 1; attempt <= 3; attempt += 1) {

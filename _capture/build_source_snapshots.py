@@ -60,31 +60,7 @@ SKIP_RESOURCE_HOSTS = {
     "yandex.com",
     "smartcaptcha.yandexcloud.net",
 }
-RUNTIME_URLS = (
-    "https://static.tildacdn.com/js/jquery-1.10.2.min.js",
-    "https://static.tildacdn.com/js/tilda-zero-1.1.min.js",
-    "https://static.tildacdn.com/js/tilda-forms-1.0.min.js",
-    "https://static.tildacdn.com/js/tilda-cards-1.0.min.js",
-    "https://static.tildacdn.com/js/hammer.min.js",
-    "https://static.tildacdn.com/js/tilda-slds-1.4.min.js",
-    "https://static.tildacdn.com/js/tilda-zero-gallery-1.0.min.js",
-    "https://static.tildacdn.com/js/tilda-zero-forms-1.0.min.js",
-    "https://static.tildacdn.com/js/tilda-zero-scale-1.0.min.js",
-)
-DYNAMIC_RUNTIME_URLS = (
-    "https://static.tildacdn.com/js/tilda-phone-mask-1.1.min.js",
-    "https://static.tildacdn.com/js/tilda-forms-custommask-1.0.min.js",
-    "https://static.tildacdn.com/css/tilda-zero-form-errorbox.min.css",
-    "https://static.tildacdn.com/css/tilda-zero-form-horizontal.min.css",
-    "https://static.tildacdn.com/css/tilda-date-picker-1.0.min.css",
-    "https://static.tildacdn.com/js/tilda-date-picker-1.0.min.js",
-    "https://static.tildacdn.com/css/tilda-img-select-1.0.min.css",
-    "https://static.tildacdn.com/js/tilda-img-select-1.0.min.js",
-    "https://static.tildacdn.com/css/tilda-range-1.0.min.css",
-    "https://static.tildacdn.com/js/tilda-range-1.0.min.js",
-    "https://static.tildacdn.com/js/tilda-calc-1.0.min.js",
-    "https://static.tildacdn.com/lib/flags/flags7.png",
-)
+RUNTIME_URLS: tuple[str, ...] = ()
 VENUE_HASH_ROUTES = {
     "#gvardeyskiy": "/guardeskypereulog61/",
     "#socialisticheskaya": "/socialicheskaya186/",
@@ -203,7 +179,7 @@ def remote_urls(value: str, base_url: str = SOURCE_ORIGIN) -> set[str]:
     return urls
 
 
-def pick_sources(routes: list[str]) -> dict[str, Path]:
+def pick_sources(routes: list[str], *, use_overrides: bool = True) -> dict[str, Path]:
     candidates: dict[str, list[Path]] = defaultdict(list)
     for path in RAW_DIR.glob("*.html"):
         soup = BeautifulSoup(path.read_text(encoding="utf-8", errors="replace"), "html.parser")
@@ -214,7 +190,7 @@ def pick_sources(routes: list[str]) -> dict[str, Path]:
     selected: dict[str, Path] = {}
     for route in routes:
         override = SOURCE_OVERRIDE_DIR / f"{route_slug(route)}.html"
-        if override.exists():
+        if use_overrides and override.exists():
             selected[route] = override
             continue
         options = candidates.get(route, [])
@@ -322,10 +298,22 @@ def rewrite_fragment_urls(fragment: Tag, resources: set[str]) -> None:
                 "src", "srcset", "data-original", "data-src", "data-img-zoom-url",
                 "data-field-imgs-value", "style", "content",
             }:
-                element[attribute] = URL_RE.sub(
+                rewritten = URL_RE.sub(
                     lambda match: f"{match.group('quote')}{local_url(match.group('url'))}",
                     text,
                 )
+                if attribute == "style":
+                    # Quoted CSS URLs become ``&quot;`` inside serialized HTML
+                    # attributes and are then misread as part of the asset path
+                    # by static integrity checks. Local paths never need CSS
+                    # string escaping, so keep the deterministic unquoted form.
+                    rewritten = re.sub(
+                        r"url\(\s*(['\"])([^)'\"]+)\1\s*\)",
+                        lambda match: f"url({match.group(2)})",
+                        rewritten,
+                        flags=re.I,
+                    )
+                element[attribute] = rewritten
 
     for background in fragment.select("[data-original]"):
         source = str(background.get("data-original", ""))
@@ -333,17 +321,263 @@ def rewrite_fragment_urls(fragment: Tag, resources: set[str]) -> None:
             "t-bgimg" in background.get("class", []) or background.name != "img"
         ):
             current = str(background.get("style", "")).rstrip("; ")
-            background["style"] = f'{current};background-image:url("{source}")'
+            background["style"] = f"{current};background-image:url({source})"
             background["class"] = list(dict.fromkeys([*background.get("class", []), "loaded"]))
 
 
-def prepare_snapshot(route: str, raw_path: Path) -> tuple[dict[str, object], set[str], dict[str, str]]:
+def materialize_zero_galleries(root: Tag, soup: BeautifulSoup) -> None:
+    """Build the inert, responsive first-frame DOM for T396 galleries.
+
+    Tilda stores gallery slides as JSON in ``data-field-imgs-value`` and creates
+    the carousel markup only from its legacy runtime. The local layout subset
+    needs ordinary DOM, not executable vendor code, so materialise the small
+    semantic structure deterministically during the snapshot build.
+    """
+    for gallery in root.select('[data-elem-type="gallery"][data-field-imgs-value]'):
+        atom = gallery.select_one(":scope > .tn-atom__gallery")
+        if atom is None or atom.select_one(".t-slds"):
+            continue
+        try:
+            slides = json.loads(str(gallery.get("data-field-imgs-value", "[]")))
+        except json.JSONDecodeError:
+            continue
+        slides = [slide for slide in slides if isinstance(slide, dict) and slide.get("li_img")]
+        if not slides:
+            continue
+
+        slider = soup.new_tag("div", attrs={"class": ["t-slds"]})
+        main = soup.new_tag("div", attrs={"class": ["t-slds__main"]})
+        container = soup.new_tag("div", attrs={"class": ["t-slds__container"]})
+        speed = str(gallery.get("data-field-slds_speed-value", "fast"))
+        wrapper = soup.new_tag("div", attrs={
+            "class": ["t-slds__items-wrapper", f"t-slds_animated-{speed}"],
+            "data-slider-transition": "500" if speed == "slow" else "300",
+            "data-slider-with-cycle": "true",
+            "data-slider-correct-height": "true",
+            "data-auto-correct-mobile-width": "false",
+            "data-slider-is-preview": "true",
+            "data-slider-totalslides": str(len(slides)),
+            "data-slider-pos": "1",
+        })
+        for index, slide in enumerate(slides):
+            item = soup.new_tag("div", attrs={"class": ["t-slds__item"]})
+            frame = soup.new_tag("div", attrs={
+                "class": ["t-width", "t-null__slds-wrapper", "t-slds__wrapper", "t-slds__wrapper_100", "t-align_center"]
+            })
+            image = soup.new_tag("div", attrs={
+                "class": ["t-bgimg", "tn-atom__slds-img", "loaded"],
+                "data-img-lid": str(slide.get("lid", "")),
+                "data-original": str(slide["li_img"]),
+                "role": "img",
+                "aria-label": str(slide.get("li_imgalt") or slide.get("li_imgtitle") or f"Слайд {index + 1}"),
+            })
+            frame.append(image)
+            item.append(frame)
+            wrapper.append(item)
+        container.append(wrapper)
+        main.append(container)
+        slider.append(main)
+
+        dots = str(gallery.get("data-field-slds_dotscontrols-value", "none"))
+        if dots != "none":
+            bullet_wrapper = soup.new_tag("div", attrs={"class": ["t-slds__bullet_wrapper"]})
+            for index in range(len(slides)):
+                bullet = soup.new_tag("button", attrs={
+                    "class": ["t-slds__bullet"],
+                    "data-slide-bullet-for": str(index + 1),
+                    "type": "button",
+                    "aria-label": f"Перейти к слайду {index + 1}",
+                })
+                bullet.append(soup.new_tag("span", attrs={"class": ["t-slds__bullet_body"]}))
+                bullet_wrapper.append(bullet)
+            slider.append(bullet_wrapper)
+
+        arrows = str(gallery.get("data-field-slds_arrowcontrols-value", "none"))
+        if arrows != "none":
+            arrow_container = soup.new_tag("div", attrs={
+                "class": ["t-slds__arrow_container", "t-slds__arrow_container-center"]
+            })
+            for direction, label, glyph in (("left", "Предыдущий слайд", "‹"), ("right", "Следующий слайд", "›")):
+                control = soup.new_tag("button", attrs={
+                    "class": ["t-slds__arrow_wrapper", f"t-slds__arrow_wrapper-{direction}"],
+                    "data-slide-direction": direction,
+                    "type": "button",
+                    "aria-label": label,
+                })
+                arrow = soup.new_tag("span", attrs={"class": ["t-slds__arrow", f"t-slds__arrow-{direction}"]})
+                arrow.string = glyph
+                control.append(arrow)
+                arrow_container.append(control)
+            slider.append(arrow_container)
+        atom.append(slider)
+
+
+def materialize_zero_forms(root: Tag, soup: BeautifulSoup) -> None:
+    """Build inert local forms from the JSON embedded in T396 form elements.
+
+    The archived export deliberately contains only the field contract; Tilda's
+    legacy form runtime normally turns it into DOM.  Keeping that runtime would
+    reintroduce remote submission and unaudited executable code, so render the
+    same semantic controls during the deterministic snapshot build instead.
+    """
+    for element in root.select('[data-elem-type="form"]'):
+        atom = element.select_one(":scope > .tn-atom__form")
+        data = element.select_one(".tn-atom__inputs-data[data-value]")
+        if atom is None or data is None or atom.select_one("form"):
+            continue
+        try:
+            fields = json.loads(str(data.get("data-value", "[]")))
+        except json.JSONDecodeError:
+            continue
+        fields = [field for field in fields if isinstance(field, dict)]
+        if not fields:
+            continue
+
+        record = element.find_parent(id=re.compile(r"^rec\d+$"))
+        record_id = str(record.get("id", "")) if record else "source"
+        element_id = str(element.get("data-elem-id", "form"))
+        form = soup.new_tag("form", attrs={
+            "action": "",
+            "class": ["t-form", f"t-form_inputs-total_{len(fields)}", "js-form-proccess"],
+            "data-local-source-form": "",
+            "id": f"form{record_id.removeprefix('rec')}-{element_id}",
+            "method": "post",
+            "role": "form",
+        })
+        success = soup.new_tag("div", attrs={
+            "class": ["js-successbox", "t-form__successbox", "t-text", "t-text_sm"],
+            "data-local-form-success": "",
+            "hidden": "",
+        })
+        form.append(success)
+        inputs = soup.new_tag("div", attrs={
+            "class": ["t-form__inputsbox", "t-form__inputsbox_flex", "t-form__inputsbox_inrow"]
+        })
+
+        input_height = str(element.get("data-field-inputheight-value", "50"))
+        input_radius = str(element.get("data-field-inputradius-value", "0"))
+        input_color = str(element.get("data-field-inputcolor-value", "#333333"))
+        input_background = str(element.get("data-field-inputbgcolor-value", "#ffffff"))
+        input_border = str(element.get("data-field-inputbordercolor-value", "transparent"))
+        input_margin = str(element.get("data-field-inputmargbottom-value", "5"))
+        input_font_size = str(element.get("data-field-inputfontsize-value", "16"))
+        input_font_weight = str(element.get("data-field-inputfontweight-value", "400"))
+        control_style = (
+            f"color:{input_color};border:1px solid {input_border};"
+            f"background-color:{input_background};border-radius:{input_radius}px;"
+            f"font-size:{input_font_size}px;font-weight:{input_font_weight};"
+            f"height:{input_height}px"
+        )
+
+        for field in fields:
+            field_type = str(field.get("li_type", "tx"))
+            field_name = str(field.get("li_name") or field.get("li_nm") or "")
+            width_class = "t-input-group_width50" if field.get("li_inputwidth") == "1_2" else "t-input-group_width100"
+            group = soup.new_tag("div", attrs={
+                "class": [
+                    "t-input-group", f"t-input-group_{field_type}", "t-input-group_inrow",
+                    width_class, "t-input-group_inonerow",
+                ],
+                "data-field-name": field_name,
+                "data-field-type": field_type,
+                "data-input-lid": str(field.get("lid", "")),
+                "style": f"margin-bottom:{input_margin}px",
+            })
+            block = soup.new_tag("div", attrs={"class": ["t-input-block"]})
+            if field_type == "tx":
+                text = soup.new_tag("div", attrs={"class": ["t-text"]})
+                text.string = str(field.get("li_text", ""))
+                block.append(text)
+            elif field_type == "cb":
+                label = soup.new_tag("label", attrs={"class": ["t-checkbox__control", "t-checkbox__control_flex"]})
+                checkbox = soup.new_tag("input", attrs={
+                    "class": ["t-checkbox", "js-tilda-rule"],
+                    "name": field_name or "consent",
+                    "type": "checkbox",
+                    "value": "yes",
+                })
+                if field.get("li_req") == "y":
+                    checkbox["required"] = ""
+                indicator = soup.new_tag("span", attrs={"class": ["t-checkbox__indicator"]})
+                label_text = soup.new_tag("span", attrs={"class": ["t-checkbox__labeltext"]})
+                label_fragment = BeautifulSoup(str(field.get("li_label", "")), "html.parser")
+                for child in list(label_fragment.contents):
+                    label_text.append(child)
+                label.extend([checkbox, indicator, label_text])
+                block.append(label)
+            else:
+                input_type = {"ph": "tel", "em": "email", "da": "text", "ta": "text"}.get(field_type, "text")
+                if field_type == "ph":
+                    phone = soup.new_tag("div", attrs={
+                        "class": ["t-input", "t-input-phonemask__wrap"],
+                        "style": control_style,
+                    })
+                    country = soup.new_tag("span", attrs={"class": ["t-input-phonemask__select-code"]})
+                    country.string = "+7"
+                    phone.append(country)
+                    control = soup.new_tag("input", attrs={
+                        "aria-label": str(field.get("li_ph") or "Телефон"),
+                        "class": ["t-input", "t-input-phonemask", "js-tilda-rule"],
+                        "name": field_name or "phone",
+                        "placeholder": str(field.get("li_ph") or "(000) 000-00-00"),
+                        "type": input_type,
+                    })
+                    phone.append(control)
+                    block.append(phone)
+                else:
+                    control = soup.new_tag("input", attrs={
+                        "aria-label": str(field.get("li_ph") or field_name or "Поле формы"),
+                        "class": ["t-input", "js-tilda-rule", "t-input-inline-styles"],
+                        "name": field_name,
+                        "placeholder": str(field.get("li_ph", "")),
+                        "style": control_style,
+                        "type": input_type,
+                    })
+                    if field.get("li_req") == "y":
+                        control["required"] = ""
+                    block.append(control)
+            group.append(block)
+            inputs.append(group)
+
+        submit_wrapper = soup.new_tag("div", attrs={"class": ["tn-form__submit"]})
+        submit = soup.new_tag("button", attrs={"class": ["t-submit"], "type": "submit"})
+        submit.string = str(element.get("data-field-buttontitle-value", "Отправить"))
+        submit_wrapper.append(submit)
+        inputs.append(submit_wrapper)
+        form.append(inputs)
+
+        style = soup.new_tag("style")
+        button_height = str(element.get("data-field-buttonheight-value", "50"))
+        button_width = str(element.get("data-field-buttonwidth-value", "180"))
+        button_radius = str(element.get("data-field-buttonradius-value", "0"))
+        button_color = str(element.get("data-field-buttoncolor-value", "#ffffff"))
+        button_background = str(element.get("data-field-buttonbgcolor-value", "#ff6900"))
+        style.string = (
+            f"#{record_id} [data-elem-id=\"{element_id}\"] .t-submit{{"
+            f"display:block;width:{button_width}px;height:{button_height}px;margin:auto;"
+            f"border:0;border-radius:{button_radius}px;color:{button_color};"
+            f"background:{button_background};cursor:pointer}}"
+        )
+        atom.clear()
+        atom.extend([form, style])
+
+
+def prepare_snapshot(
+        route: str,
+        raw_path: Path,
+        contract_path: Path,
+) -> tuple[dict[str, object], set[str], dict[str, str]]:
     html = raw_path.read_text(encoding="utf-8", errors="replace")
     soup = BeautifulSoup(html, "html.parser")
+    contract_html = contract_path.read_text(encoding="utf-8", errors="replace")
+    contract_soup = BeautifulSoup(contract_html, "html.parser")
     resources: set[str] = set()
     stylesheets: dict[str, str] = {}
 
-    for link in soup.select('link[rel="stylesheet"][href]'):
+    # A browser-hydrated local override contains the desired runtime-created
+    # DOM but points at already-built local CSS bundles. Preserve the archived
+    # canonical page's stylesheet list and cascade order as the source contract.
+    for link in contract_soup.select('link[rel="stylesheet"][href]'):
         href = clean_remote_url(str(link["href"]))
         host = urlparse(href).netloc.lower().removeprefix("www.")
         if host in SKIP_RESOURCE_HOSTS or host not in ALLOWED_REMOTE_HOSTS:
@@ -357,16 +591,8 @@ def prepare_snapshot(route: str, raw_path: Path) -> tuple[dict[str, object], set
         digest = hashlib.sha1(href.encode()).hexdigest()[:16]
         stylesheets[href] = f"{digest}.css"
 
-    page_script = ""
-    for script in soup.select("script[src]"):
-        source = clean_remote_url(str(script.get("src", "")))
-        if "tilda-blocks-page" in source and public_path_for_url(source):
-            page_script = source.split("?", 1)[0]
-            resources.add(source)
-            break
-
     header = soup.select_one("#t-header")
-    had_source_header = header is not None
+    had_source_header = contract_soup.select_one("#t-header") is not None
     if header:
         header.decompose()
     root = soup.select_one("#allrecords")
@@ -407,7 +633,7 @@ def prepare_snapshot(route: str, raw_path: Path) -> tuple[dict[str, object], set
     # stores only in a stripped inline init call.
     for rec_id, row_height, gutter in re.findall(
             r"t979_init\(\s*['\"](\d+)['\"]\s*,\s*['\"](\d+)['\"]\s*,\s*['\"](\d+)['\"]\s*\)",
-            html):
+            contract_html):
         record = root.select_one(f"#rec{rec_id}")
         if record:
             record["data-source-t979-row-height"] = row_height
@@ -456,7 +682,7 @@ def prepare_snapshot(route: str, raw_path: Path) -> tuple[dict[str, object], set
     # Reproduce the source's deterministic first frame without executing the
     # large arbitrary inline extension: every slide after the first is hidden
     # with the source's own `.nolimAutoScaleFix` class.
-    for configured in re.findall(r'"idBlocks"\s*:\s*"([^"]+)"', html):
+    for configured in re.findall(r'"idBlocks"\s*:\s*"([^"]+)"', contract_html):
         block_ids = [item.strip().removeprefix("#") for item in configured.split(",") if item.strip()]
         slider_id = block_ids[0] if block_ids else ""
         for index, block_id in enumerate(block_ids):
@@ -471,7 +697,7 @@ def prepare_snapshot(route: str, raw_path: Path) -> tuple[dict[str, object], set
     # NOLIM's continuous T552 galleries depend on one generated class for a
     # single-row flex track. Materialize that class; animation itself is later
     # frozen by parity/reduced-motion, while layout remains identical.
-    for match in re.finditer(r"<!--settings(\{.*?\})settingsend-->", html, re.S):
+    for match in re.finditer(r"<!--settings(\{.*?\})settingsend-->", contract_html, re.S):
         try:
             settings = json.loads(match.group(1))
         except json.JSONDecodeError:
@@ -479,8 +705,8 @@ def prepare_snapshot(route: str, raw_path: Path) -> tuple[dict[str, object], set
         target_id = str(settings.get("GL11blockId", "")).removeprefix("#")
         if not target_id:
             continue
-        end = html.find("<!-- nominify end -->", match.end())
-        extension = html[match.end(): end if end >= 0 else match.end() + 30_000]
+        end = contract_html.find("<!-- nominify end -->", match.end())
+        extension = contract_html[match.end(): end if end >= 0 else match.end() + 30_000]
         generated_class = re.search(r"\.([a-z0-9_-]*nlm095_[a-z0-9_-]+)\b", extension, re.I)
         target = root.select_one(f"#{target_id}")
         if target and generated_class:
@@ -489,7 +715,7 @@ def prepare_snapshot(route: str, raw_path: Path) -> tuple[dict[str, object], set
     # Counter extensions store their final values in an inert settings comment.
     # The live page reaches those values before parity capture; materialize that
     # final state instead of executing the extension's arbitrary inline script.
-    for settings_blob in re.findall(r"<!--settings(\{.*?\})settingsend-->", html, re.S):
+    for settings_blob in re.findall(r"<!--settings(\{.*?\})settingsend-->", contract_html, re.S):
         try:
             settings = json.loads(settings_blob)
         except json.JSONDecodeError:
@@ -510,12 +736,32 @@ def prepare_snapshot(route: str, raw_path: Path) -> tuple[dict[str, object], set
             except ValueError:
                 atom.string = final_value
 
-    # A browser-captured source override contains Tilda slider state calculated
-    # for the capture viewport (inline 1200px item widths, cloned edge slides,
-    # and the `data-slider-initialized` guard). Shipping that transient state
-    # prevents the local runtime from attaching controls and leaves mobile
-    # sliders at desktop geometry. Restore the pre-init DOM contract so the
-    # vendored Tilda runtime initializes it for the actual viewport.
+    materialize_zero_galleries(root, soup)
+    materialize_zero_forms(root, soup)
+
+    # Browser overrides are intentionally captured after the source runtime has
+    # materialised script-only galleries and forms. Strip every viewport-bound
+    # inline calculation so the small, audited local layout subset can rebuild
+    # responsive geometry without executing any legacy Tilda script.
+    for artboard in root.select(".t396__artboard"):
+        for runtime_style in artboard.select("style.t396__scale-style"):
+            runtime_style.decompose()
+        artboard.attrs.pop("style", None)
+        artboard["class"] = [
+            class_name for class_name in artboard.get("class", [])
+            if class_name != "t396__artboard_scale"
+        ]
+        artboard["class"] = list(dict.fromkeys([*artboard.get("class", []), "rendered"]))
+        for attribute in list(artboard.attrs):
+            if attribute.startswith("data-artboard-proxy-"):
+                artboard.attrs.pop(attribute, None)
+        for layer in artboard.select(":scope > .t396__carrier, :scope > .t396__filter"):
+            layer.attrs.pop("style", None)
+        for group in artboard.select(":scope > .t396__group"):
+            group.attrs.pop("style", None)
+        for element in artboard.select(".t396__elem"):
+            element.attrs.pop("style", None)
+
     for slider in root.select('.t-slds__items-wrapper[data-slider-initialized]'):
         try:
             total_slides = int(str(slider.get("data-slider-totalslides", "0")))
@@ -540,6 +786,32 @@ def prepare_snapshot(route: str, raw_path: Path) -> tuple[dict[str, object], set
                 "data-slider-animated", "data-slider-stopped"):
             slider.attrs.pop(attribute, None)
         slider.attrs.pop("style", None)
+    for slider_part in root.select(".t-slds, .t-slds__main, .t-slds__container"):
+        slider_part.attrs.pop("style", None)
+
+    for grid in root.select(".t979__grid"):
+        grid.attrs.pop("style", None)
+        for item in grid.select(":scope > .t979__grid-item"):
+            item.attrs.pop("style", None)
+            item["class"] = [
+                class_name for class_name in item.get("class", [])
+                if not class_name.startswith("t-animate__chain_")
+            ]
+
+    # Browser overrides contain viewport-specific geometry written by block
+    # initializers. It must not survive into a responsive snapshot: T1196
+    # equalises only currently visible horizontal cards, while T827 Masonry
+    # writes absolute positions and a container height for the capture width.
+    for item in root.select(".t1196__item"):
+        item.attrs.pop("style", None)
+    for grid in root.select(".t827__grid"):
+        grid.attrs.pop("style", None)
+        for item in grid.select(":scope > *"):
+            item.attrs.pop("style", None)
+            item["class"] = [
+                class_name for class_name in item.get("class", [])
+                if not class_name.startswith("t-animate__chain_")
+            ]
 
     # Layout loads the archived stylesheets once in <head>; raw <link> nodes
     # inside #allrecords would re-apply page-global rules after isolation.
@@ -556,6 +828,15 @@ def prepare_snapshot(route: str, raw_path: Path) -> tuple[dict[str, object], set
         anchor["id"] = anchor["name"]
     for anchor in root.select("a:not([href])"):
         anchor["href"] = "#source-booking"
+    local_targets = {
+        str(element.get("id") or element.get("name"))
+        for element in root.select("[id], [name]")
+        if element.get("id") or element.get("name")
+    }
+    for anchor in root.select('a[href^="#"]'):
+        fragment = str(anchor.get("href", "")).removeprefix("#")
+        if fragment in {"prazdnik", "quiz", "callback"} and fragment not in local_targets:
+            anchor["href"] = "#source-booking"
 
     rewrite_fragment_urls(root, resources)
     for image in root.select("img[data-original]"):
@@ -588,7 +869,7 @@ def prepare_snapshot(route: str, raw_path: Path) -> tuple[dict[str, object], set
         # particular, Tilda's responsive block rules intentionally follow its
         # reset; sorting content hashes silently reversed that relationship.
         "styles": list(stylesheets.values()),
-        "pageScript": local_url(page_script) if page_script else "",
+        "pageScript": "",
         "recordTypes": record_types,
     }
     return meta, resources, stylesheets
@@ -601,6 +882,11 @@ def apply_image_dimensions(snapshot_path: Path) -> None:
         image["loading"] = "eager"
         source = str(image.get("src") or image.get("data-original") or "")
         if not source or source.startswith("data:"):
+            if not image.get("width"):
+                image["width"] = "1"
+            if not image.get("height"):
+                image["height"] = "1"
+            changed = True
             continue
         relative = source.replace(f"{BASE_TOKEN}/assets/", "", 1)
         dimensions = image_dimensions(PUBLIC_ASSETS / relative)
@@ -627,6 +913,7 @@ def main() -> None:
     requested = [canonical_route(route.strip()) for route in args.routes.split(",") if route.strip()]
     routes = requested or all_routes
     sources = pick_sources(routes)
+    contract_sources = pick_sources(routes, use_overrides=False)
     missing = [route for route in routes if route not in sources and route != "/kvesty-v-rostove-na-donu/"]
     if missing:
         raise RuntimeError(f"No archived source for: {', '.join(missing)}")
@@ -637,10 +924,10 @@ def main() -> None:
     RUNTIME_DIR.mkdir(parents=True, exist_ok=True)
 
     manifest: dict[str, dict[str, object]] = {}
-    resources: set[str] = set(RUNTIME_URLS) | set(DYNAMIC_RUNTIME_URLS)
+    resources: set[str] = set()
     stylesheets: dict[str, str] = {}
     for route, raw_path in sorted(sources.items()):
-        meta, page_resources, page_styles = prepare_snapshot(route, raw_path)
+        meta, page_resources, page_styles = prepare_snapshot(route, raw_path, contract_sources[route])
         manifest[route] = meta
         resources.update(page_resources)
         stylesheets.update(page_styles)

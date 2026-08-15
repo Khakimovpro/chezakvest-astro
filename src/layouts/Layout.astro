@@ -94,7 +94,7 @@ const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1
     )}
     <link rel="preload" as="font" type="font/woff2" href={montserratCyr} crossorigin />
     {sourceSnapshot?.styles.map((name) => (
-      <link rel="stylesheet" href={asset(`/assets/source-css/${name}`)} />
+      <link rel="stylesheet" href={asset(`/${['assets', 'source-css', name].join('/')}`)} />
     ))}
 
     {jsonld.map((data) => (

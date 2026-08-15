@@ -14,6 +14,11 @@ const recordOrder = [
   'footer', 'footerBottom',
 ];
 
+const assertHeights = (record, desktop, mobile) => {
+  assert.equal(record.desktop, desktop);
+  assert.equal(record.mobile, mobile);
+};
+
 const localAssets = (value) => {
   if (typeof value === 'string') return value.startsWith('/assets/') ? [value] : [];
   if (Array.isArray(value)) return value.flatMap(localAssets);
@@ -21,24 +26,27 @@ const localAssets = (value) => {
   return [];
 };
 
-test('Igra v Kalmara opts into the complete captured source artboard instead of generic holiday sections', async () => {
+test('Igra v Kalmara retains the complete captured artboard data behind its source snapshot route', async () => {
   const page = JSON.parse(await read('src/data/pages/igra-v-kalmara-lend.json'));
+  const manifest = JSON.parse(await read('src/generated/source-snapshot-manifest.json'));
   const hero = page.sections.find((section) => section.kind === 'hero');
   const source = page.sourceParity;
 
   assert.equal(hero.composition, 'kalmar-landing-artboard');
-  assert.equal(hero.hideSharedHeader, true);
+  assert.equal(hero.hideSharedHeader, false, 'Layout replaces the complete slot for snapshot routes');
+  assert.equal(manifest.routes['/igra_v_kalmara/'].snapshot, 'igra_v_kalmara.html');
+  assert.match(manifest.routes['/igra_v_kalmara/'].source, /work\/raw\/pages\/igra_v_kalmara/u);
   assert.equal(source.kind, 'kalmar-landing-artboard');
-  assert.deepEqual(source.records.hero, { desktop: 856, mobile: 770 });
-  assert.deepEqual(source.records.features, { desktop: 850, mobile: 1020 });
-  assert.deepEqual(source.records.program, { desktop: 638, mobile: 1549 });
-  assert.deepEqual(source.records.shows, { desktop: 633, mobile: 1891 });
-  assert.deepEqual(source.records.additions, { desktop: 635, mobile: 722 });
-  assert.deepEqual(source.records.hall, { desktop: 600, mobile: 785 });
-  assert.deepEqual(source.records.trust, { desktop: 770, mobile: 750 });
-  assert.deepEqual(source.records.footerBottom, { desktop: 194, mobile: 360 });
-  assert.equal(recordOrder.reduce((total, key) => total + source.records[key].desktop, 0), 7499);
-  assert.equal(recordOrder.reduce((total, key) => total + source.records[key].mobile, 0), 11054);
+  assertHeights(source.records.hero, 856, 770);
+  assertHeights(source.records.features, 850, 1020);
+  assertHeights(source.records.program, 638, 1549);
+  assertHeights(source.records.shows, 633, 1891);
+  assertHeights(source.records.additions, 634, 722);
+  assertHeights(source.records.hall, 600, 785);
+  assertHeights(source.records.trust, 770, 750);
+  assertHeights(source.records.footerBottom, 193, 359);
+  assert.equal(recordOrder.reduce((total, key) => total + source.records[key].desktop, 0), 7498);
+  assert.equal(recordOrder.reduce((total, key) => total + source.records[key].mobile, 0), 11053);
   assert.deepEqual(source.program.items.map((item) => item.title), ['СТАНДАРТ', 'СУПЕР', 'МАКСИ']);
   assert.equal(source.shows.length, 4);
   assert.equal(source.additions.length, 4);

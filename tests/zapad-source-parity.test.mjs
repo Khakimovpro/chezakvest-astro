@@ -37,14 +37,18 @@ test('Zapad keeps the R27 Tilda record sequence in route-owned source parity dat
   });
 });
 
-test('Zapad selects an isolated source renderer without weakening generic QuestPage rendering', () => {
+test('Zapad selects an isolated source snapshot without weakening generic QuestPage rendering', () => {
   const quest = read('src/layouts/QuestPage.astro');
+  const layout = read('src/layouts/Layout.astro');
+  const manifest = JSON.parse(read('src/generated/source-snapshot-manifest.json'));
   const unrelated = JSON.parse(read('src/data/pages/zvonok.json'));
 
   assert.match(quest, /import ZapadSourceArtboard from '\.\.\/components\/ZapadSourceArtboard\.astro';/u);
   assert.match(quest, /const isZapadSource = sourceParity\.kind === 'zapad-source';/u);
   assert.match(quest, /\{isZapadSource \? <ZapadSourceArtboard page=\{page\} source=\{sourceParity\} asset=\{asset\} href=\{link\} \/> : \(/u);
-  assert.match(quest, /\{!isZapadSource && <Header \/>\}/u);
+  assert.match(quest, /<Header \/>/u, 'the shared renderer keeps its header');
+  assert.match(layout, /\{sourceSnapshot \? <SourceSnapshotBody snapshot=\{sourceSnapshot\} \/> : <slot \/>\}/u);
+  assert.equal(manifest.routes['/kvest_v_realnosti_zapad/'].snapshot, 'kvest_v_realnosti_zapad.html');
   assert.equal(unrelated.sourceParity, undefined);
 });
 

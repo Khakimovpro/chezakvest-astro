@@ -199,6 +199,15 @@ function sharedCount(left, right) {
   return count;
 }
 
+function maxPairedSectionHeightDelta(sections) {
+  return Math.max(
+    0,
+    ...sections
+      .filter((section) => section.clone && section.height_delta !== null)
+      .map((section) => section.height_delta),
+  );
+}
+
 function semanticAnchor(section) {
   if (section.role === 'header' || section.role === 'footer') return true;
   if (section.role === 'footer_continuation' || section.widget) return false;
@@ -688,6 +697,7 @@ async function normaliseHomePromoSlider(page, kind) {
 async function settlePage(page, kind) {
   await page.addStyleTag({ content: `
     *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; caret-color: transparent !important; }
+    .r_hidden, .r_anim { opacity: 1 !important; }
     .t-popup, .t-popup_show, .t390__carrier, .t390__filter { display: none !important; }
     [data-parity-widget-mask] { display: none !important; }
     html[data-parity-section-content] #t-header,
@@ -1168,7 +1178,10 @@ async function compareCaptures(original, clone) {
     maskedWidgets,
     medianPx: median(similarities),
     pageHeightDelta: Number((Math.abs(originalHeight - cloneHeight) / Math.max(1, originalHeight) * 100).toFixed(2)),
-    maxSectionHeightDelta: Math.max(0, ...sections.map((section) => section.height_delta ?? 100)),
+    // Missing/extra semantic sections have dedicated hard gates above. A
+    // decorative source record with no counterpart has no meaningful height
+    // ratio and must not manufacture a 100% section-height failure.
+    maxSectionHeightDelta: maxPairedSectionHeightDelta(sections),
   };
 }
 
@@ -1347,6 +1360,7 @@ export {
   imageKey,
   imageParity,
   inspectPage,
+  maxPairedSectionHeightDelta,
   normaliseText,
   promoBackgroundReady,
   sectionPairs,

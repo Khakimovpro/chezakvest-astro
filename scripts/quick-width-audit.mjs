@@ -181,7 +181,15 @@ async function auditRoute(route) {
             if (cs.overflow === 'hidden' || cs.overflowY === 'hidden') {
               const pr = p.getBoundingClientRect();
               const cutBottom = Math.max(...rects.map((rect) => rect.bottom - pr.bottom));
-              const cutRight = Math.max(...rects.map((rect) => rect.right - pr.right));
+              // A horizontally scrollable rail intentionally clips its
+              // off-canvas items in the current frame; the text remains
+              // reachable through native scrolling. Keep the vertical gate,
+              // but do not misclassify that scroll boundary as lost text.
+              const scrollableX = ['auto', 'scroll'].includes(cs.overflowX)
+                && p.scrollWidth > p.clientWidth + 2;
+              const cutRight = scrollableX
+                ? Number.NEGATIVE_INFINITY
+                : Math.max(...rects.map((rect) => rect.right - pr.right));
               if (cutBottom > 4 || cutRight > 4) {
                 clipped.push({ text: (el.textContent || '').trim().slice(0, 45), cutBottom: Math.round(cutBottom), cutRight: Math.round(cutRight), parent: (p.className || '').toString().slice(0, 50) });
               }
