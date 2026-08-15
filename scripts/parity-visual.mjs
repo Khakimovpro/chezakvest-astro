@@ -1312,11 +1312,15 @@ async function main() {
   // those paths in link existence checks; redirect-target-contract.mjs
   // separately verifies the actual target mapping.
   const knownRoutes = allRoutes;
-  const browser = await chromium.launch({ executablePath: BROWSER, args: ['--no-sandbox', '--disable-gpu'] });
   const detail = { generated_at: new Date().toISOString(), round: ROUND, routes: {} };
   const matrix = [];
-  try {
-    for (const route of routes) {
+  for (const route of routes) {
+    // Chromium retains decoded tall-page surfaces after a context closes. A
+    // fresh process per route gives the 67-route acceptance run a bounded
+    // memory ceiling while preserving the four original/clone captures and
+    // their shared state inside each route.
+    const browser = await chromium.launch({ executablePath: BROWSER, args: ['--no-sandbox', '--disable-gpu'] });
+    try {
       const redirect = redirectTarget(inventory, route);
       const matrixEntry = inventory.matrix.find((row) => row.route_clone === route);
       const scope = redirect ? 'redirect' : (matrixEntry?.verdict === 'extra_clone' ? 'extra_clone' : 'page');
@@ -1408,9 +1412,9 @@ async function main() {
         },
       };
       console.log(`${route} ${verdict} (${matrix.length}/${routes.length})`);
+    } finally {
+      await browser.close().catch(() => {});
     }
-  } finally {
-    await browser.close();
   }
   await mkdir(ROUND_DIR, { recursive: true });
   await Promise.all([

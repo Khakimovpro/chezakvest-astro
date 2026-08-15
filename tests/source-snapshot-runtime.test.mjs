@@ -38,6 +38,8 @@ test('recreates specialised slider geometry and deterministic parity capture sta
   assert.match(parity, /async function normaliseTildaSliders/u);
   assert.match(parity, /wrapper\.dataset\.sliderStopped = 'true'/u);
   assert.match(parity, /async function normaliseT552Marquees/u);
+  assert.match(parity, /fresh process per route/u);
+  assert.match(parity, /for \(const route of routes\) \{[\s\S]*?const browser = await chromium\.launch/u);
 });
 
 test('uses archived textarea schemas and hidden fields when materializing Zero Block forms', async () => {
