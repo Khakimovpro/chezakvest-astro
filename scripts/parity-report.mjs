@@ -11,8 +11,14 @@ const PROJECT_ROOT = process.cwd();
 const PARITY_DIR = join(PROJECT_ROOT, 'migration', 'parity');
 const SHOTS_DIR = join(PARITY_DIR, 'shots');
 const ROUND = Number(process.env.PARITY_ROUND ?? '9');
+const MATRIX_FILE = process.env.PARITY_MATRIX ?? 'visual-matrix.csv';
+const REPORT_DATE = process.env.PARITY_REPORT_DATE ?? new Date().toISOString().slice(0, 10);
 const OUTPUT = join(PARITY_DIR, 'parity-report.html');
 const MAX_REPORT_BYTES = 40 * 1024 * 1024;
+
+if (!/^visual-matrix(?:-[a-z0-9_-]+)?\.csv$/iu.test(MATRIX_FILE)) {
+  throw new Error(`Unsupported parity matrix filename: ${MATRIX_FILE}`);
+}
 
 function csvRows(text) {
   const rows = [];
@@ -306,7 +312,7 @@ function buildSummary(rows) {
 
 async function main() {
   const [matrixText, knownGaps, contentDriftRows, files] = await Promise.all([
-    readFile(join(PARITY_DIR, 'visual-matrix.csv'), 'utf8'),
+    readFile(join(PARITY_DIR, MATRIX_FILE), 'utf8'),
     optionalCsv('known-gaps.csv'),
     optionalCsv('content-drift.csv'),
     readdir(SHOTS_DIR).catch((error) => {
@@ -315,7 +321,7 @@ async function main() {
     }),
   ]);
   const rows = csvRows(matrixText).sort((left, right) => left.url.localeCompare(right.url, 'ru'));
-  if (!rows.length) throw new Error('visual-matrix.csv has no route rows; refusing to make an evidence report.');
+  if (!rows.length) throw new Error(`${MATRIX_FILE} has no route rows; refusing to make an evidence report.`);
   const summary = buildSummary(rows);
   const contentDrift = changedContentDrift(contentDriftRows);
   const pages = [];
@@ -365,7 +371,7 @@ async function main() {
   const driftRows = renderContentDriftRows(contentDrift);
   const number = (value, digits = 2) => value === null ? 'n/a' : Number(value).toFixed(digits);
   const html = `<!doctype html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Parity audit · 2026-08-11</title>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Parity audit · ${esc(REPORT_DATE)}</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#11131a;color:#e8edf7;font:14px/1.45 Inter,Arial,sans-serif}main{max-width:1440px;margin:auto;padding:28px}h1{margin:0 0 8px;font-size:28px}h2{font-size:17px;margin:0}h3{font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:#aab6cc;margin:18px 0 7px}.lede{color:#b7c2d7;margin:0 0 22px}.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:24px}.metric{background:#1b202c;border:1px solid #303a4e;border-radius:10px;padding:11px}.metric b{display:block;font-size:22px;color:#fff}.metric span{color:#aeb9cf}.route{background:#181d28;border:1px solid #30394b;border-radius:12px;padding:16px;margin:16px 0}.route header{display:flex;gap:12px;align-items:center;justify-content:space-between}.badge{border-radius:999px;padding:3px 9px;background:#29354a;color:#d8e4fb;font-size:12px;white-space:nowrap}.needs_fix .badge{background:#703537;color:#ffe0dc}.pass .badge{background:#265c44;color:#dcffea}.facts{color:#aeb9cc;font-size:12px;margin:7px 0}.status{margin:7px 0 0}.caption{margin:12px 0;padding:10px;background:#111722;border-left:3px solid #596b88}.caption dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 16px;margin:0}.caption dt{font-weight:700;color:#cbd7eb}.caption dd{margin:2px 0 0;color:#b7c2d7;overflow-wrap:anywhere}.diagnostics{margin:12px 0;background:#111722;border:1px solid #30394b;border-radius:7px;padding:8px}.diagnostics summary{cursor:pointer;color:#d5e2f9}.diagnostics dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:8px 0 0}.diagnostic{padding:6px 8px;border-top:1px solid #283146}.diagnostic dt{font-weight:600}.diagnostic dd{margin:2px 0 0;color:#b5c0d5;overflow-wrap:anywhere}.diagnostic span{display:inline-block;margin-left:4px;border-radius:999px;padding:1px 5px;background:#30394b;color:#dce7fb;font-size:10px}.diagnostic.fail span{background:#703537;color:#ffe0dc}.diagnostic.pass span{background:#265c44;color:#dcffea}.viewports{display:grid;grid-template-columns:1fr 1fr;gap:18px}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:start}.pair.mobile{max-width:460px}figure{margin:0;background:#0f1219;border-radius:7px;padding:6px;min-width:0}figcaption{font-size:12px;color:#b5c0d5;padding:0 0 4px}img{display:block;max-width:100%;height:auto;border-radius:4px;background:#282e3c}.missing-shot{min-height:140px;display:grid;place-items:center;color:#ffb7ad;background:#302025;border-radius:4px;padding:12px;text-align:center}table{border-collapse:collapse;width:100%;background:#181d28;margin:12px 0 26px}th,td{text-align:left;vertical-align:top;padding:8px;border:1px solid #30394b;overflow-wrap:anywhere}th{background:#242c3b}small{display:block;color:#aeb9cc;margin-top:6px}del{color:#ffb7ad}ins{color:#c6f5d4}@media(max-width:820px){main{padding:16px}.viewports{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,1fr)}.caption dl,.diagnostics dl{grid-template-columns:1fr}h1{font-size:23px}}
 </style></head><body><main>

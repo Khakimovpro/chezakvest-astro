@@ -8,7 +8,11 @@
   .hdr__inner{background-image:linear-gradient(36.72deg,rgba(28,28,28,.72) 37%,rgba(150,62,0,.72) 73%,rgba(28,28,28,.72) 100%)}
 }
 .hdr__logo{display:block;flex:0 0 auto}
-.hdr__logo img{width:auto;height:47px}
+.hdr__logo img{width:auto;height:47px;max-width:150px}
+/* The generic responsive-image rule has greater selector specificity.  Keep
+   the wide source SVG at the authored logo dimensions instead of letting its
+   1174x368 intrinsic canvas grow the flex item. */
+body:not(.source-snapshot-page) .hdr__logo img{width:auto;height:47px}
 .hdr__nav{display:flex;flex:1 1 auto;justify-content:center;min-width:0}
 .nav{display:flex;align-items:center;gap:8px}
 .nav__item{position:static}
@@ -53,6 +57,7 @@
 .mmenu__close{position:absolute;top:5px;right:5px;width:40px;height:40px;padding:0;border:0;background:transparent;color:#333;font-size:34px;font-weight:300;line-height:1}
 .mmenu__logo{display:block;width:270px;max-width:100%;margin-bottom:20px}
 .mmenu__logo img{width:270px;max-width:100%;height:47px}
+body:not(.source-snapshot-page) .mmenu__logo img{width:270px;max-width:100%;height:47px}
 .mmenu__list{width:100%}
 .mmenu__list>li{border-bottom:1px solid #eee}
 .mmenu__toggle,.mmenu__plain-link{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:31px;padding:8px 0;border:0;background:transparent;color:#333;font-size:16px;font-weight:500;line-height:1.2;text-align:left;text-transform:uppercase}

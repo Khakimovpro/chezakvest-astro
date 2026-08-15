@@ -694,6 +694,74 @@ async function normaliseHomePromoSlider(page, kind) {
     : normaliseCloneHomePromoSlider(page);
 }
 
+// A full-page raster can take longer than Tilda's three-second autoplay
+// interval. Freeze every ordinary Tilda slider on its first authored slide so
+// both screenshots keep the state established before capture. The root promo
+// has a stricter media-readiness contract above and remains excluded here.
+async function normaliseTildaSliders(page) {
+  await page.evaluate(async () => {
+    const decodeBackground = async (element) => {
+      const media = [element, ...element.querySelectorAll('*')].find((node) => (
+        node instanceof HTMLElement
+        && (window.getComputedStyle(node).backgroundImage !== 'none' || node.dataset.original)
+      ));
+      if (!(media instanceof HTMLElement)) return;
+      if (window.getComputedStyle(media).backgroundImage === 'none' && media.dataset.original) {
+        media.style.backgroundImage = `url("${media.dataset.original}")`;
+      }
+      const match = window.getComputedStyle(media).backgroundImage.match(/url\((['"]?)(.*?)\1\)/u);
+      if (!match?.[2]) return;
+      const probe = new Image();
+      probe.src = new URL(match[2], document.baseURI).href;
+      try { await probe.decode(); } catch { /* the visible page remains the acceptance evidence */ }
+    };
+
+    const tasks = [];
+    document.querySelectorAll('.t-slds__items-wrapper').forEach((wrapper) => {
+      if (!(wrapper instanceof HTMLElement) || wrapper.closest('#rec958749021')) return;
+      const target = wrapper.querySelector(':scope > .t-slds__item[data-slide-index="1"]');
+      const container = wrapper.closest('.t-slds__container');
+      if (!(target instanceof HTMLElement) || !(container instanceof HTMLElement)) return;
+      const intervalId = Number(wrapper.dataset.sliderIntervalId);
+      if (Number.isFinite(intervalId)) {
+        window.clearInterval(intervalId);
+        window.clearTimeout(intervalId);
+      }
+      wrapper.removeAttribute('data-slider-interval-id');
+      wrapper.dataset.sliderStopped = 'true';
+      const matrix = new DOMMatrixReadOnly(window.getComputedStyle(wrapper).transform);
+      const offset = container.getBoundingClientRect().left - target.getBoundingClientRect().left;
+      wrapper.style.setProperty('transition', 'none', 'important');
+      wrapper.style.setProperty('transform', `translate3d(${matrix.m41 + offset}px, 0, 0)`, 'important');
+      wrapper.dataset.sliderPos = '1';
+      wrapper.querySelectorAll(':scope > .t-slds__item').forEach((item) => {
+        const active = item === target;
+        item.classList.toggle('t-slds__item_active', active);
+        item.setAttribute('aria-hidden', String(!active));
+      });
+      tasks.push(decodeBackground(target));
+    });
+    await Promise.all(tasks);
+  });
+}
+
+// The Minecraft photo ribbon is a source extension that clones and animates
+// the same T552 rail several times. Product geometry is preserved; only the
+// transient translation and duplicate rails are neutralised for evidence.
+async function normaliseT552Marquees(page) {
+  await page.evaluate(() => {
+    document.querySelectorAll('.nlm095_900789451451 .t552').forEach((rail) => {
+      const containers = [...rail.querySelectorAll(':scope > .t552__container')];
+      containers.forEach((container, index) => {
+        if (!(container instanceof HTMLElement)) return;
+        container.style.setProperty('animation', 'none', 'important');
+        container.style.setProperty('transform', 'translate3d(0, 0, 0)', 'important');
+        container.style.setProperty('display', index === 0 ? 'block' : 'none', 'important');
+      });
+    });
+  });
+}
+
 async function settlePage(page, kind) {
   await page.addStyleTag({ content: `
     *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; caret-color: transparent !important; }
@@ -721,6 +789,8 @@ async function settlePage(page, kind) {
     window.scrollTo(0, 0);
   });
   await normaliseHomePromoSlider(page, kind);
+  await normaliseTildaSliders(page);
+  await normaliseT552Marquees(page);
   await sleep(240);
   await page.evaluate((pageKind) => {
     const text = (element) => String(element.innerText || element.textContent || '')

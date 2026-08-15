@@ -72,6 +72,15 @@ VENUE_HASH_ROUTES = {
     "#pobedy": "/40letpobedy216/",
     "#nagibina": "/nagibina14/",
 }
+LOCAL_FRAGMENT_TARGETS = {
+    "#openquiz": "#source-booking",
+    "#sendzeroform": "#source-booking",
+    "#menuopen": "#mobile-menu",
+}
+BROKEN_ROUTE_ALIASES = {
+    "/strashnye-kvesty/kvest_v_realnosti_dom_prizrakov": "/kvest_v_realnosti_dom_prizrakov/",
+    "kvest_v_realnosti_dom_prizrakov": "/kvest_v_realnosti_dom_prizrakov/",
+}
 URL_RE = re.compile(r"(?P<quote>['\"]?)(?P<url>(?:https?:)?//[^'\"\s)<>]+)")
 CSS_URL_RE = re.compile(r"url\(\s*(?P<quote>['\"]?)(?P<url>[^)'\"]+)(?P=quote)\s*\)", re.I)
 
@@ -277,6 +286,10 @@ def rewrite_fragment_urls(fragment: Tag, resources: set[str]) -> None:
             if attribute in {"href", "action", "formaction"}:
                 if attribute == "href" and text in VENUE_HASH_ROUTES:
                     element[attribute] = f"{BASE_TOKEN}{VENUE_HASH_ROUTES[text]}"
+                elif attribute == "href" and text in LOCAL_FRAGMENT_TARGETS:
+                    element[attribute] = LOCAL_FRAGMENT_TARGETS[text]
+                elif attribute == "href" and text in BROKEN_ROUTE_ALIASES:
+                    element[attribute] = f"{BASE_TOKEN}{BROKEN_ROUTE_ALIASES[text]}"
                 elif text.startswith(("#popup:", "#form:", "javascript:")):
                     element[attribute] = "#source-booking"
                 elif text.startswith(("http://", "https://", "//")):
@@ -423,10 +436,12 @@ def materialize_zero_forms(root: Tag, soup: BeautifulSoup) -> None:
     for element in root.select('[data-elem-type="form"]'):
         atom = element.select_one(":scope > .tn-atom__form")
         data = element.select_one(".tn-atom__inputs-data[data-value]")
-        if atom is None or data is None or atom.select_one("form"):
+        textarea = element.select_one(".tn-atom__inputs-textarea")
+        if atom is None or (data is None and textarea is None) or atom.select_one("form"):
             continue
+        raw_fields = str(data.get("data-value", "[]")) if data is not None else textarea.get_text()
         try:
-            fields = json.loads(str(data.get("data-value", "[]")))
+            fields = json.loads(raw_fields)
         except json.JSONDecodeError:
             continue
         fields = [field for field in fields if isinstance(field, dict)]
@@ -484,7 +499,14 @@ def materialize_zero_forms(root: Tag, soup: BeautifulSoup) -> None:
                 "style": f"margin-bottom:{input_margin}px",
             })
             block = soup.new_tag("div", attrs={"class": ["t-input-block"]})
-            if field_type == "tx":
+            if field_type == "hd":
+                control = soup.new_tag("input", attrs={
+                    "name": field_name or "hidden",
+                    "type": "hidden",
+                    "value": str(field.get("li_value", "")),
+                })
+                block.append(control)
+            elif field_type == "tx":
                 text = soup.new_tag("div", attrs={"class": ["t-text"]})
                 text.string = str(field.get("li_text", ""))
                 block.append(text)
@@ -761,6 +783,23 @@ def prepare_snapshot(
             group.attrs.pop("style", None)
         for element in artboard.select(".t396__elem"):
             element.attrs.pop("style", None)
+        # Hydrated browser overrides can carry a desktop pixel line-height on
+        # the atom itself.  The marker is runtime-only and prevents the source
+        # media rules from restoring their mobile line-height.
+        for atom in artboard.select(".tn-atom[style]"):
+            atom_style = str(atom.get("style", ""))
+            if "--lh-px" not in atom_style:
+                continue
+            atom_style = ";".join(
+                declaration.strip()
+                for declaration in atom_style.split(";")
+                if declaration.strip()
+                and declaration.split(":", 1)[0].strip().lower() not in {"--lh-px", "line-height"}
+            )
+            if atom_style:
+                atom["style"] = atom_style
+            else:
+                atom.attrs.pop("style", None)
 
     for slider in root.select('.t-slds__items-wrapper[data-slider-initialized]'):
         try:

@@ -71,9 +71,18 @@ async function auditRoute(route) {
         const brokenLinks = [];
         const brokenForms = [];
         const textRects = (element) => {
-          const range = document.createRange();
-          range.selectNodeContents(element);
-          return [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0);
+          const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
+            acceptNode: (node) => node.textContent?.trim()
+              ? NodeFilter.FILTER_ACCEPT
+              : NodeFilter.FILTER_REJECT,
+          });
+          const rects = [];
+          for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+            const range = document.createRange();
+            range.selectNodeContents(node);
+            rects.push(...range.getClientRects());
+          }
+          return rects.filter((rect) => rect.width > 0 && rect.height > 0);
         };
         const isInsideHorizontalScroller = (element) => {
           for (let parent = element.parentElement; parent && parent !== document.body; parent = parent.parentElement) {
@@ -158,16 +167,30 @@ async function auditRoute(route) {
           }
         }
         for (const form of document.querySelectorAll('form')) {
-          const submit = form.querySelector('button[type="submit"], input[type="submit"], button:not([type])');
+          const submit = form.querySelector('button[type="submit"], input[type="submit"], button:not([type]), [data-lead-submit]');
           if (!submit) {
             brokenForms.push({ id: form.id || form.className || 'form', reason: 'submit-control' });
             continue;
           }
           if (form.hasAttribute('data-local-source-form')) {
+            const mutable = [...form.querySelectorAll('[data-local-form-success], .js-successbox, .t-form__inputsbox')]
+              .map((element) => ({
+                element,
+                hidden: element.hasAttribute('hidden'),
+                style: element.getAttribute('style'),
+                text: element.matches('[data-local-form-success], .js-successbox') ? element.textContent : null,
+              }));
             form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
             if (form.dataset.submitted !== 'true') {
               brokenForms.push({ id: form.id || form.className || 'form', reason: 'local-confirmation' });
             }
+            delete form.dataset.submitted;
+            mutable.forEach(({ element, hidden, style, text }) => {
+              element.toggleAttribute('hidden', hidden);
+              if (style === null) element.removeAttribute('style');
+              else element.setAttribute('style', style);
+              if (text !== null) element.textContent = text;
+            });
           }
         }
         // обрезка: текстовый узел вылезает за пределы предка с overflow:hidden
@@ -213,15 +236,19 @@ async function auditRoute(route) {
             const bText = (b.textContent || '').trim();
             const interactivePair = Boolean(a.closest('a,button,input,select,textarea') || b.closest('a,button,input,select,textarea'));
             if (!interactivePair && (aText.length < 2 || bText.length < 2)) continue;
-            const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
-            const w = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
-            const h = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
-            if (w > 6 && h > 6) {
-              const area = w * h;
-              const min = Math.min(ra.width * ra.height, rb.width * rb.height);
-              if (area / min > 0.18) {
-                overlaps.push({ a: (a.textContent || '').trim().slice(0, 35), b: (b.textContent || '').trim().slice(0, 35), ratio: +(area / min).toFixed(2) });
+            const intersections = [];
+            for (const ra of textRects(a)) {
+              for (const rb of textRects(b)) {
+                const w = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
+                const h = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+                if (w <= 6 || h <= 6) continue;
+                const area = w * h;
+                const min = Math.min(ra.width * ra.height, rb.width * rb.height);
+                if (area / min > 0.18) intersections.push(area / min);
               }
+            }
+            if (intersections.length) {
+              overlaps.push({ a: (a.textContent || '').trim().slice(0, 35), b: (b.textContent || '').trim().slice(0, 35), ratio: +Math.max(...intersections).toFixed(2) });
             }
           }
         }

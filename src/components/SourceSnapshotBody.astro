@@ -117,7 +117,22 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
             if (layer instanceof HTMLElement) layer.style.removeProperty('height');
           }
           artboard.querySelectorAll(':scope > .t396__elem').forEach((element) => {
-            if (element instanceof HTMLElement) element.removeAttribute('style');
+            if (!(element instanceof HTMLElement)) return;
+            const geometry = elementGeometry(element);
+            const container = responsiveAttribute(element, 'field-container') || 'grid';
+            const boundary = container === 'window' ? window.innerWidth : baseWidth;
+            const offset = container === 'window' ? 0 : gridOffset;
+            const heightMode = responsiveAttribute(element, 'field-heightmode');
+            element.style.width = `${geometry.width}px`;
+            element.style.height = geometry.height > 0
+              && responsiveAttribute(element, 'field-textfit') !== 'autoheight'
+              && heightMode !== 'hug'
+              ? `${geometry.height}px`
+              : 'auto';
+            element.style.left = `${offset + axisPosition(geometry.axisX, geometry.left, geometry.width, boundary)}px`;
+            element.style.top = `${axisPosition(geometry.axisY, geometry.top, geometry.height, numeric(artboardAttribute(artboard, 'height')))}px`;
+            element.style.zoom = '';
+            element.style.removeProperty('--zoom');
           });
           return;
         }
@@ -130,8 +145,11 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
         artboard.querySelectorAll(':scope > .t396__elem').forEach((element) => {
           if (!(element instanceof HTMLElement)) return;
           const geometry = elementGeometry(element);
+          const heightMode = responsiveAttribute(element, 'field-heightmode');
           element.style.width = `${geometry.width}px`;
-          if (geometry.height > 0 && responsiveAttribute(element, 'field-textfit') !== 'autoheight') {
+          if (geometry.height > 0
+              && responsiveAttribute(element, 'field-textfit') !== 'autoheight'
+              && heightMode !== 'hug') {
             element.style.height = `${geometry.height}px`;
           } else {
             element.style.height = 'auto';
@@ -173,7 +191,7 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
     const updateSlider = (state, requestedIndex) => {
       const index = (requestedIndex + state.items.length) % state.items.length;
       state.index = index;
-      state.wrapper.style.transform = `translate3d(${-index * state.width}px, 0, 0)`;
+      state.wrapper.style.transform = `translate3d(${(state.offset || 0) - index * state.width}px, 0, 0)`;
       state.items.forEach((item, itemIndex) => {
         const active = itemIndex === index;
         item.classList.toggle('t-slds__item_active', active);
@@ -195,6 +213,46 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
 
       const galleryElement = slider.closest('.t396__elem[data-elem-type="gallery"]');
       const isGallery = galleryElement instanceof HTMLElement;
+      const isT923 = slider.closest('[data-record-type="923"]') instanceof HTMLElement;
+      if (isT923) {
+        const frameWidth = container instanceof HTMLElement
+          ? container.clientWidth
+          : main.clientWidth;
+        const itemsPerFrame = window.innerWidth >= 960
+          ? Math.max(1, numeric(wrapper.dataset.sliderItemsInRow, 1))
+          : 1;
+        const itemWidth = frameWidth / itemsPerFrame;
+        if (!(itemWidth > 0)) return;
+        main.style.removeProperty('height');
+        if (container instanceof HTMLElement) container.style.removeProperty('height');
+        wrapper.style.display = 'flex';
+        wrapper.style.width = `${itemWidth * items.length}px`;
+        wrapper.style.height = 'auto';
+        items.forEach((item, index) => {
+          if (!(item instanceof HTMLElement)) return;
+          item.style.display = 'flex';
+          item.style.flex = `0 0 ${itemWidth}px`;
+          item.style.width = `${itemWidth}px`;
+          item.style.height = 'auto';
+          item.style.opacity = '1';
+          item.dataset.slideIndex = String(index + 1);
+        });
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+        const height = Math.max(...items.map((item) => {
+          const card = item.querySelector('.t923__wrapper');
+          return card instanceof HTMLElement ? card.getBoundingClientRect().height : 0;
+        }));
+        if (!(height > 0)) return;
+        wrapper.style.height = `${height}px`;
+        if (container instanceof HTMLElement) container.style.height = `${height}px`;
+        items.forEach((item) => { item.style.height = `${height}px`; });
+        slider.style.visibility = 'visible';
+        const previous = sliderStates.get(slider);
+        const state = { slider, wrapper, items, width: itemWidth, offset: 0, index: previous?.index || 0 };
+        sliderStates.set(slider, state);
+        updateSlider(state, state.index);
+        return;
+      }
       let width;
       let height;
       if (isGallery) {
@@ -203,10 +261,17 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
         height = geometry.height;
       } else {
         main.style.width = '';
-        width = main.clientWidth || slider.clientWidth;
-        if (slider.closest('.t604')) {
-          height = Math.min(500, width * 500 / 1160);
+        const separator = slider.querySelector('.t604__separator[data-slider-image-height][data-slider-image-width]');
+        if (separator instanceof HTMLElement && container instanceof HTMLElement) {
+          width = container.clientWidth || main.clientWidth || slider.clientWidth;
+          const sourceWidth = numeric(separator.dataset.sliderImageWidth);
+          const sourceHeight = numeric(separator.dataset.sliderImageHeight);
+          height = Math.min(sourceWidth, width) * sourceHeight / sourceWidth;
+          slider.querySelectorAll('.t604__separator').forEach((item) => {
+            if (item instanceof HTMLElement) item.style.paddingBottom = `${sourceHeight / sourceWidth * 100}%`;
+          });
         } else {
+          width = main.clientWidth || slider.clientWidth;
           const ratio = await sourceRatio(items[0]);
           height = width / Math.max(ratio, 0.01);
         }
@@ -239,7 +304,7 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
       });
       slider.style.visibility = 'visible';
       const previous = sliderStates.get(slider);
-      const state = { slider, wrapper, items, width, index: previous?.index || 0 };
+      const state = { slider, wrapper, items, width, offset: 0, index: previous?.index || 0 };
       sliderStates.set(slider, state);
       updateSlider(state, state.index);
     };
@@ -349,15 +414,19 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
     };
 
     const layoutT829 = (record) => {
+      const container = record.querySelector('.t829__container');
       const grid = record.querySelector('.t829__grid');
       const sizer = record.querySelector('.t829__grid-sizer');
       const gutter = record.querySelector('.t829__gutter-sizer');
       const items = grid ? [...grid.querySelectorAll(':scope > .t829__grid-item')] : [];
-      if (!(grid instanceof HTMLElement) || !items.length) return;
+      if (!(container instanceof HTMLElement) || !(grid instanceof HTMLElement) || !items.length) return;
       if (window.innerWidth > 960) {
         const gap = gutter instanceof HTMLElement ? gutter.offsetWidth : 10;
         const columns = window.innerWidth >= 1200 ? Math.min(5, items.length) : Math.min(4, items.length);
-        const width = grid.clientWidth;
+        const containerStyle = getComputedStyle(container);
+        const width = container.clientWidth
+          - numeric(containerStyle.paddingLeft)
+          - numeric(containerStyle.paddingRight);
         const itemWidth = (width - gap * (columns - 1)) / columns;
         if (!(itemWidth > 0)) return;
         grid.style.position = 'relative';
@@ -388,12 +457,60 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
       const table = record.querySelector('.t347__table');
       if (!(column instanceof HTMLElement) || !(table instanceof HTMLElement)) return;
       column.style.boxSizing = 'border-box';
+      if (!table.dataset.sourceAuthoredHeight) {
+        table.dataset.sourceAuthoredHeight = table.style.height;
+      }
+      const authoredHeight = numeric(table.dataset.sourceAuthoredHeight);
+      if (authoredHeight > 0) {
+        table.style.height = `${authoredHeight}px`;
+        return;
+      }
       const width = table.getBoundingClientRect().width;
       const columnWidth = column.getBoundingClientRect().width;
       const height = window.innerWidth >= 960
         ? 540 * columnWidth / 960
         : width * 9 / 16;
       if (height > 0) table.style.height = `${height}px`;
+    };
+
+    const layoutT799 = (record) => {
+      const slider = record.querySelector('.t799 .t-slds');
+      const container = slider?.querySelector('.t-slds__container');
+      const wrapper = slider?.querySelector('.t-slds__items-wrapper');
+      const items = wrapper ? [...wrapper.querySelectorAll(':scope > .t-slds__item')] : [];
+      if (!(slider instanceof HTMLElement)
+          || !(container instanceof HTMLElement)
+          || !(wrapper instanceof HTMLElement)
+          || !items.length) return;
+      const width = slider.clientWidth;
+      const height = width * 0.72;
+      if (!(width > 0 && height > 0)) return;
+      container.style.height = `${height}px`;
+      wrapper.style.display = 'flex';
+      wrapper.style.width = `${width * items.length}px`;
+      wrapper.style.height = `${height}px`;
+      items.forEach((item, index) => {
+        if (!(item instanceof HTMLElement)) return;
+        item.style.display = 'block';
+        item.style.flex = `0 0 ${width}px`;
+        item.style.width = `${width}px`;
+        item.style.height = `${height}px`;
+        item.style.opacity = '1';
+        item.dataset.slideIndex = String(index + 1);
+        for (const inner of item.querySelectorAll('.t-margin_auto, .t-slds__wrapper, .t799__imgwrapper')) {
+          if (!(inner instanceof HTMLElement)) continue;
+          inner.style.width = `${width}px`;
+          inner.style.height = `${height}px`;
+        }
+        const separator = item.querySelector('.t799__separator');
+        if (separator instanceof HTMLElement) separator.style.paddingBottom = '0';
+      });
+      slider.style.height = `${height}px`;
+      slider.style.visibility = 'visible';
+      const previous = sliderStates.get(slider);
+      const state = { slider, wrapper, items, width, offset: 0, index: previous?.index || 0 };
+      sliderStates.set(slider, state);
+      updateSlider(state, state.index);
     };
 
     const initialise = async () => {
@@ -414,15 +531,18 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
       snapshotRoot.querySelectorAll('[data-record-type="1196"]').forEach(equaliseT1196);
       snapshotRoot.querySelectorAll('[data-record-type="829"]').forEach(layoutT829);
       snapshotRoot.querySelectorAll('[data-record-type="347"]').forEach(layoutT347);
+      snapshotRoot.querySelectorAll('[data-record-type="799"]').forEach(layoutT799);
     };
 
     const submitLocally = (form) => {
       const success = form.querySelector('[data-local-form-success], .js-successbox');
       if (success instanceof HTMLElement) {
         success.hidden = false;
-        success.style.display = 'block';
+        success.style.display = 'grid';
         success.textContent = 'Спасибо! Заявка принята.';
       }
+      const inputs = form.querySelector('.t-form__inputsbox');
+      if (inputs instanceof HTMLElement) inputs.hidden = true;
       form.dataset.submitted = 'true';
     };
 
@@ -469,9 +589,18 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
         return;
       }
       const anchor = event.target instanceof Element ? event.target.closest('a[href^="#popup:"], a[href^="#form:"]') : null;
-      if (!anchor) return;
-      event.preventDefault();
-      location.hash = 'source-booking';
+      if (anchor) {
+        event.preventDefault();
+        location.hash = 'source-booking';
+        return;
+      }
+      const menuControl = event.target instanceof Element
+        ? event.target.closest('a[href="#mobile-menu"]')
+        : null;
+      if (menuControl) {
+        event.preventDefault();
+        document.querySelector('.hdr__burger')?.click();
+      }
     });
 
     initialise();
@@ -573,11 +702,16 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
   ) .t674__cover-carrier {
     background-image: var(--source-dark-background-url) !important;
   }
-  @media (min-width: 960px) and (max-width: 1199px) {
-    .source-snapshot-page:has([data-source-route='/new-year/']) .t959__card-content .t-card__title {
+  @media (min-width: 960px) and (max-width: 1200px) {
+    .source-snapshot-page .t959__card-content .t-card__title {
       width: 100% !important;
       margin-right: 0 !important;
       margin-left: 0 !important;
+      overflow-wrap: anywhere !important;
+    }
+    .source-snapshot-page .t829 .t-card__title,
+    .source-snapshot-page .t774 .t-card__title {
+      overflow-wrap: anywhere !important;
     }
   }
   @media (min-width: 960px) and (max-width: 1200px) {
@@ -606,6 +740,95 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
     transform: none !important;
     animation: none !important;
     transition: none !important;
+  }
+  [data-source-snapshot] .hp-marquee-wrapper {
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
+  }
+  [data-source-snapshot] .hp-marquee {
+    animation: none !important;
+    transform: none !important;
+  }
+  .source-snapshot-page:has([data-source-route='/minecraft-lend/']) .nlm095_900789451451 .t552__container {
+    width: max-content !important;
+  }
+  .source-snapshot-page:has([data-source-route='/minecraft-lend/']) .nlm095_900789451451 .t552__tile_33 {
+    width: 33vw !important;
+  }
+  .source-snapshot-page:has([data-source-route='/minecraft-lend/']) .nlm095_900789451451 .t552__blockimg {
+    height: 25vw !important;
+  }
+  @media (max-width: 980px) {
+    .source-snapshot-page:has([data-source-route='/minecraft-lend/']) .nlm095_900789451451 .t552__blockimg {
+      height: 450px !important;
+    }
+  }
+  @media (max-width: 640px) {
+    .source-snapshot-page:has([data-source-route='/minecraft-lend/']) .nlm095_900789451451 .t552__tile_33 {
+      width: 300px !important;
+    }
+  }
+  @media (min-width: 480px) and (max-width: 639px) {
+    .source-snapshot-page :is(
+      [data-source-route='/roblox-land/'],
+      [data-source-route='/amongus-land/']
+    ) #rec884507566 [data-elem-id='1741351556761'] {
+      width: 100% !important;
+    }
+    .source-snapshot-page :is(
+      [data-source-route='/roblox-land/'],
+      [data-source-route='/amongus-land/']
+    ) #rec884507566 [data-elem-id='1741351556725'] {
+      width: calc(100% - 20px) !important;
+    }
+  }
+  @media (min-width: 480px) and (max-width: 959px) {
+    .source-snapshot-page:has([data-source-route='/amongus-land/']) #rec1036403486 [data-elem-id='1741360273585'] {
+      transform: translateY(14px) !important;
+    }
+    .source-snapshot-page:has([data-source-route='/roblox-land/']) #rec885986956 [data-elem-id='1741360273585'] {
+      transform: translateY(14px) !important;
+    }
+  }
+  @media (min-width: 640px) and (max-width: 959px) {
+    .source-snapshot-page:has([data-source-route='/kids/']) #rec844797090 :is(.t396__artboard, .t396__filter, .t396__carrier) {
+      height: 196px !important;
+    }
+  }
+  @media (min-width: 480px) and (max-width: 520px) {
+    .source-snapshot-page:has([data-source-route='/kids/']) #rec844797133 :is(.t396__artboard, .t396__filter, .t396__carrier) {
+      height: 230px !important;
+    }
+  }
+  @media (max-width: 479px) {
+    .source-snapshot-page:has([data-source-route='/']) #rec1853543481 :is(.t396__artboard, .t396__filter, .t396__carrier) {
+      height: 99px !important;
+    }
+    .source-snapshot-page:has([data-source-route='/den-rozhdeniya-uznik-azkabana/']) #rec2094236451 :is(.t396__artboard, .t396__filter, .t396__carrier) {
+      height: 154px !important;
+    }
+    .source-snapshot-page:has([data-source-route='/roblox-land/']) #rec884507566 [data-elem-id='1741351557022'] {
+      transform: translateY(14px) !important;
+    }
+    .source-snapshot-page:has([data-source-route='/roblox-land/']) #rec884507566 [data-elem-id='1741351557050'] {
+      transform: translateY(14px) !important;
+    }
+  }
+  .source-snapshot-page [data-elem-id='1719352660808'] > .tn-atom {
+    white-space: nowrap !important;
+  }
+  [data-local-source-form] { position: relative; }
+  [data-local-source-form] [data-local-form-success] {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    place-items: center;
+    margin: 0 !important;
+    padding: 16px;
+    background: #fff;
+    text-align: center;
   }
   [data-source-snapshot] iframe,
   [data-source-snapshot] script,
