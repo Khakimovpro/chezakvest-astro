@@ -1401,6 +1401,22 @@ async function main() {
     detail = checkpoint.detail;
     matrix = checkpoint.matrix;
   }
+  const recaptureRoutes = (process.env.PARITY_RECAPTURE_ROUTES ?? '')
+    .split(',')
+    .map((route) => route.trim())
+    .filter(Boolean);
+  const unknownRecaptures = recaptureRoutes.filter((route) => !routes.includes(route));
+  if (unknownRecaptures.length) {
+    throw new Error(`Unknown parity recapture route requested: ${unknownRecaptures.join(', ')}`);
+  }
+  if (recaptureRoutes.length && process.env.PARITY_RESUME !== '1') {
+    throw new Error('PARITY_RECAPTURE_ROUTES requires PARITY_RESUME=1 and a matching checkpoint.');
+  }
+  if (recaptureRoutes.length) {
+    const recaptureSet = new Set(recaptureRoutes);
+    matrix = matrix.filter((row) => !recaptureSet.has(row.url));
+    recaptureRoutes.forEach((route) => { delete detail.routes[route]; });
+  }
   const completedRoutes = new Set(matrix.map((row) => row.url));
   try {
     for (const route of routes) {

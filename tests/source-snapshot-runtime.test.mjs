@@ -41,6 +41,8 @@ test('recreates specialised slider geometry and deterministic parity capture sta
   assert.match(parity, /async function captureWithFreshBrowser/u);
   assert.match(parity, /--disable-dev-shm-usage/u);
   assert.match(parity, /process\.env\.PARITY_RESUME === '1'/u);
+  assert.match(parity, /PARITY_RECAPTURE_ROUTES requires PARITY_RESUME=1/u);
+  assert.match(parity, /matrix = matrix\.filter\(\(row\) => !recaptureSet\.has\(row\.url\)\)/u);
   assert.match(parity, /visual-checkpoint\.json/u);
   assert.match(parity, /async function startLocalDistServer/u);
   assert.match(parity, /PARITY_SERVE_DIST requires a loopback/u);
