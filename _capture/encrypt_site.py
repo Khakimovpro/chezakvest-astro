@@ -343,11 +343,69 @@ def rewrite_html(html, assets_map, base):
     html = re.sub(r'\ssrcset="[^"]*"', "", html)
     html = re.sub(r'\ssizes="[^"]*"', "", html)
     html = re.sub(r"\x00LINK(\d+)\x00", lambda m: saved_links[int(m.group(1))], html)
-    # фоновые картинки в инлайн-стилях
-    html = re.sub(r'style="background-image:url\(([^)]+)\)"',
-                  lambda m: (f'style="" data-enc="{assets_map[m.group(1)]}"'
-                             if m.group(1) in assets_map else m.group(0)), html)
+
+    # Фоновые картинки в инлайн-стилях. Формы записи в перенесённой вёрстке разные:
+    # с завершающей `;`, с пробелом после двоеточия, шорхэнд `background:url(...) center`,
+    # два `background-image` подряд (webp + фолбэк) и соседние свойства в том же атрибуте.
+    # Поэтому разбираем каждый тег со style целиком, а не подгоняем один узкий шаблон:
+    # каждая ссылка на зашифрованный файл заменяется прозрачным пикселем (иначе браузер
+    # запросит незашифрованный путь и получит 404), а сам элемент получает data-enc,
+    # по которому лоадер после ввода пароля подставит расшифрованный blob.
+    def sub_style_tag(m):
+        tag = m.group(0)
+        sm = re.search(r'\sstyle="([^"]*)"', tag)
+        if not sm:
+            return tag
+        picked = []
+
+        def sub_url(um):
+            raw = um.group(1).strip().strip("'\"")
+            key = raw.split("?")[0]
+            if key not in assets_map:
+                return um.group(0)
+            picked.append(key)
+            return f"url({PIXEL})"
+
+        new_style = re.sub(r"url\(([^)]+)\)", sub_url, sm.group(1))
+        if not picked:
+            return tag
+        tag = f'{tag[:sm.start()]} style="{new_style}"{tag[sm.end():]}'
+        # data-enc уже мог появиться из src/data-original того же тега — второй сломал бы лоадер.
+        # Из нескольких фонов берём последний: в каскаде побеждает он.
+        if "data-enc=" not in tag:
+            closing = "/>" if tag.endswith("/>") else ">"
+            tag = f'{tag[: -len(closing)].rstrip()} data-enc="{assets_map[picked[-1]]}"{closing}'
+        return tag
+
+    html = re.sub(r'<[a-zA-Z][^>]*\sstyle="[^"]*url\([^"]*"[^>]*>', sub_style_tag, html)
     return html
+
+
+def collect_style_block_assets(src, base):
+    """Картинки из блоков <style>: их подменить нечем, поэтому шифровать нельзя.
+
+    Правило в блоке относится к селектору, а не к элементу, — повесить на него data-enc
+    и подставить blob после ввода пароля невозможно. Если такой файл зашифровать,
+    страница уйдёт за картинкой по исходному пути и получит 404, то есть фон пропадёт.
+    Собираем эти пути заранее и оставляем файлы нетронутыми.
+    """
+    prefix = base.rstrip("/")
+    keep = set()
+    for dirpath, _, files in os.walk(src):
+        for f in files:
+            if not f.endswith(".html"):
+                continue
+            html = open(os.path.join(dirpath, f), encoding="utf-8", errors="replace").read()
+            for block in re.findall(r"<style[^>]*>(.*?)</style>", html, re.S):
+                for m in re.finditer(r"url\((['\"]?)([^)'\"]+)\1\)", block):
+                    url = m.group(2).split("?")[0]
+                    if url.startswith("data:") or url.startswith("http"):
+                        continue
+                    if prefix and url.startswith(prefix + "/"):
+                        url = url[len(prefix):]
+                    if url.startswith("/"):
+                        keep.add(url)
+    return keep
 
 
 def main():
@@ -375,14 +433,19 @@ def main():
     os.makedirs(out)
 
     # 1) шифруем ассеты и запоминаем, чем заменять ссылки
+    style_block_assets = collect_style_block_assets(src, args.base)
     assets_map = {}
     n_assets = 0
+    n_kept = 0
     for dirpath, _, files in os.walk(src):
         for f in files:
             path = os.path.join(dirpath, f)
             rel = os.path.relpath(path, src)
             web = "/" + rel.replace(os.sep, "/")
             if not f.lower().endswith(ASSET_EXT) or any(s in web for s in SKIP_ASSET):
+                continue
+            if web in style_block_assets:
+                n_kept += 1
                 continue
             dst = os.path.join(out, rel + ".enc")
             os.makedirs(os.path.dirname(dst), exist_ok=True)
@@ -420,7 +483,9 @@ def main():
                 dst = os.path.join(out, rel)
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
                 shutil.copy2(path, dst)
-            elif any(s in "/" + rel.replace(os.sep, "/") for s in SKIP_ASSET):
+            elif ("/" + rel.replace(os.sep, "/")) in style_block_assets or any(
+                s in "/" + rel.replace(os.sep, "/") for s in SKIP_ASSET
+            ):
                 dst = os.path.join(out, rel)
                 os.makedirs(os.path.dirname(dst), exist_ok=True)
                 shutil.copy2(path, dst)
@@ -434,6 +499,7 @@ def main():
 
     total = sum(os.path.getsize(os.path.join(d, f)) for d, _, fs in os.walk(out) for f in fs)
     print(f"зашифровано страниц: {n_pages}, картинок: {n_assets}")
+    print(f"оставлено без шифра (используются в блоках <style>): {n_kept}")
     print(f"каталог для деплоя: {out} ({round(total / 1048576, 1)} МБ)")
 
 

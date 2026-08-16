@@ -9,11 +9,24 @@ const localSourceForm = /(<form\b(?=[^>]*\bdata-local-source-form(?:\s|=|>))[^>]
 const disableLocalFormControls = (form) => form.replace(/<(input|textarea|select|button)\b[^>]*>/giu, (tag) => (
   /\bdisabled(?:\s|=|>|$)/iu.test(tag) ? tag : tag.replace(/\s*\/?>$/u, (end) => ` disabled${end}`)
 ));
+// Часть ссылок в снятых снапшотах осталась без плейсхолдера __SITE_BASE__: 249 в css-url,
+// 130 в data-original и 35 в src. На боевом домене base пустой и они рабочие, а на превью
+// с базой /chezakvest-preview такие пути уходят мимо сайта и картинка не грузится.
+// Дописываем базу тем, что начинается ровно с /assets/ — уже переписанные ссылки идут
+// с базой впереди и под шаблон не попадают.
+const withBase = (input) => (base ? input.replace(/(["'(])\/assets\//gu, `$1${base}/assets/`) : input);
+// Пустые <img> без источника — наследство Tilda: там элемент есть, а картинку в конструкторе
+// не задали. Без Tilda-рантайма браузер рисует на их месте значок битой картинки,
+// поэтому подставляем прозрачный пиксель, сохраняя размеры элемента.
+const PIXEL = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+const fillEmptyImages = (input) => input.replace(/<img\b[^>]*>/giu, (tag) => (
+  /\s(?:src|data-original|data-src)\s*=/iu.test(tag) ? tag : tag.replace(/\s*(\/?)>$/u, ` src="${PIXEL}" aria-hidden="true"$1>`)
+));
 // Archived Tilda forms are intentionally handled by the local runtime below.
 // A no-JS browser must not submit their PII to the current page: controls are
 // inert in static HTML and enabled only after the local submit handler is ready.
-const html = snapshot.html
-  .replaceAll('__SITE_BASE__', base)
+const html = fillEmptyImages(withBase(snapshot.html
+  .replaceAll('__SITE_BASE__', base)))
   .replace(localSourceForm, (_form, openTag, contents) => {
     const safeOpenTag = openTag
       .replace(/\saction\s*=\s*(["'])[^"']*\1/giu, '')

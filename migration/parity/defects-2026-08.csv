@@ -48,3 +48,8 @@ wave,url,width,type,element,что_не_так,причина,fix_commit,status
 7,multiple,390,lighthouse-cls,source snapshot first frame,T396 runtime менял геометрию после первого paint и создавал CLS,Snapshot становился видимым до завершения локального first-frame layout,pending,fixed
 7,multiple,all,security,no-JS local source forms,Удаление action не предотвращало browser POST PII на текущий URL,Архивная materialized form сохраняла method=post и активные controls до JS,pending,fixed
 7,/,390,lighthouse-cls,NLM216 firefly pseudo-element,Декоративный firefly после settle создавал CLS 0.000302,Custom CSS анимировал его layout offsets left/top,pending,fixed
+8,66 routes,all,preview-images,инлайн-фоны в зашифрованном превью,Из 2227 инлайн-фонов не переписывался ни один: превью запрашивало незашифрованные пути и получало 404,Шаблон в encrypt_site ловил единственную форму записи style="background-image:url(X)",pending,fixed
+8,multiple,all,preview-images,root-absolute ссылки снапшотов,414 ссылок без плейсхолдера уходили мимо базы /chezakvest-preview,В снятых снапшотах 249 css-url/130 data-original/35 src остались без __SITE_BASE__,pending,fixed
+8,multiple,all,preview-images,ассеты из блоков <style>,Зашифрованный файл из CSS-правила давал 404 и пропавший фон,Правило относится к селектору и не может получить data-enc,pending,fixed
+8,/privacy/,all,production-css,литерал ${base} в стилях,Фоновая плитка и локальный Nunito не загружались на обоих хостах,<style is:inline>{`…`}</style> не выполняет подстановку,pending,fixed
+8,5 routes,all,source-parity,пустые <img> без источника,Браузер рисовал значок битого изображения вместо Tilda-элемента,Оригинальный элемент типа image остался без загруженной картинки,pending,fixed
