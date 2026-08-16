@@ -1,10 +1,12 @@
-// Локальные виджеты внутри снимков Tilda: карта площадок и плашка «БОНУС».
-// Генератор снимков (_capture/build_source_snapshots.py) оставляет на месте
-// сторонних виджетов локальную разметку и маркеры с данными, а весь показ и
+// Локальные виджеты внутри снимков Tilda: карта площадок, ленивые фоны и плашка
+// «БОНУС». Генератор снимков (_capture/build_source_snapshots.py) оставляет на
+// месте сторонних виджетов локальную разметку и маркеры с данными, а весь показ и
 // единственный внешний запрос (карта) живут здесь — запрос уходит только после
 // клика посетителя, как в src/components/LazyMap.astro.
 
 const MAP_TITLE = 'Карта площадок «Чё за Квест» в Ростове-на-Дону';
+// Фон подставляем за полэкрана до появления, чтобы к прокрутке он уже был готов.
+const LAZY_BACKGROUND_MARGIN = '600px 0px';
 // Оригинальный Marquiz показывает плашку через 10 секунд. Такая пауза на статике
 // читается как «плашки нет» — и у посетителя, и на приёмочных скриншотах,
 // поэтому ждём ровно столько, чтобы она не прыгала поверх первого экрана.
@@ -60,6 +62,81 @@ const initMaps = (root) => {
   });
 };
 
+// Фоновые слои Tilda, которым генератор не выдал инлайновый background-image:
+// ссылка ждёт в data-source-lazy-bg, пока слой не подойдёт к экрану. Без этого
+// страница тянула все фоны сразу — на /kids/ это 96 файлов на загрузке.
+const applyLazyBackground = (element) => {
+  const source = element.dataset.sourceLazyBg;
+  if (!source) return;
+  element.style.backgroundImage = `url("${source}")`;
+  // Возвращаем родной атрибут Tilda: по нему слой узнаёт остальной код снимка.
+  element.dataset.original = source;
+  delete element.dataset.sourceLazyBg;
+  element.classList.add('loaded');
+};
+
+const initLazyBackgrounds = (root) => {
+  const layers = root.querySelectorAll('[data-source-lazy-bg]');
+  if (!layers.length) return;
+  if (typeof IntersectionObserver !== 'function') {
+    layers.forEach(applyLazyBackground);
+    return;
+  }
+  const observer = new IntersectionObserver((entries, self) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting || !(entry.target instanceof HTMLElement)) return;
+      self.unobserve(entry.target);
+      applyLazyBackground(entry.target);
+    });
+  }, { rootMargin: LAZY_BACKGROUND_MARGIN });
+  layers.forEach((layer) => observer.observe(layer));
+};
+
+// Плашку рисует наш код, а раскраску ссылок внутри неё — глобальные стили Tilda
+// из шапки документа: без своего правила подпись остаётся синей и подчёркнутой,
+// как необработанная ссылка. Поэтому оформление едет здесь же, рядом с разметкой,
+// и селекторами по классам перебивает правила уровня тега.
+const BONUS_STYLE_ID = 'source-bonus-style';
+const BONUS_STYLE = `
+.quiz-pop{overflow:visible}
+.quiz-pop .quiz-pop__link{color:#fff;text-decoration:none;padding-left:64px}
+.quiz-pop .quiz-pop__link:hover,.quiz-pop .quiz-pop__link:focus{color:#fff;text-decoration:none}
+.quiz-pop .quiz-pop__badge{left:18px;width:32px;height:32px;background:none;border-radius:0;color:#fff}
+.quiz-pop .quiz-pop__badge svg{display:block;width:100%;height:100%}
+.quiz-pop .quiz-pop__eyebrow{letter-spacing:.16em}
+.quiz-pop .quiz-pop__close{position:absolute;right:-4px;top:-4px;display:grid;place-items:center;width:26px;height:26px;flex:none;border-radius:50%;background:#fff;color:#1c1c1c;font-size:17px;font-weight:400;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+`;
+
+const ensureBonusStyle = (document_) => {
+  if (document_.getElementById(BONUS_STYLE_ID)) return;
+  const style = document_.createElement('style');
+  style.id = BONUS_STYLE_ID;
+  style.textContent = BONUS_STYLE;
+  document_.head.append(style);
+};
+
+// Иконка документа с галочкой — то же, что на оригинале слева в плашке.
+const bonusIcon = (document_) => {
+  const svg = document_.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '1.6');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.setAttribute('aria-hidden', 'true');
+  const outline = document_.createElementNS('http://www.w3.org/2000/svg', 'path');
+  outline.setAttribute('d', 'M14 2.75H6.25A1.5 1.5 0 0 0 4.75 4.25v15.5a1.5 1.5 0 0 0 1.5 1.5h11.5a1.5 1.5 0 0 0 1.5-1.5V7.75Z');
+  const fold = document_.createElementNS('http://www.w3.org/2000/svg', 'path');
+  fold.setAttribute('d', 'M14 2.75v5h5.25');
+  const lines = document_.createElementNS('http://www.w3.org/2000/svg', 'path');
+  lines.setAttribute('d', 'M8 10.5h4M8 13.5h3');
+  const check = document_.createElementNS('http://www.w3.org/2000/svg', 'path');
+  check.setAttribute('d', 'm8 17 1.7 1.7L13.5 15');
+  svg.append(outline, fold, lines, check);
+  return svg;
+};
+
 const buildBonusPlaque = (marker) => {
   const document_ = marker.ownerDocument;
   // Классы `quiz-pop` уже оформлены в src/styles/page.css — там же лежит правило
@@ -78,7 +155,7 @@ const buildBonusPlaque = (marker) => {
   const badge = document_.createElement('span');
   badge.className = 'quiz-pop__badge';
   badge.setAttribute('aria-hidden', 'true');
-  badge.textContent = '✓';
+  badge.append(bonusIcon(document_));
 
   const eyebrow = document_.createElement('span');
   eyebrow.className = 'quiz-pop__eyebrow';
@@ -105,6 +182,7 @@ const initBonus = (root) => {
   marker.dataset.ready = 'true';
   if (stored(BONUS_DISMISSED_KEY)) return;
 
+  ensureBonusStyle(document);
   const { plaque, close } = buildBonusPlaque(marker);
   plaque.hidden = true;
   // Снимок живёт внутри `.source-snapshot-shell`, которая до раскладки первого
@@ -128,5 +206,6 @@ export function initSourceWidgets() {
   const root = document.querySelector('[data-source-snapshot]');
   if (!root) return;
   initMaps(root);
+  initLazyBackgrounds(root);
   initBonus(root);
 }

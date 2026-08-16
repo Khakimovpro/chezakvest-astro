@@ -20,6 +20,30 @@ test('keeps the full verified navigation data and only real destinations', () =>
   assert.ok([...catalogLinks, ...partyLinks, ...venueLinks].every((link) => link.href));
 });
 
+// В оригинале (work/raw/pages/home--39800a5ba5.html, запись T344 rec1097897446, то же самое
+// в pryatki_portal--a4ef62f757.html, indiana--ae793e2f47.html и header--46deec6aa8.html)
+// заголовки колонок каталога — сами по себе ссылки, и панель отдаёт 38 <a>: 35 пунктов списков
+// плюс 3 кликабельных заголовка. Колонка «ПРЯТКИ В ТЕМНОТЕ» заголовком-ссылкой НЕ является.
+test('makes the catalog column titles clickable exactly where the original does', () => {
+  const titles = site.megamenu.catalog.cols.map((column) => [column.title, column.href ?? null]);
+
+  assert.deepEqual(titles, [
+    ['КЛАССИЧЕСКИЕ КВЕСТЫ', '/'],
+    ['ПРЯТКИ В ТЕМНОТЕ', null],
+    ['СТРАШНЫЕ КВЕСТЫ', '/strashnye-kvesty'],
+    // нереально.рф/kids в punycode — так адрес записан во всех данных проекта
+    ['VR-ИГРЫ', 'https://xn--80ajazgehl5i.xn--p1ai/kids'],
+  ]);
+
+  // 39 = 38 ссылок оригинальной панели + «Прятки kids». Этот пункт живёт только в мобильном
+  // меню оригинала (тот же файл, блок t450, список ПРЯТКИ В ТЕМНОТЕ), а данные у десктопа
+  // и мобайла общие, поэтому он остаётся в колонке и здесь. Составы намеренно не выравниваем.
+  const titleLinks = site.megamenu.catalog.cols.filter((column) => column.href);
+  const listLinks = site.megamenu.catalog.cols.flatMap((column) => column.links ?? []);
+  assert.equal(titleLinks.length + listLinks.length, 39);
+  assert.ok(listLinks.some((link) => link.href === '/pryatki_kids'));
+});
+
 test('uses a shared local three-channel messenger panel', async () => {
   assert.deepEqual(site.messengers.items.map((item) => item.href), [
     'https://max.ru/id164409771610_bot?start=c1775808014480-ds',

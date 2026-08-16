@@ -84,29 +84,16 @@ const html = fillEmptyImages(withBase(snapshot.html
     if (!(snapshotRoot instanceof HTMLElement)) return;
     const snapshotShell = snapshotRoot.closest('.source-snapshot-shell');
 
-    // Снимок Tilda приходит со сплошным loading="eager" (на /prazdniki-pod-kluch/
-    // это 300 картинок), поэтому браузер тянет всю страницу сразу. Первый экран
-    // оставляем жадным ради LCP, остальное уводим в lazy прямо на разборе
-    // документа: после первого кадра переключать поздно — файлы уже скачаны.
-    const EAGER_MEDIA_LIMIT = 12;
-    const deferredMedia = new WeakSet();
-    [...snapshotRoot.querySelectorAll('img, [data-original]')].forEach((node, index) => {
-      if (index < EAGER_MEDIA_LIMIT || !(node instanceof HTMLElement)) return;
-      deferredMedia.add(node);
-      if (!(node instanceof HTMLImageElement)) return;
-      node.loading = 'lazy';
-      node.decoding = 'async';
-      const source = node.getAttribute('src');
-      if (!source) return;
-      // Снятый и тут же возвращённый src заставляет браузер бросить уже начатую
-      // жадную загрузку и повторить её, когда картинка подойдёт к экрану.
-      node.removeAttribute('src');
-      node.setAttribute('src', source);
-    });
+    // Ленивая загрузка <img> живёт в самом HTML снимка: пока рантайм доберётся до
+    // атрибута, парсер уже встретил тег и браузер начал качать файл, а снятый и
+    // возвращённый src запрос не отменяет. Поэтому здесь loading не трогаем вовсе.
 
-    // Фоновые картинки Tilda назначает своим рантаймом, значит отложенные
-    // назначаем сами — по подходу к экрану, с запасом в пол-экрана.
+    // Фоновые картинки Tilda назначает своим рантаймом, значит назначаем сами —
+    // по подходу к экрану, с запасом в пол-экрана.
+    const loadedBackgrounds = new WeakSet();
     const applyBackgroundImage = (element) => {
+      if (loadedBackgrounds.has(element)) return;
+      loadedBackgrounds.add(element);
       const source = element.dataset.original;
       if (source && !element.style.backgroundImage) element.style.backgroundImage = `url("${source}")`;
       element.classList.add('loaded');
@@ -121,25 +108,23 @@ const html = fillEmptyImages(withBase(snapshot.html
       }, { rootMargin: '600px 0px' })
       : null;
     const observedBackgrounds = new WeakSet();
+    // Пока снимок скрыт, прямоугольника у элемента нет и близость к экрану измерить
+    // нечем — тогда фон уходит наблюдателю. После display:block раскладка считается
+    // заново, и первый экран получает фон сразу, без ожидания кадра наблюдателя.
+    const nearViewport = (element) => {
+      const box = element.getBoundingClientRect();
+      if (box.width <= 0 && box.height <= 0) return false;
+      return box.top < window.innerHeight + 600 && box.bottom > -600;
+    };
     const deferBackgroundImage = (element) => {
-      if (!backgroundObserver) {
+      if (loadedBackgrounds.has(element)) return;
+      if (!backgroundObserver || nearViewport(element)) {
         applyBackgroundImage(element);
         return;
       }
       if (observedBackgrounds.has(element)) return;
       observedBackgrounds.add(element);
       backgroundObserver.observe(element);
-    };
-    // До первого кадра снимок скрыт, и позицию картинки измерить нечем — порядок
-    // в документе лишь приближение. Когда раскладка устоялась, отложенное с
-    // первого экрана возвращаем в жадную загрузку, чтобы не просел LCP.
-    const restoreFirstScreenImages = () => {
-      snapshotRoot.querySelectorAll('img[loading="lazy"]').forEach((image) => {
-        if (!(image instanceof HTMLImageElement) || image.complete) return;
-        const box = image.getBoundingClientRect();
-        if (box.top >= window.innerHeight || box.bottom <= 0) return;
-        image.loading = 'eager';
-      });
     };
 
     const numeric = (value, fallback = 0) => {
@@ -178,7 +163,18 @@ const html = fillEmptyImages(withBase(snapshot.html
       top: numeric(responsiveAttribute(element, 'field-top')),
       axisX: responsiveAttribute(element, 'field-axisx') || 'left',
       axisY: responsiveAttribute(element, 'field-axisy') || 'top',
+      widthUnits: responsiveAttribute(element, 'field-widthunits') || 'px',
+      heightUnits: responsiveAttribute(element, 'field-heightunits') || 'px',
     });
+    // Размер элемента Zero Block бывает записан в процентах: тёмная плашка над
+    // подвалом на / и /kids/ — это ширина «100 %» от сетки брейкпоинта. Пока
+    // единицы игнорировались, из 100 % получалось 100 px, и от полосы во всю
+    // ширину оставался обрубок со скруглением у левого края.
+    const applyPercentUnits = (geometry, boundary, artboardHeight) => {
+      if (geometry.widthUnits === '%' && boundary > 0) geometry.width = boundary * geometry.width / 100;
+      if (geometry.heightUnits === '%' && artboardHeight > 0) geometry.height = artboardHeight * geometry.height / 100;
+      return geometry;
+    };
     const axisPosition = (axis, offset, size, boundary) => {
       if (axis === 'center') return boundary / 2 + offset - size / 2;
       if (axis === 'right') return boundary - offset - size;
@@ -240,6 +236,7 @@ const html = fillEmptyImages(withBase(snapshot.html
         // (60/460/860) когда-то приняли за эталон — отсюда была сетка 1360 для
         // записей T121 и сдвиг карточек каталога на 80 px влево на 1440.
         const gridOffset = upscale === 'window' ? 0 : (window.innerWidth - baseWidth) / 2;
+        const artboardHeight = numeric(artboardAttribute(artboard, 'height'));
         artboard.querySelectorAll(':scope > .t396__group').forEach((group) => {
           if (!(group instanceof HTMLElement)) return;
           const groupLeft = numeric(responsiveAttribute(group, 'group-left'));
@@ -250,6 +247,7 @@ const html = fillEmptyImages(withBase(snapshot.html
           group.querySelectorAll('.t396__elem').forEach((element) => {
             if (!(element instanceof HTMLElement)) return;
             const geometry = elementGeometry(element);
+            applyPercentUnits(geometry, baseWidth, artboardHeight);
             element.style.left = `${geometry.left - groupLeft}px`;
             element.style.top = `${geometry.top - groupTop}px`;
             element.style.width = `${geometry.width}px`;
@@ -271,6 +269,7 @@ const html = fillEmptyImages(withBase(snapshot.html
             const geometry = elementGeometry(element);
             const container = responsiveAttribute(element, 'field-container') || 'grid';
             const boundary = container === 'window' ? window.innerWidth : baseWidth;
+            applyPercentUnits(geometry, boundary, artboardHeight);
             const offset = container === 'window' ? 0 : gridOffset;
             const heightMode = responsiveAttribute(element, 'field-heightmode');
             element.style.width = `${geometry.width}px`;
@@ -280,14 +279,14 @@ const html = fillEmptyImages(withBase(snapshot.html
               ? `${geometry.height}px`
               : 'auto';
             element.style.left = `${offset + axisPosition(geometry.axisX, geometry.left, geometry.width, boundary)}px`;
-            element.style.top = `${axisPosition(geometry.axisY, geometry.top, geometry.height, numeric(artboardAttribute(artboard, 'height')))}px`;
+            element.style.top = `${axisPosition(geometry.axisY, geometry.top, geometry.height, artboardHeight)}px`;
             element.style.zoom = '';
             element.style.removeProperty('--zoom');
             roundRobloxT396LineHeight(element);
           });
           return;
         }
-        const height = numeric(artboardAttribute(artboard, 'height'));
+        const height = artboardHeight;
         artboard.classList.add('rendered', 't396__artboard_scale');
         artboard.style.setProperty('height', `${height * scale}px`, 'important');
         for (const layer of artboard.querySelectorAll(':scope > .t396__carrier, :scope > .t396__filter')) {
@@ -296,6 +295,7 @@ const html = fillEmptyImages(withBase(snapshot.html
         artboard.querySelectorAll(':scope > .t396__elem').forEach((element) => {
           if (!(element instanceof HTMLElement)) return;
           const geometry = elementGeometry(element);
+          applyPercentUnits(geometry, baseWidth, height);
           const heightMode = responsiveAttribute(element, 'field-heightmode');
           element.style.width = `${geometry.width}px`;
           if (geometry.height > 0
@@ -317,9 +317,10 @@ const html = fillEmptyImages(withBase(snapshot.html
     const mediaReady = async (scope) => {
       const images = [...scope.querySelectorAll('img')];
       await Promise.all(images.map(async (image) => {
-        // decode() у отложенной картинки запускает её загрузку и подвешивает
-        // ожидание, поэтому раскладка ждёт только те, что грузятся сразу.
-        // Размеры отложенных берутся из атрибутов width/height снимка.
+        // decode() у ленивой картинки запускает загрузку и подвешивает ожидание,
+        // поэтому раскладка ждёт только те, что грузятся сразу; до остальных
+        // посетитель ещё не долистал. Их размеры берутся из атрибутов width/height
+        // снимка, так что высоты рядов и колонок считаются без ожидания файлов.
         if (image.complete || image.loading === 'lazy') return;
         try { await image.decode(); } catch { /* intrinsic dimensions remain usable */ }
       }));
@@ -412,6 +413,10 @@ const html = fillEmptyImages(withBase(snapshot.html
       let height;
       if (isGallery) {
         const geometry = elementGeometry(galleryElement);
+        // Галерея стоит в сетке своего брейкпоинта, поэтому проценты ширины
+        // считаются от неё же. Высота у галерей всегда в пикселях — ноль в
+        // третьем аргументе означает «пересчитывать нечего».
+        applyPercentUnits(geometry, artboardWidth(), 0);
         width = geometry.width;
         height = geometry.height;
       } else {
@@ -673,18 +678,13 @@ const html = fillEmptyImages(withBase(snapshot.html
       restoreRobloxRecordStacking();
       layoutWindowArtboards();
       snapshotRoot.querySelectorAll('img').forEach((image) => {
-        // У отложенных картинок loading не трогаем: вернуть eager значит снова
-        // скачать всю страницу целиком.
-        if (!deferredMedia.has(image)) image.loading = 'eager';
+        // loading приходит из снимка и остаётся как есть. Здесь только достраиваем
+        // источник тем картинкам Tilda, у которых он лежит в data-original.
         if (!image.src && image.dataset.original) image.src = image.dataset.original;
       });
       snapshotRoot.querySelectorAll('[data-original]').forEach((element) => {
         if (!(element instanceof HTMLElement) || element instanceof HTMLImageElement) return;
-        if (deferredMedia.has(element)) {
-          deferBackgroundImage(element);
-          return;
-        }
-        applyBackgroundImage(element);
+        deferBackgroundImage(element);
       });
       await Promise.all([...snapshotRoot.querySelectorAll('.t-slds')].map(layoutSlider));
       await Promise.all([...snapshotRoot.querySelectorAll('[data-record-type="827"]')].map(layoutT827));
@@ -784,7 +784,6 @@ const html = fillEmptyImages(withBase(snapshot.html
       if (!(snapshotShell instanceof HTMLElement)) return;
       snapshotShell.style.display = 'block';
       await initialise();
-      restoreFirstScreenImages();
       enableLocalFormControls();
       snapshotShell.style.visibility = 'visible';
       snapshotShell.removeAttribute('aria-busy');
@@ -859,6 +858,22 @@ const html = fillEmptyImages(withBase(snapshot.html
   .source-snapshot-page:has([data-source-route='/vypusknoj-kalmar/']) .hdr__inner {
     height: 58px;
   }
+  /* Шапка фиксированная и лежит поверх содержимого, поэтому переход по якорю
+     (пункт «Отзывы» → #otzivy, чипы адресов, ссылки внутри снимка) ставил цель
+     ровно под неё: на /kids/ и /prazdniki-pod-kluch/ так уезжал заголовок «Наши
+     площадки». Отступ прокрутки = 10 px верхнего поля + 70 px панели + воздух;
+     он висит на самих целях, а не на элементе прокрутки, потому и работает
+     одинаково при клике по ссылке, загрузке страницы с хешем и :target. */
+  .source-snapshot-page {
+    --source-header-offset: 96px;
+  }
+  .source-snapshot-page:has([data-source-route='/vypusknoj-kalmar/']) {
+    --source-header-offset: 74px;
+  }
+  .source-snapshot-page [data-source-snapshot] [id],
+  .source-snapshot-page [data-source-snapshot] a[name] {
+    scroll-margin-top: var(--source-header-offset, 96px);
+  }
   @media (min-width: 480px) {
     .source-snapshot-page:has([data-source-route='/hostel-podval-pytok/']) #rec1100733931,
     .source-snapshot-page:has([data-source-route='/patologiya/']) #rec1100733931,
@@ -917,6 +932,16 @@ const html = fillEmptyImages(withBase(snapshot.html
   [data-source-snapshot] .t-animate:not(.t-animate_started) {
     opacity: 1 !important;
     transform: none !important;
+  }
+  /* У Zero Block своё стартовое правило `.t396 .t-animate[data-animate-style=…]
+     {opacity:0}` — трёх классов, тогда как гасящее его `.t-animate_started
+     [data-animate-style=…]{opacity:1}` всего из двух. Поэтому пометка «анимация
+     отыграна» такие элементы не проявляла, и на /roblox-land/ (а ещё на
+     /vypusknoj-kalmar/ и /igra-v-kalmara-lend/) часть картинок и фигур артборда
+     оставалась невидимой. Здесь тот же конечный вид, но селектором подлиннее. */
+  [data-source-snapshot] .t396 .t-animate.t-animate_started[data-animate-style] {
+    opacity: 1;
+    transform: none;
   }
   .source-snapshot-shell[aria-busy='true'] [data-source-snapshot] *,
   .source-snapshot-shell[aria-busy='true'] [data-source-snapshot] *::before,

@@ -15,6 +15,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import copy
 import gzip
 import hashlib
 import json
@@ -28,7 +29,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote, unquote, urljoin, urlparse
 from urllib.request import Request, urlopen
 
-from bs4 import BeautifulSoup, NavigableString, Tag
+from bs4 import BeautifulSoup, Comment, NavigableString, Tag
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -121,6 +122,21 @@ PHONE_RE = re.compile(
 )
 PHONE_TEXT_ATTRIBUTES = ("alt", "title", "aria-label", "placeholder")
 NON_TEXT_PARENTS = {"style", "script", "noscript"}
+# Маска телефона Tilda: её разметку собирает tilda-phone-mask-1.1.min.js, которого
+# в снимке нет. Заготовка полей ниже повторяет его результат один в один — блок
+# страны (флаг, треугольник, код) плюс само поле ввода.
+PHONE_MASK_PLACEHOLDER = "(000) 000-00-00"
+# Инлайновые объявления, которые на самом поле обязаны уехать в обёртку: рамку,
+# фон и высоту рисует теперь она, а инлайн у поля перебил бы source-phonemask.css.
+PHONE_INPUT_STYLE_DROP = ("border", "background", "height", "padding", "width", "box-shadow", "outline")
+
+# Первый экран грузим жадно ради LCP, остальное — лениво. Порог считается по
+# записям Tilda (rec…): первыми в документе идут шапка, герой и первый блок, и их
+# картинки видно без прокрутки. Пустые записи слот не занимают — счёт идёт только
+# по тем, где медиа действительно есть. Потолок в 16 узлов страхует от
+# записи-галереи, которая одна тянет сотню файлов.
+EAGER_MEDIA_RECORDS = 3
+EAGER_MEDIA_LIMIT = 16
 
 # Styling for the local widgets the generator injects. It lives inside the snapshot
 # because the snapshot is the only artefact this build owns; every selector is scoped
@@ -615,9 +631,7 @@ def materialize_zero_forms(root: Tag, soup: BeautifulSoup) -> None:
                         "class": ["t-input", "t-input-phonemask__wrap"],
                         "style": control_style,
                     })
-                    country = soup.new_tag("span", attrs={"class": ["t-input-phonemask__select-code"]})
-                    country.string = "+7"
-                    phone.append(country)
+                    phone.append(phone_country_block(soup))
                     control = soup.new_tag("input", attrs={
                         "aria-label": str(field.get("li_ph") or "Телефон"),
                         "class": ["t-input", "t-input-phonemask", "js-tilda-rule"],
@@ -663,6 +677,89 @@ def materialize_zero_forms(root: Tag, soup: BeautifulSoup) -> None:
         )
         atom.clear()
         atom.extend([form, style])
+
+
+def phone_country_block(soup: BeautifulSoup) -> Tag:
+    """Блок страны телефонной маски: флаг, треугольник и код «+7».
+
+    Ровно та разметка, которую на живой странице строит скрипт маски Tilda
+    (сверено с гидратированным снимком главной). Раскладку ей даёт
+    `src/styles/source-phonemask.css`, поэтому имена классов менять нельзя.
+    """
+    select = soup.new_tag("div", attrs={"class": ["t-input-phonemask__select"]})
+    flag = soup.new_tag("span", attrs={
+        "class": ["t-input-phonemask__select-flag"],
+        "data-phonemask-flag": "ru",
+    })
+    triangle = soup.new_tag("span", attrs={"class": ["t-input-phonemask__select-triangle"]})
+    code = soup.new_tag("span", attrs={"class": ["t-input-phonemask__select-code"]})
+    code.string = "+7"
+    select.extend([flag, triangle, code])
+    return select
+
+
+def strip_style_declarations(style: str, properties: tuple[str, ...]) -> str:
+    """Выбросить из инлайнового стиля объявления по перечисленным свойствам."""
+    kept = []
+    for declaration in style.split(";"):
+        name = declaration.split(":", 1)[0].strip().lower()
+        if not declaration.strip() or not name:
+            continue
+        if any(name == prop or name.startswith(f"{prop}-") for prop in properties):
+            continue
+        kept.append(declaration.strip())
+    return ";".join(kept)
+
+
+def normalize_phone_fields(root: Tag, soup: BeautifulSoup) -> None:
+    """Свести все поля телефона к полной разметке маски Tilda.
+
+    В снимках их три вида, и без блока страны поле остаётся без «+7» и флага:
+      * обёртка есть, внутри голый `span` с кодом — так их собирает
+        `materialize_zero_forms` из зеро-блоков;
+      * класс обёртки висит прямо на `<input>` (архивные поля мессенджера);
+      * обёртки нет вовсе — архивное поле `js-phonemask-input`, которое на живой
+        странице оборачивает скрипт маски.
+    Все три приводим к одному виду: `div.t-input-phonemask__wrap` с блоком страны
+    и полем ввода внутри.
+    """
+    # Поля, где класс обёртки достался самому `<input>`, и голые архивные поля:
+    # им нужна настоящая обёртка, иначе блоку страны просто некуда встать.
+    for field in root.select("input.t-input-phonemask__wrap, input.js-phonemask-input"):
+        if field.find_parent(class_="t-input-phonemask__wrap") is not None:
+            continue
+        style = str(field.get("style", ""))
+        wrap = soup.new_tag("div", attrs={"class": ["t-input", "t-input-phonemask__wrap"]})
+        if style:
+            wrap["style"] = style
+        field.insert_before(wrap)
+        # Рамку, фон и высоту теперь держит обёртка; оставшийся на поле инлайн
+        # перебил бы `.t-input-phonemask` из source-phonemask.css по специфичности.
+        inner_style = strip_style_declarations(style, PHONE_INPUT_STYLE_DROP)
+        if inner_style:
+            field["style"] = inner_style
+        else:
+            field.attrs.pop("style", None)
+        field["class"] = list(dict.fromkeys([
+            *(name for name in field.get("class", []) if name != "t-input-phonemask__wrap"),
+            "t-input",
+            "t-input-phonemask",
+        ]))
+        # Плейсхолдер архивного поля — маска чужой страны («+1(000)000-0000»);
+        # рядом с кодом «+7» она читается как ошибка.
+        placeholder = str(field.get("placeholder", ""))
+        if re.fullmatch(r"[+\d()\s-]*", placeholder) and re.search(r"0{3}", placeholder):
+            field["placeholder"] = PHONE_MASK_PLACEHOLDER
+        wrap.append(field.extract())
+
+    for wrap in root.select("div.t-input-phonemask__wrap"):
+        if wrap.select_one(".t-input-phonemask__select") is not None:
+            continue
+        # Голый код без блока страны остаётся от сборки зеро-блоков: заменяем его
+        # целиком, чтобы «+7» не оказалось в разметке дважды.
+        for code in wrap.select(":scope > .t-input-phonemask__select-code"):
+            code.decompose()
+        wrap.insert(0, phone_country_block(soup))
 
 
 def local_data(path: Path) -> dict:
@@ -727,6 +824,20 @@ def materialize_local_map(record: Tag, soup: BeautifulSoup) -> bool:
         if attribute.startswith("data-map"):
             canvas.attrs.pop(attribute, None)
     canvas["class"] = list(dict.fromkeys([*canvas.get("class", []), "source-map"]))
+
+    # Шесть лендингов-артбордов (roblox-land, minecraft-lend, vypusknoj-kalmar и
+    # соседи) держат карту в контейнере во всю ширину экрана: живой Яндекс просто
+    # рисует канвас шире. Наш локальный постер — снимок фиксированного размера, и
+    # растянутый во всю ширину он режет метки и выставляет по краям обрезанные
+    # кнопки масштаба. Сажаем блок в тот же контейнер 1160px, в котором карта
+    # стоит на остальных 59 маршрутах.
+    holder = canvas.find_parent(class_="t-width")
+    if holder is not None and "t-width_100" in holder.get("class", []):
+        holder["class"] = list(dict.fromkeys([
+            *(name for name in holder.get("class", []) if name != "t-width_100"),
+            "t-width_12",
+        ]))
+
     embed = map_widget_url(markers) if markers else str(local_data(VENUES_DATA)["mapEmbed"])
     canvas["data-source-map"] = ""
     canvas["data-source-map-embed"] = embed
@@ -886,12 +997,19 @@ def normalize_phone_numbers(root: Tag, phone: str, phone_href: str) -> None:
     Archived pages carry three spellings of the venue number plus numbers that
     belong to other businesses; the site has a single phone and one format for it.
     """
+    # Номер обязан жить одной строкой. Обычные пробелы внутри него в узкой колонке
+    # подвала переносились («+7 (928) 216 36» и «23» строкой ниже), а неразрывные
+    # держат его целым; поиск по странице от них не страдает — браузеры считают
+    # U+00A0 обычным пробелом, — и в `tel:`-ссылку они не попадают: там свой
+    # `phoneHref` из site.json.
+    unbreakable = phone.replace(" ", " ")
+
     def replace(match: re.Match[str]) -> str:
         digits = re.sub(r"\D", "", match.group(0))
         # An input mask placeholder (`+7(000) 000-00-00`) is not a phone number.
         if len(digits) != 11 or digits[1:] == "0" * 10:
             return match.group(0)
-        return phone
+        return unbreakable
 
     for node in list(root.find_all(string=True)):
         # Comments and CDATA are NavigableString subclasses; rewriting one would
@@ -911,6 +1029,64 @@ def normalize_phone_numbers(root: Tag, phone: str, phone_href: str) -> None:
             value = element.get(attribute)
             if isinstance(value, str) and value:
                 element[attribute] = PHONE_RE.sub(replace, value)
+
+
+def restore_missing_records(soup: BeautifulSoup, contract_soup: BeautifulSoup) -> list[str]:
+    """Вернуть записи, которые потерял браузерный override при съёмке.
+
+    Гидратированный снимок `/kids/` приехал без двух записей: rec844797130 с
+    виджетом отзывов и rec1100733981 с картой в подвале — на живой странице обе
+    строит внешний скрипт, и в момент съёмки их в DOM ещё не было. Состав записей
+    определяет архивная каноническая страница, поэтому недостающие переносим из
+    неё на их же место — иначе локальные карта и отзывы просто некуда поставить.
+
+    Записи шапки пропускаем: `#t-header` всё равно удаляется следом, её роль в
+    раскладке играет общий Astro-хедер.
+    """
+    target_root = soup.select_one("#allrecords")
+    source_root = contract_soup.select_one("#allrecords")
+    if target_root is None or source_root is None or target_root is source_root:
+        return []
+    pattern = re.compile(r"^rec\d+$")
+    present = {str(record.get("id")) for record in target_root.find_all(id=pattern)}
+    restored: list[str] = []
+    for record in source_root.find_all(id=pattern):
+        record_id = str(record.get("id"))
+        if record_id in present:
+            continue
+        parent = record.parent
+        parent_id = str(parent.get("id") or "")
+        if parent_id == "t-header":
+            continue
+        anchor_parent = target_root if parent is source_root else (
+            target_root.select_one(f"#{parent_id}") if parent_id else None
+        )
+        if anchor_parent is None:
+            continue
+        # Место определяем по соседям: встаём сразу за ближайшей предыдущей
+        # записью, которая в снимке есть, иначе перед ближайшей следующей.
+        previous = next(
+            (target_root.select_one(f"#{sibling.get('id')}")
+             for sibling in record.find_previous_siblings(id=pattern)
+             if str(sibling.get("id")) in present),
+            None,
+        )
+        following = None if previous is not None else next(
+            (target_root.select_one(f"#{sibling.get('id')}")
+             for sibling in record.find_next_siblings(id=pattern)
+             if str(sibling.get("id")) in present),
+            None,
+        )
+        node = copy.copy(record)
+        if previous is not None:
+            previous.insert_after(node)
+        elif following is not None:
+            following.insert_before(node)
+        else:
+            anchor_parent.append(node)
+        present.add(record_id)
+        restored.append(record_id)
+    return restored
 
 
 def prepare_snapshot(
@@ -941,6 +1117,8 @@ def prepare_snapshot(
             continue
         digest = hashlib.sha1(href.encode()).hexdigest()[:16]
         stylesheets[href] = f"{digest}.css"
+
+    restore_missing_records(soup, contract_soup)
 
     header = soup.select_one("#t-header")
     had_source_header = contract_soup.select_one("#t-header") is not None
@@ -1115,6 +1293,7 @@ def prepare_snapshot(
 
     materialize_zero_galleries(root, soup)
     materialize_zero_forms(root, soup)
+    normalize_phone_fields(root, soup)
 
     # Browser overrides are intentionally captured after the source runtime has
     # materialised script-only galleries and forms. Strip every viewport-bound
@@ -1211,6 +1390,13 @@ def prepare_snapshot(
     # inside #allrecords would re-apply page-global rules after isolation.
     for unsafe in root.select("script, noscript, iframe, object, embed, link"):
         unsafe.decompose()
+    # Tilda оставляет в разметке комментарий «Form export deps» со списком своих
+    # скриптов. Подключить их нельзя (санитайзер режет исполняемое), но выкачка
+    # видит в комментарии ссылки и вендорит 800 КБ мёртвых файлов — их запрещает
+    # asset-audit. Комментарий инертен, поэтому убираем его целиком.
+    for comment in root.find_all(string=lambda node: isinstance(node, Comment)):
+        if "Form export deps" in comment:
+            comment.extract()
     for form in root.select("form"):
         form["action"] = ""
         form["method"] = "post"
@@ -1278,21 +1464,72 @@ def prepare_snapshot(
     return meta, resources, stylesheets
 
 
+def outer_record(node: Tag) -> Tag | None:
+    """Самая внешняя запись Tilda (`rec…`), внутри которой лежит узел."""
+    outermost: Tag | None = None
+    current: Tag | None = node
+    while current is not None:
+        if isinstance(current, Tag) and re.fullmatch(r"rec\d+", str(current.get("id") or "")):
+            outermost = current
+        current = current.parent
+    return outermost
+
+
+def defer_offscreen_media(soup: BeautifulSoup) -> None:
+    """Оставить жадной только медиа первого экрана, остальное отложить.
+
+    Ленивость обязана стоять в самом снимке: рантайм получает документ, когда
+    парсер уже встретил `<img>` и браузер начал качать файл, а снятый и
+    возвращённый `src` начатый запрос не отменяет. Поэтому `loading="lazy"`
+    проставляется здесь, при генерации, а фоновым слоям Tilda инлайновый
+    `background-image` до подхода к экрану просто не выдаётся: ссылка ждёт под
+    маркером `data-source-lazy-bg`, который подхватывает
+    `src/scripts/source-widgets.js`. `data-original` у отложенного слоя при этом
+    снимается намеренно — иначе фон назначит первый же обход рантайма, и вся
+    страница снова уедет в сеть на загрузке.
+    """
+    eager_records: list[str] = []
+    eager_count = 0
+    for node in soup.select("img, [data-original]"):
+        record = outer_record(node)
+        record_id = str(record.get("id")) if record is not None else ""
+        if record_id not in eager_records and len(eager_records) < EAGER_MEDIA_RECORDS:
+            eager_records.append(record_id)
+        eager = record_id in eager_records and eager_count < EAGER_MEDIA_LIMIT
+        if eager:
+            eager_count += 1
+            if node.name == "img":
+                node["loading"] = "eager"
+            continue
+
+        if node.name == "img":
+            node["loading"] = "lazy"
+            node["decoding"] = "async"
+        background = str(node.get("data-original") or "")
+        style = str(node.get("style", ""))
+        if not background or "background-image" not in style:
+            continue
+        stripped = strip_style_declarations(style, ("background-image",))
+        if stripped:
+            node["style"] = stripped
+        else:
+            node.attrs.pop("style", None)
+        node["class"] = [name for name in node.get("class", []) if name != "loaded"]
+        # У `<img>` ссылка остаётся в `src`, и ленивую загрузку уже держит браузер;
+        # маркер нужен только фоновым слоям, у которых своего запроса нет.
+        if node.name != "img":
+            node["data-source-lazy-bg"] = background
+            node.attrs.pop("data-original", None)
+
+
 def apply_image_dimensions(snapshot_path: Path) -> None:
     soup = BeautifulSoup(snapshot_path.read_text(encoding="utf-8"), "html.parser")
-    changed = False
     for image in soup.select("img"):
-        image["loading"] = "eager"
         source = str(image.get("src") or image.get("data-original") or "")
-        if not source or source.startswith("data:"):
-            if not image.get("width"):
-                image["width"] = "1"
-            if not image.get("height"):
-                image["height"] = "1"
-            changed = True
-            continue
-        relative = source.replace(f"{BASE_TOKEN}/assets/", "", 1)
-        dimensions = image_dimensions(PUBLIC_ASSETS / relative)
+        dimensions = None
+        if source and not source.startswith("data:"):
+            relative = source.replace(f"{BASE_TOKEN}/assets/", "", 1)
+            dimensions = image_dimensions(PUBLIC_ASSETS / relative)
         if dimensions:
             image["width"], image["height"] = map(str, dimensions)
         else:
@@ -1300,9 +1537,10 @@ def apply_image_dimensions(snapshot_path: Path) -> None:
                 image["width"] = "1"
             if not image.get("height"):
                 image["height"] = "1"
-        changed = True
-    if changed:
-        snapshot_path.write_text(str(soup), encoding="utf-8")
+    # Ленивость ставится после размеров: она уносит ссылку фонового слоя из
+    # `data-original`, откуда размеры её и читают.
+    defer_offscreen_media(soup)
+    snapshot_path.write_text(str(soup), encoding="utf-8")
 
 
 def main() -> None:

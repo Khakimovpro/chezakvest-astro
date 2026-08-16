@@ -55,6 +55,7 @@
    "cols": [
     {
      "title": "КЛАССИЧЕСКИЕ КВЕСТЫ",
+     "href": "/",
      "links": [
       { "t": "Ограбление банка. Бумажный дом", "href": "/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom" },
       { "t": "Гарри и последний крестраж", "href": "/kvest_v_realnosti_harry_potter_i_krestrazh" },
@@ -103,6 +104,7 @@
     },
     {
      "title": "VR-ИГРЫ",
+     "href": "https://xn--80ajazgehl5i.xn--p1ai/kids",
      "links": [
       { "t": "Portal Strike", "href": "/portal-strike" },
       { "t": "Party Games", "href": "/party-games" },
