@@ -1,6 +1,10 @@
 ---
 import Header from './Header.astro';
+import MessengerFab from './MessengerFab.astro';
 import '../styles/page.css';
+// Локальные надстройки поверх снимка: раскладка телефонной маски и виджеты,
+// которых нет в санированном HTML Tilda.
+import '../styles/source-phonemask.css';
 
 const { snapshot } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/u, '');
@@ -48,6 +52,18 @@ const html = fillEmptyImages(withBase(snapshot.html
 </main>
 
 <noscript><style>.source-snapshot-shell { display: block !important; visibility: visible !important; }</style></noscript>
+
+<MessengerFab />
+
+<script>
+  // Поведение, которое на оригинале давали inline-скрипты страницы Tilda:
+  // наведение на карточку квеста и локальные виджеты на месте сторонних.
+  import { initCardHover } from '../scripts/source-card-hover.js';
+  import { initSourceWidgets } from '../scripts/source-widgets.js';
+
+  initCardHover();
+  initSourceWidgets();
+</script>
 
 <section class="source-booking" id="source-booking" aria-labelledby="source-booking-title">
   <a class="source-booking__backdrop" href="#" aria-label="Закрыть форму"></a>
