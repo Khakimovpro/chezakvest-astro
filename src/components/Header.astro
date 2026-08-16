@@ -10,6 +10,24 @@ const s = site;
 const prefixIcon = asset('/assets/static.tildacdn.com/lib/icons/button/loosedots_light.svg');
 const menuColumns = (key) => s.megamenu[key]?.cols ?? [];
 const hrefFor = (item) => item.external ? item.href : link(item.href);
+
+// Текущая страница помечается aria-current="page" — так в оригинале работает
+// класс .t-active выезжающего меню (пункт становится #cccccc).
+// Сравниваем только путь: ссылки с якорем (например «Отзывы» → /#otzivy) активными
+// не считаем, иначе на главной пункт гас бы без причины. База (/<repo>/) срезается
+// с обеих сторон, потому что Astro.url.pathname её содержит, а link() добавляет.
+const routeKey = (value) => {
+  const path = String(value || '/').replace(/[?#].*$/, '');
+  const withoutBase = base && path.startsWith(base) ? path.slice(base.length) : path;
+  return withoutBase.replace(/\/+$/, '') || '/';
+};
+const currentRoute = routeKey(Astro.url.pathname);
+const isCurrent = (href) => {
+  const value = String(href || '');
+  if (!value || /[#?]/.test(value) || /^(?:https?:|tel:|mailto:)/i.test(value)) return false;
+  return routeKey(link(value)) === currentRoute;
+};
+const currentAttrs = (href) => (isCurrent(href) ? { 'aria-current': 'page' } : {});
 ---
 
 <header class="hdr" id="top">
@@ -24,24 +42,24 @@ const hrefFor = (item) => item.external ? item.href : link(item.href);
           <li class:list={['nav__item', { 'has-mega': item.mega }]}>
             {item.mega ? (
               <span class="nav__trigger">
-                <a href={link(item.href)}>
+                <a href={link(item.href)} {...currentAttrs(item.href)}>
                   <img class="nav__prefix" src={prefixIcon} width="14" height="14" alt="" aria-hidden="true" />
                   {item.t}
                 </a>
               </span>
-            ) : <a href={link(item.href)}>{item.t}</a>}
+            ) : <a href={link(item.href)} {...currentAttrs(item.href)}>{item.t}</a>}
             {item.mega && (
               <div class:list={['mega', `mega--${item.mega}`]}>
                 <div class="mega__inner container">
                   {menuColumns(item.mega).map((column) => (
                     <section class="mega__col">
                       {column.href ? (
-                        <a class:list={['mega__title', { 'mega__title--accent': column.accent }]} href={link(column.href)}>{column.title}</a>
+                        <a class:list={['mega__title', { 'mega__title--accent': column.accent }]} href={link(column.href)} {...currentAttrs(column.href)}>{column.title}</a>
                       ) : <div class="mega__title">{column.title}</div>}
                       {column.links?.length > 0 && (
                         <ul class="mega__links">
                           {column.links.map((entry) => (
-                            <li><a class="mega__link" href={hrefFor(entry)} {...(entry.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{entry.t}</a></li>
+                            <li><a class="mega__link" href={hrefFor(entry)} {...currentAttrs(entry.external ? '' : entry.href)} {...(entry.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{entry.t}</a></li>
                           ))}
                         </ul>
                       )}
@@ -89,15 +107,15 @@ const hrefFor = (item) => item.external ? item.href : link(item.href);
               <div class="mmenu__sub" id={`mobile-${item.mega}`} hidden>
                 {menuColumns(item.mega).map((column) => (
                   <section class="mmenu__group">
-                    {column.href ? <a class:list={['mmenu__group-title', { 'mmenu__group-title--accent': column.accent }]} href={link(column.href)}>{column.title}</a> : <div class="mmenu__group-title">{column.title}</div>}
+                    {column.href ? <a class:list={['mmenu__group-title', { 'mmenu__group-title--accent': column.accent }]} href={link(column.href)} {...currentAttrs(column.href)}>{column.title}</a> : <div class="mmenu__group-title">{column.title}</div>}
                     {column.links?.map((entry) => (
-                      <a class="mmenu__link" href={hrefFor(entry)} {...(entry.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{entry.t}</a>
+                      <a class="mmenu__link" href={hrefFor(entry)} {...currentAttrs(entry.external ? '' : entry.href)} {...(entry.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{entry.t}</a>
                     ))}
                   </section>
                 ))}
               </div>
             </>
-          ) : <a class="mmenu__plain-link" href={link(item.href)}>{item.t}</a>}
+          ) : <a class="mmenu__plain-link" href={link(item.href)} {...currentAttrs(item.href)}>{item.t}</a>}
         </li>
       ))}
     </ul>

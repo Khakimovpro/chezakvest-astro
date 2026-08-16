@@ -1,1 +1,107 @@
-/* Раскладка телефонной маски Tilda. Заполняется агентом A1 (см. CODEX_PROMPT_2026-08-16.md). */
+/* Раскладка телефонной маски Tilda внутри снимков.
+ *
+ * Зачем файл: раскладочные правила маски Tilda отдаёт не стилем, а инъекцией <style>
+ * из tilda-phone-mask-1.1.min.js (функция t_form_phonemask__addStyle), поэтому в снятые
+ * стили они не попали. Без них wrap остаётся display:block: блок «+7» встаёт отдельной
+ * строкой, а поле ввода уезжает под него и вылезает за границу рамки.
+ * Значения ниже сняты один в один с того же скрипта — архив лежит в
+ * work/recon-2026-08-10/proto/F/assets/static.tildacdn.com/js/tilda-phone-mask-1.1.min.js.
+ *
+ * Область действия ограничена снимком (.source-snapshot-shell / [data-source-snapshot]),
+ * чтобы правила не задели нативные страницы клона.
+ *
+ * В снимках три разных разметки поля телефона, и правила рассчитаны на все три:
+ *   A. полная от Tilda (kids, home): div.wrap > div.__select (флаг + треугольник + «+7») + input;
+ *   B. собранная генератором из зеро-блоков: div.wrap > span.__select-code + input;
+ *   C. поле мессенджера (prazdnik-maxi, den-rozhdeniya-uznik-azkabana): класс wrap висит
+ *      на самом <input>, контейнера нет. Контейнерные правила намеренно начинаются с `div`,
+ *      чтобы такому полю не назначить display:flex.
+ */
+
+:is(.source-snapshot-shell, [data-source-snapshot]) div.t-input-phonemask__wrap {
+  position: relative;
+  display: flex;
+  /* align-items не задаём намеренно: у Tilda дети тянутся на всю высоту поля
+     (на оригинале select и input по 58 px внутри 60-пиксельного wrap) */
+  overflow: hidden;
+  /* высота, паддинги и рамка приходят от .t-input и инлайновых стилей Tilda —
+     их не перебиваем, иначе разъедутся поля с высотой 50/60/62 px */
+}
+
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-input-phonemask {
+  height: auto; /* высоту задаёт растяжение во флексе, а не собственные 60 px от .t-input */
+  padding: 0; /* левый отступ поля даёт wrap, у input своего быть не должно */
+  background-color: transparent;
+  flex: 1 1 auto; /* занимает всё, что осталось от блока страны */
+  min-width: 0; /* иначе минимальная ширина текстового поля распирает строку на 390 px */
+}
+
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-input-phonemask__select {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-right: 5px;
+  margin-left: 0;
+  font-size: 16px;
+  /* у Tilda здесь cursor:pointer, но список стран открывал его скрипт, которого у нас нет —
+     курсор не должен обещать клик, которого не будет */
+  cursor: default;
+}
+
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-input-phonemask__select-triangle {
+  position: relative;
+  margin-left: 6px;
+  border-style: solid;
+  border-width: 5px 4px 0;
+  border-color: #9a9a9a transparent transparent;
+}
+
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-input-phonemask__select-code {
+  white-space: nowrap;
+}
+
+/* разметка A: «+7» стоит третьим в блоке страны, отступ от треугольника */
+:is(.source-snapshot-shell, [data-source-snapshot])
+  .t-input-phonemask__select
+  .t-input-phonemask__select-code {
+  margin-left: 10px;
+}
+
+/* разметка B: «+7» лежит прямо в wrap, без блока страны — центрируем сами
+   и держим до поля тот же зазор, который в разметке A даёт margin-right у __select */
+:is(.source-snapshot-shell, [data-source-snapshot])
+  div.t-input-phonemask__wrap
+  > .t-input-phonemask__select-code {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-right: 5px;
+}
+
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-input-phonemask__select-flag {
+  display: inline-block;
+  width: 18px;
+  min-width: 18px;
+  height: 13px;
+  background-color: #c5c5c5; /* серый прямоугольник, пока спрайт не загрузился */
+  background-image: var(--source-flags-url);
+  background-repeat: no-repeat;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Российский флаг в спрайте flags7.png (390×368): сетка ячеек 28×23 с полем 4 px,
+   ru — одиннадцатая колонка и тринадцатая строка, окно 18×13 срезает по краю.
+   Позиция взята из карты флагов того же скрипта Tilda и проверена по пикселям спрайта:
+   в этом окне три полосы — белая, синяя (#0431a9), красная (#d7261a). */
+:is(.source-snapshot-shell, [data-source-snapshot])
+  .t-input-phonemask__select-flag[data-phonemask-flag='ru'] {
+  background-position: -285px -281px;
+}
+
+@media screen and (max-width: 640px) {
+  /* iOS зумит страницу при фокусе в поле со шрифтом меньше 16 px.
+     У Tilda здесь ровно 16 px, так что это фиксация текущего размера, а не правка вида. */
+  :is(.source-snapshot-shell, [data-source-snapshot]) .t-input-phonemask {
+    font-size: 16px;
+  }
+}

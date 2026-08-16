@@ -16,15 +16,21 @@ body:not(.source-snapshot-page) .hdr__logo img{width:auto;height:47px}
 .hdr__nav{display:flex;flex:1 1 auto;justify-content:center;min-width:0}
 .nav{display:flex;align-items:center;gap:8px}
 .nav__item{position:static}
-.nav__item>a{display:inline-flex;align-items:center;justify-content:center;height:33px;padding:0 10px;border-radius:5px;
-  color:#fff;font-size:14px;font-weight:400;white-space:nowrap;transition:background-color .2s,color .2s}
+/* Геометрия пунктов. Цвета вынесены отдельными правилами ниже: на страницах со
+   снимками действует `.source-snapshot-page .hdr a{color:inherit}` (0,2,1) из
+   SourceSnapshotBody, и любое цветовое правило шапки должно быть тяжелее его,
+   иначе пункты наследуют #333 от .hdr и меню перестаёт быть белым. */
+.nav__item>a,.nav__trigger>a{display:inline-flex;align-items:center;justify-content:center;height:33px;padding:0 10px;border-radius:5px;
+  font-size:14px;font-weight:400;white-space:nowrap;text-decoration:none;
+  transition:background-color .2s ease-in-out,color .2s ease-in-out}
 .nav__trigger{position:relative;display:inline-flex}
-.nav__trigger>a{display:inline-flex;align-items:center;justify-content:center;height:33px;padding:0 10px;border-radius:5px;
-  color:#fff;font-size:14px;font-weight:400;white-space:nowrap;transition:background-color .2s,color .2s}
 /* Keeps the trigger and the absolutely-positioned panel in one hover path. */
 .nav__trigger::after{position:absolute;top:100%;left:0;width:100%;height:22px;content:""}
-.nav__item>a:hover,.nav__item:focus-within>a{background:#fff;color:var(--on-light);text-decoration:none}
-.nav__trigger>a:hover,.nav__item:focus-within .nav__trigger>a{background:#fff;color:var(--on-light);text-decoration:none}
+/* Значения из исходника Tilda (кнопки шапки rec1097897441, токены --uc-button-*):
+   текст #ffffff, на наведении белая плашка и текст #333333, переход 0.2s ease-in-out. */
+.hdr .nav .nav__item>a,.hdr .nav .nav__trigger>a{color:#fff}
+.hdr .nav .nav__item>a:hover,.hdr .nav .nav__item:focus-within>a,
+.hdr .nav .nav__trigger>a:hover,.hdr .nav .nav__item:focus-within .nav__trigger>a{background:#fff;color:var(--on-light);text-decoration:none}
 .nav__prefix{width:14px;height:14px;margin-right:0;flex:0 0 auto}
 .mega{position:absolute;top:70px;left:50%;width:100vw;margin-left:-50vw;padding:15px 0 30px;border-radius:0 0 30px 30px;background:#fff;
   opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-8px);transition:opacity .2s ease,transform .2s ease;z-index:890}
@@ -35,16 +41,25 @@ body:not(.source-snapshot-page) .hdr__logo img{width:auto;height:47px}
 .nav__item.has-mega.is-open .mega{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0)}
 .mega__inner{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:40px}
 .mega--party .mega__col:nth-child(2){grid-column:3}
-.mega__title{display:block;margin-bottom:14px;color:#ff6900;font-size:16px;font-weight:700;line-height:1.35;letter-spacing:1px;text-transform:uppercase}
-.mega__title--accent{color:#ff6900}
+.mega__title{display:block;margin-bottom:14px;font-size:16px;font-weight:700;line-height:1.35;letter-spacing:1px;text-transform:uppercase}
 .mega__links{display:flex;flex-direction:column;gap:10px}
-.mega__link{display:block;color:#333;font-size:14px;font-weight:300;line-height:1.1}
-.mega__link:hover{color:#333;text-decoration:underline;text-decoration-color:#ff6900;text-underline-offset:3px}
+.mega__link{display:block;font-size:14px;font-weight:300;line-height:1.1}
+/* Оригинал (T344 rec1097897446/51/56): заголовок колонки #ff6900, ссылки #333333.
+   Заголовок бывает ссылкой (СТРАШНЫЕ КВЕСТЫ, ВЫПУСКНОЙ, КОНТАКТЫ) — без запаса по
+   весу селектора такие заголовки на снимках уходили в серый, а соседние оставались
+   оранжевыми. Поэтому цвета панели тоже пишем через `.hdr .mega`. */
+.hdr .mega .mega__title,.hdr .mega .mega__title--accent{color:#ff6900}
+.hdr .mega .mega__link{color:#333;text-decoration:none;transition:color .3s ease-in-out}
+.hdr .mega .mega__link:hover{color:#333;text-decoration:underline;text-decoration-color:#ff6900;text-underline-offset:3px}
 .hdr__actions{display:flex;align-items:center;flex:0 0 auto;gap:10px}
 .hdr__phone{display:inline-flex;align-items:center;gap:9px;height:33px;padding:0 10px;border:0;border-radius:5px;background:#fff;
-  color:var(--on-light);font-size:16px;font-weight:500;transition:color .2s}
+  font-size:16px;font-weight:500;text-decoration:none;transition:color .2s ease-in-out}
 .hdr__phone svg{width:20px;height:21px;color:#ff6b00}
-.hdr__phone:hover{color:var(--orange-text)}
+/* Тот же запас по весу, что и у пунктов меню: иначе на снимках телефон терял свой
+   цвет наведения. Оригинал: #333333, на наведении оранжевый (берём AA-безопасный
+   токен --orange-text вместо исходного #ff6900 — тёмный текст на белой плашке). */
+.hdr .hdr__actions .hdr__phone{color:var(--on-light)}
+.hdr .hdr__actions .hdr__phone:hover{color:var(--orange-text)}
 .hdr__wa{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:33px;height:33px;padding:0;border:0;border-radius:5px;background:#fff}
 .hdr__burger{display:none;align-items:center;justify-content:center;flex-direction:column;width:33px;height:33px;padding:0;border:0;border-radius:5px;background:#fff;gap:4px}
 .hdr__burger span{display:block;width:23px;height:2px;border-radius:0;background:#333;transition:.25s}
@@ -70,6 +85,26 @@ body:not(.source-snapshot-page) .mmenu__logo img{width:270px;max-width:100%;heig
 .mmenu__link{display:block;padding:5px 0;color:#333;font-size:14px;line-height:1.35}
 .mmenu__messenger{width:max-content;margin-top:auto;padding:10px 0;border:0;background:transparent;color:#60a847;font-size:14px;font-weight:600}
 .mmenu__phone{display:inline-flex;align-items:center;justify-content:center;width:182px;min-height:50px;margin-top:8px;border:1px solid #333;border-radius:6px;color:#333;font-size:14px;font-weight:600}
+/* Панель живёт вне <header>, а на страницах со снимками нет глобального сброса
+   `a{text-decoration:none}` — без этого правила все пункты идут с подчёркиванием. */
+.mmenu a{text-decoration:none}
+/* Цвета ссылок панели пишем через `.mmenu`: правило с одним классом легче
+   глобального `body:not(.source-snapshot-page) a{color:inherit}` (0,1,2), из-за чего
+   заголовок-ссылка («СТРАШНЫЕ КВЕСТЫ», «ВЫПУСКНОЙ 2026») терял свой цвет.
+   Значения из оригинала (T450 rec1097897461): пункт #333333, наведение оранжевое
+   за 0.3s ease-in-out, текущая страница #cccccc. Правило активного идёт после
+   наведения — в оригинале hover исключает .t-active. Оранжевый на белой панели
+   берём AA-безопасным токеном --orange-text вместо исходного #ff6900. */
+.mmenu .mmenu__plain-link,.mmenu .mmenu__link,.mmenu .mmenu__phone{color:#333}
+.mmenu .mmenu__group-title{color:#666}
+.mmenu .mmenu__group-title--accent{color:#ff6900}
+.mmenu__plain-link,.mmenu__toggle,.mmenu__link{transition:color .3s ease-in-out}
+.mmenu .mmenu__plain-link:hover,.mmenu .mmenu__link:hover{color:var(--orange-text)}
+.mmenu .mmenu__plain-link[aria-current="page"],.mmenu .mmenu__link[aria-current="page"]{color:#ccc}
+/* Глобальное кольцо фокуса объявлено через body:not(.source-snapshot-page), поэтому
+   на снимках шапка и её панели остаются без него — повторяем тот же вид локально. */
+.source-snapshot-page .hdr :is(a,button):focus-visible,
+.source-snapshot-page .mmenu-shell :is(a,button):focus-visible{outline:2px solid #fff;outline-offset:2px;box-shadow:0 0 0 5px var(--cta-ink)}
 body.menu-open{overflow:hidden}
 @keyframes mmenu-in{from{transform:translateX(-320px)}to{transform:translateX(0)}}
 
@@ -298,6 +333,9 @@ body.menu-open{overflow:hidden}
 .quiz-pop__close{width:42px;flex:0 0 42px;border:0;background:transparent;color:#fff;font-size:26px;font-weight:300;line-height:1}
 
 /* ===================== АДАПТИВ ===================== */
+/* Точки переключения шапки взяты из сетки исходника (артборд rec1097897441):
+   до 1199 пункты 3–5 уезжают за экран (top:-153…-157), до 959 прячутся и первые
+   два (top:-202) — дальше работает только бургер. */
 @media (max-width:1199px){
   .hdr__burger{display:flex}
   .hdr__wa,.mega{display:none}
@@ -305,7 +343,7 @@ body.menu-open{overflow:hidden}
   .slider__arrow--prev{left:12px}
   .slider__arrow--next{right:12px}
 }
-@media (max-width:1099px){
+@media (max-width:959px){
   .hdr__nav{display:none}
   .hdr__actions{margin-left:auto}
 }

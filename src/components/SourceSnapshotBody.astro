@@ -84,6 +84,64 @@ const html = fillEmptyImages(withBase(snapshot.html
     if (!(snapshotRoot instanceof HTMLElement)) return;
     const snapshotShell = snapshotRoot.closest('.source-snapshot-shell');
 
+    // Снимок Tilda приходит со сплошным loading="eager" (на /prazdniki-pod-kluch/
+    // это 300 картинок), поэтому браузер тянет всю страницу сразу. Первый экран
+    // оставляем жадным ради LCP, остальное уводим в lazy прямо на разборе
+    // документа: после первого кадра переключать поздно — файлы уже скачаны.
+    const EAGER_MEDIA_LIMIT = 12;
+    const deferredMedia = new WeakSet();
+    [...snapshotRoot.querySelectorAll('img, [data-original]')].forEach((node, index) => {
+      if (index < EAGER_MEDIA_LIMIT || !(node instanceof HTMLElement)) return;
+      deferredMedia.add(node);
+      if (!(node instanceof HTMLImageElement)) return;
+      node.loading = 'lazy';
+      node.decoding = 'async';
+      const source = node.getAttribute('src');
+      if (!source) return;
+      // Снятый и тут же возвращённый src заставляет браузер бросить уже начатую
+      // жадную загрузку и повторить её, когда картинка подойдёт к экрану.
+      node.removeAttribute('src');
+      node.setAttribute('src', source);
+    });
+
+    // Фоновые картинки Tilda назначает своим рантаймом, значит отложенные
+    // назначаем сами — по подходу к экрану, с запасом в пол-экрана.
+    const applyBackgroundImage = (element) => {
+      const source = element.dataset.original;
+      if (source && !element.style.backgroundImage) element.style.backgroundImage = `url("${source}")`;
+      element.classList.add('loaded');
+    };
+    const backgroundObserver = typeof IntersectionObserver === 'function'
+      ? new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || !(entry.target instanceof HTMLElement)) return;
+          observer.unobserve(entry.target);
+          applyBackgroundImage(entry.target);
+        });
+      }, { rootMargin: '600px 0px' })
+      : null;
+    const observedBackgrounds = new WeakSet();
+    const deferBackgroundImage = (element) => {
+      if (!backgroundObserver) {
+        applyBackgroundImage(element);
+        return;
+      }
+      if (observedBackgrounds.has(element)) return;
+      observedBackgrounds.add(element);
+      backgroundObserver.observe(element);
+    };
+    // До первого кадра снимок скрыт, и позицию картинки измерить нечем — порядок
+    // в документе лишь приближение. Когда раскладка устоялась, отложенное с
+    // первого экрана возвращаем в жадную загрузку, чтобы не просел LCP.
+    const restoreFirstScreenImages = () => {
+      snapshotRoot.querySelectorAll('img[loading="lazy"]').forEach((image) => {
+        if (!(image instanceof HTMLImageElement) || image.complete) return;
+        const box = image.getBoundingClientRect();
+        if (box.top >= window.innerHeight || box.bottom <= 0) return;
+        image.loading = 'eager';
+      });
+    };
+
     const numeric = (value, fallback = 0) => {
       const parsed = Number.parseFloat(String(value ?? ''));
       return Number.isFinite(parsed) ? parsed : fallback;
@@ -134,6 +192,21 @@ const html = fillEmptyImages(withBase(snapshot.html
       if (Number.isFinite(lineHeight) && lineHeight > 0) atom.style.lineHeight = `${Math.round(lineHeight)}px`;
     };
 
+    // Появление блоков Tilda включает своим скриптом при прокрутке: до этого
+    // элементы висят с opacity:0 (класс t396__elem--anim-hidden) или в стартовом
+    // сдвиге (.t-animate без t-animate_started). Скрипта нет, поэтому сразу
+    // переводим их в то же конечное состояние, к которому приходит оригинал.
+    // Именно классы, а не глобальный запрет анимаций: собственные переходы,
+    // :hover и декоративные анимации снимка после этого остаются живыми.
+    const settleSourceAnimations = () => {
+      snapshotRoot.querySelectorAll('.t396__elem--anim-hidden').forEach((element) => {
+        element.classList.remove('t396__elem--anim-hidden');
+      });
+      snapshotRoot.querySelectorAll('.t-animate:not(.t-animate_started)').forEach((element) => {
+        element.classList.add('t-animate_started');
+      });
+    };
+
     const restoreRobloxRecordStacking = () => {
       if (snapshotRoot.dataset.sourceRoute !== '/roblox-land/') return;
       snapshotRoot.querySelectorAll('#allrecords > [id^="rec"]').forEach((record) => {
@@ -161,11 +234,12 @@ const html = fillEmptyImages(withBase(snapshot.html
       snapshotRoot.querySelectorAll('.t396__artboard').forEach((artboard) => {
         if (!(artboard instanceof HTMLElement)) return;
         const upscale = artboardAttribute(artboard, 'upscale');
-        const customWideGrid = snapshotRoot.dataset.sourceRoute === '/'
-          && window.innerWidth >= 1200
-          && artboard.closest('[data-record-type="121"]');
-        const gridWidth = customWideGrid ? 1360 : baseWidth;
-        const gridOffset = upscale === 'window' ? 0 : (window.innerWidth - gridWidth) / 2;
+        // Zero Block всегда центрирует сетку своего брейкпоинта: в исходном CSS
+        // позиции записаны как calc(50% - 600px + left), то есть сетка 1200.
+        // Снимок главной снят на ширине 1280, и запечённые в нём inline-left
+        // (60/460/860) когда-то приняли за эталон — отсюда была сетка 1360 для
+        // записей T121 и сдвиг карточек каталога на 80 px влево на 1440.
+        const gridOffset = upscale === 'window' ? 0 : (window.innerWidth - baseWidth) / 2;
         artboard.querySelectorAll(':scope > .t396__group').forEach((group) => {
           if (!(group instanceof HTMLElement)) return;
           const groupLeft = numeric(responsiveAttribute(group, 'group-left'));
@@ -243,7 +317,10 @@ const html = fillEmptyImages(withBase(snapshot.html
     const mediaReady = async (scope) => {
       const images = [...scope.querySelectorAll('img')];
       await Promise.all(images.map(async (image) => {
-        if (image.complete) return;
+        // decode() у отложенной картинки запускает её загрузку и подвешивает
+        // ожидание, поэтому раскладка ждёт только те, что грузятся сразу.
+        // Размеры отложенных берутся из атрибутов width/height снимка.
+        if (image.complete || image.loading === 'lazy') return;
         try { await image.decode(); } catch { /* intrinsic dimensions remain usable */ }
       }));
     };
@@ -592,17 +669,22 @@ const html = fillEmptyImages(withBase(snapshot.html
     };
 
     const initialise = async () => {
+      settleSourceAnimations();
       restoreRobloxRecordStacking();
       layoutWindowArtboards();
       snapshotRoot.querySelectorAll('img').forEach((image) => {
-        image.loading = 'eager';
+        // У отложенных картинок loading не трогаем: вернуть eager значит снова
+        // скачать всю страницу целиком.
+        if (!deferredMedia.has(image)) image.loading = 'eager';
         if (!image.src && image.dataset.original) image.src = image.dataset.original;
       });
       snapshotRoot.querySelectorAll('[data-original]').forEach((element) => {
         if (!(element instanceof HTMLElement) || element instanceof HTMLImageElement) return;
-        const source = element.dataset.original;
-        if (source && !element.style.backgroundImage) element.style.backgroundImage = `url("${source}")`;
-        element.classList.add('loaded');
+        if (deferredMedia.has(element)) {
+          deferBackgroundImage(element);
+          return;
+        }
+        applyBackgroundImage(element);
       });
       await Promise.all([...snapshotRoot.querySelectorAll('.t-slds')].map(layoutSlider));
       await Promise.all([...snapshotRoot.querySelectorAll('[data-record-type="827"]')].map(layoutT827));
@@ -702,6 +784,7 @@ const html = fillEmptyImages(withBase(snapshot.html
       if (!(snapshotShell instanceof HTMLElement)) return;
       snapshotShell.style.display = 'block';
       await initialise();
+      restoreFirstScreenImages();
       enableLocalFormControls();
       snapshotShell.style.visibility = 'visible';
       snapshotShell.removeAttribute('aria-busy');
@@ -826,13 +909,14 @@ const html = fillEmptyImages(withBase(snapshot.html
     width: 0;
     height: 0;
   }
-  [data-source-snapshot] [data-animate-style],
-  [data-source-snapshot] .t-animate,
-  [data-source-snapshot] .t396__elem--anim-hidden {
+  /* Страховка на случай, если локальный рантайм не отработал: элемент с
+     анимацией появления обязан быть видимым и стоять на своём месте. Как только
+     рантайм снял anim-hidden и проставил t-animate_started, правило перестаёт
+     совпадать — переходы, :hover и декоративные анимации снимка работают. */
+  [data-source-snapshot] .t396__elem--anim-hidden,
+  [data-source-snapshot] .t-animate:not(.t-animate_started) {
     opacity: 1 !important;
     transform: none !important;
-    animation: none !important;
-    transition: none !important;
   }
   .source-snapshot-shell[aria-busy='true'] [data-source-snapshot] *,
   .source-snapshot-shell[aria-busy='true'] [data-source-snapshot] *::before,
@@ -843,6 +927,29 @@ const html = fillEmptyImages(withBase(snapshot.html
   /* The home NLM216 decoration animates its layout offsets after first paint. */
   .source-snapshot-page:has([data-source-route='/']) .nlm216-btn-firefly::after {
     animation: none !important;
+  }
+  /* Ту же бегающую точку возвращаем на композитном сдвиге: путь повторяет
+     исходные кадры (10/10 → 60/20 → 80/60 → 40/80), но двигает не left/top,
+     а translate, поэтому раскладка страницы не дёргается. Ширину берём от
+     самой кнопки через cqw, высоту — фиксированными пикселями: кнопка ниже
+     51 px не бывает ни на одном брейкпоинте. */
+  .source-snapshot-page:has([data-source-route='/']) .nlm216-btn-firefly {
+    container-type: inline-size;
+  }
+  .source-snapshot-shell[data-source-route='/']:not([aria-busy]) .nlm216-btn-firefly::after {
+    animation: source-firefly-drift var(--firefly-speed, 2000ms) infinite alternate !important;
+  }
+  @keyframes source-firefly-drift {
+    0% { translate: 0 0; }
+    25% { translate: 50cqw 5px; }
+    50% { translate: 70cqw 26px; }
+    75% { translate: 30cqw 36px; }
+    100% { translate: 0 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .source-snapshot-shell[data-source-route='/']:not([aria-busy]) .nlm216-btn-firefly::after {
+      animation: none !important;
+    }
   }
   [data-source-snapshot] .hp-marquee-wrapper {
     overflow-x: auto !important;

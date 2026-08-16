@@ -28,7 +28,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote, unquote, urljoin, urlparse
 from urllib.request import Request, urlopen
 
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, NavigableString, Tag
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -83,6 +83,87 @@ BROKEN_ROUTE_ALIASES = {
 }
 URL_RE = re.compile(r"(?P<quote>['\"]?)(?P<url>(?:https?:)?//[^'\"\s)<>]+)")
 CSS_URL_RE = re.compile(r"url\(\s*(?P<quote>['\"]?)(?P<url>[^)'\"]+)(?P=quote)\s*\)", re.I)
+
+_LOCAL_DATA_CACHE: dict[Path, dict] = {}
+SITE_DATA = ROOT / "src" / "data" / "site.json"
+VENUES_DATA = ROOT / "src" / "data" / "venues.json"
+REVIEWS_DATA = ROOT / "src" / "data" / "reviews.json"
+# The venue poster already ships with the native clone (LazyMap / VenuesSection);
+# reusing it keeps the replacement free of any new binary asset.
+MAP_POSTER = "/assets/_static/map.webp"
+MAP_ALT = "Карта девяти площадок «Чё за Квест» в Ростове-на-Дону"
+# The source map is a bare Yandex canvas without an overlay UI, so the widget URL
+# carries the whole state: the archived centre of the T117 block and one pin per
+# marker of that very record.
+MAP_WIDGET_ORIGIN = "https://yandex.ru/map-widget/v1/"
+MAP_PIN = "pm2rdm"
+MAP_MARKER_RE = re.compile(
+    r'\{title:"(?P<title>[^"]*)",descr:"[^"]*",lat:"(?P<lat>-?[\d.]+)",lng:"(?P<lng>-?[\d.]+)"'
+)
+# Marquiz registers its floating launcher through a script-only call. The archived
+# argument object is the only place that still holds the plaque's copy and colour.
+MARQUIZ_FLOATING_RE = re.compile(r"\}\)\('(?P<kind>Pop|Widget)',\s*\{(?P<params>[^{}]*)\}\)")
+MARQUIZ_PARAM_RE = re.compile(r"(?P<key>\w+):\s*'(?P<value>[^']*)'")
+MARQUIZ_INLINE_RE = re.compile(r"\}\)\('Inline',\s*\{(?P<params>[^{}]*)\}\)")
+BONUS_FALLBACK = {"title": "Бонус", "text": "Подобрать квест и получить подарок", "color": "#a600fc"}
+# Every route that keeps a Marquiz frame in the archived source. The frame heights
+# are measured on the live page; an unmeasured route must fail the build instead of
+# silently shipping a block of the wrong height.
+MARQUIZ_FRAME_HEIGHTS = {
+    "/kids/": ("670px", "130px"),
+    "/den-rozhdeniya-uznik-azkabana/": ("710px", None),
+    "/new-year/": ("630px", None),
+}
+PHONE_GAP = r"[\s    ‐-―-]"
+PHONE_RE = re.compile(
+    rf"(?<!\d)(?:\+7|8|7){PHONE_GAP}*\(?\d{{3}}\)?"
+    rf"{PHONE_GAP}*\d{{3}}{PHONE_GAP}*\d{{2}}{PHONE_GAP}*\d{{2}}(?!\d)"
+)
+PHONE_TEXT_ATTRIBUTES = ("alt", "title", "aria-label", "placeholder")
+NON_TEXT_PARENTS = {"style", "script", "noscript"}
+
+# Styling for the local widgets the generator injects. It lives inside the snapshot
+# because the snapshot is the only artefact this build owns; every selector is scoped
+# by `[data-source-snapshot]` so it can outweigh the page-wide snapshot rules
+# (`img { height: auto }`, `iframe { display: none }`) that Layout applies in <head>.
+SOURCE_WIDGET_STYLE = """
+[data-source-snapshot] .source-map{position:relative;box-sizing:border-box;overflow:hidden;background:#e5e3df}
+[data-source-snapshot] .source-map .source-map__poster{display:block;width:100%;height:100%;margin:0;object-fit:cover}
+[data-source-snapshot] .source-map .source-map__load{position:absolute;left:50%;bottom:22px;z-index:2;transform:translateX(-50%);padding:14px 28px;border:0;border-radius:30px;background:#ff6900;color:#fff;font:700 15px/1 'Montserrat',Arial,sans-serif;box-shadow:0 8px 22px rgba(0,0,0,.28);cursor:pointer}
+[data-source-snapshot] .source-map .source-map__load:hover{background:#ff8a00}
+[data-source-snapshot] .source-map .source-map__load[disabled]{opacity:.7;cursor:default}
+[data-source-snapshot] .source-map iframe{display:block!important;position:absolute;inset:0;z-index:1;width:100%;height:100%;border:0}
+[data-source-snapshot] .source-map[data-source-map-active] .source-map__poster,[data-source-snapshot] .source-map[data-source-map-active] .source-map__load{display:none}
+[data-source-snapshot] .source-reviews{box-sizing:border-box;display:flex;flex-direction:column;align-self:center;gap:16px;width:100%;max-width:1170px;min-height:0;max-height:100%;color:#333;font-family:'Nunito',Arial,sans-serif}
+[data-source-snapshot] .source-reviews *{box-sizing:border-box}
+[data-source-snapshot] .source-reviews__summary{display:flex;align-self:center;align-items:center;gap:10px;padding:9px 18px;border-radius:999px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.1)}
+[data-source-snapshot] .source-reviews__score{font-size:22px;font-weight:700;line-height:1}
+[data-source-snapshot] .source-reviews__stars,[data-source-snapshot] .source-reviews .review-card__stars{color:#ff8a00;letter-spacing:1px}
+[data-source-snapshot] .source-reviews__count{font-size:14px;color:#474747}
+[data-source-snapshot] .source-reviews__list{display:flex;flex:0 1 auto;gap:16px;min-height:0;margin:0;padding:2px 2px 12px;overflow-x:auto;overflow-y:hidden;list-style:none;scroll-snap-type:x proximity;scrollbar-width:thin;overscroll-behavior-inline:contain}
+[data-source-snapshot] .source-reviews__list>li{flex:0 0 296px;max-width:296px;scroll-snap-align:start}
+[data-source-snapshot] .source-reviews .review-card{display:flex;flex-direction:column;height:100%;padding:20px;border-radius:16px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.1);color:#333;text-align:left}
+[data-source-snapshot] .source-reviews .review-card__top{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px}
+[data-source-snapshot] .source-reviews .review-card__top time{font-size:12px;color:#474747;white-space:nowrap}
+[data-source-snapshot] .source-reviews .review-card__body{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:8;overflow:hidden;margin:14px 0 0;font-size:14px;line-height:1.55}
+[data-source-snapshot] .source-reviews .review-card__footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:13px;border-top:1px solid #eee;font-size:12px;color:#474747}
+[data-source-snapshot] .source-reviews .review-card__footer a{color:#9b3800;text-decoration:underline;text-underline-offset:2px}
+[data-source-snapshot] .source-reviews-host{display:flex;justify-content:center;width:100%}
+[data-source-snapshot] .source-quiz-cta{box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;width:100%;max-width:760px;margin:0 auto;padding:30px 24px;border-radius:20px;border:1px solid rgba(0,0,0,.08);background:#fff;box-shadow:0 12px 30px rgba(0,0,0,.12);color:#333;text-align:center;font-family:'Nunito',Arial,sans-serif}
+[data-source-snapshot] .source-quiz-cta *{box-sizing:border-box}
+[data-source-snapshot] .source-quiz-cta__eyebrow{margin:0;color:#9b3800;font:700 12px/1 'Montserrat',Arial,sans-serif;letter-spacing:.18em}
+[data-source-snapshot] .source-quiz-cta__title{margin:0;font:800 26px/1.2 'Montserrat',Arial,sans-serif}
+[data-source-snapshot] .source-quiz-cta__text{max-width:520px;margin:0;font-size:15px;line-height:1.5;color:#474747}
+[data-source-snapshot] .source-quiz-cta__button{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 34px;border-radius:30px;background:var(--source-quiz-color,#ff6900);color:#fff;font:700 16px/1 'Montserrat',Arial,sans-serif;text-decoration:none}
+[data-source-snapshot] .source-bonus-pop{display:none}
+@media screen and (max-width:640px){
+[data-source-snapshot] .source-reviews__list>li{flex:0 0 250px;max-width:250px}
+[data-source-snapshot] .source-quiz-cta{gap:10px;padding:18px 16px}
+[data-source-snapshot] .source-quiz-cta__title{font-size:19px}
+[data-source-snapshot] .source-quiz-cta__text{display:none}
+[data-source-snapshot] .source-map .source-map__load{bottom:14px;padding:12px 22px;font-size:14px}
+}
+"""
 
 
 def canonical_route(value: str) -> str:
@@ -584,6 +665,254 @@ def materialize_zero_forms(root: Tag, soup: BeautifulSoup) -> None:
         atom.extend([form, style])
 
 
+def local_data(path: Path) -> dict:
+    """Read one of the site's own JSON sources of truth."""
+    if path not in _LOCAL_DATA_CACHE:
+        _LOCAL_DATA_CACHE[path] = json.loads(path.read_text(encoding="utf-8"))
+    return _LOCAL_DATA_CACHE[path]
+
+
+def venue_anchor_points() -> list[tuple[str, float, float]]:
+    """Venue fragment, latitude and longitude for every address anchor.
+
+    The archived address chips point at a venue fragment (``#gvardeyskiy``), which
+    the live page resolves to a marker on the map block. Those fragments have to
+    keep a target inside the local map, otherwise every chip link is a dead jump.
+    """
+    chips = {
+        canonical_route(str(chip.get("href", ""))): chip
+        for chip in local_data(VENUES_DATA).get("chips", [])
+    }
+    points: list[tuple[str, float, float]] = []
+    for fragment, route in VENUE_HASH_ROUTES.items():
+        chip = chips.get(route)
+        if chip and chip.get("lat") is not None and chip.get("lon") is not None:
+            points.append((fragment.removeprefix("#"), float(chip["lat"]), float(chip["lon"])))
+    return points
+
+
+def map_widget_url(markers: list[tuple[str, str, str]]) -> str:
+    """Build the Yandex map-widget URL that reproduces one archived map record."""
+    latitudes = [float(latitude) for _, latitude, _ in markers]
+    longitudes = [float(longitude) for _, _, longitude in markers]
+    centre_lat = (min(latitudes) + max(latitudes)) / 2
+    centre_lon = (min(longitudes) + max(longitudes)) / 2
+    # Zoom follows the spread of that record's own markers: the nine-venue map of
+    # the home page needs the whole city, a two-venue map of a campaign page does
+    # not and would otherwise open uselessly far out.
+    spread = max(max(latitudes) - min(latitudes), max(longitudes) - min(longitudes))
+    zoom = 11 if spread > 0.1 else 13 if spread > 0.01 else 15
+    pins = "~".join(f"{float(longitude):.6f},{float(latitude):.6f},{MAP_PIN}"
+                    for _, latitude, longitude in markers)
+    return f"{MAP_WIDGET_ORIGIN}?ll={centre_lon:.6f}%2C{centre_lat:.6f}&z={zoom}&pt={pins}"
+
+
+def materialize_local_map(record: Tag, soup: BeautifulSoup) -> bool:
+    """Replace the archived Yandex map canvas with a local poster and a load button.
+
+    The source record itself stays: it carries the 385px block between the address
+    chips and the footer, and dropping it collapsed that part of every page.
+    """
+    markers = MAP_MARKER_RE.findall(str(record))
+    canvas = record.select_one('[id^="separateMap"], .t-map')
+    if canvas is None:
+        return False
+    for script in record.select("script"):
+        script.decompose()
+    for lazy in record.select("[data-maplazy-load]"):
+        lazy.attrs.pop("data-maplazy-load", None)
+
+    canvas.clear()
+    for attribute in list(canvas.attrs):
+        if attribute.startswith("data-map"):
+            canvas.attrs.pop(attribute, None)
+    canvas["class"] = list(dict.fromkeys([*canvas.get("class", []), "source-map"]))
+    embed = map_widget_url(markers) if markers else str(local_data(VENUES_DATA)["mapEmbed"])
+    canvas["data-source-map"] = ""
+    canvas["data-source-map-embed"] = embed
+    canvas["data-source-map-title"] = MAP_ALT
+
+    document = record.find_parent("div", id="allrecords") or record.parent
+    taken = {str(element.get("id")) for element in document.select("[id]") if element.get("id")}
+    marker_points = {(round(float(lat), 4), round(float(lon), 4)) for _, lat, lon in markers}
+    for fragment, latitude, longitude in venue_anchor_points():
+        if fragment in taken or (round(latitude, 4), round(longitude, 4)) not in marker_points:
+            continue
+        anchor = soup.new_tag("span")
+        anchor["id"] = fragment
+        anchor["class"] = ["source-widget-anchor"]
+        anchor["aria-hidden"] = "true"
+        canvas.append(anchor)
+
+    poster = soup.new_tag("img", attrs={
+        "class": ["source-map__poster"],
+        "src": f"{BASE_TOKEN}{MAP_POSTER}",
+        "alt": MAP_ALT,
+        "decoding": "async",
+    })
+    button = soup.new_tag("button", attrs={
+        "class": ["source-map__load"],
+        "type": "button",
+        "data-source-map-load": "",
+        "aria-pressed": "false",
+    })
+    button.string = "Показать карту"
+    canvas.extend([poster, button])
+    return True
+
+
+def build_reviews_block(soup: BeautifulSoup) -> Tag:
+    """Local carousel of guest reviews, built from the site's own reviews.json.
+
+    The archived block is a third-party review carousel; the markup below mirrors
+    `Reviews.astro` (same card classes) but scrolls horizontally, because part of
+    the source records reserve a fixed-height slot for it.
+    """
+    data = local_data(REVIEWS_DATA)
+    section = soup.new_tag("section", attrs={"class": ["source-reviews"], "aria-label": "Отзывы гостей"})
+    rating = int(float(data["ratings"]["summaryWeight"]) * 10) / 10
+    count = f"{int(data['counts']['summary']):,}".replace(",", " ")
+
+    summary = soup.new_tag("div", attrs={"class": ["source-reviews__summary"]})
+    score = soup.new_tag("span", attrs={"class": ["source-reviews__score"]})
+    score.string = f"{rating:.1f}".replace(".", ",")
+    stars = soup.new_tag("span", attrs={"class": ["source-reviews__stars"], "aria-hidden": "true"})
+    stars.string = "★★★★★"
+    total = soup.new_tag("span", attrs={"class": ["source-reviews__count"]})
+    total.string = f"{count} отзывов на картах"
+    summary.extend([score, stars, total])
+
+    items = soup.new_tag("ul", attrs={"class": ["source-reviews__list"]})
+    for review in data["reviews"]:
+        service = data["services"].get(str(review.get("service")), {})
+        source_name = str(service.get("name") or "Отзыв гостя")
+        item = soup.new_tag("li")
+        card = soup.new_tag("article", attrs={"class": ["review-card"]})
+
+        top = soup.new_tag("div", attrs={"class": ["review-card__top"]})
+        rank = int(review.get("rating", 5))
+        card_stars = soup.new_tag("span", attrs={
+            "class": ["review-card__stars"],
+            "role": "img",
+            "aria-label": f"Оценка {rank} из 5",
+        })
+        card_stars.string = "★" * rank + "☆" * (5 - rank)
+        day, month, year = (str(review.get("date_create", "")).split(".") + ["", "", ""])[:3]
+        date = soup.new_tag("time", attrs={"datetime": f"{year}-{month}-{day}"} if year else {})
+        date.string = str(review.get("date_create", ""))
+        top.extend([card_stars, date])
+
+        body = soup.new_tag("p", attrs={"class": ["review-card__body"]})
+        body.string = str(review.get("message", ""))
+
+        footer = soup.new_tag("footer", attrs={"class": ["review-card__footer"]})
+        author = soup.new_tag("span")
+        author.string = str(review.get("username", "Гость"))
+        url = str(review.get("url") or "")
+        origin = soup.new_tag("a", attrs={"href": url}) if url.startswith("https://") else soup.new_tag("span")
+        origin.string = source_name
+        footer.extend([author, origin])
+
+        card.extend([top, body, footer])
+        item.append(card)
+        items.append(item)
+
+    section.extend([summary, items])
+    return section
+
+
+def materialize_local_reviews(record: Tag, soup: BeautifulSoup, root: Tag) -> bool:
+    """Swap the third-party review carousel for the local one, in place.
+
+    The source record stays whole — heading, background and padding included — so
+    only the widget itself changes hands.
+    """
+    frame = record.select_one("#myReviews__block-widget, iframe")
+    host = frame.parent if frame is not None else None
+    if host is None:
+        return False
+    for script in record.select("script"):
+        script.decompose()
+    host.clear()
+    host["class"] = list(dict.fromkeys([*host.get("class", []), "source-reviews-host"]))
+    # Venue pages reserve a full viewport height for the third-party carousel. The
+    # local block is a fixed set of cards, so that reservation would only add half
+    # a screen of emptiness under them.
+    style = ";".join(
+        declaration for declaration in str(host.get("style", "")).split(";")
+        if declaration.strip() and declaration.split(":", 1)[0].strip().lower() != "height"
+    )
+    if style:
+        host["style"] = style
+    else:
+        host.attrs.pop("style", None)
+    block = build_reviews_block(soup)
+    # The header links to `#otzivy`. Where the source keeps that anchor in its own
+    # record the jump already lands here; where it does not, the block becomes the
+    # target itself instead of leaving the menu item pointing at nothing.
+    if not root.select_one("#otzivy, [name='otzivy']"):
+        block["id"] = "otzivy"
+    host.append(block)
+    return True
+
+
+def marquiz_parameters(blob: str) -> dict[str, str]:
+    return {match.group("key"): match.group("value") for match in MARQUIZ_PARAM_RE.finditer(blob)}
+
+
+def materialize_local_quiz_cta(marquiz: Tag, soup: BeautifulSoup, colour: str) -> None:
+    """Local call to action on the spot of the inline Marquiz quiz frame."""
+    marquiz.attrs.pop("data-marquiz-id", None)
+    marquiz.clear()
+    marquiz["class"] = list(dict.fromkeys([*marquiz.get("class", []), "source-quiz-cta"]))
+    marquiz["style"] = f"--source-quiz-color:{colour}"
+    eyebrow = soup.new_tag("p", attrs={"class": ["source-quiz-cta__eyebrow"]})
+    eyebrow.string = "БОНУС"
+    title = soup.new_tag("p", attrs={"class": ["source-quiz-cta__title"]})
+    title.string = BONUS_FALLBACK["text"]
+    text = soup.new_tag("p", attrs={"class": ["source-quiz-cta__text"]})
+    text.string = (
+        "Ответьте на несколько вопросов — подберём игру по возрасту и поводу "
+        "и оставим за вами подарок к бронированию."
+    )
+    button = soup.new_tag("a", attrs={"class": ["source-quiz-cta__button"], "href": "#source-booking"})
+    button.string = "Подобрать квест"
+    marquiz.extend([eyebrow, title, text, button])
+
+
+def normalize_phone_numbers(root: Tag, phone: str, phone_href: str) -> None:
+    """Force every archived phone number to the one in `site.json`.
+
+    Archived pages carry three spellings of the venue number plus numbers that
+    belong to other businesses; the site has a single phone and one format for it.
+    """
+    def replace(match: re.Match[str]) -> str:
+        digits = re.sub(r"\D", "", match.group(0))
+        # An input mask placeholder (`+7(000) 000-00-00`) is not a phone number.
+        if len(digits) != 11 or digits[1:] == "0" * 10:
+            return match.group(0)
+        return phone
+
+    for node in list(root.find_all(string=True)):
+        # Comments and CDATA are NavigableString subclasses; rewriting one would
+        # turn markup the source keeps as a comment into visible page text.
+        if type(node) is not NavigableString:
+            continue
+        if node.parent is not None and node.parent.name in NON_TEXT_PARENTS:
+            continue
+        replaced = PHONE_RE.sub(replace, str(node))
+        if replaced != str(node):
+            node.replace_with(NavigableString(replaced))
+
+    for element in root.select('a[href^="tel:"], a[href^="TEL:"]'):
+        element["href"] = phone_href
+    for element in root.select("*"):
+        for attribute in PHONE_TEXT_ATTRIBUTES:
+            value = element.get(attribute)
+            if isinstance(value, str) and value:
+                element[attribute] = PHONE_RE.sub(replace, value)
+
+
 def prepare_snapshot(
         route: str,
         raw_path: Path,
@@ -621,35 +950,28 @@ def prepare_snapshot(
     if root is None:
         raise RuntimeError(f"Archived source has no #allrecords: {raw_path}")
 
-    # The acceptance comparator masks these third-party regions on the live
-    # page.  Remove their complete source records here so the static snapshot
-    # has the same reflow and never starts their network clients.
+    # The third-party regions the acceptance comparator masks — map and review
+    # carousel — are replaced by local blocks instead of being dropped. Their
+    # source records carry the page's own flow (the map alone is 385px between the
+    # address chips and the footer), so removing them collapsed every page around
+    # them while the network clients they started were already gone with the
+    # scripts. The booking-fallback caption ("Расписание не загрузилось…") and the
+    # review headings are plain local Tilda records and stay untouched.
     record_boundaries = [
         record for record in root.select('[id^="rec"]')
         if re.fullmatch(r"rec\d+", str(record.get("id", "")))
         and not record.parent.find_parent(id=re.compile(r"^rec\d+$"))
     ]
+    widgets_materialized = False
     for record in list(record_boundaries):
         record_html = str(record).lower()
-        record_text = " ".join(record.get_text(" ", strip=True).lower().split())
         if (
             record.select_one('.t-map, .t-map-lazyload, [id^="separateMap"], [data-maplazy-load]')
             or "t_appendyandexmap" in record_html
-            or "myreviews.dev" in record_html
-            or "myreviews__block-widget" in record_html
-            or record_text.startswith("отзывы ")
-            or "расписание не загрузилось" in record_text
         ):
-            for named_anchor in record.select("a[name]"):
-                anchor_name = str(named_anchor.get("name", "")).strip()
-                if not anchor_name:
-                    continue
-                anchor_placeholder = soup.new_tag("span")
-                anchor_placeholder["id"] = anchor_name
-                anchor_placeholder["class"] = ["source-widget-anchor"]
-                anchor_placeholder["aria-hidden"] = "true"
-                record.insert_before(anchor_placeholder)
-            record.decompose()
+            widgets_materialized |= materialize_local_map(record, soup)
+        if "myreviews" in record_html:
+            widgets_materialized |= materialize_local_reviews(record, soup, root)
 
     # T979's justified masonry requires the two numeric arguments that Tilda
     # stores only in a stripped inline init call.
@@ -661,26 +983,59 @@ def prepare_snapshot(
             record["data-source-t979-row-height"] = row_height
             record["data-source-t979-gutter"] = gutter
 
-    # Marquiz is a script-only third-party embed. Preserve the route-specific
-    # frame measured on the live source without executing or requesting it.
+    # Marquiz is a script-only third-party embed: an inline quiz frame inside a
+    # record and, on some routes, a floating launcher registered from a bare
+    # script. Both are rebuilt locally — the inline frame becomes a call to action
+    # on the local booking form, the launcher becomes the "БОНУС" plaque — and the
+    # frame keeps the height measured on the live source so the page does not move.
+    inline_quiz = MARQUIZ_INLINE_RE.search(contract_html)
+    inline_colour = (
+        marquiz_parameters(inline_quiz.group("params")).get("bgColor") if inline_quiz else None
+    ) or "#ff6900"
     for marquiz in root.select("[data-marquiz-id]"):
         record = marquiz.find_parent(id=re.compile(r"^rec\d+$"))
         if not record:
             continue
         rec_id = str(record.get("id", ""))
-        geometry = soup.new_tag("style")
-        if route == "/kids/":
-            geometry.string = (
-                f"#{rec_id}{{box-sizing:border-box;min-height:670px}}"
-                f"@media screen and (max-width:640px){{#{rec_id}{{min-height:130px}}}}"
-            )
-        elif route == "/den-rozhdeniya-uznik-azkabana/":
-            geometry.string = f"#{rec_id}{{box-sizing:border-box;min-height:710px}}"
-        elif route == "/new-year/":
-            geometry.string = f"#{rec_id}{{box-sizing:border-box;min-height:630px}}"
-        else:
+        if route not in MARQUIZ_FRAME_HEIGHTS:
             raise RuntimeError(f"Unmeasured Marquiz geometry on {route}: {rec_id}")
+        desktop_height, mobile_height = MARQUIZ_FRAME_HEIGHTS[route]
+        materialize_local_quiz_cta(marquiz, soup, inline_colour)
+        widgets_materialized = True
+        # A browser-hydrated override can already carry the geometry appended by an
+        # earlier build; two copies of the rule would fight over the same record.
+        for previous in record.select("style"):
+            if f"#{rec_id}{{box-sizing:border-box;min-height" in str(previous.string or ""):
+                previous.decompose()
+        geometry = soup.new_tag("style")
+        # The record keeps the frame height measured on the live source, and the
+        # call to action is centred in it: a column flexbox needs no arithmetic on
+        # the record's own padding to do that.
+        rules = (
+            f"#{rec_id}{{box-sizing:border-box;min-height:{desktop_height};"
+            f"display:flex;flex-direction:column;justify-content:center}}"
+        )
+        if mobile_height:
+            rules += (
+                f"@media screen and (max-width:640px){{#{rec_id}{{min-height:{mobile_height}}}}}"
+            )
+        geometry.string = rules
         record.append(geometry)
+
+    # The floating launcher lives in the archived page as a single script call; its
+    # argument object is the only surviving copy of the plaque's text and colour.
+    floating = MARQUIZ_FLOATING_RE.search(contract_html)
+    if floating:
+        parameters = marquiz_parameters(floating.group("params"))
+        plaque = soup.new_tag("div", attrs={
+            "class": ["source-bonus-pop"],
+            "data-source-bonus": "",
+            "data-bonus-title": parameters.get("title") or BONUS_FALLBACK["title"],
+            "data-bonus-text": parameters.get("text") or BONUS_FALLBACK["text"],
+            "data-bonus-color": parameters.get("bgColor") or BONUS_FALLBACK["color"],
+        })
+        root.append(plaque)
+        widgets_materialized = True
 
     # This shared footer separator's decorative shape protrudes beyond its 50px
     # artboard; Tilda includes 13px of that overflow in the record box.
@@ -881,6 +1236,15 @@ def prepare_snapshot(
     for image in root.select("img[data-original]"):
         if image.get("data-original"):
             image["src"] = image["data-original"]
+
+    contacts = local_data(SITE_DATA)["header"]
+    normalize_phone_numbers(root, str(contacts["phone"]), str(contacts["phoneHref"]))
+
+    if widgets_materialized:
+        widget_style = soup.new_tag("style", attrs={"data-source-widgets": ""})
+        widget_style.string = SOURCE_WIDGET_STYLE
+        root.insert(0, widget_style)
+
     root["data-source-snapshot"] = ""
     root["data-source-route"] = route
 
