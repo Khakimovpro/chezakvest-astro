@@ -71,6 +71,16 @@ function pageHtml(pathname, {
   </html>`;
 }
 
+function localSourceForm({ action = false, submit = true, confirmation = true, disabled = true } = {}) {
+  const pending = disabled ? ' disabled' : '';
+  return `<form data-local-source-form${action ? ' action="https://example.test/lead"' : ''}>
+    <label for="local-name">Ваше имя</label><input id="local-name" name="name"${pending}/>
+    <label for="local-phone">Телефон</label><input id="local-phone" name="phone"${pending}/>
+    <label><input name="privacy" type="checkbox"${pending}/>Согласие</label>
+    ${submit ? `<button type="submit"${pending}>Отправить</button>` : ''}${confirmation ? '<p class="js-successbox" role="status"></p>' : ''}
+  </form>`;
+}
+
 async function writePage(distDir, pathname, html) {
   const file = pathname === '/' ? join(distDir, 'index.html') : join(distDir, pathname.slice(1), 'index.html');
   await mkdir(join(file, '..'), { recursive: true });
@@ -122,7 +132,74 @@ test('rejects a build that drops the primary lead forms', async () => {
   assert.ok(report.errors.some((error) => error.includes('expected a primary lead form')));
 });
 
-test('allows only the two exact source-verified blank live descriptions', async () => {
+test('accepts an action-free materialized source form as the primary conversion form', async () => {
+  const distDir = await createValidDist();
+  await writePage(distDir, '/', pageHtml('/', { extraBody: localSourceForm() }));
+  const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
+
+  assert.deepEqual(report.errors, []);
+});
+
+test('rejects a materialized source form that exposes a submission action', async () => {
+  const distDir = await createValidDist();
+  await writePage(distDir, '/', pageHtml('/', { extraBody: localSourceForm({ action: true }) }));
+  const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
+
+  assert.ok(report.errors.some((error) => error.includes('local source form must not expose PII')));
+});
+
+test('rejects a materialized source form without a submit control or confirmation region', async () => {
+  const distDir = await createValidDist();
+  await writePage(distDir, '/', pageHtml('/', { extraBody: localSourceForm({ submit: false, confirmation: false }) }));
+  const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
+
+  assert.ok(report.errors.some((error) => error.includes('local source form has no submit control')));
+  assert.ok(report.errors.some((error) => error.includes('local source form has no confirmation region')));
+});
+
+test('rejects a source form that can submit PII before local runtime enables its controls', async () => {
+  const distDir = await createValidDist();
+  await writePage(distDir, '/', pageHtml('/', { extraBody: localSourceForm({ disabled: false }) }));
+  const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
+
+  assert.ok(report.errors.some((error) => error.includes('local source form controls must default to disabled')));
+});
+
+test('does not treat an HTML helper below assets as a generated page', async () => {
+  const distDir = await createValidDist();
+  const helper = join(distDir, 'assets', 'video-frame.html');
+  await mkdir(join(helper, '..'), { recursive: true });
+  await writeFile(helper, '<video></video>');
+  const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
+
+  assert.equal(report.pagesChecked, REQUIRED_PATHS.length);
+  assert.deepEqual(report.errors, []);
+});
+
+test('allows #prev and #next only inside an explicitly materialized NOLIM slider', async () => {
+  const distDir = await createValidDist();
+  await writePage(distDir, '/', pageHtml('/', {
+    leadForms: 1,
+    extraBody: '<div data-source-nolim-slider="source-slider"><a href="#prev">Prev</a><a href="#next">Next</a></div>',
+  }));
+  const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
+
+  assert.deepEqual(report.errors, []);
+});
+
+test('rejects #prev and #next outside an explicitly materialized NOLIM slider', async () => {
+  const distDir = await createValidDist();
+  await writePage(distDir, '/', pageHtml('/', {
+    leadForms: 1,
+    extraBody: '<a href="#prev">Prev</a><a href="#next">Next</a>',
+  }));
+  const report = await verifyProductionContract({ distDir, origin: ORIGIN, requiredPaths: REQUIRED_PATHS });
+
+  assert.ok(report.errors.some((error) => error.includes('fragment has no target: #prev')));
+  assert.ok(report.errors.some((error) => error.includes('fragment has no target: #next')));
+});
+
+test('allows the exact noindex privacy description but rejects blank indexable metadata', async () => {
   const distDir = await createValidDist();
   await writePage(distDir, '/strashnye-kvesty', pageHtml('/strashnye-kvesty', { blankDescription: ' ' }));
   await writePage(distDir, '/privacy', pageHtml('/privacy', { blankDescription: '', noindex: true, omitSocialImages: true }));
@@ -134,8 +211,8 @@ test('allows only the two exact source-verified blank live descriptions', async 
     requiredPaths: [...REQUIRED_PATHS, '/strashnye-kvesty'],
   });
 
-  assert.ok(!report.errors.some((error) => error.includes('/strashnye-kvesty') && error.includes('description')));
   assert.ok(!report.errors.some((error) => error.includes('/privacy') && error.includes('description')));
+  assert.ok(report.errors.some((error) => error.includes('/strashnye-kvesty') && error.includes('description')));
   assert.ok(report.errors.some((error) => error.includes('/new-year') && error.includes('description')));
 });
 

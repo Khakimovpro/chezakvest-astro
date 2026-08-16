@@ -16,12 +16,10 @@ const CORE_REQUIRED_PATHS = [
   '/new-year',
 ];
 const FORBIDDEN_PUBLIC_PATHS = ['/tilda'];
-// Two current live Tilda pages intentionally publish a blank description.
-// Keep expected raw values path-scoped: every other generated page still
-// requires meaningful description metadata, and even these routes must emit
-// the precise source value rather than any arbitrary empty string.
+// The live noindex privacy page intentionally publishes a blank description.
+// Keep that source value path-scoped: every indexable generated page still
+// requires meaningful description metadata.
 const LIVE_BLANK_DESCRIPTION_VALUES = new Map([
-  ['/strashnye-kvesty', ' '],
   ['/privacy', ''],
 ]);
 // `/privacy` is a live noindex legal page, not a migration fallback. It must
@@ -83,7 +81,7 @@ function isNoindex(html) {
 }
 
 function hasAttribute(tag, name) {
-  return new RegExp(`\\b${name}(?:\\s|=|>)`, 'i').test(tag);
+  return new RegExp(`\\b${name}(?:\\s|=|/?>)`, 'i').test(tag);
 }
 
 function requiredInput(formHtml, name) {
@@ -108,9 +106,6 @@ function hasVisibleAssociatedLabel(formHtml, inputTag) {
 
 function validateLeadForms(html, pagePath, errors) {
   const leadForms = html.match(/<form\b(?=[^>]*\bdata-lead-form(?:\s|=|>))[^>]*>[\s\S]*?<\/form>/gi) ?? [];
-  if (pagePath === '/' && leadForms.length < 1) {
-    errors.push(`${pagePath}: expected a primary lead form`);
-  }
 
   for (const form of leadForms) {
     const openTag = form.match(/^<form\b[^>]*>/i)?.[0] ?? '';
@@ -137,6 +132,31 @@ function validateLeadForms(html, pagePath, errors) {
       errors.push(`${pagePath}: lead form has no accessible status region`);
     }
   }
+
+  return leadForms.length;
+}
+
+function validateLocalSourceForms(html, pagePath, errors) {
+  const localForms = html.match(/<form\b(?=[^>]*\bdata-local-source-form(?:\s|=|>))[^>]*>[\s\S]*?<\/form>/gi) ?? [];
+
+  for (const form of localForms) {
+    const openTag = form.match(/^<form\b[^>]*>/i)?.[0] ?? '';
+    if (hasAttribute(openTag, 'action')) {
+      errors.push(`${pagePath}: local source form must not expose PII through a form action`);
+    }
+    if (!/<(?:button|input)\b(?=[^>]*\b(?:type\s*=\s*(["'])submit\1|data-lead-submit(?:\s|=|>)))[^>]*>/i.test(form)) {
+      errors.push(`${pagePath}: local source form has no submit control`);
+    }
+    if (!/<[^>]+\b(?:data-local-form-success|class\s*=\s*(["'])[^"']*\bjs-successbox\b[^"']*\1)[^>]*>/i.test(form)) {
+      errors.push(`${pagePath}: local source form has no confirmation region`);
+    }
+    const controls = form.match(/<(?:input|textarea|select|button)\b[^>]*>/gi) ?? [];
+    if (controls.some((control) => !hasAttribute(control, 'disabled'))) {
+      errors.push(`${pagePath}: local source form controls must default to disabled before local runtime starts`);
+    }
+  }
+
+  return localForms.length;
 }
 
 function isAbsoluteOriginUrl(value, origin) {
@@ -248,15 +268,49 @@ function hasAnchorTarget(html, fragment) {
   return new RegExp(`\\b(?:id|name)\\s*=\\s*(["'])${escaped}\\1`, 'i').test(html);
 }
 
+function htmlAnchors(html) {
+  const tags = html.match(/<\/?[a-z][^>]*>/gi) ?? [];
+  const ancestors = [];
+  const anchors = [];
+
+  for (const tag of tags) {
+    const closing = /^<\//.test(tag);
+    const name = tag.match(/^<\/?\s*([a-z][\w:-]*)/i)?.[1]?.toLowerCase();
+    if (!name) continue;
+    if (closing) {
+      for (let index = ancestors.length - 1; index >= 0; index -= 1) {
+        if (ancestors[index].name === name) {
+          ancestors.length = index;
+          break;
+        }
+      }
+      continue;
+    }
+
+    if (name === 'a') {
+      anchors.push({
+        tag,
+        inLocalNolimSlider: ancestors.some((ancestor) => /\bdata-source-nolim-slider(?:\s|=|>)/i.test(ancestor.tag)),
+      });
+    }
+    if (!/\/\s*>$/.test(tag) && !/^(?:area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)$/i.test(name)) {
+      ancestors.push({ name, tag });
+    }
+  }
+
+  return anchors;
+}
+
 function validateInternalLinks({ pages, basePath, errors }) {
   const normalizedBase = normalizeBasePath(basePath);
   const assetPath = /\.(?:avif|css|gif|ico|jpe?g|js|json|map|mp3|mp4|pdf|png|svg|txt|webp|woff2?|xml)$/i;
 
   for (const [pagePath, html] of pages) {
-    for (const tag of html.match(/<a\b[^>]*>/gi) ?? []) {
+    for (const { tag, inLocalNolimSlider } of htmlAnchors(html)) {
       const href = getAttribute(tag, 'href');
       if (!href || href === '#' || /^(?:[a-z][a-z\d+.-]*:|\/\/)/i.test(href)) continue;
       if (href.startsWith('#')) {
+        if (/^#(?:prev|next)$/i.test(href) && inLocalNolimSlider) continue;
         if (!hasAnchorTarget(html, href.slice(1))) {
           errors.push(`${pagePath}: internal link fragment has no target: ${href}`);
         }
@@ -343,7 +397,6 @@ function validatePage({ html, pagePath, origin, errors, legacyRedirectTargets, n
   if (/<form\b[^>]*\bonsubmit\s*=\s*(["'])[^"']*(?:return\s+false|preventDefault)[^"']*\1[^>]*>/i.test(html)) {
     errors.push(`${pagePath}: inert form cancels submission`);
   }
-  validateLeadForms(html, pagePath, errors);
 
   const noindex = isNoindex(html);
   if (noindexPaths.has(pagePath) && !noindex) {
@@ -437,13 +490,21 @@ export async function verifyProductionContract({
     }
   }
 
-  const htmlFiles = await listHtmlFiles(resolvedDistDir);
+  const htmlFiles = (await listHtmlFiles(resolvedDistDir)).filter((filePath) => {
+    const outputPath = relative(resolvedDistDir, filePath).split(sep).join('/');
+    return !outputPath.startsWith('assets/');
+  });
   const pages = new Map();
   for (const filePath of htmlFiles) {
     const pagePath = pathFromOutputFile(resolvedDistDir, filePath);
     const html = await readFile(filePath, 'utf8');
     pages.set(pagePath, html);
     validatePage({ html, pagePath, origin: normalizedOrigin, errors, legacyRedirectTargets, noindexPaths });
+    const leadFormCount = validateLeadForms(html, pagePath, errors);
+    const localSourceFormCount = validateLocalSourceForms(html, pagePath, errors);
+    if (pagePath === '/' && leadFormCount + localSourceFormCount < 1) {
+      errors.push(`${pagePath}: expected a primary lead form`);
+    }
   }
   validateInternalLinks({ pages, basePath, errors });
 

@@ -29,5 +29,8 @@
   },
   "optionalDependencies": {
     "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.1"
   }
 }

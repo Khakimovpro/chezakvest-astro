@@ -14,6 +14,48 @@ test('materializes archived Zero Block form contracts as local semantic forms', 
   }
 });
 
+test('removes archived form actions before rendering local source forms', async () => {
+  const component = await read('src/components/SourceSnapshotBody.astro');
+  assert.match(component, /data-local-source-form/u);
+  assert.match(component, /const localSourceForm = \/\(<form\\b/u);
+  assert.match(component, /const disableLocalFormControls =/u);
+  assert.match(component, /data-local-form-pending/u);
+  assert.match(component, /const enableLocalFormControls =/u);
+  assert.match(component, /must not submit their PII/u);
+});
+
+test('reveals a source snapshot only after its runtime has applied first-frame geometry', async () => {
+  const component = await read('src/components/SourceSnapshotBody.astro');
+  assert.match(component, /aria-busy="true"/u);
+  assert.match(component, /const snapshotShell = snapshotRoot\.closest\('\.source-snapshot-shell'\)/u);
+  const settleStart = component.indexOf('const settleFirstFrame = async () =>');
+  const settleEnd = component.indexOf('void settleFirstFrame();', settleStart);
+  assert.ok(settleStart >= 0 && settleEnd > settleStart, 'first-frame settle function is present and invoked');
+  const settle = component.slice(settleStart, settleEnd);
+  const firstLayout = settle.indexOf('await initialise();');
+  const reconciliation = settle.indexOf('await wait(760);');
+  const secondLayout = settle.indexOf('await initialise();', reconciliation);
+  const display = settle.indexOf("snapshotShell.style.display = 'block';");
+  const thirdLayout = settle.indexOf('await initialise();', display);
+  const enableControls = settle.indexOf('enableLocalFormControls();');
+  const visibility = settle.indexOf("snapshotShell.style.visibility = 'visible';");
+  const ready = settle.indexOf("snapshotShell.removeAttribute('aria-busy');");
+  assert.ok(firstLayout >= 0 && reconciliation > firstLayout, 'first layout precedes delayed reconciliation');
+  assert.ok(secondLayout > reconciliation, 'reconciled layout finishes before the shell enters layout');
+  assert.ok(display > secondLayout && thirdLayout > display, 'the visible layout pass runs after display is restored');
+  assert.ok(enableControls > thirdLayout && visibility > enableControls, 'the delegated local form handler is ready before its controls and snapshot are exposed');
+  assert.ok(ready > visibility, 'the first-frame animation guard ends only after the snapshot is visible');
+  assert.match(component, /\.source-snapshot-shell \{ display: none; visibility: hidden; \}/u);
+  assert.match(component, /\.source-snapshot-shell\[aria-busy='true'\] \[data-source-snapshot\] \*::before/u);
+  assert.match(component, /animation: none !important/u);
+});
+
+test('freezes the home firefly decoration that causes cumulative layout shift', async () => {
+  const component = await read('src/components/SourceSnapshotBody.astro');
+  assert.match(component, /\.source-snapshot-page:has\(\[data-source-route='\/'\]\) \.nlm216-btn-firefly::after/u);
+  assert.match(component, /\.nlm216-btn-firefly::after \{\s*animation: none !important;/u);
+});
+
 test('keeps the safe responsive replacements for T347 and T829 in the local runtime', async () => {
   const component = await read('src/components/SourceSnapshotBody.astro');
   assert.match(component, /const layoutT347 = \(record\) =>/u);
@@ -62,6 +104,17 @@ test('materializes responsive T396 geometry from the active source breakpoint', 
   assert.match(component, /responsiveAttribute\(element, 'field-heightmode'\)/u);
   assert.match(component, /axisPosition\(geometry\.axisX, geometry\.left, geometry\.width, boundary\)/u);
   assert.match(component, /heightMode !== 'hug'/u);
+});
+
+test('restores the Roblox T796 divider handoff performed by the source runtime', async () => {
+  const component = await read('src/components/SourceSnapshotBody.astro');
+  assert.match(component, /const restoreRobloxRecordStacking = \(\) =>/u);
+  assert.match(component, /\[data-record-type="796"\]/u);
+  assert.match(component, /t796__shape-border_top/u);
+  assert.match(component, /divider\.nextElementSibling/u);
+  assert.match(component, /divider\.previousElementSibling/u);
+  assert.match(component, /border\.style\.display = 'block'/u);
+  assert.match(component, /border\.style\.zIndex = '99'/u);
 });
 
 test('maps archived popup and broken relative links to local working targets', async () => {

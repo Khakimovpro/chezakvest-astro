@@ -5,7 +5,21 @@ import '../styles/page.css';
 const { snapshot } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/u, '');
 const asset = (path) => `${base}${path}`;
-const html = snapshot.html.replaceAll('__SITE_BASE__', base);
+const localSourceForm = /(<form\b(?=[^>]*\bdata-local-source-form(?:\s|=|>))[^>]*>)([\s\S]*?<\/form>)/giu;
+const disableLocalFormControls = (form) => form.replace(/<(input|textarea|select|button)\b[^>]*>/giu, (tag) => (
+  /\bdisabled(?:\s|=|>|$)/iu.test(tag) ? tag : tag.replace(/\s*\/?>$/u, (end) => ` disabled${end}`)
+));
+// Archived Tilda forms are intentionally handled by the local runtime below.
+// A no-JS browser must not submit their PII to the current page: controls are
+// inert in static HTML and enabled only after the local submit handler is ready.
+const html = snapshot.html
+  .replaceAll('__SITE_BASE__', base)
+  .replace(localSourceForm, (_form, openTag, contents) => {
+    const safeOpenTag = openTag
+      .replace(/\saction\s*=\s*(["'])[^"']*\1/giu, '')
+      .replace(/>$/u, ' data-local-form-pending>');
+    return `${safeOpenTag}${disableLocalFormControls(contents)}`;
+  });
 ---
 
 <Header />
@@ -15,19 +29,22 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
   data-source-route={snapshot.route}
   style={`--source-flags-url:url(${asset('/assets/static.tildacdn.com/lib/flags/flags7.png')});--source-dark-background-url:url(${asset('/assets/optim.tildacdn.com/tild6333-3137-4862-b434-326332663966/-/format/webp/_GPT_dark.jpg.webp')})`}
   aria-label="Содержимое страницы"
+  aria-busy="true"
 >
   <div class="source-snapshot-content" set:html={html} />
 </main>
 
+<noscript><style>.source-snapshot-shell { display: block !important; visibility: visible !important; }</style></noscript>
+
 <section class="source-booking" id="source-booking" aria-labelledby="source-booking-title">
   <a class="source-booking__backdrop" href="#" aria-label="Закрыть форму"></a>
-  <form class="source-booking__dialog" data-local-source-form>
+  <form class="source-booking__dialog" data-local-source-form data-local-form-pending>
     <a class="source-booking__close" href="#" aria-label="Закрыть форму">×</a>
     <h2 id="source-booking-title">Забронировать игру</h2>
-    <label>Имя<input name="name" autocomplete="name" required /></label>
-    <label>Телефон<input name="phone" type="tel" autocomplete="tel" required /></label>
-    <label class="source-booking__consent"><input name="consent" type="checkbox" required /> Я согласен на обработку персональных данных</label>
-    <button type="submit">Отправить заявку</button>
+    <label>Имя<input name="name" autocomplete="name" required disabled /></label>
+    <label>Телефон<input name="phone" type="tel" autocomplete="tel" required disabled /></label>
+    <label class="source-booking__consent"><input name="consent" type="checkbox" required disabled /> Я согласен на обработку персональных данных</label>
+    <button type="submit" disabled>Отправить заявку</button>
     <p class="source-booking__success" data-local-form-success hidden role="status">Спасибо! Заявка принята.</p>
   </form>
 </section>
@@ -36,6 +53,7 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
   (() => {
     const snapshotRoot = document.querySelector('[data-source-snapshot]');
     if (!(snapshotRoot instanceof HTMLElement)) return;
+    const snapshotShell = snapshotRoot.closest('.source-snapshot-shell');
 
     const numeric = (value, fallback = 0) => {
       const parsed = Number.parseFloat(String(value ?? ''));
@@ -79,6 +97,34 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
       if (axis === 'right') return boundary - offset - size;
       return offset;
     };
+    const roundRobloxT396LineHeight = (element) => {
+      if (snapshotRoot.dataset.sourceRoute !== '/roblox-land/' || element.dataset.elemType !== 'text') return;
+      const atom = element.querySelector(':scope > .tn-atom');
+      if (!(atom instanceof HTMLElement)) return;
+      const lineHeight = Number.parseFloat(window.getComputedStyle(atom).lineHeight);
+      if (Number.isFinite(lineHeight) && lineHeight > 0) atom.style.lineHeight = `${Math.round(lineHeight)}px`;
+    };
+
+    const restoreRobloxRecordStacking = () => {
+      if (snapshotRoot.dataset.sourceRoute !== '/roblox-land/') return;
+      snapshotRoot.querySelectorAll('#allrecords > [id^="rec"]').forEach((record) => {
+        if (!(record instanceof HTMLElement)) return;
+        record.style.position = 'relative';
+        record.style.setProperty('--zoom', '1');
+      });
+      snapshotRoot.querySelectorAll('#allrecords > [data-record-type="796"]').forEach((divider) => {
+        if (!(divider instanceof HTMLElement)) return;
+        const border = divider.querySelector(':scope .t796__shape-border');
+        if (!(border instanceof HTMLElement)) return;
+        const target = border.classList.contains('t796__shape-border_top')
+          ? divider.nextElementSibling
+          : divider.previousElementSibling;
+        if (!(target instanceof HTMLElement)) return;
+        target.append(border);
+        border.style.display = 'block';
+        border.style.zIndex = '99';
+      });
+    };
 
     const layoutWindowArtboards = () => {
       const baseWidth = artboardWidth();
@@ -108,6 +154,7 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
               && responsiveAttribute(element, 'field-textfit') !== 'autoheight'
               ? `${geometry.height}px`
               : 'auto';
+            roundRobloxT396LineHeight(element);
           });
         });
         if (upscale !== 'window') {
@@ -133,6 +180,7 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
             element.style.top = `${axisPosition(geometry.axisY, geometry.top, geometry.height, numeric(artboardAttribute(artboard, 'height')))}px`;
             element.style.zoom = '';
             element.style.removeProperty('--zoom');
+            roundRobloxT396LineHeight(element);
           });
           return;
         }
@@ -158,6 +206,7 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
           element.style.top = `${axisPosition(geometry.axisY, geometry.top, geometry.height, height)}px`;
           element.style.zoom = String(scale);
           element.style.setProperty('--zoom', String(scale));
+          roundRobloxT396LineHeight(element);
         });
       });
     };
@@ -514,6 +563,7 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
     };
 
     const initialise = async () => {
+      restoreRobloxRecordStacking();
       layoutWindowArtboards();
       snapshotRoot.querySelectorAll('img').forEach((image) => {
         image.loading = 'eager';
@@ -532,6 +582,15 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
       snapshotRoot.querySelectorAll('[data-record-type="829"]').forEach(layoutT829);
       snapshotRoot.querySelectorAll('[data-record-type="347"]').forEach(layoutT347);
       snapshotRoot.querySelectorAll('[data-record-type="799"]').forEach(layoutT799);
+    };
+
+    const enableLocalFormControls = () => {
+      document.querySelectorAll('[data-local-source-form][data-local-form-pending]').forEach((form) => {
+        form.querySelectorAll('input[disabled], textarea[disabled], select[disabled], button[disabled]').forEach((control) => {
+          control.removeAttribute('disabled');
+        });
+        form.removeAttribute('data-local-form-pending');
+      });
     };
 
     const submitLocally = (form) => {
@@ -603,11 +662,22 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
       }
     });
 
-    initialise();
-    if (document.readyState === 'complete') initialise();
-    else window.addEventListener('load', initialise, { once: true });
-    window.setTimeout(initialise, 120);
-    window.setTimeout(initialise, 700);
+    const wait = (milliseconds) => new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+    const settleFirstFrame = async () => {
+      await initialise();
+      // Tilda runs delayed reconciliation after its initial layout. Keep that
+      // reconciliation before the first visible frame, rather than moving a
+      // rendered hero after paint.
+      await wait(760);
+      await initialise();
+      if (!(snapshotShell instanceof HTMLElement)) return;
+      snapshotShell.style.display = 'block';
+      await initialise();
+      enableLocalFormControls();
+      snapshotShell.style.visibility = 'visible';
+      snapshotShell.removeAttribute('aria-busy');
+    };
+    void settleFirstFrame();
     let resizeTimer;
     window.addEventListener('resize', () => {
       window.clearTimeout(resizeTimer);
@@ -617,13 +687,6 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
 </script>
 
 <style is:global>
-  @font-face {
-    font-family: 'Nunito';
-    font-style: normal;
-    font-weight: 200 1000;
-    font-display: swap;
-    src: url('/assets/fonts.gstatic.com/s/nunito/v32/XRXV3I6Li01BKofIOOaBXso.woff2') format('woff2');
-  }
   @font-face {
     font-family: 'Montserratblack';
     font-style: normal;
@@ -673,6 +736,7 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
     max-width: 100%;
     overflow-x: clip;
   }
+  .source-snapshot-shell { display: none; visibility: hidden; }
   .source-snapshot-page .t-input-phonemask__options-flag,
   .source-snapshot-page .t-input-phonemask__select-flag {
     background-image: var(--source-flags-url) !important;
@@ -740,6 +804,16 @@ const html = snapshot.html.replaceAll('__SITE_BASE__', base);
     transform: none !important;
     animation: none !important;
     transition: none !important;
+  }
+  .source-snapshot-shell[aria-busy='true'] [data-source-snapshot] *,
+  .source-snapshot-shell[aria-busy='true'] [data-source-snapshot] *::before,
+  .source-snapshot-shell[aria-busy='true'] [data-source-snapshot] *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  /* The home NLM216 decoration animates its layout offsets after first paint. */
+  .source-snapshot-page:has([data-source-route='/']) .nlm216-btn-firefly::after {
+    animation: none !important;
   }
   [data-source-snapshot] .hp-marquee-wrapper {
     overflow-x: auto !important;
