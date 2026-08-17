@@ -61,8 +61,14 @@ node scripts/browser-audit.mjs      # локальный browser QA собран
 
 ## Деплой
 
-Защищённое предпросмотр-представление GitHub Pages публикуется отдельным репозиторием
+Защищённый preview GitHub Pages публикуется отдельным репозиторием
 `Khakimovpro/chezakvest-preview`, ветка `main`; база пути — `/chezakvest-preview`.
-Превью под паролем для показа заказчику — `./migration/deploy_preview.sh`, детали в журнале.
-Автопубликация боевого домена намеренно не включена: CI собирает и проверяет `dist/`,
-а порядок переключения DNS и хостинга описан в `docs/PRODUCTION_CUTOVER.md`.
+Единственный штатный путь публикации — GitHub Actions workflow
+`Deploy protected preview`: он повторно запускает `npm run ci`, собирает и шифрует артефакт,
+а затем fast-forward публикует его. Запуск с локальной машины только ставит этот workflow в
+очередь: `./migration/deploy_preview.sh [commit-or-branch]`.
+
+Workflow использует два GitHub Actions secrets: `PREVIEW_PASSWORD` и
+`PREVIEW_DEPLOY_TOKEN` (token с правом записи только в `Khakimovpro/chezakvest-preview`).
+Автопубликация боевого домена намеренно не включена: порядок переключения DNS и хостинга
+описан в `docs/PRODUCTION_CUTOVER.md`.

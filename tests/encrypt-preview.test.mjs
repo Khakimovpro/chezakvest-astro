@@ -325,14 +325,23 @@ test('encrypted preview embeds pages, preserves icons, and executes the seven-da
   assert.equal(restartedCookies.get(STORE), null, '?logout must clear the saved access');
 });
 
-test('preview deployment receives the password through stdin and protects its local source', async () => {
-  const [deploy, encryptor] = await Promise.all([
+test('protected preview is verified, encrypted, and published only by GitHub Actions', async () => {
+  const [deploy, encryptor, workflow, ciRequirements] = await Promise.all([
     readFile(new URL('../migration/deploy_preview.sh', import.meta.url), 'utf8'),
     readFile(new URL('../_capture/encrypt_site.py', import.meta.url), 'utf8'),
+    readFile(new URL('../.github/workflows/deploy-preview.yml', import.meta.url), 'utf8'),
+    readFile(new URL('../requirements-ci.txt', import.meta.url), 'utf8'),
   ]);
 
-  assert.match(deploy, /chmod 600 \.preview-password/u);
-  assert.match(deploy, /encrypt_site\.py --password-stdin/u);
-  assert.doesNotMatch(deploy, /\$\(cat \.preview-password\)/u);
+  assert.match(deploy, /gh workflow run deploy-preview\.yml/u);
+  assert.doesNotMatch(deploy, /git push/u);
+  assert.match(workflow, /workflow_dispatch:/u);
+  assert.match(workflow, /npm run ci/u);
+  assert.match(workflow, /PREVIEW_PASSWORD: \$\{\{ secrets\.PREVIEW_PASSWORD \}\}/u);
+  assert.match(workflow, /encrypt_site\.py --password-stdin/u);
+  assert.match(workflow, /PREVIEW_DEPLOY_TOKEN/u);
+  assert.match(workflow, /git -C preview-publication push origin HEAD:main/u);
+  assert.doesNotMatch(workflow, /push .*--force/u);
+  assert.match(ciRequirements, /beautifulsoup4/u);
   assert.match(encryptor, /--password-stdin/u);
 });

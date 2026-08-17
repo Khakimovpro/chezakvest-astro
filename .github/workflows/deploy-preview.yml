@@ -1,0 +1,87 @@
+name: Deploy protected preview
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: Commit SHA, branch, or tag to publish
+        required: true
+        default: master
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: protected-preview
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Verify, encrypt, and publish preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out requested source revision
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.source_ref }}
+          fetch-depth: 1
+
+      - name: Record source revision
+        id: source
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements-ci.txt
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install Python verification dependencies
+        run: python -m pip install --requirement requirements-ci.txt
+
+      - name: Run release gate
+        run: npm run ci
+
+      - name: Build encrypted preview artifact
+        env:
+          PREVIEW_PASSWORD: ${{ secrets.PREVIEW_PASSWORD }}
+        run: |
+          SITE_BASE=/chezakvest-preview npm run build
+          python _capture/encrypt_site.py --password-stdin --src dist --out dist-enc --base /chezakvest-preview/ <<< "$PREVIEW_PASSWORD"
+
+      - name: Check out preview publication repository
+        uses: actions/checkout@v4
+        with:
+          repository: Khakimovpro/chezakvest-preview
+          ref: main
+          token: ${{ secrets.PREVIEW_DEPLOY_TOKEN }}
+          path: preview-publication
+
+      - name: Publish the verified artifact
+        env:
+          SOURCE_SHA: ${{ steps.source.outputs.sha }}
+        run: |
+          rsync -a --delete --exclude .git dist-enc/ preview-publication/
+          touch preview-publication/.nojekyll
+          git -C preview-publication config user.name "github-actions[bot]"
+          git -C preview-publication config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C preview-publication add -A
+          if git -C preview-publication diff --cached --quiet; then
+            echo "Preview already contains artifact for this revision."
+            exit 0
+          fi
+          git -C preview-publication commit -m "Preview ${SOURCE_SHA}"
+          git -C preview-publication push origin HEAD:main
