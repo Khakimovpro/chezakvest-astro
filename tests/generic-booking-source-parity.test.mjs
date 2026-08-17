@@ -10,16 +10,17 @@ const representativeRoutes = [
   '/tekhasskaya-reznya-benzopiloj/',
 ];
 
-const sourceBooking = (route, viewport, detail) => detail.routes[route][viewport].original.inspection.sections
-  .find((section) => /онлайн бронирование/i.test(`${section.heading || ''} ${section.text || ''}`));
+const sourceBooking = (route, viewport, detail) => detail.routes[route][viewport];
 
 test('R27 representative generic quests share the copy-only T396 booking artboard', async () => {
-  const detail = JSON.parse(await read('migration/parity/round-27/visual-detail.json'));
+  const detail = JSON.parse(await read('tests/fixtures/r27-generic-booking-source-measurements.json'));
 
   for (const route of representativeRoutes) {
     const desktop = sourceBooking(route, 'desktop', detail);
     const mobile = sourceBooking(route, 'mobile', detail);
 
+    assert.match(desktop.record, /^rec\d+$/u, `${route} desktop source record`);
+    assert.equal(mobile.record, desktop.record, `${route} source booking record stays the same on mobile`);
     assert.equal(desktop.height, 300, `${route} desktop source booking height`);
     assert.equal(mobile.height, 260, `${route} mobile source booking height`);
     assert.match(desktop.text.toLowerCase(), bookingHint);

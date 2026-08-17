@@ -16,10 +16,8 @@ import {
   sourceHeaderSpacer,
 } from '../scripts/parity-visual.mjs';
 
-const BROWSER = '/home/claude/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome';
-
 test('inspects top-level explicit parity records inside an artboard without duplicating nested or generic wrapper sections', async (t) => {
-  const browser = await chromium.launch({ executablePath: BROWSER, args: ['--no-sandbox', '--disable-gpu'] });
+  const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-gpu'] });
   t.after(async () => browser.close());
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.setContent(`
@@ -56,7 +54,7 @@ test('inspects top-level explicit parity records inside an artboard without dupl
 });
 
 test('accepts a generated legacy redirect as an internal route during link inspection', async (t) => {
-  const browser = await chromium.launch({ executablePath: BROWSER, args: ['--no-sandbox', '--disable-gpu'] });
+  const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-gpu'] });
   t.after(async () => browser.close());
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.setContent('<main><a href="/legacy-route/">Legacy page</a><a href="/missing-route/">Missing page</a></main>');
