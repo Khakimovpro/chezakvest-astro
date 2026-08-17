@@ -69,6 +69,7 @@ node scripts/browser-audit.mjs      # локальный browser QA собран
 очередь: `./migration/deploy_preview.sh [commit-or-branch]`.
 
 Workflow использует два GitHub Actions secrets: `PREVIEW_PASSWORD` и
-`PREVIEW_DEPLOY_TOKEN` (token с правом записи только в `Khakimovpro/chezakvest-preview`).
+`PREVIEW_DEPLOY_KEY` (SSH deploy key с правом записи только в
+`Khakimovpro/chezakvest-preview`).
 Автопубликация боевого домена намеренно не включена: порядок переключения DNS и хостинга
 описан в `docs/PRODUCTION_CUTOVER.md`.

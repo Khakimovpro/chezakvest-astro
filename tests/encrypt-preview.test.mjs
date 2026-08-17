@@ -339,7 +339,7 @@ test('protected preview is verified, encrypted, and published only by GitHub Act
   assert.match(workflow, /npm run ci/u);
   assert.match(workflow, /PREVIEW_PASSWORD: \$\{\{ secrets\.PREVIEW_PASSWORD \}\}/u);
   assert.match(workflow, /encrypt_site\.py --password-stdin/u);
-  assert.match(workflow, /PREVIEW_DEPLOY_TOKEN/u);
+  assert.match(workflow, /PREVIEW_DEPLOY_KEY/u);
   assert.match(workflow, /git -C preview-publication push origin HEAD:main/u);
   assert.doesNotMatch(workflow, /push .*--force/u);
   assert.match(ciRequirements, /beautifulsoup4/u);

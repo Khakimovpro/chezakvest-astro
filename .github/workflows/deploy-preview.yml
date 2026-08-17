@@ -67,7 +67,7 @@ jobs:
         with:
           repository: Khakimovpro/chezakvest-preview
           ref: main
-          token: ${{ secrets.PREVIEW_DEPLOY_TOKEN }}
+          ssh-key: ${{ secrets.PREVIEW_DEPLOY_KEY }}
           path: preview-publication
 
       - name: Publish the verified artifact
