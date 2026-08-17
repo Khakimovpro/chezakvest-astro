@@ -1,4 +1,2 @@
-# Required by _capture/encrypt_site.py, source-snapshot extractors and their
-# generated-preview regression tests.
-cryptography>=41.0.7,<47
+# Required by source-snapshot extractors and their regression tests.
 beautifulsoup4>=4.12.3,<5

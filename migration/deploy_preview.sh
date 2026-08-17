@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Запуск защищённого preview через GitHub Actions.
+# Запуск публичного preview через GitHub Actions.
 #
 #   ./migration/deploy_preview.sh [commit-or-branch]
 #
-# Workflow выполняет CI, шифрует артефакт и только затем публикует его в
-# Khakimovpro/chezakvest-preview. Пароль и deploy token живут в GitHub Secrets,
-# поэтому локальный .preview-password не нужен и не передаётся в process args.
+# Workflow выполняет CI, собирает публичный артефакт и только затем публикует его
+# в Khakimovpro/chezakvest-preview. Запуск с локальной машины не передаёт секретов.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."

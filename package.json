@@ -19,7 +19,8 @@
     "verify:seo": "node scripts/seo-data-audit.mjs",
     "verify:assets": "node scripts/asset-audit.mjs",
     "verify:production": "node scripts/production-contract.mjs",
-    "verify:github-pages": "SITE_BASE=/chezakvest-preview npm run build && SITE_BASE=/chezakvest-preview npm run verify:assets && SITE_BASE=/chezakvest-preview npm run verify:production",
+    "verify:github-pages": "SITE_BASE=/chezakvest-preview npm run build && SITE_BASE=/chezakvest-preview npm run verify:assets && SITE_BASE=/chezakvest-preview npm run verify:production && npm run verify:public-preview",
+    "verify:public-preview": "node scripts/public-preview-contract.mjs",
     "verify:live": "node scripts/live-smoke.mjs",
     "audit:production": "npm audit --omit=dev --audit-level=high",
     "ci": "npm run verify:redirects && npm run verify:seo && npm run test && npm run build && npm run verify:assets && npm run verify:redirect-targets && npm run verify:production && npm run audit:production && npm run verify:github-pages && npm run build && npm run verify:assets && npm run verify:redirect-targets && npm run verify:production"

@@ -45,7 +45,7 @@ Performance / Accessibility / Best Practices / SEO.
 
 ```bash
 npm install
-python3 -m pip install --requirement requirements-ci.txt  # нужен для теста зашифрованного preview
+python3 -m pip install --requirement requirements-ci.txt  # нужен для тестов source-snapshot
 npm run build          # -> dist/
 npm run preview        # локальный предпросмотр
 npm run ci             # unit-тесты, production SEO-контракт и dependency audit
@@ -61,15 +61,15 @@ node scripts/browser-audit.mjs      # локальный browser QA собран
 
 ## Деплой
 
-Защищённый preview GitHub Pages публикуется отдельным репозиторием
+Публичный preview GitHub Pages публикуется отдельным репозиторием
 `Khakimovpro/chezakvest-preview`, ветка `main`; база пути — `/chezakvest-preview`.
 Единственный штатный путь публикации — GitHub Actions workflow
-`Deploy protected preview`: он повторно запускает `npm run ci`, собирает и шифрует артефакт,
-а затем fast-forward публикует его. Запуск с локальной машины только ставит этот workflow в
-очередь: `./migration/deploy_preview.sh [commit-or-branch]`.
+`Deploy public preview`: он повторно запускает `npm run ci`, собирает публичный артефакт,
+а затем fast-forward публикует его и ждёт, пока GitHub Pages начнёт отдавать именно эту
+ревизию. Запуск с локальной машины только ставит этот workflow в очередь:
+`./migration/deploy_preview.sh [commit-or-branch]`.
 
-Workflow использует два GitHub Actions secrets: `PREVIEW_PASSWORD` и
-`PREVIEW_DEPLOY_KEY` (SSH deploy key с правом записи только в
-`Khakimovpro/chezakvest-preview`).
+Workflow использует `PREVIEW_DEPLOY_KEY` — SSH deploy key с правом записи только
+в `Khakimovpro/chezakvest-preview`.
 Автопубликация боевого домена намеренно не включена: порядок переключения DNS и хостинга
 описан в `docs/PRODUCTION_CUTOVER.md`.

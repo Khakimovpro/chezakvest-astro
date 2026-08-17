@@ -150,7 +150,7 @@ artifact.
 ## Host cutover checklist
 
 1. Configure the host to publish the CI `dist/` artifact from the selected GitHub
-   repository. Do not use the password-encrypted preview artifact as production.
+   repository. Do not use the GitHub Pages preview artifact as production.
 2. Attach `чезаквест.рф` and its punycode equivalent
    `xn--80aehcht5ci1b.xn--p1ai` at the host, issue TLS, and choose one HTTPS
    canonical host. Redirect HTTP and every alternate host to it with a permanent

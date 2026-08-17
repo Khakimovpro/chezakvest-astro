@@ -49,7 +49,7 @@ Performance равен 73 на `/`, 81 на `/40letpobedy216/`, 77 на `/new-ye
 | Снимки страниц оригинала (20.07.2026) | `work/raw/pages/*.html` — 181 файл, 67 МБ |
 | SEO-аудит, семантика, конкуренты | `work/` (`semantic-core.csv`, `gaps.md`, `STRATEGY.md`, `PROPOSAL.md`) |
 | Живой оригинал | `https://чезаквест.рф` (`xn--80aehcht5ci1b.xn--p1ai`), Tilda, отвечает |
-| Демо-деплой | парольный GitHub Pages `khakimovpro.github.io/chezakvest-preview`, база пути `/chezakvest-preview` |
+| Демо-деплой | публичный GitHub Pages `khakimovpro.github.io/chezakvest-preview`, база пути `/chezakvest-preview` |
 
 ## Хронология
 
@@ -373,45 +373,25 @@ LCP 1.7 с, CLS 0, TBT 10 мс.
 `/minecraft-lend`, `/roblox-land`, `/amongus-land`, поддомен Гарри Поттера, `/privacy` и
 `/new-year` покрыты картой legacy-редиректов или локальным noindex-фолбэком.
 
-## Превью под паролем (для показа заказчику)
+## Публичное превью
 
 **Ссылка:** https://khakimovpro.github.io/chezakvest-preview/ — репозиторий
 `Khakimovpro/chezakvest-preview`, ветка `main`, Pages из корня.
 
-GitHub Pages на бесплатном тарифе не отдаёт сайты из приватных репозиториев, поэтому доступ
-закрыт не настройками хостинга, а шифрованием: на сервере лежат только зашифрованные данные.
+Превью намеренно открыто и содержит обычный собранный `dist/` без парольного лоадера или
+зашифрованных файлов. Это стандартная GitHub Pages-сборка с обычными `robots.txt` и
+`sitemap.xml`; она служит публичной демонстрацией, а не изолированной средой и не заменяет
+отдельный production cutover.
 
-- Each page cipher is embedded in its loader, so the password loader needs no secondary `page.enc`
-  request. A legacy fallback remains only for an already cached old loader.
-- Каждая картинка шифруется в `<имя>.enc`; в разметке вместо `src` стоит `data-enc`,
-  лоадер расшифровывает картинки и подставляет blob-ссылки уже после ввода пароля.
-- AES-256-GCM uses a PBKDF2-HMAC-SHA256 key with 250,000 iterations. The salt is shared per build
-  and each file has its own nonce. Only the ready AES key is stored for a rolling seven days, in a
-  `Secure`, `SameSite=Strict` cookie scoped to `/chezakvest-preview/`; the plaintext password is
-  never stored in the browser. A new build has a new salt, so it deliberately asks once again.
-  This is preview convenience, not server-side access control or a hard same-origin boundary.
-- **Скорость.** Ключ считается один раз на страницу: с солью на каждый файл разблокировка
-  главной занимала 3.7 с, стало ~0.35 с. Картинки расшифровываются лениво — сразу только
-  первые два экрана, остальное по мере скролла (IntersectionObserver, запас 800 px).
-- Отложенные картинки Tilda и слайдера (`data-src`) тоже шифруются, иначе слайды ломались.
-  Фон-паттерн страницы прописан в CSS через `url()` и остаётся открытым: подменить его
-  blob-ссылкой нельзя, а содержимого он не выдаёт.
-- Access persists across tabs and browser restarts for a rolling seven days. Append `?logout` to any
-  preview URL to clear it immediately.
-- `robots.txt` в превью запрещает индексацию целиком, `sitemap.xml` из превью удаляется.
-
-**Обновить превью и снять пароль — одной командой:**
+**Обновить превью:**
 
 ```bash
-./migration/deploy_preview.sh          # под паролем: собрать, зашифровать, выложить
-./migration/deploy_preview.sh --open   # снять пароль: выложить обычный сайт
+./migration/deploy_preview.sh [commit-or-branch]
 ```
 
-Пароль лежит в `astro-clone/.preview-password` (в `.gitignore`, в репозиторий не попадает); скрипт
-передаёт его в шифратор через stdin и перед сборкой выставляет файлу права `0600`.
-Пароль снимаем только после приёмки: пока сайт не доделан, заказчик не должен видеть его целиком
-(решение Эда от 09.08.2026). После `--open` в превью остаётся `robots.txt` с полным запретом
-индексации — превью не должно конкурировать с боевым доменом в поиске.
+Команда ставит в очередь GitHub Actions workflow, который запускает release gate, собирает
+точно указанную ревизию и публикует её в отдельный репозиторий. Пароль и режим шифрования
+для preview больше не используются.
 
 ## Инструменты переноса
 
@@ -519,4 +499,4 @@ GitHub Pages на бесплатном тарифе не отдаёт сайты
 
 Единый, намеренно короткий список фактов, которые нельзя вывести из исходных снимков или кода,
 ведётся в [`docs/OWNER_INPUTS.md`](../docs/OWNER_INPUTS.md). Пока таких решений нет, production
-не переключается: парольное preview остаётся единственной опубликованной средой.
+не переключается: публичное preview остаётся единственной опубликованной средой.

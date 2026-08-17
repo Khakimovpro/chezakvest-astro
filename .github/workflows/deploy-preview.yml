@@ -1,4 +1,4 @@
-name: Deploy protected preview
+name: Deploy public preview
 
 on:
   workflow_dispatch:
@@ -13,14 +13,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: protected-preview
+  group: public-preview
   cancel-in-progress: false
 
 jobs:
   publish:
-    name: Verify, encrypt, and publish preview
+    name: Verify and publish public preview
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
 
     steps:
       - name: Check out requested source revision
@@ -58,12 +58,8 @@ jobs:
       - name: Run release gate
         run: npm run ci
 
-      - name: Build encrypted preview artifact
-        env:
-          PREVIEW_PASSWORD: ${{ secrets.PREVIEW_PASSWORD }}
-        run: |
-          SITE_BASE=/chezakvest-preview npm run build
-          python _capture/encrypt_site.py --password-stdin --src dist --out dist-enc --base /chezakvest-preview/ <<< "$PREVIEW_PASSWORD"
+      - name: Build and verify public preview artifact
+        run: npm run verify:github-pages
 
       - name: Check out preview publication repository
         uses: actions/checkout@v4
@@ -77,14 +73,29 @@ jobs:
         env:
           SOURCE_SHA: ${{ steps.source.outputs.sha }}
         run: |
-          rsync -a --delete --exclude .git dist-enc/ preview-publication/
+          rsync -a --delete --exclude .git dist/ preview-publication/
           touch preview-publication/.nojekyll
+          printf '%s\n' "$SOURCE_SHA" > preview-publication/.preview-release
           git -C preview-publication config user.name "github-actions[bot]"
           git -C preview-publication config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git -C preview-publication add -A
           if git -C preview-publication diff --cached --quiet; then
             echo "Preview already contains artifact for this revision."
-            exit 0
+          else
+            git -C preview-publication commit -m "Preview ${SOURCE_SHA}"
+            git -C preview-publication push origin HEAD:main
           fi
-          git -C preview-publication commit -m "Preview ${SOURCE_SHA}"
-          git -C preview-publication push origin HEAD:main
+
+      - name: Verify GitHub Pages publication
+        env:
+          SOURCE_SHA: ${{ steps.source.outputs.sha }}
+        run: |
+          for attempt in $(seq 1 40); do
+            if test "$(curl --fail --silent --show-error "https://khakimovpro.github.io/chezakvest-preview/.preview-release?revision=${SOURCE_SHA}")" = "$SOURCE_SHA"; then
+              echo "GitHub Pages serves ${SOURCE_SHA}."
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "GitHub Pages did not serve ${SOURCE_SHA} within ten minutes." >&2
+          exit 1

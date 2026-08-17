@@ -4,7 +4,7 @@ import test from 'node:test';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('keeps the local lightbox safe for encrypted preview images', async () => {
+test('keeps the local lightbox safe for responsive images', async () => {
   const [layout, lightbox, zoom, script, quest, category, holiday, venue] = await Promise.all([
     read('src/layouts/Layout.astro'),
     read('src/components/Lightbox.astro'),
