@@ -415,3 +415,22 @@ body.menu-open{overflow:hidden}
   .mfab__face--wa{opacity:1}
   .mfab__face--max,.mfab__face--tg{opacity:0}
 }
+
+.exit-intent{width:min(440px,calc(100vw - 32px));margin:auto;padding:0;border:0;border-radius:22px;background:#fff;color:#333;box-shadow:0 24px 80px rgb(0 0 0 / .4)}
+.exit-intent::backdrop{background:rgb(0 0 0 / .66)}
+.exit-intent__form{position:relative;display:grid;gap:15px;padding:32px;font-family:'Nunito',Arial,sans-serif}
+.exit-intent__eyebrow{margin:0;color:#ff6900;font:800 11px/1 'Montserrat',Arial,sans-serif;letter-spacing:.16em}
+.exit-intent h2{margin:0;font:900 30px/1.08 'Montserrat',Arial,sans-serif}
+.exit-intent__form>p:not(.exit-intent__eyebrow):not(.exit-intent__status){margin:0;font-size:16px;line-height:1.45}
+.exit-intent__close{position:absolute;top:10px;right:13px;width:36px;height:36px;border:0;border-radius:50%;background:transparent;color:#333;font-size:28px;line-height:1;cursor:pointer}
+.exit-intent__close:hover,.exit-intent__close:focus-visible{background:#f3f3f3}
+.exit-intent__label{display:grid;gap:7px;font:700 14px/1.2 'Nunito',Arial,sans-serif}
+.exit-intent__label input{height:52px;padding:0 15px;border:1px solid #aaa;border-radius:10px;color:#333;font:600 17px/1 'Nunito',Arial,sans-serif}
+.exit-intent__label input:focus{border-color:#ff6900;outline:3px solid rgb(255 105 0 / .18)}
+.exit-intent__consent{display:flex;align-items:flex-start;gap:9px;font:400 13px/1.35 'Nunito',Arial,sans-serif}
+.exit-intent__consent input{width:17px;height:17px;margin:0;accent-color:#ff6900}
+.exit-intent__honeypot{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+.exit-intent__submit{min-height:52px;border:0;border-radius:28px;background:#ff6900;color:#fff;font:800 15px/1 'Montserrat',Arial,sans-serif;cursor:pointer}
+.exit-intent__submit:hover,.exit-intent__submit:focus-visible{background:#e65e00}
+.exit-intent__status{min-height:1.35em;margin:0;color:#176a35;font:600 13px/1.35 'Nunito',Arial,sans-serif}
+@media (max-width:480px){.exit-intent__form{padding:27px 20px}.exit-intent h2{font-size:26px}}

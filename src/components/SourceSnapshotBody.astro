@@ -59,10 +59,20 @@ const html = fillEmptyImages(withBase(snapshot.html
   // Поведение, которое на оригинале давали inline-скрипты страницы Tilda:
   // наведение на карточку квеста и локальные виджеты на месте сторонних.
   import { initCardHover } from '../scripts/source-card-hover.js';
+  import { initSourceLiveLayer } from '../scripts/source-live-layer.js';
   import { initSourceWidgets } from '../scripts/source-widgets.js';
 
   initCardHover();
   initSourceWidgets();
+  const shell = document.querySelector('.source-snapshot-shell');
+  const initialiseLiveLayer = () => initSourceLiveLayer(shell?.querySelector('[data-source-snapshot]'));
+  if (shell?.hasAttribute('aria-busy')) {
+    new MutationObserver(() => {
+      if (!shell.hasAttribute('aria-busy')) initialiseLiveLayer();
+    }).observe(shell, { attributes: true, attributeFilter: ['aria-busy'] });
+  } else {
+    initialiseLiveLayer();
+  }
 </script>
 
 <section class="source-booking" id="source-booking" aria-labelledby="source-booking-title">
@@ -444,7 +454,11 @@ const html = fillEmptyImages(withBase(snapshot.html
         // считаются от неё же. Высота у галерей всегда в пикселях — ноль в
         // третьем аргументе означает «пересчитывать нечего».
         applyPercentUnits(geometry, artboardWidth(), 0);
-        width = geometry.width;
+        // The local gallery shell reserves room for visible navigation on a
+        // phone.  The media frame must use that same available width; using
+        // only the authored T396 element width makes the image overpaint the
+        // controls even though the shell itself has been narrowed.
+        width = Math.min(geometry.width, slider.clientWidth || geometry.width);
         height = geometry.height;
       } else {
         main.style.width = '';
@@ -583,21 +597,12 @@ const html = fillEmptyImages(withBase(snapshot.html
     const equaliseT1196 = (record) => {
       const items = [...record.querySelectorAll('.t1196__item')];
       if (!items.length) return;
-      const visible = items.filter((item) => {
-        const box = item.getBoundingClientRect();
-        return box.left < window.innerWidth && box.right > 0;
-      });
-      items.forEach((item) => { item.style.height = '1px'; });
-      const heights = visible.map((item) => {
-        item.style.height = '';
-        const height = item.getBoundingClientRect().height;
-        item.style.height = '1px';
-        return height;
-      });
-      const height = Math.max(1, ...heights);
-      items.forEach((item) => {
-        item.style.height = visible.includes(item) ? `${height}px` : '1px';
-      });
+      items.forEach((item) => { item.style.height = ''; });
+      const height = Math.max(1, ...items.map((item) => Math.max(
+        item.getBoundingClientRect().height,
+        item.scrollHeight,
+      )));
+      items.forEach((item) => { item.style.height = `${height}px`; });
     };
 
     const layoutT829 = (record) => {
@@ -817,6 +822,10 @@ const html = fillEmptyImages(withBase(snapshot.html
       snapshotShell.removeAttribute('aria-busy');
     };
     void settleFirstFrame();
+    // The local live layer may reserve a phone gutter for Zero Block controls
+    // after the source runtime settles. Reuse this layout path so media widths
+    // and slide offsets remain coherent with the final shell geometry.
+    window.addEventListener('source:relayout-sliders', () => { void initialise(); });
     let resizeTimer;
     window.addEventListener('resize', () => {
       window.clearTimeout(resizeTimer);

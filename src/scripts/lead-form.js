@@ -9,7 +9,7 @@ export function getPhoneDigits(value) {
   return '';
 }
 
-function formatPhone(digits) {
+export function formatPhone(digits) {
   return `+7 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 9)}-${digits.slice(9, 11)}`;
 }
 

@@ -41,6 +41,7 @@ MANIFEST_PATH = ROOT / "src" / "generated" / "source-snapshot-manifest.json"
 PUBLIC_ASSETS = ROOT / "public" / "assets"
 CSS_DIR = PUBLIC_ASSETS / "source-css"
 RUNTIME_DIR = PUBLIC_ASSETS / "source-runtime"
+RUTUBE_POSTER_DIR = PUBLIC_ASSETS / "rutube"
 BASE_TOKEN = "__SITE_BASE__"
 SOURCE_ORIGIN = "https://xn--80aehcht5ci1b.xn--p1ai"
 ALLOWED_REMOTE_HOSTS = {
@@ -143,7 +144,12 @@ EAGER_MEDIA_LIMIT = 4
 # archive; snapshots use the browser-compatible MP4 rendition generated from it.
 LOCAL_VIDEO_REPLACEMENTS = {
     "video-hosting/кубок.mov": f"{BASE_TOKEN}/assets/video/kubok.mp4",
+    # The Among Us landing retained a separately embedded Dropbox MOV.  Its
+    # already-vendored rendition is the same route's playable source.
+    "img_7440.mov": f"{BASE_TOKEN}/assets/video/among-us.mp4",
 }
+RUTUBE_POSTERS: dict[str, str | None] = {}
+RUTUBE_POSTER_FAILURES: set[str] = set()
 
 # These are the largest images observed in the mobile first-load trace. Their
 # originals remain under migration/parity/source-media; only the public URL is
@@ -196,6 +202,21 @@ SOURCE_WIDGET_STYLE = """
 [data-source-snapshot] .source-quiz-cta__text{max-width:520px;margin:0;font-size:15px;line-height:1.5;color:#474747}
 [data-source-snapshot] .source-quiz-cta__button{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 34px;border-radius:30px;background:var(--source-quiz-color,#ff6900);color:#fff;font:700 16px/1 'Montserrat',Arial,sans-serif;text-decoration:none}
 [data-source-snapshot] .source-bonus-pop{display:none}
+[data-source-snapshot] .t396__elem[data-elem-type="gallery"] .t-slds{position:relative;overflow:visible}
+[data-source-snapshot] .t396__elem[data-elem-type="gallery"] .t-slds__arrow_container{position:absolute;top:50%;right:-20px;left:-20px;width:auto!important;margin:0!important;z-index:4;display:flex!important;justify-content:space-between;transform:translateY(-50%);pointer-events:none}
+[data-source-snapshot] .t396__elem[data-elem-type="gallery"] .t-slds__arrow_wrapper{display:grid!important;place-items:center;width:40px!important;height:40px!important;padding:0!important;border:0!important;border-radius:50%!important;background:#ff6900!important;color:#fff!important;font:400 31px/1 Arial,sans-serif!important;box-shadow:0 5px 14px rgba(0,0,0,.24);cursor:pointer;pointer-events:auto}
+[data-source-snapshot] .t396__elem[data-elem-type="gallery"] .t-slds__arrow_wrapper:hover,[data-source-snapshot] .t396__elem[data-elem-type="gallery"] .t-slds__arrow_wrapper:focus-visible{background:#e65e00!important}
+[data-source-snapshot] .t396__elem[data-elem-type="gallery"] .t-slds__arrow{display:block!important;translate:0 -2px}
+[data-source-snapshot] .t396__elem[data-elem-type="gallery"] .t-slds__bullet_wrapper{position:absolute;right:0;bottom:12px;left:0;z-index:4;display:flex!important;justify-content:center;gap:7px;pointer-events:none}
+[data-source-snapshot] .t396__elem[data-elem-type="gallery"] .t-slds__bullet{display:block!important;width:8px!important;height:8px!important;padding:0!important;border:0!important;border-radius:50%!important;background:rgba(255,255,255,.72)!important;cursor:pointer;pointer-events:auto}
+[data-source-snapshot] .t396__elem[data-elem-type="gallery"] .t-slds__bullet.t-slds__bullet_active{background:#ff6900!important;box-shadow:0 0 0 2px #fff}
+@media screen and (max-width:639px){[data-source-snapshot] .t396__elem[data-elem-type="gallery"] .t-slds{width:calc(100% - 80px)!important;margin-inline:20px}}
+[data-source-snapshot] .source-video-stage{position:relative;display:grid;place-items:center;overflow:hidden;background:#202020;color:#fff;isolation:isolate}
+[data-source-snapshot] .source-video-stage>img{position:absolute;inset:0;z-index:-1;width:100%;height:100%!important;object-fit:cover}
+[data-source-snapshot] .source-video__play{display:grid;place-items:center;width:68px;height:68px;padding:0;border:0;border-radius:50%;background:#ff6900;color:#fff;font-size:30px;line-height:1;box-shadow:0 8px 24px rgba(0,0,0,.38);cursor:pointer}
+[data-source-snapshot] .source-video__play:hover,[data-source-snapshot] .source-video__play:focus-visible{background:#e65e00;scale:1.04}
+[data-source-snapshot] .source-video-stage[data-source-video-active]>:not(.source-video__media){display:none!important}
+[data-source-snapshot] .source-video-stage .source-video__media{display:block!important;position:absolute;inset:0;width:100%;height:100%;border:0;background:#111}
 @media screen and (max-width:640px){
 [data-source-snapshot] .source-reviews__list>li{flex:0 0 250px;max-width:250px}
 [data-source-snapshot] .source-quiz-cta{gap:10px;padding:18px 16px}
@@ -414,6 +435,10 @@ def rewrite_fragment_urls(fragment: Tag, resources: set[str]) -> None:
             if isinstance(value, list):
                 continue
             text = str(value)
+            if attribute == "data-source-video-url":
+                # The deferred player retains its original URL and never enters
+                # the static resource graph.
+                continue
             # Do not re-vendor an archive image whose rendered URL is replaced
             # by a checked local rendition. This keeps a later normal generator
             # run from restoring the heavy source file into public/assets.
@@ -485,9 +510,58 @@ def materialize_zero_galleries(root: Tag, soup: BeautifulSoup) -> None:
     needs ordinary DOM, not executable vendor code, so materialise the small
     semantic structure deterministically during the snapshot build.
     """
+    def normalize_controls(slider: Tag) -> None:
+        """Tilda's hydrated controls arrive as li/a wrappers; keep one button."""
+        for wrapper in list(slider.select(".t-slds__arrow_wrapper")):
+            if wrapper.name == "button":
+                continue
+            control = wrapper.select_one("button, [role='button']")
+            if control is None:
+                control = wrapper
+            control.name = "button"
+            control["type"] = "button"
+            control["class"] = list(dict.fromkeys([*control.get("class", []), *wrapper.get("class", [])]))
+            control["data-slide-direction"] = "left" if "t-slds__arrow_wrapper-left" in wrapper.get("class", []) else "right"
+            if not control.get("aria-label"):
+                control["aria-label"] = "Предыдущий слайд" if control["data-slide-direction"] == "left" else "Следующий слайд"
+            if control is not wrapper:
+                wrapper.replace_with(control.extract())
+        for bullet in list(slider.select(".t-slds__bullet")):
+            if bullet.name == "button":
+                continue
+            control = soup.new_tag("button", attrs={
+                "class": bullet.get("class", ["t-slds__bullet"]),
+                "type": "button",
+                "aria-label": bullet.get("aria-label", "Перейти к слайду"),
+            })
+            control.extend(list(bullet.contents))
+            bullet.replace_with(control)
+
+        items = slider.select(".t-slds__item")
+        if len(items) < 2:
+            return
+        bullet_wrapper = slider.select_one(".t-slds__bullet_wrapper")
+        if bullet_wrapper is None:
+            bullet_wrapper = soup.new_tag("div", attrs={"class": ["t-slds__bullet_wrapper"]})
+            slider.append(bullet_wrapper)
+        bullets = bullet_wrapper.select(":scope > .t-slds__bullet")
+        for index in range(len(bullets), len(items)):
+            bullet = soup.new_tag("button", attrs={
+                "class": ["t-slds__bullet"],
+                "data-slide-bullet-for": str(index + 1),
+                "type": "button",
+                "aria-label": f"Перейти к слайду {index + 1}",
+            })
+            bullet.append(soup.new_tag("span", attrs={"class": ["t-slds__bullet_body"]}))
+            bullet_wrapper.append(bullet)
+
     for gallery in root.select('[data-elem-type="gallery"][data-field-imgs-value]'):
         atom = gallery.select_one(":scope > .tn-atom__gallery")
-        if atom is None or atom.select_one(".t-slds"):
+        if atom is None:
+            continue
+        hydrated_slider = atom.select_one(".t-slds")
+        if hydrated_slider is not None:
+            normalize_controls(hydrated_slider)
             continue
         try:
             slides = json.loads(str(gallery.get("data-field-imgs-value", "[]")))
@@ -530,8 +604,11 @@ def materialize_zero_galleries(root: Tag, soup: BeautifulSoup) -> None:
         main.append(container)
         slider.append(main)
 
-        dots = str(gallery.get("data-field-slds_dotscontrols-value", "none"))
-        if dots != "none":
+        # Snapshot controls are no longer supplied by the archived Tilda
+        # runtime. Every multi-slide Zero gallery therefore receives its own
+        # visible, keyboard-clickable dot navigation regardless of the old
+        # decorative toggle.
+        if len(slides) > 1:
             bullet_wrapper = soup.new_tag("div", attrs={"class": ["t-slds__bullet_wrapper"]})
             for index in range(len(slides)):
                 bullet = soup.new_tag("button", attrs={
@@ -544,8 +621,7 @@ def materialize_zero_galleries(root: Tag, soup: BeautifulSoup) -> None:
                 bullet_wrapper.append(bullet)
             slider.append(bullet_wrapper)
 
-        arrows = str(gallery.get("data-field-slds_arrowcontrols-value", "none"))
-        if arrows != "none":
+        if len(slides) > 1:
             arrow_container = soup.new_tag("div", attrs={
                 "class": ["t-slds__arrow_container", "t-slds__arrow_container-center"]
             })
@@ -616,12 +692,14 @@ def materialize_zero_forms(root: Tag, soup: BeautifulSoup) -> None:
         input_margin = str(element.get("data-field-inputmargbottom-value", "5"))
         input_font_size = str(element.get("data-field-inputfontsize-value", "16"))
         input_font_weight = str(element.get("data-field-inputfontweight-value", "400"))
+        input_font_family = str(element.get("data-field-inputfontfamily-value", "var(--t-text-font,Arial)"))
         control_style = (
             f"color:{input_color};border:1px solid {input_border};"
             f"background-color:{input_background};border-radius:{input_radius}px;"
-            f"font-size:{input_font_size}px;font-weight:{input_font_weight};"
+            f"font-family:{input_font_family};font-size:{input_font_size}px;font-weight:{input_font_weight};"
             f"height:{input_height}px"
         )
+        text_style = f"font-family:{input_font_family};font-size:{input_font_size}px;font-weight:{input_font_weight}"
 
         for field in fields:
             field_type = str(field.get("li_type", "tx"))
@@ -646,11 +724,11 @@ def materialize_zero_forms(root: Tag, soup: BeautifulSoup) -> None:
                 })
                 block.append(control)
             elif field_type == "tx":
-                text = soup.new_tag("div", attrs={"class": ["t-text"]})
+                text = soup.new_tag("div", attrs={"class": ["t-text"], "style": text_style})
                 text.string = str(field.get("li_text", ""))
                 block.append(text)
             elif field_type == "cb":
-                label = soup.new_tag("label", attrs={"class": ["t-checkbox__control", "t-checkbox__control_flex"]})
+                label = soup.new_tag("label", attrs={"class": ["t-checkbox__control", "t-checkbox__control_flex"], "style": text_style})
                 checkbox = soup.new_tag("input", attrs={
                     "class": ["t-checkbox", "js-tilda-rule"],
                     "name": field_name or "consent",
@@ -1020,16 +1098,114 @@ def materialize_playable_video_sources(root: Tag) -> int:
     replaced = 0
     for source in root.select("video source[src]"):
         original = unquote(str(source.get("src", ""))).lower()
-        replacement = next(
-            (local for legacy, local in LOCAL_VIDEO_REPLACEMENTS.items() if legacy in original),
-            None,
-        )
+        replacement = local_video_replacement(original)
         if not replacement:
             continue
         source["src"] = replacement
         source["type"] = "video/mp4"
         replaced += 1
     return replaced
+
+
+def local_video_replacement(source_url: str) -> str | None:
+    normalized = unquote(source_url).lower()
+    return next(
+        (local for legacy, local in LOCAL_VIDEO_REPLACEMENTS.items() if legacy in normalized),
+        None,
+    )
+
+
+def rutube_poster(video_id: str, *, download: bool) -> str | None:
+    """Cache a Rutube thumbnail without putting Rutube in the initial page load."""
+    if video_id in RUTUBE_POSTERS:
+        return RUTUBE_POSTERS[video_id]
+    target = RUTUBE_POSTER_DIR / f"{video_id}.jpg"
+    if target.exists() and target.stat().st_size > 0:
+        result = f"{BASE_TOKEN}/assets/rutube/{target.name}"
+        RUTUBE_POSTERS[video_id] = result
+        return result
+    if not download:
+        RUTUBE_POSTERS[video_id] = None
+        return None
+    try:
+        metadata = json.loads(request_bytes(f"https://rutube.ru/api/video/{video_id}/?format=json").decode("utf-8"))
+        thumbnail = str(metadata.get("thumbnail_url") or "")
+        if not thumbnail:
+            raise RuntimeError("Rutube API did not return thumbnail_url")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(request_bytes(clean_remote_url(thumbnail, "https://rutube.ru")))
+        result = f"{BASE_TOKEN}/assets/rutube/{target.name}"
+        RUTUBE_POSTERS[video_id] = result
+        return result
+    except (RuntimeError, json.JSONDecodeError) as error:
+        RUTUBE_POSTER_FAILURES.add(f"{video_id}: {error}")
+        RUTUBE_POSTERS[video_id] = None
+        return None
+
+
+def materialize_source_videos(root: Tag, soup: BeautifulSoup, *, download: bool) -> int:
+    """Replace inert third-party slots with a local poster and an explicit play action."""
+    # The last value is either a deferred URL or the original signed Rutube
+    # token.  Tilda stores the latter in two different shapes, so retain it
+    # instead of trying to rebuild a playable URL at runtime.
+    stages: list[tuple[Tag, str, str, str | None]] = []
+    for node in root.select("[data-rutubeid]"):
+        raw = str(node.get("data-rutubeid", ""))
+        video_id = raw.split("?", 1)[0]
+        if video_id:
+            stages.append((node, "rutube", video_id, raw))
+    for node in root.select("[data-videolazy-type][data-videolazy-id]"):
+        kind = str(node.get("data-videolazy-type", "")).lower()
+        raw = str(node.get("data-videolazy-id", ""))
+        if kind == "rutube":
+            video_id = raw.split("?", 1)[0]
+            if video_id:
+                signed_id = raw
+                token = str(node.get("data-videolazy-hash", ""))
+                if token:
+                    signed_id = f"{video_id}?p={token}"
+                stages.append((node, "rutube", video_id, signed_id))
+        elif kind in {"iframe", "mp4"} and raw:
+            stages.append((node, "iframe" if kind == "iframe" else "video", "", raw))
+
+    staged_ids: set[int] = set()
+    for node, kind, video_id, source_url in stages:
+        if id(node) in staged_ids:
+            continue
+        staged_ids.add(id(node))
+        node.clear()
+        node["class"] = list(dict.fromkeys([*node.get("class", []), "source-video-stage"]))
+        node["data-source-video-kind"] = kind
+        if kind == "rutube":
+            node["data-source-video-id"] = video_id
+            node["data-rutubeid"] = source_url or video_id
+            poster = rutube_poster(video_id, download=download)
+        else:
+            if kind == "video":
+                source_url = local_video_replacement(source_url) or source_url
+                # This now points at the local rendition; retaining the legacy
+                # provider URL as an inert Tilda attribute is misleading and
+                # can become a future accidental load if a runtime is added.
+                node.attrs.pop("data-videolazy-id", None)
+            node["data-source-video-url"] = quote(source_url or "", safe="")
+            poster = None
+        # An original T331 slot has no provider thumbnail.  Its checked-in
+        # neutral poster is intentional: the visitor never sees a white hole
+        # and a media request still begins only after their click.
+        image = soup.new_tag("img", attrs={
+            "src": poster or f"{BASE_TOKEN}/assets/rutube/video-fallback.svg",
+            "alt": "Видео",
+        })
+        node.append(image)
+        play = soup.new_tag("button", attrs={
+            "class": ["source-video__play"],
+            "data-source-video-play": "",
+            "type": "button",
+            "aria-label": "Воспроизвести видео",
+        })
+        play.string = "▶"
+        node.append(play)
+    return len(staged_ids)
 
 
 def marquiz_parameters(blob: str) -> dict[str, str]:
@@ -1158,6 +1334,8 @@ def prepare_snapshot(
         route: str,
         raw_path: Path,
         contract_path: Path,
+        *,
+        download: bool,
 ) -> tuple[dict[str, object], set[str], dict[str, str]]:
     html = raw_path.read_text(encoding="utf-8", errors="replace")
     soup = BeautifulSoup(html, "html.parser")
@@ -1359,6 +1537,7 @@ def prepare_snapshot(
     materialize_zero_galleries(root, soup)
     materialize_zero_forms(root, soup)
     normalize_phone_fields(root, soup)
+    widgets_materialized |= bool(materialize_source_videos(root, soup, download=download))
 
     # Browser overrides are intentionally captured after the source runtime has
     # materialised script-only galleries and forms. Strip every viewport-bound
@@ -1634,7 +1813,9 @@ def main() -> None:
     resources: set[str] = set()
     stylesheets: dict[str, str] = {}
     for route, raw_path in sorted(sources.items()):
-        meta, page_resources, page_styles = prepare_snapshot(route, raw_path, contract_sources[route])
+        meta, page_resources, page_styles = prepare_snapshot(
+            route, raw_path, contract_sources[route], download=not args.no_download,
+        )
         manifest[route] = meta
         resources.update(page_resources)
         stylesheets.update(page_styles)
@@ -1668,6 +1849,11 @@ def main() -> None:
                 "\n".join(failures) + "\n", encoding="utf-8"
             )
             print(f"warning: {len(failures)} resources could not be downloaded", file=sys.stderr)
+
+    if RUTUBE_POSTER_FAILURES:
+        (ROOT / "migration" / "parity" / "rutube-poster-failures.txt").write_text(
+            "\n".join(sorted(RUTUBE_POSTER_FAILURES)) + "\n", encoding="utf-8"
+        )
 
     for route in manifest:
         apply_image_dimensions(SNAPSHOT_DIR / str(manifest[route]["snapshot"]))

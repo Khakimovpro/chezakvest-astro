@@ -13,7 +13,7 @@ const tag = process.argv[3] || 'after';
 const OUT = new URL(`../logs/live-layer-${tag}/`, import.meta.url).pathname;
 await fs.mkdir(OUT, { recursive: true });
 
-const ROUTES = (process.argv[4] || '/,/kids/,/contacts/,/igra_v_kalmara/,/nansena107/,/prazdniki-pod-kluch/,/strashnye-kvesty/,/new-year/,/prazdnik-maxi/,/roblox-land/').split(',');
+const ROUTES = (process.argv[4] || '/,/kids/,/contacts/,/40letpobedy216/,/igra_v_kalmara/,/nansena107/,/prazdniki-pod-kluch/,/strashnye-kvesty/,/new-year/,/prazdnik-maxi/,/roblox-land/,/pryatki_v_temnote/,/brawl_stars/,/den-rozhdeniya-na-vr-arene/').split(',');
 
 const probe = () => {
   const px = (v) => Math.round(v);
@@ -94,16 +94,434 @@ const probe = () => {
 const browser = await chromium.launch();
 const out = {};
 for (const route of ROUTES) {
-  for (const width of [1440, 390]) {
-    const ctx = await browser.newContext({ viewport: { width, height: width === 390 ? 844 : 900 }, isMobile: width === 390, hasTouch: width === 390, deviceScaleFactor: 1 });
+  const viewports = [{ width: 1440 }, { width: 390 }];
+  // The narrowest source artboards can be scaled by Tilda at 360px. Keep a
+  // real gallery route in the regression pass so controls cannot disappear
+  // beyond either edge while its photo still fits the viewport.
+  if (route === '/40letpobedy216/') viewports.push({ width: 360 });
+  // A representative SBS route gets a separate first-load check with motion
+  // explicitly reduced. This must happen before the local layer initialises.
+  if (route === '/strashnye-kvesty/') viewports.push({ width: 1440, reducedMotion: true });
+  for (const viewport of viewports) {
+    const { width, reducedMotion = false } = viewport;
+    const phoneViewport = width <= 639;
+    const ctx = await browser.newContext({
+      viewport: { width, height: phoneViewport ? 844 : 900 },
+      isMobile: phoneViewport,
+      hasTouch: phoneViewport,
+      deviceScaleFactor: 1,
+      reducedMotion: reducedMotion ? 'reduce' : 'no-preference',
+      userAgent: phoneViewport
+        ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 Version/17.0 Mobile/15E148 Safari/604.1'
+        : undefined,
+    });
     const page = await ctx.newPage();
     const errors = [];
     page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text().slice(0, 100)); });
     page.on('requestfailed', (r) => errors.push('FAILED ' + r.url().slice(0, 80)));
-    const key = `${route} @${width}`;
+    const key = `${route} @${width}${reducedMotion ? ' reduce' : ''}`;
     try {
       await page.goto(base + route, { waitUntil: 'domcontentloaded', timeout: 45000 });
       await page.waitForTimeout(3500);
+      const fullCarouselCoverage = route === '/den-rozhdeniya-na-vr-arene/' && width === 1440 && !reducedMotion;
+      const coverAdditionalAutoplay = route === '/igra_v_kalmara/' && width === 1440 && !reducedMotion;
+      const liveControls = await page.evaluate(async ({ coverCarouselInteractions, checkAdditionalAutoplay }) => {
+        const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        const externalBeforeInteraction = performance.getEntriesByType('resource')
+          .filter((entry) => !entry.name.startsWith(location.origin)).map((entry) => entry.name);
+        const nativeCarousels = [...document.querySelectorAll('.t1196, .t1148')];
+        const carousel = nativeCarousels[0];
+        const carouselHealth = nativeCarousels.map((root) => {
+          const type = root.classList.contains('t1196') ? 't1196' : 't1148';
+          const items = [...root.querySelectorAll(`.${type}__item`)];
+          const activeItems = items.filter((item) => item.getAttribute('aria-current') === 'true');
+          return {
+            type,
+            items: items.length,
+            minHeight: Math.min(...items.map((item) => item.getBoundingClientRect().height)),
+            activeItems: activeItems.length,
+            activeMatchesIndex: activeItems[0] === items[Number(root.dataset.activeSlideIndex)],
+          };
+        });
+        let carouselResult = null;
+        if (carousel) {
+          const type = carousel.classList.contains('t1196') ? 't1196' : 't1148';
+          const slider = carousel.querySelector(`.${type}__slider`);
+          carousel.scrollIntoView({ block: 'center' });
+          await wait(180);
+          const before = carousel.dataset.activeSlideIndex;
+          const autoplayOwner = carousel.closest('[data-slide-timeout]') ?? carousel.querySelector('[data-slide-timeout]');
+          const autoplayExpected = autoplayOwner?.getAttribute('data-slide-timeout') === '3000'
+            && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+          let autoplayAfter = before;
+          if (autoplayExpected) {
+            await wait(3700);
+            autoplayAfter = carousel.dataset.activeSlideIndex;
+          }
+          carousel.querySelector(`.${type}__control_right`)?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+          await wait(700);
+          const afterRight = carousel.dataset.activeSlideIndex;
+          carousel.querySelector(`.${type}__control_left`)?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+          await wait(700);
+          const afterLeft = carousel.dataset.activeSlideIndex;
+          slider?.dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 120 }));
+          await wait(700);
+          const afterWheel = carousel.dataset.activeSlideIndex;
+          let interactions = null;
+          if (coverCarouselInteractions && autoplayExpected && slider) {
+            const dragBefore = slider.scrollLeft;
+            const dragAtEnd = dragBefore >= slider.scrollWidth - slider.clientWidth - 1;
+            const dragTargetX = dragAtEnd ? 540 : 300;
+            slider.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 81, clientX: 420 }));
+            slider.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 81, clientX: dragTargetX }));
+            slider.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 81, clientX: dragTargetX }));
+            await wait(120);
+            const dragAfter = slider.scrollLeft;
+            carousel.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+            carousel.dispatchEvent(new MouseEvent('mousemove', { bubbles: true }));
+            const pausedAt = carousel.dataset.activeSlideIndex;
+            await wait(3300);
+            const pausedAfter = carousel.dataset.activeSlideIndex;
+            carousel.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+            await wait(3700);
+            const resumedAfter = carousel.dataset.activeSlideIndex;
+            carousel.dispatchEvent(new Event('touchstart', { bubbles: true }));
+            const touchPausedAt = carousel.dataset.activeSlideIndex;
+            await wait(3300);
+            const touchPausedAfter = carousel.dataset.activeSlideIndex;
+            carousel.dispatchEvent(new Event('touchend', { bubbles: true }));
+            await wait(3700);
+            const touchResumedAfter = carousel.dataset.activeSlideIndex;
+            const focusControl = carousel.querySelector(`.${type}__control_right`);
+            focusControl?.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+            const focusPausedAt = carousel.dataset.activeSlideIndex;
+            await wait(3300);
+            const focusPausedAfter = carousel.dataset.activeSlideIndex;
+            focusControl?.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+            await wait(3700);
+            const focusResumedAfter = carousel.dataset.activeSlideIndex;
+            carousel.scrollIntoView({ block: 'start' });
+            await wait(200);
+            window.scrollTo({ top: document.documentElement.scrollHeight });
+            await wait(300);
+            const offscreenAt = carousel.dataset.activeSlideIndex;
+            await wait(3300);
+            const offscreenAfter = carousel.dataset.activeSlideIndex;
+            carousel.scrollIntoView({ block: 'start' });
+            await wait(300);
+            await wait(3700);
+            interactions = {
+              dragMoved: dragAfter !== dragBefore,
+              paused: pausedAt === pausedAfter,
+              resumed: pausedAfter !== resumedAfter,
+              touchPaused: touchPausedAt === touchPausedAfter,
+              touchResumed: touchPausedAfter !== touchResumedAfter,
+              focusPaused: focusPausedAt === focusPausedAfter,
+              focusResumed: focusPausedAfter !== focusResumedAfter,
+              offscreenPaused: offscreenAt === offscreenAfter,
+              intersectionResumed: offscreenAfter !== carousel.dataset.activeSlideIndex,
+            };
+          }
+          carouselResult = {
+            present: true,
+            before,
+            afterRight,
+            afterLeft,
+            afterWheel,
+            active: carousel.querySelectorAll('[aria-current="true"]').length === 1,
+            autoplayExpected,
+            autoplayAfter,
+            interactions,
+          };
+        }
+        // The first carousel covers the full interaction matrix below. Exercise
+        // controls on every following root too: otherwise a later T1196/T1148
+        // could lose its binding while the page-level health remains green.
+        const carouselControls = [];
+        const followingCarousels = nativeCarousels.slice(1);
+        if (followingCarousels.length) {
+          const records = followingCarousels.map((root) => {
+            const type = root.classList.contains('t1196') ? 't1196' : 't1148';
+            const items = [...root.querySelectorAll(`.${type}__item`)];
+            return { root, type, items, before: root.dataset.activeSlideIndex };
+          });
+          records.forEach(({ root, type }) => root.querySelector(`.${type}__control_right`)?.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+          await wait(700);
+          records.forEach((record) => { record.afterRight = record.root.dataset.activeSlideIndex; });
+          records.forEach(({ root, type }) => root.querySelector(`.${type}__control_left`)?.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+          await wait(700);
+          records.forEach((record) => {
+            const activeItems = record.items.filter((item) => item.getAttribute('aria-current') === 'true');
+            carouselControls.push({
+              type: record.type,
+              items: record.items.length,
+              before: record.before,
+              afterRight: record.afterRight,
+              afterLeft: record.root.dataset.activeSlideIndex,
+              active: activeItems.length === 1,
+            });
+          });
+        }
+        // `/igra_v_kalmara/` deliberately starts with a non-autoplay carousel;
+        // verify its two later authored 3000ms carousels independently.
+        const carouselAutoplay = [];
+        const carouselAutoplayExpected = followingCarousels.filter((root) => {
+          const owner = root.closest('[data-slide-timeout]') ?? root.querySelector('[data-slide-timeout]');
+          return owner?.getAttribute('data-slide-timeout') === '3000';
+        }).length;
+        if (checkAdditionalAutoplay) {
+          for (const root of followingCarousels) {
+            const owner = root.closest('[data-slide-timeout]') ?? root.querySelector('[data-slide-timeout]');
+            if (owner?.getAttribute('data-slide-timeout') !== '3000') continue;
+            root.scrollIntoView({ block: 'center' });
+            await wait(220);
+            const before = root.dataset.activeSlideIndex;
+            await wait(3700);
+            carouselAutoplay.push({ before, after: root.dataset.activeSlideIndex });
+          }
+        }
+        const galleryIsRendered = (gallery) => {
+          if (gallery.getBoundingClientRect().width < 1) return false;
+          for (let element = gallery; element instanceof HTMLElement; element = element.parentElement) {
+            const style = getComputedStyle(element);
+            if (element.classList.contains('nolimAutoScaleFix')
+              || style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) < 0.05) return false;
+          }
+          return true;
+        };
+        const galleries = [...document.querySelectorAll('.t396__elem[data-elem-type="gallery"] .t-slds')]
+          .filter(galleryIsRendered);
+        const galleryHealth = galleries.map((gallery) => {
+          const bullets = [...gallery.querySelectorAll('button.t-slds__bullet')];
+          const arrows = [...gallery.querySelectorAll('button.t-slds__arrow_wrapper')];
+          const galleryRect = gallery.getBoundingClientRect();
+          const photoRect = gallery.querySelector('.t-slds__main')?.getBoundingClientRect() ?? galleryRect;
+          const hasVisibleBullets = bullets.every((bullet) => {
+            const rect = bullet.getBoundingClientRect();
+            return rect.width >= 8 && rect.height >= 8 && getComputedStyle(bullet).display !== 'none';
+          });
+          const hasSourceArrows = arrows.length === 2 && arrows.every((arrow) => {
+            const rect = arrow.getBoundingClientRect();
+            const style = getComputedStyle(arrow);
+            const outsidePhoto = rect.left < photoRect.left || rect.right > photoRect.right;
+            return rect.width >= 40 && rect.height >= 40
+              && style.backgroundColor === 'rgb(255, 105, 0)'
+              && style.display !== 'none' && outsidePhoto;
+          });
+          const unclippedArrows = arrows.length === 2 && arrows.every((arrow) => {
+            const rect = arrow.getBoundingClientRect();
+            return rect.left >= -1 && rect.right <= innerWidth + 1;
+          });
+          return {
+            slides: gallery.querySelectorAll('.t-slds__item').length,
+            arrows: arrows.length,
+            bullets: bullets.length,
+            visibleBullets: hasVisibleBullets,
+            sourceArrows: hasSourceArrows,
+            unclippedArrows,
+            activeBullets: bullets.filter((bullet) => bullet.classList.contains('t-slds__bullet_active')).length,
+          };
+        });
+        const gallery = galleries.find((slider) => slider.querySelectorAll('.t-slds__item').length > 1
+          && slider.querySelector('.t-slds__arrow_wrapper'));
+        let galleryResult = null;
+        if (gallery) {
+          const before = gallery.querySelector('.t-slds__item_active')?.dataset.slideIndex;
+          gallery.querySelector('.t-slds__arrow_wrapper-right')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+          await wait(80);
+          const afterArrow = gallery.querySelector('.t-slds__item_active')?.dataset.slideIndex;
+          const alternateBullet = [...gallery.querySelectorAll('button.t-slds__bullet')]
+            .find((bullet) => !bullet.classList.contains('t-slds__bullet_active'));
+          alternateBullet?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+          await wait(80);
+          galleryResult = {
+            present: true,
+            before,
+            afterArrow,
+            afterBullet: gallery.querySelector('.t-slds__item_active')?.dataset.slideIndex,
+            buttons: gallery.querySelectorAll('button.t-slds__arrow_wrapper').length,
+            slides: gallery.querySelectorAll('.t-slds__item').length,
+            activeBullets: gallery.querySelectorAll('button.t-slds__bullet.t-slds__bullet_active').length,
+          };
+        }
+        const stages = [...document.querySelectorAll('[data-source-video-kind]')];
+        const videoHealth = stages.map((stage) => ({
+          kind: stage.dataset.sourceVideoKind,
+          poster: !!stage.querySelector('img[src*="/assets/rutube/"]'),
+          deferred: !stage.querySelector('.source-video__media'),
+          signedRutube: stage.dataset.sourceVideoKind !== 'rutube' || /\?p=/.test(stage.dataset.rutubeid || ''),
+          playable: stage.dataset.sourceVideoKind === 'rutube' || !!stage.dataset.sourceVideoUrl,
+          localDirectVideo: stage.dataset.sourceVideoKind !== 'video' || (() => {
+            try {
+              return new URL(decodeURIComponent(stage.dataset.sourceVideoUrl || ''), document.baseURI).origin === location.origin;
+            } catch {
+              return false;
+            }
+          })(),
+        }));
+        let videoResult = null;
+        if (stages.length) {
+          const results = [];
+          for (const stage of stages) {
+            const before = stage.querySelector('.source-video__media') === null;
+            stage.querySelector('[data-source-video-play]')?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+            await wait(60);
+            const media = stage.querySelector('.source-video__media');
+            let localDirectVideo = true;
+            let directVideoPlayback = true;
+            if (stage.dataset.sourceVideoKind === 'video') {
+              const expected = new URL(decodeURIComponent(stage.dataset.sourceVideoUrl || ''), document.baseURI).href;
+              localDirectVideo = media instanceof HTMLVideoElement && media.src === expected && expected.startsWith(location.origin);
+              if (media instanceof HTMLVideoElement) {
+                // Synthetic DOM clicks are not trusted user activation. Muting
+                // only this acceptance instance lets the browser prove that the
+                // local MP4 loads and starts without altering guest behavior.
+                media.muted = true;
+                try {
+                  await media.play();
+                  directVideoPlayback = await Promise.race([
+                    new Promise((resolve) => media.addEventListener('playing', () => resolve(true), { once: true })),
+                    wait(1500).then(() => media.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA && !media.error),
+                  ]);
+                } catch {
+                  directVideoPlayback = false;
+                }
+              } else {
+                directVideoPlayback = false;
+              }
+            }
+            results.push({
+              deferredBeforeClick: before,
+              mountedAfterClick: media !== null,
+              localDirectVideo,
+              directVideoPlayback,
+            });
+          }
+          videoResult = {
+            present: true,
+            slots: results.length,
+            deferredBeforeClick: results.every((result) => result.deferredBeforeClick),
+            mountedAfterClick: results.every((result) => result.mountedAfterClick),
+            localDirectVideo: results.every((result) => result.localDirectVideo),
+            directVideoPlayback: results.every((result) => result.directVideoPlayback),
+          };
+        }
+        const parseSbs = (value) => {
+          try { return JSON.parse((value || '').replaceAll("'", '"')); } catch { return []; }
+        };
+        const sbsOwners = [...document.querySelectorAll('[data-animate-sbs-event]')]
+          .filter((element) => parseSbs(element.getAttribute('data-animate-sbs-opts')).length > 1);
+        const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        // A loop can still be authored as a hover effect (and can belong to a
+        // zero-size decorative source clone). Only an in-view animation is
+        // expected to be running before interaction, so use it as the active
+        // SBS representative and leave hover to the dedicated probe below.
+        const sbsOwner = sbsOwners.find((element) => {
+          const event = element.getAttribute('data-animate-sbs-event');
+          const rect = element.getBoundingClientRect();
+          return (event === 'intoview' || event === 'blockintoview') && rect.width > 1 && rect.height > 1;
+        }) ?? sbsOwners[0];
+        sbsOwner?.scrollIntoView({ block: 'start' });
+        await wait(500);
+        const sbs = sbsOwner?.querySelector('.tn-atom__sbs-wrapper');
+        const sbsStates = sbsOwners.map((owner) => {
+          const wrapper = owner.querySelector('.tn-atom__sbs-wrapper');
+          const shouldAnimate = innerWidth >= 1200 || owner.getAttribute('data-animate-mobile') === 'y';
+          return {
+            wrapped: !!wrapper,
+            shouldAnimate,
+            animation: wrapper ? getComputedStyle(wrapper).animationName : 'none',
+            started: owner.classList.contains('t-sbs-anim_started'),
+          };
+        });
+        const hoverOwner = sbsOwners.find((element) => element.getAttribute('data-animate-sbs-event') === 'hover');
+        const hover = hoverOwner?.querySelector('.tn-atom__sbs-wrapper');
+        const hoverShouldAnimate = !!hover && !reduced
+          && (innerWidth >= 1200 || hoverOwner?.getAttribute('data-animate-mobile') === 'y');
+        const hoverBefore = hover?.style.animation || hover?.style.transform || '';
+        const iosHover = /iPad|iPhone|iPod/u.test(navigator.userAgent);
+        const hoverTriggerIds = (hoverOwner?.getAttribute('data-animate-sbs-trgels') || '')
+          .split(',').map((id) => id.trim()).filter(Boolean);
+        const hoverScope = hoverOwner?.closest('.t396__artboard') || document;
+        const hoverTrigger = hoverTriggerIds.length
+          ? hoverTriggerIds.map((id) => hoverScope.querySelector(`[data-elem-id="${id}"], [data-group-id="${id}"]`)).find(Boolean)
+          : hoverOwner;
+        hoverTrigger?.dispatchEvent(iosHover
+          ? new MouseEvent('click', { bubbles: true })
+          : new PointerEvent('pointerenter', { bubbles: true }));
+        await wait(80);
+        const hoverAfter = hover?.style.animation || hover?.style.transform || '';
+        hoverTrigger?.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true }));
+        const sbsResult = {
+          authored: sbsOwners.length,
+          allWrapped: reduced || sbsStates.every((state) => state.wrapped),
+          reducedAnimated: reduced && sbsStates.some((state) => state.animation !== 'none'),
+          blockedMobile: sbsStates.filter((state) => !state.shouldAnimate)
+            .every((state) => state.animation === 'none'),
+          representative: sbs ? {
+            animation: getComputedStyle(sbs).animationName,
+            display: getComputedStyle(sbs).display,
+          } : null,
+          reduced,
+          activeRequired: !!sbs
+            && (sbsOwner?.getAttribute('data-animate-sbs-event') === 'intoview' || sbsOwner?.getAttribute('data-animate-sbs-event') === 'blockintoview')
+            && (innerWidth >= 1200 || sbsOwner?.getAttribute('data-animate-mobile') === 'y'),
+          hoverPresent: !!hover,
+          hoverChanged: !hoverShouldAnimate || hoverBefore !== hoverAfter,
+        };
+        const desktopExit = !matchMedia('(pointer: coarse)').matches;
+        const exit = document.querySelector('[data-exit-intent-dialog]');
+        const openedUrls = [];
+        const originalOpen = window.open;
+        window.open = (...args) => { openedUrls.push(args); return null; };
+        if (desktopExit) {
+          document.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, clientY: 0 }));
+          await wait(30);
+        }
+        let exitResult = exit ? { present: true, desktop: desktopExit, open: exit.open, honeypot: !!exit.querySelector('[data-exit-intent-honeypot]') } : null;
+        if (exit?.open && desktopExit) {
+          const phone = exit.querySelector('[data-exit-intent-phone]');
+          const consent = exit.querySelector('[data-exit-intent-consent]');
+          const form = exit.querySelector('[data-exit-intent-form]');
+          const status = exit.querySelector('[data-exit-intent-status]');
+          phone.value = '+7 (999) 123-45-67';
+          phone.dispatchEvent(new Event('input', { bubbles: true }));
+          consent.checked = false;
+          form.requestSubmit();
+          await wait(30);
+          const consentBlocked = openedUrls.length === 0;
+          consent.checked = true;
+          form.requestSubmit();
+          await wait(30);
+          exit.close();
+          document.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, clientY: 0 }));
+          await wait(30);
+          exitResult = {
+            ...exitResult,
+            whatsappDraft: openedUrls[0]?.[0] || '',
+            truthfulStatus: /Открылся черновик WhatsApp/u.test(status?.textContent || ''),
+            cooldown: !exit.open,
+            persistedCooldown: Number(localStorage.getItem('exitPopupDismissedAt')) > Date.now() - 5_000,
+            consentBlocked,
+          };
+        }
+        window.open = originalOpen;
+        return {
+          externalBeforeInteraction,
+          carousel: carouselResult,
+          carouselHealth,
+          carouselControls,
+          carouselAutoplay,
+          carouselAutoplayExpected,
+          gallery: galleryResult,
+          galleryHealth,
+          galleryCount: galleries.length,
+          video: videoResult,
+          videoHealth,
+          sbs: sbsResult,
+          exit: exitResult,
+        };
+      }, { coverCarouselInteractions: fullCarouselCoverage, checkAdditionalAutoplay: coverAdditionalAutoplay });
       const firstFrame = await page.evaluate(() => {
         const shell = document.querySelector('.source-snapshot-shell');
         if (!shell) return { shell: false };
@@ -118,8 +536,51 @@ for (const route of ROUTES) {
       await page.waitForTimeout(1800);
       const data = await page.evaluate(probe);
       data.initialKb = initialKb;
+      data.liveControls = liveControls;
       data.firstFrame = firstFrame;
       data.errors = errors.slice(0, 5);
+      // The main path above proves a real WhatsApp draft. On one desktop page
+      // also exercise the two defensive branches in fresh documents: persisted
+      // cooldown after reload and honeypot without opening WhatsApp.
+      if (route === '/' && width === 1440 && !reducedMotion && liveControls.exit?.desktop) {
+        await page.reload({ waitUntil: 'domcontentloaded' });
+        await page.waitForTimeout(450);
+        const reloadCooldown = await page.evaluate(async () => {
+          const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+          const dialog = document.querySelector('[data-exit-intent-dialog]');
+          document.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, clientY: 0 }));
+          await wait(50);
+          return !!dialog && !dialog.open;
+        });
+        await page.evaluate(() => localStorage.removeItem('exitPopupDismissedAt'));
+        await page.reload({ waitUntil: 'domcontentloaded' });
+        await page.waitForTimeout(450);
+        const honeypot = await page.evaluate(async () => {
+          const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+          const opened = [];
+          const originalOpen = window.open;
+          window.open = (...args) => { opened.push(args); return null; };
+          const dialog = document.querySelector('[data-exit-intent-dialog]');
+          document.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, clientY: 0 }));
+          await wait(30);
+          const form = dialog?.querySelector('[data-exit-intent-form]');
+          const phone = dialog?.querySelector('[data-exit-intent-phone]');
+          const consent = dialog?.querySelector('[data-exit-intent-consent]');
+          const trap = dialog?.querySelector('[data-exit-intent-honeypot]');
+          phone.value = '+7 (999) 123-45-67';
+          phone.dispatchEvent(new Event('input', { bubbles: true }));
+          consent.checked = true;
+          trap.value = 'bot';
+          form.requestSubmit();
+          await wait(30);
+          window.open = originalOpen;
+          return {
+            ignored: opened.length === 0 && !dialog.open,
+            persisted: Number(localStorage.getItem('exitPopupDismissedAt')) > Date.now() - 5_000,
+          };
+        });
+        data.liveControls.exit = { ...liveControls.exit, reloadCooldown, honeypot };
+      }
       // hover первой карточки
       if (data.cards.count && width === 1440) {
         const t = await page.evaluate(() => {
@@ -182,7 +643,8 @@ for (const [key, d] of Object.entries(out)) {
     `меню:${d.menu[0]?.color || '—'}`,
     `img:${d.imgs}/lazy:${d.lazy}`,
     `вес:старт ${d.initialKb}/после скролла ${d.totalKb}KB`,
-    `внешние:${d.external.length}`,
+    `внешние:${d.external.length}/до-клика:${d.liveControls?.externalBeforeInteraction?.length ?? '—'}`,
+    `live:${d.liveControls?.carousel ? (d.liveControls.carousel.active ? 'carousel-ok' : 'carousel-FAIL') : '—'}${d.liveControls?.gallery ? (d.liveControls.gallery.activeBullets === 1 ? '/gallery-ok' : '/gallery-FAIL') : ''}${d.liveControls?.video ? (d.liveControls.video.mountedAfterClick ? '/video-ok' : '/video-FAIL') : ''}${d.liveControls?.exit ? (d.liveControls.exit.desktop ? (d.liveControls.exit.truthfulStatus && d.liveControls.exit.cooldown ? '/exit-ok' : '/exit-FAIL') : '/exit-skip-touch') : ''}`,
     `невидимых:${d.invisibleAnimated}`,
     `hScroll:${d.hScroll ? 'ЕСТЬ' : 'нет'}`,
     `ошибок:${d.errors.length}`,
@@ -191,3 +653,60 @@ for (const [key, d] of Object.entries(out)) {
 await fs.writeFile(`${OUT}/summary.txt`, lines.join('\n'));
 console.log(lines.join('\n'));
 console.log('\nОтчёт:', OUT);
+
+const failures = Object.entries(out).flatMap(([key, data]) => {
+  if (data.error) return [key];
+  const live = data.liveControls;
+  const problems = [];
+  if (live?.carousel && (
+    !live.carousel.active
+    || live.carousel.before === live.carousel.afterRight
+    || live.carousel.afterRight === live.carousel.afterLeft
+    || live.carousel.afterLeft === live.carousel.afterWheel
+    || (live.carousel.autoplayExpected && live.carousel.before === live.carousel.autoplayAfter)
+  )) problems.push('carousel');
+  if (live?.carouselHealth?.some((carousel) => carousel.items > 1 && (
+    carousel.minHeight <= 1 || carousel.activeItems !== 1 || !carousel.activeMatchesIndex
+  ))) problems.push('carousel-health');
+  if (live?.carouselControls?.some((carousel) => carousel.items > 1 && (
+    carousel.before === carousel.afterRight || carousel.afterRight === carousel.afterLeft || !carousel.active
+  ))) problems.push('carousel-controls');
+  if (key === '/igra_v_kalmara/ @1440' && (
+    live?.carouselAutoplayExpected !== 2
+    || live?.carouselAutoplay?.length !== live?.carouselAutoplayExpected
+    || live.carouselAutoplay.some((carousel) => carousel.before === carousel.after)
+  )) problems.push('carousel-autoplay');
+  if (key === '/den-rozhdeniya-na-vr-arene/ @1440' && (!live?.carousel?.interactions
+    || Object.values(live.carousel.interactions).some((result) => !result))) problems.push('carousel-interactions');
+  if (live?.gallery && (
+    live.gallery.buttons !== 2
+    || live.gallery.before === live.gallery.afterArrow
+    || live.gallery.afterArrow === live.gallery.afterBullet
+    || live.gallery.activeBullets !== 1
+  )) problems.push('gallery');
+  if (live?.galleryHealth?.some((gallery) => gallery.slides > 1 && (
+    gallery.arrows !== 2 || gallery.bullets !== gallery.slides || !gallery.visibleBullets || !gallery.sourceArrows || !gallery.unclippedArrows || gallery.activeBullets !== 1
+  ))) problems.push('gallery-health');
+  if (key.startsWith('/40letpobedy216/ @') && (live?.galleryCount ?? 0) < 2) problems.push('gallery-presence');
+  if (live?.video && (!live.video.deferredBeforeClick || !live.video.mountedAfterClick || !live.video.localDirectVideo || !live.video.directVideoPlayback)) problems.push('video');
+  if (live?.videoHealth?.some((stage) => !stage.poster || !stage.deferred || !stage.signedRutube || !stage.playable || !stage.localDirectVideo)) problems.push('video-health');
+  if (live?.externalBeforeInteraction?.length) problems.push('pre-click-network');
+  if (live?.sbs?.authored && (
+    !live.sbs.allWrapped
+    || (!live.sbs.reduced && live.sbs.activeRequired && (
+      live.sbs.representative?.display !== 'block' || live.sbs.representative?.animation === 'none'
+    ))
+    || live.sbs.reducedAnimated
+    || !live.sbs.blockedMobile
+    || !live.sbs.hoverChanged
+  )) problems.push('sbs');
+  if (live?.exit?.desktop && (
+    !live.exit.open || !live.exit.honeypot || !live.exit.consentBlocked || !live.exit.truthfulStatus || !live.exit.cooldown || !live.exit.persistedCooldown || !/wa\.me\//u.test(live.exit.whatsappDraft)
+  )) problems.push('exit');
+  if (key === '/ @1440' && (!live?.exit?.reloadCooldown || !live.exit.honeypot?.ignored || !live.exit.honeypot?.persisted)) problems.push('exit-defences');
+  return problems.map((problem) => `${key}: ${problem}`);
+});
+if (failures.length) {
+  console.error('Live-layer failures:\n' + failures.join('\n'));
+  process.exitCode = 1;
+}

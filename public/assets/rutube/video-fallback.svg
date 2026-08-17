@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Видео">
+  <defs>
+    <linearGradient id="background" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#1d1d21"/>
+      <stop offset="1" stop-color="#3a241b"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="540" fill="url(#background)"/>
+  <circle cx="480" cy="270" r="108" fill="#ff6900" fill-opacity=".2"/>
+  <path d="M445 208l108 62-108 62z" fill="#fff" fill-opacity=".5"/>
+</svg>

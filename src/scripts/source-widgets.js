@@ -120,6 +120,52 @@ const initLocalVideos = (root) => {
   });
 };
 
+// Rutube and the older lazy video records are deliberately inert in generated
+// HTML: their network request is created only after the guest asks to play.
+export const activateSourceVideo = (stage) => {
+  if (stage.dataset.sourceVideoActive) return;
+  const kind = stage.dataset.sourceVideoKind;
+  let deferredUrl = '';
+  try {
+    deferredUrl = decodeURIComponent(stage.dataset.sourceVideoUrl || '');
+  } catch {
+    return;
+  }
+  // The original Tilda attribute keeps Rutube's signed `p` query parameter.
+  // It is required for some embeds, so do not reduce the source to the id.
+  const source = kind === 'rutube'
+    ? `https://rutube.ru/play/embed/${stage.dataset.rutubeid || stage.dataset.sourceVideoId}`
+    : deferredUrl;
+  if (!source) return;
+  const document_ = stage.ownerDocument;
+  let media;
+  if (kind === 'video') {
+    media = document_.createElement('video');
+    media.src = source;
+    media.controls = true;
+    media.autoplay = true;
+    media.playsInline = true;
+  } else {
+    media = document_.createElement('iframe');
+    media.src = source;
+    media.title = 'Видео';
+    media.allow = 'autoplay; fullscreen; picture-in-picture';
+    media.allowFullscreen = true;
+    media.referrerPolicy = 'strict-origin-when-cross-origin';
+  }
+  media.className = 'source-video__media';
+  stage.append(media);
+  stage.dataset.sourceVideoActive = 'true';
+};
+
+const initSourceVideos = (root) => {
+  root.querySelectorAll('[data-source-video-kind]').forEach((stage) => {
+    if (!(stage instanceof HTMLElement) || stage.dataset.ready) return;
+    stage.dataset.ready = 'true';
+    stage.querySelector('[data-source-video-play]')?.addEventListener('click', () => activateSourceVideo(stage), { once: true });
+  });
+};
+
 // Плашку рисует наш код, а раскраску ссылок внутри неё — глобальные стили Tilda
 // из шапки документа: без своего правила подпись остаётся синей и подчёркнутой,
 // как необработанная ссылка. Поэтому оформление едет здесь же, рядом с разметкой,
@@ -236,5 +282,6 @@ export function initSourceWidgets() {
   initMaps(root);
   initLazyBackgrounds(root);
   initLocalVideos(root);
+  initSourceVideos(root);
   initBonus(root);
 }

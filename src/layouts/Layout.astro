@@ -105,5 +105,24 @@ const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1
   <body class={renderedBodyClass}>
     {sourceSnapshot ? <SourceSnapshotBody snapshot={sourceSnapshot} /> : <slot />}
     {!sourceSnapshot && <Lightbox />}
+    <dialog class="exit-intent" data-exit-intent-dialog data-exit-whatsapp={site.header.wa} aria-labelledby="exit-intent-title">
+      <form class="exit-intent__form" data-exit-intent-form>
+        <button class="exit-intent__close" data-exit-intent-close type="button" aria-label="Закрыть">×</button>
+        <p class="exit-intent__eyebrow">ЕСТЬ ВОПРОС?</p>
+        <h2 id="exit-intent-title">Стой, не уходи!</h2>
+        <p>Оставьте номер — откроем WhatsApp с готовой заявкой на обратный звонок.</p>
+        <label class="exit-intent__label" for="exit-intent-phone">Телефон
+          <input id="exit-intent-phone" data-exit-intent-phone name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (999) 999-99-99" required />
+        </label>
+        <label class="exit-intent__consent"><input data-exit-intent-consent type="checkbox" required /> <span>Согласен на обработку персональных данных</span></label>
+        <label class="exit-intent__honeypot" aria-hidden="true">Сайт<input data-exit-intent-honeypot name="website" tabindex="-1" autocomplete="off" /></label>
+        <button class="exit-intent__submit" type="submit">Написать в WhatsApp</button>
+        <p class="exit-intent__status" data-exit-intent-status aria-live="polite"></p>
+      </form>
+    </dialog>
+    <script>
+      import { initExitIntent } from '../scripts/exit-intent.js';
+      initExitIntent(document.querySelector('[data-exit-intent-dialog]'));
+    </script>
   </body>
 </html>
