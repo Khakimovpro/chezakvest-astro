@@ -105,7 +105,7 @@ const html = fillEmptyImages(withBase(snapshot.html
           observer.unobserve(entry.target);
           applyBackgroundImage(entry.target);
         });
-      }, { rootMargin: '600px 0px' })
+      }, { rootMargin: '300px 0px' })
       : null;
     const observedBackgrounds = new WeakSet();
     // Пока снимок скрыт, прямоугольника у элемента нет и близость к экрану измерить
@@ -311,6 +311,33 @@ const html = fillEmptyImages(withBase(snapshot.html
           element.style.setProperty('--zoom', String(scale));
           roundRobloxT396LineHeight(element);
         });
+      });
+    };
+
+    // Local reviews replace a third-party iframe, whose captured T396 slot can
+    // retain the desktop width even after the artboard runtime selects a smaller
+    // breakpoint. Keep the replacement inside the visible canvas; the original
+    // slot geometry is still used unchanged at desktop widths.
+    const layoutSourceReviews = () => {
+      snapshotRoot.querySelectorAll('.source-reviews-slot').forEach((slot) => {
+        if (!(slot instanceof HTMLElement)) return;
+        const frame = slot.querySelector('.source-reviews-frame');
+        const host = slot.querySelector('.source-reviews-host');
+        if (window.innerWidth >= 1200) {
+          slot.style.removeProperty('display');
+          if (frame instanceof HTMLElement) frame.style.removeProperty('width');
+          if (frame instanceof HTMLElement) frame.style.removeProperty('display');
+          if (host instanceof HTMLElement) host.style.removeProperty('width');
+          return;
+        }
+        slot.style.setProperty('display', 'block', 'important');
+        slot.style.setProperty('left', '16px', 'important');
+        slot.style.setProperty('width', 'calc(100vw - 32px)', 'important');
+        if (frame instanceof HTMLElement) {
+          frame.style.setProperty('display', 'block', 'important');
+          frame.style.setProperty('width', '100%', 'important');
+        }
+        if (host instanceof HTMLElement) host.style.setProperty('width', '100%', 'important');
       });
     };
 
@@ -677,6 +704,7 @@ const html = fillEmptyImages(withBase(snapshot.html
       settleSourceAnimations();
       restoreRobloxRecordStacking();
       layoutWindowArtboards();
+      layoutSourceReviews();
       snapshotRoot.querySelectorAll('img').forEach((image) => {
         // loading приходит из снимка и остаётся как есть. Здесь только достраиваем
         // источник тем картинкам Tilda, у которых он лежит в data-original.

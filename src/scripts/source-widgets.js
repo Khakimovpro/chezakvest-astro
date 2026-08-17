@@ -6,7 +6,7 @@
 
 const MAP_TITLE = 'Карта площадок «Чё за Квест» в Ростове-на-Дону';
 // Фон подставляем за полэкрана до появления, чтобы к прокрутке он уже был готов.
-const LAZY_BACKGROUND_MARGIN = '600px 0px';
+const LAZY_BACKGROUND_MARGIN = '300px 0px';
 // Оригинальный Marquiz показывает плашку через 10 секунд. Такая пауза на статике
 // читается как «плашки нет» — и у посетителя, и на приёмочных скриншотах,
 // поэтому ждём ровно столько, чтобы она не прыгала поверх первого экрана.
@@ -90,6 +90,34 @@ const initLazyBackgrounds = (root) => {
     });
   }, { rootMargin: LAZY_BACKGROUND_MARGIN });
   layers.forEach((layer) => observer.observe(layer));
+};
+
+// Снимки праздников содержат локальный видеоблок Tilda: у него уже есть
+// декоративная кнопка, но обработчик оставался в вырезанном legacy runtime.
+// Запускаем только по явному действию гостя — видео не участвует в первом весе.
+export const bindLocalVideo = (video, trigger) => {
+  const showTrigger = () => trigger.classList.remove('hidden');
+  const hideTrigger = () => trigger.classList.add('hidden');
+  trigger.setAttribute('aria-label', 'Воспроизвести видео');
+  trigger.addEventListener('click', () => {
+    video.play().then(hideTrigger).catch(showTrigger);
+  });
+  video.addEventListener('play', hideTrigger);
+  video.addEventListener('pause', () => {
+    if (!video.ended) showTrigger();
+  });
+  video.addEventListener('ended', showTrigger);
+};
+
+const initLocalVideos = (root) => {
+  root.querySelectorAll('.video-box').forEach((box) => {
+    if (!(box instanceof HTMLElement) || box.dataset.ready) return;
+    const video = box.querySelector('.custom-video');
+    const trigger = box.querySelector('.video-play-btn');
+    if (!(video instanceof HTMLVideoElement) || !(trigger instanceof HTMLButtonElement)) return;
+    box.dataset.ready = 'true';
+    bindLocalVideo(video, trigger);
+  });
 };
 
 // Плашку рисует наш код, а раскраску ссылок внутри неё — глобальные стили Tilda
@@ -207,5 +235,6 @@ export function initSourceWidgets() {
   if (!root) return;
   initMaps(root);
   initLazyBackgrounds(root);
+  initLocalVideos(root);
   initBonus(root);
 }

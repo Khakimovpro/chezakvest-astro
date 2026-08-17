@@ -135,8 +135,28 @@ PHONE_INPUT_STYLE_DROP = ("border", "background", "height", "padding", "width", 
 # картинки видно без прокрутки. Пустые записи слот не занимают — счёт идёт только
 # по тем, где медиа действительно есть. Потолок в 16 узлов страхует от
 # записи-галереи, которая одна тянет сотню файлов.
-EAGER_MEDIA_RECORDS = 3
-EAGER_MEDIA_LIMIT = 16
+EAGER_MEDIA_RECORDS = 1
+EAGER_MEDIA_LIMIT = 4
+
+# The archived MOV is H.264/AAC but advertises the wrong container and is not
+# reliably playable outside Safari.  The source original stays in the migration
+# archive; snapshots use the browser-compatible MP4 rendition generated from it.
+LOCAL_VIDEO_REPLACEMENTS = {
+    "video-hosting/кубок.mov": f"{BASE_TOKEN}/assets/video/kubok.mp4",
+}
+
+# These are the largest images observed in the mobile first-load trace. Their
+# originals remain under migration/parity/source-media; only the public URL is
+# replaced with an equivalently sized WebP rendition after visual inspection.
+LOCAL_IMAGE_REPLACEMENTS = {
+    "/assets/static.tildacdn.com/tild3561-3266-4662-a539-313732383839/noroot.png": "/assets/optimized/first-load-2026-08-16/home-hero.webp",
+    "/assets/static.tildacdn.com/tild3833-6637-4432-b736-386538313735/tempImagePVWdhK_1-2.png": "/assets/optimized/first-load-2026-08-16/home-card.webp",
+    "/assets/optim.tildacdn.com/tild6335-3363-4837-a662-646636633035/-/format/webp/noroot.png.webp": "/assets/optimized/first-load-2026-08-16/kids-hero.webp",
+    "/assets/optim.tildacdn.com/tild3933-6236-4463-b335-316630363937/-/format/webp/noroot.png.webp": "/assets/optimized/first-load-2026-08-16/kids-crowd.webp",
+    "/assets/optim.tildacdn.com/tild3737-6465-4432-b433-386131376335/-/format/webp/LAT_3538.jpg.webp": "/assets/optimized/first-load-2026-08-16/kids-birthday.webp",
+    "/assets/optim.tildacdn.com/tild6663-6465-4565-a664-383235633133/-/format/webp/IMG_3972.png.webp": "/assets/optimized/first-load-2026-08-16/ono-hero.webp",
+    "/assets/optim.tildacdn.com/tild6639-6562-4030-a239-303339396137/-/format/webp/tempImage12MvYV_1.png.webp": "/assets/optimized/first-load-2026-08-16/ono-card.webp",
+}
 
 # Styling for the local widgets the generator injects. It lives inside the snapshot
 # because the snapshot is the only artefact this build owns; every selector is scoped
@@ -150,7 +170,7 @@ SOURCE_WIDGET_STYLE = """
 [data-source-snapshot] .source-map .source-map__load[disabled]{opacity:.7;cursor:default}
 [data-source-snapshot] .source-map iframe{display:block!important;position:absolute;inset:0;z-index:1;width:100%;height:100%;border:0}
 [data-source-snapshot] .source-map[data-source-map-active] .source-map__poster,[data-source-snapshot] .source-map[data-source-map-active] .source-map__load{display:none}
-[data-source-snapshot] .source-reviews{box-sizing:border-box;display:flex;flex-direction:column;align-self:center;gap:16px;width:100%;max-width:1170px;min-height:0;max-height:100%;color:#333;font-family:'Nunito',Arial,sans-serif}
+[data-source-snapshot] .source-reviews{box-sizing:border-box;display:flex;flex-direction:column;align-self:center;gap:16px;width:min(100%,calc(100vw - 32px));max-width:1170px;min-height:0;max-height:100%;color:#333;font-family:'Nunito',Arial,sans-serif}
 [data-source-snapshot] .source-reviews *{box-sizing:border-box}
 [data-source-snapshot] .source-reviews__summary{display:flex;align-self:center;align-items:center;gap:10px;padding:9px 18px;border-radius:999px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.1)}
 [data-source-snapshot] .source-reviews__score{font-size:22px;font-weight:700;line-height:1}
@@ -165,6 +185,10 @@ SOURCE_WIDGET_STYLE = """
 [data-source-snapshot] .source-reviews .review-card__footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:13px;border-top:1px solid #eee;font-size:12px;color:#474747}
 [data-source-snapshot] .source-reviews .review-card__footer a{color:#9b3800;text-decoration:underline;text-underline-offset:2px}
 [data-source-snapshot] .source-reviews-host{display:flex;justify-content:center;width:100%}
+@media screen and (max-width:1199px){
+[data-source-snapshot] .source-reviews-slot{box-sizing:border-box;left:16px!important;width:calc(100vw - 32px)!important}
+[data-source-snapshot] .source-reviews-slot .source-reviews-frame{width:100%!important}
+}
 [data-source-snapshot] .source-quiz-cta{box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;width:100%;max-width:760px;margin:0 auto;padding:30px 24px;border-radius:20px;border:1px solid rgba(0,0,0,.08);background:#fff;box-shadow:0 12px 30px rgba(0,0,0,.12);color:#333;text-align:center;font-family:'Nunito',Arial,sans-serif}
 [data-source-snapshot] .source-quiz-cta *{box-sizing:border-box}
 [data-source-snapshot] .source-quiz-cta__eyebrow{margin:0;color:#9b3800;font:700 12px/1 'Montserrat',Arial,sans-serif;letter-spacing:.18em}
@@ -245,6 +269,17 @@ def local_url(url: str) -> str:
     if parsed.netloc.lower().removeprefix("www.") == urlparse(SOURCE_ORIGIN).netloc:
         return f"{BASE_TOKEN}{canonical_route(parsed.path)}"
     return url
+
+
+def replace_local_image_paths(value: str) -> str:
+    for source, replacement in LOCAL_IMAGE_REPLACEMENTS.items():
+        value = value.replace(source, replacement)
+    return value
+
+
+def uses_local_image_replacement(url: str) -> bool:
+    local = local_url(url)
+    return replace_local_image_paths(local) != local
 
 
 def tilda_optim_image_url(url: str) -> str | None:
@@ -379,7 +414,13 @@ def rewrite_fragment_urls(fragment: Tag, resources: set[str]) -> None:
             if isinstance(value, list):
                 continue
             text = str(value)
-            resources.update(remote_urls(text))
+            # Do not re-vendor an archive image whose rendered URL is replaced
+            # by a checked local rendition. This keeps a later normal generator
+            # run from restoring the heavy source file into public/assets.
+            resources.update(
+                resource for resource in remote_urls(text)
+                if not uses_local_image_replacement(resource)
+            )
             if attribute in {"href", "action", "formaction"}:
                 if attribute == "href" and text in VENUE_HASH_ROUTES:
                     element[attribute] = f"{BASE_TOKEN}{VENUE_HASH_ROUTES[text]}"
@@ -412,6 +453,7 @@ def rewrite_fragment_urls(fragment: Tag, resources: set[str]) -> None:
                     lambda match: f"{match.group('quote')}{local_url(match.group('url'))}",
                     text,
                 )
+                rewritten = replace_local_image_paths(rewritten)
                 if attribute == "style":
                     # Quoted CSS URLs become ``&quot;`` inside serialized HTML
                     # attributes and are then misread as part of the asset path
@@ -946,6 +988,12 @@ def materialize_local_reviews(record: Tag, soup: BeautifulSoup, root: Tag) -> bo
         script.decompose()
     host.clear()
     host["class"] = list(dict.fromkeys([*host.get("class", []), "source-reviews-host"]))
+    frame = host.parent if isinstance(host.parent, Tag) else None
+    if frame is not None:
+        frame["class"] = list(dict.fromkeys([*frame.get("class", []), "source-reviews-frame"]))
+    slot = host.find_parent(class_="t396__elem")
+    if slot is not None:
+        slot["class"] = list(dict.fromkeys([*slot.get("class", []), "source-reviews-slot"]))
     # Venue pages reserve a full viewport height for the third-party carousel. The
     # local block is a fixed set of cards, so that reservation would only add half
     # a screen of emptiness under them.
@@ -965,6 +1013,23 @@ def materialize_local_reviews(record: Tag, soup: BeautifulSoup, root: Tag) -> bo
         block["id"] = "otzivy"
     host.append(block)
     return True
+
+
+def materialize_playable_video_sources(root: Tag) -> int:
+    """Replace archive-only MOV sources with their local, compatible rendition."""
+    replaced = 0
+    for source in root.select("video source[src]"):
+        original = unquote(str(source.get("src", ""))).lower()
+        replacement = next(
+            (local for legacy, local in LOCAL_VIDEO_REPLACEMENTS.items() if legacy in original),
+            None,
+        )
+        if not replacement:
+            continue
+        source["src"] = replacement
+        source["type"] = "video/mp4"
+        replaced += 1
+    return replaced
 
 
 def marquiz_parameters(blob: str) -> dict[str, str]:
@@ -1401,6 +1466,7 @@ def prepare_snapshot(
         form["action"] = ""
         form["method"] = "post"
         form["data-local-source-form"] = ""
+    materialize_playable_video_sources(root)
     for video in root.select("video"):
         video["preload"] = "none"
         video.attrs.pop("autoplay", None)

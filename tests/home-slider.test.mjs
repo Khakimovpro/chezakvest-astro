@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { access, readFile } from 'node:fs/promises';
+import { access, readFile, stat } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import test from 'node:test';
 import sharp from 'sharp';
@@ -156,8 +156,19 @@ test('homepage uses the exact live hero and DPR-two catalogue derivatives', asyn
   ]);
   const optimizedCards = site.cards.filter((card) => card.photo.includes('/assets/optim.tildacdn.com/'));
 
-  assert.equal(site.hero.bg, '/assets/static.tildacdn.com/tild3561-3266-4662-a539-313732383839/noroot.png');
-  await access(resolve(process.cwd(), 'public', site.hero.bg.slice(1)));
+  assert.equal(site.hero.bg, '/assets/optimized/first-load-2026-08-16/home-hero.webp');
+  const hero = resolve(process.cwd(), 'public', site.hero.bg.slice(1));
+  const heroOriginal = resolve(process.cwd(), 'migration/parity/source-media/images/home-hero-original.png');
+  await access(hero);
+  await access(heroOriginal);
+  const [heroMetadata, heroStats, originalStats] = await Promise.all([
+    sharp(hero).metadata(),
+    stat(hero),
+    stat(heroOriginal),
+  ]);
+  assert.equal(heroMetadata.format, 'webp');
+  assert.deepEqual([heroMetadata.width, heroMetadata.height], [1479, 891]);
+  assert.ok(heroStats.size < originalStats.size / 4, 'hero WebP must remain materially smaller than its source PNG');
   assert.equal(optimizedCards.length, 26);
   for (const card of optimizedCards) {
     assert.match(card.photo, /\/cover\/720x720\/center\/center\/-\/format\/webp\//u);
