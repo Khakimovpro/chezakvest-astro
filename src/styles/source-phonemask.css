@@ -43,9 +43,8 @@
   margin-right: 5px;
   margin-left: 0;
   font-size: 16px;
-  /* у Tilda здесь cursor:pointer, но список стран открывал его скрипт, которого у нас нет —
-     курсор не должен обещать клик, которого не будет */
-  cursor: default;
+  /* блок страны открывает список — курсор как у оригинала */
+  cursor: pointer;
 }
 
 :is(.source-snapshot-shell, [data-source-snapshot]) .t-input-phonemask__select-triangle {
