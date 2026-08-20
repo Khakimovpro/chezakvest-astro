@@ -27,19 +27,37 @@
       "name": "Яндекс",
       "rating": "5.0",
       "count": 3275,
-      "url": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews"
-    },
-    "3": {
-      "name": "2Gis",
-      "rating": "4.9",
-      "count": 828,
-      "url": "https://2gis.ru/rostov/firm/70000001045468957/tab/reviews"
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews"
     },
     "2": {
       "name": "Google",
       "rating": "4.8",
       "count": 198,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A3%D1%8D%D0%BD%D0%B7%D0%B4%D0%B5%D0%B9.%D0%9D%D0%BE%D0%B2%D0%B0%D1%8F+%D0%B1%D0%B8%D1%82%D0%B2%D0%B0,+%D0%9A%D0%BE%D1%80%D0%B0%D0%BB%D0%B8%D0%BD%D0%B0+%D0%B2+%D0%A1%D1%82%D1%80%D0%B0%D0%BD%D0%B5+%D0%9A%D0%BE%D1%88%D0%BC%D0%B0%D1%80%D0%BE%D0%B2,+%D0%A4%D0%B0%D0%BD%D1%82%D0%BE%D0%BC/@47.230796,39.724598,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b9a6b9ef8119:0xe341a92ce681879!8m2!3d47.230796!4d39.724598!16s%2Fg%2F11css7lnf7"
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb"
+    },
+    "3": {
+      "name": "2Gis",
+      "rating": "4.9",
+      "count": 828,
+      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews"
+    },
+    "4": {
+      "name": "Zoon",
+      "rating": "3.6",
+      "count": 1,
+      "url": "https://zoon.ru/rostov/entertainment/chyo_za_kvest_v_gvardejskom_pereulke_61/reviews/"
+    },
+    "6": {
+      "name": "Myreviews",
+      "rating": "0.0",
+      "count": 0,
+      "url": "enabled"
+    },
+    "15": {
+      "name": "Яндекс.Бизнес",
+      "rating": "5.0",
+      "count": 164,
+      "url": "https://yandex.ru/profile/3387024908"
     }
   },
   "reviews": [
@@ -50,10 +68,24 @@
       "date_create": "19.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=m2rtcm16pq7rzbdrdc8bg23zng&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "цена"
-      ]
+        {
+          "id": 42250784,
+          "review_id": 12328346,
+          "type": 2,
+          "content": "#завышенная_цена",
+          "adj": "завышенная",
+          "noun": "цена",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Юлиана",
@@ -62,8 +94,14 @@
       "date_create": "19.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=23xph3khe4trqk5m6a25r24jew&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/otkroy_dver/1358929224/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
-      "tags": []
+      "images": null,
+      "tags": [],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Инкогнито 7720",
@@ -72,13 +110,51 @@
       "date_create": "19.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=j9v8gh1n5ebjgcrzk06f1z7uzw&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/otkroy_dver/1358929224/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "images": null,
       "tags": [
-        "эмоции",
-        "роли",
-        "антураж",
-        "квест"
-      ]
+        {
+          "id": 42249777,
+          "review_id": 12327963,
+          "type": 1,
+          "content": "#яркие_эмоции",
+          "adj": "яркие",
+          "noun": "эмоции",
+          "manual": false
+        },
+        {
+          "id": 42249776,
+          "review_id": 12327963,
+          "type": 1,
+          "content": "#правдоподобные_роли",
+          "adj": "правдоподобные",
+          "noun": "роли",
+          "manual": false
+        },
+        {
+          "id": 42249775,
+          "review_id": 12327963,
+          "type": 1,
+          "content": "#реалистичный_антураж",
+          "adj": "реалистичный",
+          "noun": "антураж",
+          "manual": false
+        },
+        {
+          "id": 42249774,
+          "review_id": 12327963,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Данил Беляков",
@@ -87,12 +163,42 @@
       "date_create": "17.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=au1ckn805a9yum6b5m6f0jxe9g&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "организация",
-        "атмосфера",
-        "квесты"
-      ]
+        {
+          "id": 42020335,
+          "review_id": 12304877,
+          "type": 1,
+          "content": "#хорошая_организация",
+          "adj": "хорошая",
+          "noun": "организация",
+          "manual": false
+        },
+        {
+          "id": 42020334,
+          "review_id": 12304877,
+          "type": 1,
+          "content": "#классная_атмосфера",
+          "adj": "классная",
+          "noun": "атмосфера",
+          "manual": false
+        },
+        {
+          "id": 42020333,
+          "review_id": 12304877,
+          "type": 1,
+          "content": "#интересные_квесты",
+          "adj": "интересные",
+          "noun": "квесты",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Елизавета Г.",
@@ -101,10 +207,24 @@
       "date_create": "16.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=acy6hujpktyedt3ghgj5bzpx0g&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 41984599,
+          "review_id": 12288480,
+          "type": 1,
+          "content": "#увлекательный_квест",
+          "adj": "увлекательный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Екатерина Рассказова",
@@ -113,11 +233,33 @@
       "date_create": "16.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=ckzgmt627bg2weh139yuwbe748&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "сюжет",
-        "атмосфера"
-      ]
+        {
+          "id": 41984596,
+          "review_id": 12288479,
+          "type": 1,
+          "content": "#интересный_сюжет",
+          "adj": "интересный",
+          "noun": "сюжет",
+          "manual": false
+        },
+        {
+          "id": 41984595,
+          "review_id": 12288479,
+          "type": 1,
+          "content": "#захватывающая_атмосфера",
+          "adj": "захватывающая",
+          "noun": "атмосфера",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Виталий Голяк",
@@ -126,12 +268,42 @@
       "date_create": "16.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=05e4bnna309azfdcfdw49u31xg&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "праздник",
-        "артисты",
-        "квест"
-      ]
+        {
+          "id": 41984593,
+          "review_id": 12288478,
+          "type": 1,
+          "content": "#радостный_праздник",
+          "adj": "радостный",
+          "noun": "праздник",
+          "manual": false
+        },
+        {
+          "id": 41984592,
+          "review_id": 12288478,
+          "type": 1,
+          "content": "#талантливые_артисты",
+          "adj": "талантливые",
+          "noun": "артисты",
+          "manual": false
+        },
+        {
+          "id": 41984591,
+          "review_id": 12288478,
+          "type": 1,
+          "content": "#увлекательный_квест",
+          "adj": "увлекательный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Дмитрий Овсиенко",
@@ -140,13 +312,51 @@
       "date_create": "16.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=5hb45edy5vwvbhmm1he81mhycw&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "актеры",
-        "выбор",
-        "локации",
-        "квест"
-      ]
+        {
+          "id": 41984590,
+          "review_id": 12288477,
+          "type": 1,
+          "content": "#профессиональные_актеры",
+          "adj": "профессиональные",
+          "noun": "актеры",
+          "manual": false
+        },
+        {
+          "id": 41984589,
+          "review_id": 12288477,
+          "type": 1,
+          "content": "#широкий_выбор",
+          "adj": "широкий",
+          "noun": "выбор",
+          "manual": false
+        },
+        {
+          "id": 41984588,
+          "review_id": 12288477,
+          "type": 1,
+          "content": "#разнообразные_локации",
+          "adj": "разнообразные",
+          "noun": "локации",
+          "manual": false
+        },
+        {
+          "id": 41984587,
+          "review_id": 12288477,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Светлана Голяк",
@@ -155,12 +365,42 @@
       "date_create": "16.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=8dn00gmr3vpkf343ubt3aq9kuw&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "декорации",
-        "артисты",
-        "организация"
-      ]
+        {
+          "id": 41984586,
+          "review_id": 12288476,
+          "type": 1,
+          "content": "#красочные_декорации",
+          "adj": "красочные",
+          "noun": "декорации",
+          "manual": false
+        },
+        {
+          "id": 41984585,
+          "review_id": 12288476,
+          "type": 1,
+          "content": "#зажигательные_артисты",
+          "adj": "зажигательные",
+          "noun": "артисты",
+          "manual": false
+        },
+        {
+          "id": 41984584,
+          "review_id": 12288476,
+          "type": 1,
+          "content": "#хорошая_организация",
+          "adj": "хорошая",
+          "noun": "организация",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Влад Еганов",
@@ -169,10 +409,24 @@
       "date_create": "16.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=9xm4f91jgu0m9u215thkqgwnqm&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 41984583,
+          "review_id": 12288475,
+          "type": 1,
+          "content": "#веселый_квест",
+          "adj": "веселый",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Иван Спиридонов",
@@ -181,11 +435,33 @@
       "date_create": "16.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=jexg86a5nd9axpp5xr4wa9vxxg&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "актеры",
-        "место"
-      ]
+        {
+          "id": 41984582,
+          "review_id": 12288474,
+          "type": 1,
+          "content": "#профессиональные_актеры",
+          "adj": "профессиональные",
+          "noun": "актеры",
+          "manual": false
+        },
+        {
+          "id": 41984581,
+          "review_id": 12288474,
+          "type": 1,
+          "content": "#стильное_место",
+          "adj": "стильное",
+          "noun": "место",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Екатерина Многосмыслова",
@@ -194,10 +470,24 @@
       "date_create": "16.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews?reviews[publicId]=zd9tnhv5nm2c8w7g5uuutxqmag&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 41975109,
+          "review_id": 12285740,
+          "type": 1,
+          "content": "#увлекательный_квест",
+          "adj": "увлекательный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Александра Янчук",
@@ -206,10 +496,24 @@
       "date_create": "16.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews?reviews[publicId]=51tnpqhvcrn48qdcnpg97dd7g4&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
+      "images": null,
       "tags": [
-        "вайб"
-      ]
+        {
+          "id": 41975036,
+          "review_id": 12285716,
+          "type": 1,
+          "content": "#страшный_вайб",
+          "adj": "страшный",
+          "noun": "вайб",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Головашко Ольга",
@@ -217,9 +521,15 @@
       "rating": 5,
       "date_create": "16.08.2026",
       "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews",
+      "url": "",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
-      "tags": []
+      "images": null,
+      "tags": [],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "loli4forever",
@@ -228,12 +538,49 @@
       "date_create": "16.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=6m4ygx4mxyejke1cr4wr4rfujg&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "антураж",
-        "актеры",
-        "место"
-      ]
+        {
+          "id": 30972295,
+          "review_id": 10644061,
+          "type": 1,
+          "content": "#высокий_антураж",
+          "adj": "высокий",
+          "noun": "антураж",
+          "manual": false
+        },
+        {
+          "id": 30972294,
+          "review_id": 10644061,
+          "type": 1,
+          "content": "#отличные_актеры",
+          "adj": "отличные",
+          "noun": "актеры",
+          "manual": false
+        },
+        {
+          "id": 30972293,
+          "review_id": 10644061,
+          "type": 1,
+          "content": "#отличное_место",
+          "adj": "отличное",
+          "noun": "место",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": {
+        "id": 1366769,
+        "review_id": 10644061,
+        "status": 3,
+        "date_create": "19.03.2026 07:52:41 MSK",
+        "message": "Спасибо! 😈 Очень приятно, что вы оценили антураж и актёрскую игру на Гвардейском, 61.\r\nЖдём вас снова — рекомендуем «Психбольница», «Шизофрения» или «Техасская резня бензопилой».\r\nС уважением, команда «Чё За Квест»",
+        "type": 1
+      }
     },
     {
       "username": "Алёна Суркова",
@@ -242,11 +589,33 @@
       "date_create": "15.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews?reviews[publicId]=mtxg31hw3mvz86jw2dc3ywf2ug&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
+      "images": null,
       "tags": [
-        "задания",
-        "квест"
-      ]
+        {
+          "id": 41962898,
+          "review_id": 12283265,
+          "type": 1,
+          "content": "#интересные_задания",
+          "adj": "интересные",
+          "noun": "задания",
+          "manual": false
+        },
+        {
+          "id": 41962897,
+          "review_id": 12283265,
+          "type": 1,
+          "content": "#классный_квест",
+          "adj": "классный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "антон п.",
@@ -255,10 +624,24 @@
       "date_create": "15.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=kpdbmj4cfj2m8aj0x40z5c3414&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/otkroy_dver/1358929224/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "images": null,
       "tags": [
-        "сервис"
-      ]
+        {
+          "id": 41961840,
+          "review_id": 12283241,
+          "type": 1,
+          "content": "#отзывчивый_сервис",
+          "adj": "отзывчивый",
+          "noun": "сервис",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Марина Зверева",
@@ -267,10 +650,24 @@
       "date_create": "15.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=rzrnxe1xgrh9na2u67gkk1wang&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "психбольница"
-      ]
+        {
+          "id": 41953243,
+          "review_id": 12281300,
+          "type": 1,
+          "content": "#уютная_психбольница",
+          "adj": "уютная",
+          "noun": "психбольница",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Сергей Блоков",
@@ -279,11 +676,33 @@
       "date_create": "15.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=xuyyymwvmnumbwmdr4g1gk941w&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "атмосфера",
-        "актёры"
-      ]
+        {
+          "id": 41953239,
+          "review_id": 12281299,
+          "type": 1,
+          "content": "#атмосферная_атмосфера",
+          "adj": "атмосферная",
+          "noun": "атмосфера",
+          "manual": false
+        },
+        {
+          "id": 41953238,
+          "review_id": 12281299,
+          "type": 1,
+          "content": "#крутые_актёры",
+          "adj": "крутые",
+          "noun": "актёры",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Ilya",
@@ -292,10 +711,24 @@
       "date_create": "15.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_za_kvest/3387024908/reviews?reviews[publicId]=Ilya.alok&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/3387024908/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ просп. Мира, 27",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 41953119,
+          "review_id": 12281274,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Ольга Б.",
@@ -304,8 +737,21 @@
       "date_create": "15.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=dvmj660a3955ptd24chfypkjrr&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
-      "tags": []
+      "images": null,
+      "tags": [],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": {
+        "id": 2553913,
+        "review_id": 12281124,
+        "status": 4,
+        "date_create": "15.08.2026 20:13:06 MSK",
+        "message": "Ольга, спасибо, что поделились впечатлением! Очень рады, что квест на Нансена, 107/1 пришёлся вам по душе — мы стараемся, чтобы каждая загадка и атмосфера дарили эмоции. Будем рады видеть вас снова: подскажем сценарий под ваш темп и уровень, чтобы впечатлений было ещё больше.\n\nС уважением, команда \"Чё за Квест?\"",
+        "type": 1
+      }
     },
     {
       "username": "Юлия шурова",
@@ -314,11 +760,33 @@
       "date_create": "15.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=c8hzdb9r9f4u066hwpxbar9ey4&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "игра_актеров",
-        "квест"
-      ]
+        {
+          "id": 41946966,
+          "review_id": 12279885,
+          "type": 1,
+          "content": "#выразительная_игра_актеров",
+          "adj": "выразительная",
+          "noun": "игра_актеров",
+          "manual": false
+        },
+        {
+          "id": 41946965,
+          "review_id": 12279885,
+          "type": 1,
+          "content": "#реалистичный_квест",
+          "adj": "реалистичный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Марина М.",
@@ -327,10 +795,24 @@
       "date_create": "15.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews?reviews[publicId]=8bxhpb7f4w1dewb6p83w5q09w4&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 41946611,
+          "review_id": 12279799,
+          "type": 1,
+          "content": "#увлекательный_квест",
+          "adj": "увлекательный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "кирка",
@@ -339,10 +821,31 @@
       "date_create": "14.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=cxhcd57gz01gkzqb36zwgtpc4w&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
       "tags": [
-        "актеры"
-      ]
+        {
+          "id": 41935728,
+          "review_id": 12277708,
+          "type": 1,
+          "content": "#профессиональные_актеры",
+          "adj": "профессиональные",
+          "noun": "актеры",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": {
+        "id": 2552475,
+        "review_id": 12277708,
+        "status": 4,
+        "date_create": "15.08.2026 01:44:22 MSK",
+        "message": "Спасибо за такой тёплый отклик! Здорово, что актёры удерживали образ до самого финала — даже в форс‑мажорных ситуациях: именно ради этого мы отрабатываем взаимодействие и импровизацию, чтобы история для гостей оставалась цельной и увлекательной. Будем рады видеть Вас снова на новых сценариях!\n\nС уважением, команда \"Чё за Квест?\"",
+        "type": 1
+      }
     },
     {
       "username": "Полина Лукашова",
@@ -351,10 +854,31 @@
       "date_create": "14.08.2026",
       "service": 1,
       "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=r6rhf1gjfu7qa2k707f39h0a6c&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 41935700,
+          "review_id": 12277707,
+          "type": 1,
+          "content": "#страшный_квест",
+          "adj": "страшный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": {
+        "id": 2552470,
+        "review_id": 12277707,
+        "status": 4,
+        "date_create": "15.08.2026 01:43:57 MSK",
+        "message": "Полина, спасибо за такой тёплый отзыв! Здорово, что квест оказался по‑настоящему страшным, а детали и логика — на высоком уровне. Мы тщательно выстраиваем атмосферу, свет, звук и тайминги, чтобы эмоции были яркими, а прохождение — безопасным и увлекательным. Будем рады видеть Вас снова на наших сценариях по адресу Нансена, 107/1.\n\nС уважением, команда \"Чё за Квест?\"",
+        "type": 1
+      }
     },
     {
       "username": "Ирина Тимина",
@@ -363,10 +887,24 @@
       "date_create": "12.08.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=267899238",
+      "uri": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "акция"
-      ]
+        {
+          "id": 41826810,
+          "review_id": 12260007,
+          "type": 1,
+          "content": "#выгодная_акция",
+          "adj": "выгодная",
+          "noun": "акция",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Л Ш",
@@ -375,10 +913,24 @@
       "date_create": "05.08.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=265091655",
+      "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "еда"
-      ]
+        {
+          "id": 41410942,
+          "review_id": 12200520,
+          "type": 1,
+          "content": "#вкусная_еда",
+          "adj": "вкусная",
+          "noun": "еда",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Киблицкая Анна 13б ЛПФ",
@@ -386,13 +938,43 @@
       "rating": 5,
       "date_create": "01.08.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "администратор",
-        "сервис",
-        "квест"
-      ]
+        {
+          "id": 41290242,
+          "review_id": 12182061,
+          "type": 1,
+          "content": "#доброжелательный_администратор",
+          "adj": "доброжелательный",
+          "noun": "администратор",
+          "manual": false
+        },
+        {
+          "id": 41290241,
+          "review_id": 12182061,
+          "type": 1,
+          "content": "#внимательный_сервис",
+          "adj": "внимательный",
+          "noun": "сервис",
+          "manual": false
+        },
+        {
+          "id": 41290240,
+          "review_id": 12182061,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Елена Состина",
@@ -400,12 +982,34 @@
       "rating": 5,
       "date_create": "28.07.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "квест",
-        "игра"
-      ]
+        {
+          "id": 41103432,
+          "review_id": 12152831,
+          "type": 1,
+          "content": "#увлекательный_квест",
+          "adj": "увлекательный",
+          "noun": "квест",
+          "manual": false
+        },
+        {
+          "id": 41103431,
+          "review_id": 12152831,
+          "type": 1,
+          "content": "#интересная_игра",
+          "adj": "интересная",
+          "noun": "игра",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Елена Андреева",
@@ -414,8 +1018,14 @@
       "date_create": "18.07.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=259371270",
+      "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
-      "tags": []
+      "images": null,
+      "tags": [],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Кристина",
@@ -423,11 +1033,43 @@
       "rating": 5,
       "date_create": "05.07.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 37869318,
+          "review_id": 11938799,
+          "type": 1,
+          "content": "#сложный_квест",
+          "adj": "сложный",
+          "noun": "квест",
+          "manual": false
+        },
+        {
+          "id": 37869317,
+          "review_id": 11938799,
+          "type": 1,
+          "content": "#увлекательный_квест",
+          "adj": "увлекательный",
+          "noun": "квест",
+          "manual": false
+        },
+        {
+          "id": 37869316,
+          "review_id": 11938799,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Виктория",
@@ -435,11 +1077,25 @@
       "rating": 5,
       "date_create": "07.06.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 36420880,
+          "review_id": 11723267,
+          "type": 1,
+          "content": "#увлекательный_квест",
+          "adj": "увлекательный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Марина Магакян",
@@ -448,11 +1104,33 @@
       "date_create": "07.06.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=248285435",
+      "uri": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "сервис",
-        "персонал"
-      ]
+        {
+          "id": 36414332,
+          "review_id": 11722064,
+          "type": 1,
+          "content": "#дружелюбный_сервис",
+          "adj": "дружелюбный",
+          "noun": "сервис",
+          "manual": false
+        },
+        {
+          "id": 36414331,
+          "review_id": 11722064,
+          "type": 1,
+          "content": "#вежливый_персонал",
+          "adj": "вежливый",
+          "noun": "персонал",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Денис Кузнецов",
@@ -461,10 +1139,24 @@
       "date_create": "06.06.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=248034484",
+      "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 36395592,
+          "review_id": 11718595,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Виктория Петрова",
@@ -473,11 +1165,33 @@
       "date_create": "06.06.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=248059481",
+      "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
       "tags": [
-        "актерская_игра",
-        "квест"
-      ]
+        {
+          "id": 36395421,
+          "review_id": 11718544,
+          "type": 1,
+          "content": "#качественная_актерская_игра",
+          "adj": "качественная",
+          "noun": "актерская_игра",
+          "manual": false
+        },
+        {
+          "id": 36395420,
+          "review_id": 11718544,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Городской житель",
@@ -486,11 +1200,33 @@
       "date_create": "01.06.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=246731618",
+      "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
       "tags": [
-        "актеры",
-        "квест"
-      ]
+        {
+          "id": 36047704,
+          "review_id": 11665181,
+          "type": 1,
+          "content": "#правдоподобные_актеры",
+          "adj": "правдоподобные",
+          "noun": "актеры",
+          "manual": false
+        },
+        {
+          "id": 36047703,
+          "review_id": 11665181,
+          "type": 1,
+          "content": "#увлекательный_квест",
+          "adj": "увлекательный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Илья Миш",
@@ -499,8 +1235,14 @@
       "date_create": "01.06.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=246570710",
+      "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
-      "tags": []
+      "images": null,
+      "tags": [],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Дмитрий Лаврушин",
@@ -509,11 +1251,33 @@
       "date_create": "30.05.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=246170706",
+      "uri": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "сервис",
-        "квест"
-      ]
+        {
+          "id": 36000425,
+          "review_id": 11656409,
+          "type": 1,
+          "content": "#отзывчивый_сервис",
+          "adj": "отзывчивый",
+          "noun": "сервис",
+          "manual": false
+        },
+        {
+          "id": 36000424,
+          "review_id": 11656409,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Виктория",
@@ -522,10 +1286,24 @@
       "date_create": "25.05.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=244776218",
+      "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 35733910,
+          "review_id": 11617489,
+          "type": 1,
+          "content": "#страшный_квест",
+          "adj": "страшный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Fuyu Gyg",
@@ -533,13 +1311,43 @@
       "rating": 5,
       "date_create": "16.05.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "вайб",
-        "актеры",
-        "сикс_севен"
-      ]
+        {
+          "id": 35376069,
+          "review_id": 11565652,
+          "type": 1,
+          "content": "#приятный_вайб",
+          "adj": "приятный",
+          "noun": "вайб",
+          "manual": false
+        },
+        {
+          "id": 35376068,
+          "review_id": 11565652,
+          "type": 1,
+          "content": "#талантливые_актеры",
+          "adj": "талантливые",
+          "noun": "актеры",
+          "manual": false
+        },
+        {
+          "id": 35376067,
+          "review_id": 11565652,
+          "type": 1,
+          "content": "#крутой_сикс_севен",
+          "adj": "крутой",
+          "noun": "сикс_севен",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Вячеслав Мирончук",
@@ -547,11 +1355,25 @@
       "rating": 5,
       "date_create": "16.05.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 35376066,
+          "review_id": 11565651,
+          "type": 2,
+          "content": "#страшный_квест",
+          "adj": "страшный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Аня Косуля",
@@ -560,10 +1382,24 @@
       "date_create": "11.05.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=241877494",
+      "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
       "tags": [
-        "актеры"
-      ]
+        {
+          "id": 35059819,
+          "review_id": 11523597,
+          "type": 1,
+          "content": "#крутые_актеры",
+          "adj": "крутые",
+          "noun": "актеры",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Son of Sun",
@@ -571,12 +1407,34 @@
       "rating": 5,
       "date_create": "10.05.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "актеры",
-        "квест"
-      ]
+        {
+          "id": 35052507,
+          "review_id": 11522525,
+          "type": 2,
+          "content": "#отсутствующие_актеры",
+          "adj": "отсутствующие",
+          "noun": "актеры",
+          "manual": false
+        },
+        {
+          "id": 35052506,
+          "review_id": 11522525,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Алиса Огородникова",
@@ -585,12 +1443,42 @@
       "date_create": "09.05.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=241483300",
+      "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "актёры",
-        "пространство",
-        "квест"
-      ]
+        {
+          "id": 35031818,
+          "review_id": 11518592,
+          "type": 1,
+          "content": "#талантливые_актёры",
+          "adj": "талантливые",
+          "noun": "актёры",
+          "manual": false
+        },
+        {
+          "id": 35031817,
+          "review_id": 11518592,
+          "type": 1,
+          "content": "#удобное_пространство",
+          "adj": "удобное",
+          "noun": "пространство",
+          "manual": false
+        },
+        {
+          "id": 35031816,
+          "review_id": 11518592,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Дарина Ударцева",
@@ -599,10 +1487,24 @@
       "date_create": "03.05.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=240162311",
+      "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 34680249,
+          "review_id": 11474481,
+          "type": 1,
+          "content": "#страшный_квест",
+          "adj": "страшный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Андрей Балашов",
@@ -611,11 +1513,33 @@
       "date_create": "01.05.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=239693390",
+      "uri": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "загадки",
-        "квест"
-      ]
+        {
+          "id": 34621322,
+          "review_id": 11467490,
+          "type": 1,
+          "content": "#насыщенные_загадки",
+          "adj": "насыщенные",
+          "noun": "загадки",
+          "manual": false
+        },
+        {
+          "id": 34621321,
+          "review_id": 11467490,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Анна",
@@ -623,9 +1547,15 @@
       "rating": 5,
       "date_create": "26.04.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
-      "tags": []
+      "images": null,
+      "tags": [],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Bom Bon",
@@ -633,12 +1563,34 @@
       "rating": 5,
       "date_create": "21.04.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov-on-don/search/%D0%A7%D0%81%20%D0%97%D0%90%20%D0%9A%D0%92%D0%95%D0%A1%D0%A2%20%D0%9D%D0%B0%D0%B3%D0%B8%D0%B1%D0%B8%D0%BD%D0%B0%2014%D0%B0%20%D0%B3%20%D0%A0%D0%BE%D1%81%D1%82%D0%BE%D0%B2-%D0%BD%D0%B0-%D0%94%D0%BE%D0%BD%D1%83%2C%20%D0%BF%D1%80-%D0%BA%D1%82%20%D0%9C%D0%B8%D1%85%D0%B0%D0%B8%D0%BB%D0%B0%20%D0%9D%D0%B0%D0%B3%D0%B8%D0%B1%D0%B8%D0%BD%D0%B0%2C%20%D0%B7%D0%B4%2014%D0%B0/firm/70000001007338983/tab/reviews",
+      "url": "",
+      "uri": "https://2gis.ru/rostov-on-don/search/%D0%A7%D0%81%20%D0%97%D0%90%20%D0%9A%D0%92%D0%95%D0%A1%D0%A2%20%D0%9D%D0%B0%D0%B3%D0%B8%D0%B1%D0%B8%D0%BD%D0%B0%2014%D0%B0%20%D0%B3%20%D0%A0%D0%BE%D1%81%D1%82%D0%BE%D0%B2-%D0%BD%D0%B0-%D0%94%D0%BE%D0%BD%D1%83%2C%20%D0%BF%D1%80-%D0%BA%D1%82%20%D0%9C%D0%B8%D1%85%D0%B0%D0%B8%D0%BB%D0%B0%20%D0%9D%D0%B0%D0%B3%D0%B8%D0%B1%D0%B8%D0%BD%D0%B0%2C%20%D0%B7%D0%B4%2014%D0%B0/firm/70000001007338983/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "images": null,
       "tags": [
-        "персонал",
-        "загадки"
-      ]
+        {
+          "id": 33520658,
+          "review_id": 11346134,
+          "type": 1,
+          "content": "#отзывчивая_персонал",
+          "adj": "отзывчивая",
+          "noun": "персонал",
+          "manual": false
+        },
+        {
+          "id": 33520657,
+          "review_id": 11346134,
+          "type": 1,
+          "content": "#интересные_загадки",
+          "adj": "интересные",
+          "noun": "загадки",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Vlad Kireev",
@@ -646,13 +1598,43 @@
       "rating": 5,
       "date_create": "12.04.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "актеры",
-        "атмосфера",
-        "квест"
-      ]
+        {
+          "id": 32847693,
+          "review_id": 11029105,
+          "type": 1,
+          "content": "#профессиональные_актеры",
+          "adj": "профессиональные",
+          "noun": "актеры",
+          "manual": false
+        },
+        {
+          "id": 32847692,
+          "review_id": 11029105,
+          "type": 1,
+          "content": "#жуткая_атмосфера",
+          "adj": "жуткая",
+          "noun": "атмосфера",
+          "manual": false
+        },
+        {
+          "id": 32847691,
+          "review_id": 11029105,
+          "type": 1,
+          "content": "#страшный_квест",
+          "adj": "страшный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Георгий Морозов",
@@ -660,12 +1642,34 @@
       "rating": 5,
       "date_create": "11.04.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "актёры",
-        "квест"
-      ]
+        {
+          "id": 32995374,
+          "review_id": 11081537,
+          "type": 1,
+          "content": "#харизматичные_актёры",
+          "adj": "харизматичные",
+          "noun": "актёры",
+          "manual": false
+        },
+        {
+          "id": 32995373,
+          "review_id": 11081537,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Оксана Ефремова",
@@ -673,13 +1677,43 @@
       "rating": 5,
       "date_create": "11.04.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "сервис",
-        "локация",
-        "квест"
-      ]
+        {
+          "id": 32995333,
+          "review_id": 11081536,
+          "type": 1,
+          "content": "#доброжелательный_сервис",
+          "adj": "доброжелательный",
+          "noun": "сервис",
+          "manual": false
+        },
+        {
+          "id": 32995332,
+          "review_id": 11081536,
+          "type": 1,
+          "content": "#атмосферная_локация",
+          "adj": "атмосферная",
+          "noun": "локация",
+          "manual": false
+        },
+        {
+          "id": 32995331,
+          "review_id": 11081536,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Fuyu Gyg",
@@ -687,11 +1721,25 @@
       "rating": 5,
       "date_create": "05.04.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 32995369,
+          "review_id": 11081538,
+          "type": 1,
+          "content": "#страшный_квест",
+          "adj": "страшный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Настя Князева",
@@ -699,11 +1747,25 @@
       "rating": 5,
       "date_create": "05.04.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "электрошокер"
-      ]
+        {
+          "id": 32609786,
+          "review_id": 10974624,
+          "type": 1,
+          "content": "#топ_электрошокер",
+          "adj": "топ",
+          "noun": "электрошокер",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Соня",
@@ -711,11 +1773,25 @@
       "rating": 5,
       "date_create": "04.04.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5+%D0%91%D0%B0%D0%BD%D0%BA%D0%B0+.+%D0%91%D1%83%D0%BC%D0%B0%D0%B6%D0%BD%D1%8B%D0%B9+%D0%B4%D0%BE%D0%BC,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D1%87%D1%83%D0%BB%D0%B0%D0%BD+%D0%B4%D0%BB%D1%8F+%D0%BC%D1%91%D1%82%D0%B5%D0%BB/@47.2249133,39.7367945,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b9e14b3f63bb:0x86b7597b879c891!8m2!3d47.2249133!4d39.7367945!16s%2Fg%2F11kf4bg1q2",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5+%D0%91%D0%B0%D0%BD%D0%BA%D0%B0+.+%D0%91%D1%83%D0%BC%D0%B0%D0%B6%D0%BD%D1%8B%D0%B9+%D0%B4%D0%BE%D0%BC,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D1%87%D1%83%D0%BB%D0%B0%D0%BD+%D0%B4%D0%BB%D1%8F+%D0%BC%D1%91%D1%82%D0%B5%D0%BB/@47.2249133,39.7367945,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b9e14b3f63bb:0x86b7597b879c891!8m2!3d47.2249133!4d39.7367945!16s%2Fg%2F11kf4bg1q2",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Социалистическая 186",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 33009179,
+          "review_id": 11083427,
+          "type": 1,
+          "content": "#весёлый_квест",
+          "adj": "весёлый",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Кристина",
@@ -723,13 +1799,43 @@
       "rating": 5,
       "date_create": "29.03.2026",
       "service": 2,
-      "url": "https://www.google.ru/maps/place/%D0%9E%D1%82%D0%BA%D1%80%D0%BE%D0%B9+%D0%B4%D0%B2%D0%B5%D1%80%D1%8C.+%D0%9A%D0%B2%D0%B5%D1%81%D1%82%D1%8B+%D0%B2+%D1%80%D0%B5%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8./@47.243557,39.711585,17z/data=!4m8!3m7!1s0x40e3b84b8bd99207:0xb85fbab981336b59!8m2!3d47.247969!4d39.714382!9m1!1b1!16s%2Fg%2F11b70gmms1?hl=ru&entry=ttu&g_ep=EgoyMDI2MDMxMS4wIKXMDSoASAFQAw%3D%3D",
+      "url": null,
+      "uri": "https://www.google.ru/maps/place/%D0%9E%D1%82%D0%BA%D1%80%D0%BE%D0%B9+%D0%B4%D0%B2%D0%B5%D1%80%D1%8C.+%D0%9A%D0%B2%D0%B5%D1%81%D1%82%D1%8B+%D0%B2+%D1%80%D0%B5%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8./@47.243557,39.711585,17z/data=!4m8!3m7!1s0x40e3b84b8bd99207:0xb85fbab981336b59!8m2!3d47.247969!4d39.714382!9m1!1b1!16s%2Fg%2F11b70gmms1?hl=ru&entry=ttu&g_ep=EgoyMDI2MDMxMS4wIKXMDSoASAFQAw%3D%3D",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "images": null,
       "tags": [
-        "персонал",
-        "загадка",
-        "квест"
-      ]
+        {
+          "id": 32451696,
+          "review_id": 10941153,
+          "type": 1,
+          "content": "#прекрасный_персонал",
+          "adj": "прекрасный",
+          "noun": "персонал",
+          "manual": false
+        },
+        {
+          "id": 32451695,
+          "review_id": 10941153,
+          "type": 1,
+          "content": "#хороший_загадка",
+          "adj": "хороший",
+          "noun": "загадка",
+          "manual": false
+        },
+        {
+          "id": 32451694,
+          "review_id": 10941153,
+          "type": 1,
+          "content": "#отличный_квест",
+          "adj": "отличный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Тимофей",
@@ -737,12 +1843,34 @@
       "rating": 5,
       "date_create": "28.03.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "испуг",
-        "квест"
-      ]
+        {
+          "id": 32379192,
+          "review_id": 10925898,
+          "type": 1,
+          "content": "#сильный_испуг",
+          "adj": "сильный",
+          "noun": "испуг",
+          "manual": false
+        },
+        {
+          "id": 32379191,
+          "review_id": 10925898,
+          "type": 1,
+          "content": "#увлекательный_квест",
+          "adj": "увлекательный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Андрей Балашов",
@@ -751,10 +1879,24 @@
       "date_create": "23.03.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=230950058",
+      "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "аттракцион"
-      ]
+        {
+          "id": 32130477,
+          "review_id": 10876391,
+          "type": 1,
+          "content": "#увлекательный_аттракцион",
+          "adj": "увлекательный",
+          "noun": "аттракцион",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Андрей",
@@ -762,11 +1904,25 @@
       "rating": 5,
       "date_create": "22.03.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "дом"
-      ]
+        {
+          "id": 32995361,
+          "review_id": 11081539,
+          "type": 1,
+          "content": "#завораживающий_дом",
+          "adj": "завораживающий",
+          "noun": "дом",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Андрей",
@@ -774,11 +1930,25 @@
       "rating": 5,
       "date_create": "21.03.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "квест"
-      ]
+        {
+          "id": 32099626,
+          "review_id": 10870271,
+          "type": 1,
+          "content": "#страшный_квест",
+          "adj": "страшный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Кристина",
@@ -786,9 +1956,15 @@
       "rating": 5,
       "date_create": "15.03.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
-      "tags": []
+      "images": null,
+      "tags": [],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Максим Власенко",
@@ -797,8 +1973,14 @@
       "date_create": "08.03.2026",
       "service": 3,
       "url": "https://2gis.ru/spb/firm/70000001020491108/tab/reviews?reviewId=227746293",
+      "uri": "https://2gis.ru/spb/firm/70000001020491108/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Социалистическая 186",
-      "tags": []
+      "images": null,
+      "tags": [],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Татьяна Малегон",
@@ -807,12 +1989,42 @@
       "date_create": "07.03.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=227597091",
+      "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
       "tags": [
-        "игра_актеров",
-        "локации",
-        "квест"
-      ]
+        {
+          "id": 31683873,
+          "review_id": 10784580,
+          "type": 1,
+          "content": "#восхитительная_игра_актеров",
+          "adj": "восхитительная",
+          "noun": "игра_актеров",
+          "manual": false
+        },
+        {
+          "id": 31683872,
+          "review_id": 10784580,
+          "type": 1,
+          "content": "#страшные_локации",
+          "adj": "страшные",
+          "noun": "локации",
+          "manual": false
+        },
+        {
+          "id": 31683871,
+          "review_id": 10784580,
+          "type": 1,
+          "content": "#классный_квест",
+          "adj": "классный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Анна Салий",
@@ -821,8 +2033,14 @@
       "date_create": "23.02.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=221505615",
+      "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
-      "tags": []
+      "images": null,
+      "tags": [],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "​Анна Салий​",
@@ -830,12 +2048,34 @@
       "rating": 5,
       "date_create": "23.02.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "url": "",
+      "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "страшное",
-        "впечатление"
-      ]
+        {
+          "id": 31306771,
+          "review_id": 10709273,
+          "type": 2,
+          "content": "#негативное_страшное",
+          "adj": "негативное",
+          "noun": "страшное",
+          "manual": false
+        },
+        {
+          "id": 31306770,
+          "review_id": 10709273,
+          "type": 1,
+          "content": "#положительное_впечатление",
+          "adj": "положительное",
+          "noun": "впечатление",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Дарья Миммммм",
@@ -844,11 +2084,33 @@
       "date_create": "22.02.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=221277226",
+      "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
       "tags": [
-        "атмосфера",
-        "квест"
-      ]
+        {
+          "id": 31306769,
+          "review_id": 10709274,
+          "type": 1,
+          "content": "#волшебная_атмосфера",
+          "adj": "волшебная",
+          "noun": "атмосфера",
+          "manual": false
+        },
+        {
+          "id": 31306768,
+          "review_id": 10709274,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Маргарита Янушевская",
@@ -857,11 +2119,33 @@
       "date_create": "22.02.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=221215352",
+      "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
       "tags": [
-        "время",
-        "квест"
-      ]
+        {
+          "id": 31280301,
+          "review_id": 10704074,
+          "type": 1,
+          "content": "#классное_время",
+          "adj": "классное",
+          "noun": "время",
+          "manual": false
+        },
+        {
+          "id": 31280300,
+          "review_id": 10704074,
+          "type": 1,
+          "content": "#классный_квест",
+          "adj": "классный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Анна Федотова",
@@ -869,11 +2153,34 @@
       "rating": 5,
       "date_create": "21.02.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A3%D1%8D%D0%BD%D0%B7%D0%B4%D0%B5%D0%B9.%D0%9D%D0%BE%D0%B2%D0%B0%D1%8F+%D0%B1%D0%B8%D1%82%D0%B2%D0%B0,+%D0%9A%D0%BE%D1%80%D0%B0%D0%BB%D0%B8%D0%BD%D0%B0+%D0%B2+%D0%A1%D1%82%D1%80%D0%B0%D0%BD%D0%B5+%D0%9A%D0%BE%D1%88%D0%BC%D0%B0%D1%80%D0%BE%D0%B2,+%D0%A4%D0%B0%D0%BD%D1%82%D0%BE%D0%BC/@47.230796,39.724598,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b9a6b9ef8119:0xe341a92ce681879!8m2!3d47.230796!4d39.724598!16s%2Fg%2F11css7lnf7",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A3%D1%8D%D0%BD%D0%B7%D0%B4%D0%B5%D0%B9.%D0%9D%D0%BE%D0%B2%D0%B0%D1%8F+%D0%B1%D0%B8%D1%82%D0%B2%D0%B0,+%D0%9A%D0%BE%D1%80%D0%B0%D0%BB%D0%B8%D0%BD%D0%B0+%D0%B2+%D0%A1%D1%82%D1%80%D0%B0%D0%BD%D0%B5+%D0%9A%D0%BE%D1%88%D0%BC%D0%B0%D1%80%D0%BE%D0%B2,+%D0%A4%D0%B0%D0%BD%D1%82%D0%BE%D0%BC/@47.230796,39.724598,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b9a6b9ef8119:0xe341a92ce681879!8m2!3d47.230796!4d39.724598!16s%2Fg%2F11css7lnf7",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
+      "images": null,
       "tags": [
-        "игра"
-      ]
+        {
+          "id": 32981953,
+          "review_id": 11078873,
+          "type": 1,
+          "content": "#увлекательная_игра",
+          "adj": "увлекательная",
+          "noun": "игра",
+          "manual": false
+        },
+        {
+          "id": 32981952,
+          "review_id": 11078873,
+          "type": 1,
+          "content": "#интересная_игра",
+          "adj": "интересная",
+          "noun": "игра",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Гусь Иванович",
@@ -881,12 +2188,34 @@
       "rating": 5,
       "date_create": "21.02.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "событие",
-        "опыт"
-      ]
+        {
+          "id": 31259630,
+          "review_id": 10700221,
+          "type": 1,
+          "content": "#приятное_событие",
+          "adj": "приятное",
+          "noun": "событие",
+          "manual": false
+        },
+        {
+          "id": 31259629,
+          "review_id": 10700221,
+          "type": 1,
+          "content": "#отличный_опыт",
+          "adj": "отличный",
+          "noun": "опыт",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Саня Аракеллов",
@@ -894,12 +2223,34 @@
       "rating": 5,
       "date_create": "21.02.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "игра",
-        "квест"
-      ]
+        {
+          "id": 31259636,
+          "review_id": 10700220,
+          "type": 1,
+          "content": "#интеллектуальная_игра",
+          "adj": "интеллектуальная",
+          "noun": "игра",
+          "manual": false
+        },
+        {
+          "id": 31259635,
+          "review_id": 10700220,
+          "type": 1,
+          "content": "#увлекательный_квест",
+          "adj": "увлекательный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Ксения Иванова",
@@ -907,15 +2258,61 @@
       "rating": 5,
       "date_create": "14.02.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "времяпрепровождение",
-        "чувство",
-        "игра",
-        "опыт",
-        "квест"
-      ]
+        {
+          "id": 30958297,
+          "review_id": 10641274,
+          "type": 1,
+          "content": "#весёлое_времяпрепровождение",
+          "adj": "весёлое",
+          "noun": "времяпрепровождение",
+          "manual": false
+        },
+        {
+          "id": 30958296,
+          "review_id": 10641274,
+          "type": 1,
+          "content": "#напряжение_чувство",
+          "adj": "напряжение",
+          "noun": "чувство",
+          "manual": false
+        },
+        {
+          "id": 30958295,
+          "review_id": 10641274,
+          "type": 1,
+          "content": "#актёрская_игра",
+          "adj": "актёрская",
+          "noun": "игра",
+          "manual": false
+        },
+        {
+          "id": 30958294,
+          "review_id": 10641274,
+          "type": 1,
+          "content": "#жуткий_опыт",
+          "adj": "жуткий",
+          "noun": "опыт",
+          "manual": false
+        },
+        {
+          "id": 30958293,
+          "review_id": 10641274,
+          "type": 1,
+          "content": "#отличный_квест",
+          "adj": "отличный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Людмила Шарыпина",
@@ -924,10 +2321,24 @@
       "date_create": "14.02.2026",
       "service": 3,
       "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=219348395",
+      "uri": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "место"
-      ]
+        {
+          "id": 30958305,
+          "review_id": 10641272,
+          "type": 1,
+          "content": "#классное_место",
+          "adj": "классное",
+          "noun": "место",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Анастасия Холодная",
@@ -935,12 +2346,34 @@
       "rating": 5,
       "date_create": "07.02.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5+%D0%91%D0%B0%D0%BD%D0%BA%D0%B0+.+%D0%91%D1%83%D0%BC%D0%B0%D0%B6%D0%BD%D1%8B%D0%B9+%D0%B4%D0%BE%D0%BC,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D1%87%D1%83%D0%BB%D0%B0%D0%BD+%D0%B4%D0%BB%D1%8F+%D0%BC%D1%91%D1%82%D0%B5%D0%BB/@47.2249133,39.7367945,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b9e14b3f63bb:0x86b7597b879c891!8m2!3d47.2249133!4d39.7367945!16s%2Fg%2F11kf4bg1q2",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5+%D0%91%D0%B0%D0%BD%D0%BA%D0%B0+.+%D0%91%D1%83%D0%BC%D0%B0%D0%B6%D0%BD%D1%8B%D0%B9+%D0%B4%D0%BE%D0%BC,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D1%87%D1%83%D0%BB%D0%B0%D0%BD+%D0%B4%D0%BB%D1%8F+%D0%BC%D1%91%D1%82%D0%B5%D0%BB/@47.2249133,39.7367945,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b9e14b3f63bb:0x86b7597b879c891!8m2!3d47.2249133!4d39.7367945!16s%2Fg%2F11kf4bg1q2",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Социалистическая 186",
+      "images": null,
       "tags": [
-        "задачка",
-        "квест"
-      ]
+        {
+          "id": 30793398,
+          "review_id": 10610439,
+          "type": 1,
+          "content": "#сложная_задачка",
+          "adj": "сложная",
+          "noun": "задачка",
+          "manual": false
+        },
+        {
+          "id": 30793397,
+          "review_id": 10610439,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     },
     {
       "username": "Вика",
@@ -948,13 +2381,43 @@
       "rating": 5,
       "date_create": "01.02.2026",
       "service": 2,
-      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "url": null,
+      "uri": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
       "tags": [
-        "актеры",
-        "атмосфера",
-        "процесс"
-      ]
+        {
+          "id": 30623755,
+          "review_id": 10579261,
+          "type": 1,
+          "content": "#дружелюбные_актеры",
+          "adj": "дружелюбные",
+          "noun": "актеры",
+          "manual": false
+        },
+        {
+          "id": 30623754,
+          "review_id": 10579261,
+          "type": 1,
+          "content": "#хорошая_атмосфера",
+          "adj": "хорошая",
+          "noun": "атмосфера",
+          "manual": false
+        },
+        {
+          "id": 30623753,
+          "review_id": 10579261,
+          "type": 1,
+          "content": "#весёлый_процесс",
+          "adj": "весёлый",
+          "noun": "процесс",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
     }
   ]
 }
