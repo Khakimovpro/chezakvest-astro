@@ -97,6 +97,7 @@ _LOCAL_DATA_CACHE: dict[Path, dict] = {}
 SITE_DATA = ROOT / "src" / "data" / "site.json"
 VENUES_DATA = ROOT / "src" / "data" / "venues.json"
 REVIEWS_DATA = ROOT / "src" / "data" / "reviews.json"
+QUIZZES_DATA = ROOT / "src" / "data" / "quizzes.json"
 # The venue poster already ships with the native clone (LazyMap / VenuesSection);
 # reusing it keeps the replacement free of any new binary asset.
 MAP_POSTER = "/assets/_static/map.webp"
@@ -1524,24 +1525,142 @@ def marquiz_parameters(blob: str) -> dict[str, str]:
     return {match.group("key"): match.group("value") for match in MARQUIZ_PARAM_RE.finditer(blob)}
 
 
-def materialize_local_quiz_cta(marquiz: Tag, soup: BeautifulSoup, colour: str) -> None:
-    """Local call to action on the spot of the inline Marquiz quiz frame."""
+def quiz_content(quiz_id: str) -> dict:
+    """Настройки одного подбора программы из src/data/quizzes.json."""
+    return local_data(QUIZZES_DATA).get(quiz_id) or {}
+
+
+def quiz_style(quiz: dict) -> str:
+    colours = quiz.get("colors") or {}
+    return (
+        f"--source-quiz-color:{colours.get('main', '#ff6b00')};"
+        f"--source-quiz-button-text:{colours.get('buttonText', '#ffffff')};"
+        f"--source-quiz-bg:{colours.get('bg', '#333333')};"
+        f"--source-quiz-bg-text:{colours.get('bgText', '#ffffff')}"
+    )
+
+
+def build_quiz_start(soup: BeautifulSoup, quiz: dict, button_tag: str = "button") -> Tag:
+    """Стартовый экран подбора: слева ролик или кадр, справа заголовок и кнопка.
+
+    Разметку собирает генератор, а не браузер: без скриптов посетитель всё равно
+    видит тот же экран, что на оригинале, а живой слой только добавляет шаги.
+    """
+    start = quiz.get("start") or {}
+    screen = soup.new_tag("div", attrs={"class": ["source-quiz__start"]})
+
+    cover = soup.new_tag("div", attrs={"class": ["source-quiz__cover"]})
+    video = start.get("video")
+    poster = start.get("videoPoster") or start.get("image")
+    if video:
+        media = soup.new_tag("video", attrs={
+            "class": ["source-quiz__media"],
+            "autoplay": "",
+            "muted": "",
+            "loop": "",
+            "playsinline": "",
+            "preload": "none",
+            "poster": f"{BASE_TOKEN}{poster}" if poster else None,
+            "src": f"{BASE_TOKEN}{video}",
+        })
+        media.attrs = {key: value for key, value in media.attrs.items() if value is not None}
+        cover.append(media)
+    elif start.get("image"):
+        cover.append(soup.new_tag("img", attrs={
+            "class": ["source-quiz__media"],
+            "src": f"{BASE_TOKEN}{start['image']}",
+            "alt": "",
+            "loading": "lazy",
+            "decoding": "async",
+        }))
+    if start.get("disclaimer"):
+        note = soup.new_tag("p", attrs={"class": ["source-quiz__disclaimer"]})
+        note.string = start["disclaimer"]
+        cover.append(note)
+    screen.append(cover)
+
+    panel = soup.new_tag("div", attrs={"class": ["source-quiz__panel"]})
+    if start.get("logo"):
+        panel.append(soup.new_tag("img", attrs={
+            "class": ["source-quiz__logo"],
+            "src": f"{BASE_TOKEN}{start['logo']}",
+            "alt": "Чё за Квест",
+            "loading": "lazy",
+            "decoding": "async",
+        }))
+    if start.get("title"):
+        title = soup.new_tag("p", attrs={"class": ["source-quiz__title"]})
+        title.string = start["title"]
+        panel.append(title)
+    if start.get("subtitle"):
+        subtitle = soup.new_tag("p", attrs={"class": ["source-quiz__subtitle"]})
+        subtitle.string = start["subtitle"]
+        panel.append(subtitle)
+
+    attrs = {"class": ["source-quiz__button"], "data-source-quiz-start": ""}
+    if button_tag == "button":
+        attrs["type"] = "button"
+    button = soup.new_tag(button_tag, attrs=attrs)
+    button.string = start.get("button") or "Пройти тест"
+    panel.append(button)
+
+    bonus = quiz.get("bonus") or {}
+    if bonus.get("items"):
+        if bonus.get("title"):
+            caption = soup.new_tag("p", attrs={"class": ["source-quiz__bonus-title"]})
+            caption.string = bonus["title"]
+            panel.append(caption)
+        for item in bonus["items"]:
+            chip = soup.new_tag("p", attrs={"class": ["source-quiz__bonus"]})
+            emoji = soup.new_tag("span", attrs={"class": ["source-quiz__bonus-emoji"], "aria-hidden": "true"})
+            emoji.string = item.get("emoji") or "🎁"
+            name = soup.new_tag("span")
+            name.string = item.get("name") or ""
+            chip.extend([emoji, name])
+            panel.append(chip)
+    screen.append(panel)
+    return screen
+
+
+def link_messenger_buttons(root: Tag) -> int:
+    """Кнопки мессенджеров ведут в своё окно вместо мёртвого виджета YourGood.
+
+    В архиве и в шапке, и в подвале стоит ссылка на `widget.yourgood.app/#open`:
+    сервис на странице больше не живёт, и клик уводил в пустоту. Локальное окно
+    открывается из общего обработчика по `data-messenger-open`, а href остаётся
+    рабочим для случая без скриптов — там это прямой переход в WhatsApp.
+    """
+    messengers = local_data(SITE_DATA).get("messengers", {}).get("items", [])
+    fallback = next((item["href"] for item in messengers if item.get("id") == "wa"), "")
+    linked = 0
+    for anchor_tag in root.select('a[href*="yourgood"]'):
+        anchor_tag["data-messenger-open"] = ""
+        if fallback:
+            anchor_tag["href"] = fallback
+            anchor_tag["target"] = "_blank"
+            anchor_tag["rel"] = "noopener"
+        linked += 1
+    return linked
+
+
+def materialize_local_quiz(marquiz: Tag, soup: BeautifulSoup, quiz_id: str, colour: str) -> None:
+    """Локальный подбор программы на месте встроенного кадра Marquiz."""
+    quiz = quiz_content(quiz_id)
     marquiz.attrs.pop("data-marquiz-id", None)
     marquiz.clear()
-    marquiz["class"] = list(dict.fromkeys([*marquiz.get("class", []), "source-quiz-cta"]))
-    marquiz["style"] = f"--source-quiz-color:{colour}"
-    eyebrow = soup.new_tag("p", attrs={"class": ["source-quiz-cta__eyebrow"]})
-    eyebrow.string = "БОНУС"
-    title = soup.new_tag("p", attrs={"class": ["source-quiz-cta__title"]})
-    title.string = BONUS_FALLBACK["text"]
-    text = soup.new_tag("p", attrs={"class": ["source-quiz-cta__text"]})
-    text.string = (
-        "Ответьте на несколько вопросов — подберём игру по возрасту и поводу "
-        "и оставим за вами подарок к бронированию."
-    )
-    button = soup.new_tag("a", attrs={"class": ["source-quiz-cta__button"], "href": "#source-booking"})
-    button.string = "Подобрать квест"
-    marquiz.extend([eyebrow, title, text, button])
+    marquiz["class"] = list(dict.fromkeys([*marquiz.get("class", []), "source-quiz"]))
+    marquiz["data-source-quiz"] = quiz_id
+    if not quiz:
+        # Настроек нет — оставляем прежнюю кнопку на общую форму, а не пустоту.
+        marquiz["style"] = f"--source-quiz-color:{colour}"
+        fallback = soup.new_tag("a", attrs={"class": ["source-quiz__button"], "href": "#source-booking"})
+        fallback.string = "Подобрать квест"
+        marquiz.append(fallback)
+        return
+    marquiz["style"] = quiz_style(quiz)
+    stage = soup.new_tag("div", attrs={"class": ["source-quiz__stage"], "data-source-quiz-stage": ""})
+    stage.append(build_quiz_start(soup, quiz))
+    marquiz.append(stage)
 
 
 def normalize_phone_numbers(root: Tag, phone: str, phone_href: str) -> None:
@@ -1769,9 +1888,13 @@ def prepare_snapshot(
 
     # Marquiz is a script-only third-party embed: an inline quiz frame inside a
     # record and, on some routes, a floating launcher registered from a bare
-    # script. Both are rebuilt locally — the inline frame becomes a call to action
-    # on the local booking form, the launcher becomes the "БОНУС" plaque — and the
-    # frame keeps the height measured on the live source so the page does not move.
+    # script. Both are rebuilt locally from src/data/quizzes.json — the inline
+    # frame becomes the same step-by-step programme picker, the launcher becomes
+    # its plaque — and the frame keeps the height measured on the live source so
+    # the page does not move.
+    if link_messenger_buttons(root):
+        widgets_materialized = True
+
     inline_quiz = MARQUIZ_INLINE_RE.search(contract_html)
     inline_colour = (
         marquiz_parameters(inline_quiz.group("params")).get("bgColor") if inline_quiz else None
@@ -1784,7 +1907,7 @@ def prepare_snapshot(
         if route not in MARQUIZ_FRAME_HEIGHTS:
             raise RuntimeError(f"Unmeasured Marquiz geometry on {route}: {rec_id}")
         desktop_height, mobile_height = MARQUIZ_FRAME_HEIGHTS[route]
-        materialize_local_quiz_cta(marquiz, soup, inline_colour)
+        materialize_local_quiz(marquiz, soup, str(marquiz.get("data-marquiz-id", "")), inline_colour)
         widgets_materialized = True
         # A browser-hydrated override can already carry the geometry appended by an
         # earlier build; two copies of the rule would fight over the same record.
@@ -1807,18 +1930,44 @@ def prepare_snapshot(
         record.append(geometry)
 
     # The floating launcher lives in the archived page as a single script call; its
-    # argument object is the only surviving copy of the plaque's text and colour.
+    # argument object is the only surviving copy of the plaque's kind, text and colour.
+    # Marquiz has two of them: `Pop` is the narrow plaque with a line of copy, `Widget`
+    # is a card that shows the quiz start screen in the corner. Both open the same
+    # local picker, so the quiz id travels with the marker.
     floating = MARQUIZ_FLOATING_RE.search(contract_html)
     if floating:
         parameters = marquiz_parameters(floating.group("params"))
-        plaque = soup.new_tag("div", attrs={
-            "class": ["source-bonus-pop"],
-            "data-source-bonus": "",
-            "data-bonus-title": parameters.get("title") or BONUS_FALLBACK["title"],
-            "data-bonus-text": parameters.get("text") or BONUS_FALLBACK["text"],
-            "data-bonus-color": parameters.get("bgColor") or BONUS_FALLBACK["color"],
-        })
-        root.append(plaque)
+        quiz_id = parameters.get("id") or ""
+        if floating.group("kind") == "Widget" and quiz_content(quiz_id):
+            quiz = quiz_content(quiz_id)
+            card = soup.new_tag("aside", attrs={
+                "class": ["source-quiz-card"],
+                "data-source-quiz-card": quiz_id,
+                # Задержка появления в секундах — из аргументов оригинального вызова.
+                "data-quiz-delay": parameters.get("delay") or "10",
+                "style": quiz_style(quiz),
+                "hidden": "",
+            })
+            close = soup.new_tag("button", attrs={
+                "class": ["source-quiz-card__close"],
+                "type": "button",
+                "data-source-quiz-card-close": "",
+                "aria-label": "Закрыть",
+            })
+            close.string = "×"
+            card.append(close)
+            card.append(build_quiz_start(soup, quiz))
+            root.append(card)
+        else:
+            plaque = soup.new_tag("div", attrs={
+                "class": ["source-bonus-pop"],
+                "data-source-bonus": "",
+                "data-bonus-title": parameters.get("title") or BONUS_FALLBACK["title"],
+                "data-bonus-text": parameters.get("text") or BONUS_FALLBACK["text"],
+                "data-bonus-color": parameters.get("bgColor") or BONUS_FALLBACK["color"],
+                "data-bonus-quiz": quiz_id,
+            })
+            root.append(plaque)
         widgets_materialized = True
 
     # This shared footer separator's decorative shape protrudes beyond its 50px

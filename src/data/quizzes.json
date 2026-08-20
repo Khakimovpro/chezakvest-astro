@@ -1,0 +1,1255 @@
+{
+  "60431b2afe1a980044eacd7b": {
+    "name": "✅ Ростов - ЧЗК / чезаквест.рф",
+    "colors": {
+      "main": "#ff7544",
+      "buttonText": "#fff",
+      "bg": "#333333",
+      "bgText": "#ffffff"
+    },
+    "start": {
+      "title": "",
+      "subtitle": "",
+      "button": "Пройти тест",
+      "disclaimer": "",
+      "image": null,
+      "video": null,
+      "logo": null
+    },
+    "assistant": {
+      "name": "Марина Шевченко",
+      "title": "администратор квеструма №1 в Ростове",
+      "avatar": "/assets/quiz/b52f64dcdd856881.webp"
+    },
+    "bonus": null,
+    "questions": [
+      {
+        "title": "Планируете мероприятие или просто поиграть?",
+        "type": "variants",
+        "select": "one",
+        "hint": "Посматривайте в это окно, я буду пояснять часть вопросов :)",
+        "answers": [
+          {
+            "title": "День рождения ребенка",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "День рождения взрослого",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Семейный выходной",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Корпоратив / тимбилдинг",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Выпускной / поход с классом",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Просто поиграть",
+            "note": "",
+            "image": null
+          }
+        ]
+      },
+      {
+        "title": "Какой средний возраст участников?",
+        "type": "variants",
+        "select": "one",
+        "hint": "Поберем квест под любой возраст наших гостей.",
+        "answers": [
+          {
+            "title": "6+",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "9+",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "12+",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "18+",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Смешанная команда (0-99+)",
+            "note": "",
+            "image": null
+          }
+        ]
+      },
+      {
+        "title": "Какой из жанров Вам ближе?",
+        "type": "images",
+        "select": "many",
+        "hint": "У нас 15 разных программ, предложим несколько вариантов на выбор.",
+        "answers": [
+          {
+            "title": "Приключенческие квесты",
+            "note": "",
+            "image": "/assets/quiz/b652d06bb63aa587.webp"
+          },
+          {
+            "title": "Страшные квесты",
+            "note": "",
+            "image": "/assets/quiz/895aab9b93e0636e.webp"
+          },
+          {
+            "title": "Прятки в темноте",
+            "note": "",
+            "image": "/assets/quiz/afcb66639829aa5b.webp"
+          },
+          {
+            "title": "Активные игры в лабиринте",
+            "note": "",
+            "image": "/assets/quiz/5b273c199bd27587.webp"
+          }
+        ]
+      },
+      {
+        "title": "Мы любим наших гостей, поэтому дарим подарки :) Выберите 1 из 3 вариантов подарков для Вас!",
+        "type": "images",
+        "select": "one",
+        "hint": "С радостью дарим подарки!",
+        "answers": [
+          {
+            "title": "Скидка 500 рублей на первое посещение",
+            "note": "",
+            "image": "/assets/quiz/404aa776c0c522b6.webp"
+          },
+          {
+            "title": "Скидка 50% на второй квест подряд",
+            "note": "",
+            "image": "/assets/quiz/575d450015866c49.webp"
+          },
+          {
+            "title": "Фотографии с актерами игры",
+            "note": "",
+            "image": "/assets/quiz/c61f219dc6259ecf.webp"
+          }
+        ]
+      },
+      {
+        "title": "Выберите дату",
+        "type": "date",
+        "select": "one",
+        "hint": "С вами свяжется оператор и уточнит все детали",
+        "answers": []
+      }
+    ],
+    "form": {
+      "title": "Введите контакты, чтобы увидеть подходящие квесты.",
+      "text": "Пожалуйста, укажите настоящий номер. Вам придет SMS-сообщение с промокодом подарка, выбранного на предыдущем шаге.",
+      "button": "Найти подходящие квесты",
+      "fields": [
+        {
+          "key": "phone",
+          "type": "phone",
+          "placeholder": "",
+          "hint": "",
+          "required": true
+        },
+        {
+          "key": "name",
+          "type": "name",
+          "placeholder": "Елена",
+          "hint": "",
+          "required": true
+        }
+      ]
+    },
+    "policy": "https://чезаквест.рф/privacy"
+  },
+  "6a0dc0438b7a3c0019ec1a6d": {
+    "name": "Выберите идеальный формат праздника для именинника",
+    "colors": {
+      "main": "#ff6b00",
+      "buttonText": "#ffffff",
+      "bg": "#333333",
+      "bgText": "#ffffff"
+    },
+    "start": {
+      "title": "Подберите идеальный формат праздника для именинника",
+      "subtitle": "Получите персональные рекомендации по формату празднования дня рождения вашего ребёнка.",
+      "button": "Подобрать программу",
+      "disclaimer": "За 15 минут подберём идеальную программу праздника под ваш бюджет",
+      "image": "/assets/quiz/28b0efa9fd280d46.webp",
+      "video": "/assets/quiz/kids-start.mp4",
+      "logo": "/assets/quiz/3f6477a9d8d33333.webp",
+      "videoPoster": "/assets/quiz/kids-start.webp"
+    },
+    "assistant": {
+      "name": "Вера",
+      "title": "Менеджер-консультант",
+      "avatar": "/assets/quiz/a63ab594977c4b1a.webp"
+    },
+    "bonus": {
+      "title": "Оставь заявку чтобы получить",
+      "items": [
+        {
+          "name": "МАСТЕР-КЛАСС",
+          "emoji": "🎁"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "title": "Сколько лет исполняется именнинику?",
+        "type": "variants",
+        "select": "one",
+        "hint": "«Квесты, лабиринты, VR-арена и шоу-программы — есть форматы для любого возраста. Предусмотрен ведущий, который сопровождает детей»",
+        "answers": [
+          {
+            "title": "6–9 лет",
+            "note": "Подойдут интерактивные игры в лабиринте и VR-игры",
+            "image": null
+          },
+          {
+            "title": "10–13 лет",
+            "note": "Подойдут тематические квесты и шоу-программы.",
+            "image": null
+          },
+          {
+            "title": "14–16 лет",
+            "note": "Лучше формат с хоррор квестами в лабиринте.",
+            "image": null
+          },
+          {
+            "title": "старше 16 лет",
+            "note": "Рекомендуются страшные квесты и турнир на VR-арене.",
+            "image": null
+          }
+        ]
+      },
+      {
+        "title": "Сколько планируется гостей?",
+        "type": "variants",
+        "select": "one",
+        "hint": "«Банкетная зона, украшение комнаты, праздничная посуда, чай/кофе — всё включено в пакет. Родители просто приходят с тортом»",
+        "answers": [
+          {
+            "title": "До 6 человек",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "6–10 человек",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "11–15 человек",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Более 16 человек",
+            "note": "",
+            "image": null
+          }
+        ]
+      },
+      {
+        "title": "Когда планируете праздник?",
+        "type": "variants",
+        "select": "one",
+        "hint": "«Чем раньше зафиксируете дату — тем больше выбор площадок и тематик»",
+        "answers": [
+          {
+            "title": "В ближайшие 2 недели",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "В течение месяца",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Через 1–3 месяца",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Пока смотрю варианты",
+            "note": "",
+            "image": null
+          }
+        ]
+      }
+    ],
+    "form": {
+      "title": "Почти готово!",
+      "text": "Оставьте телефон — перезвоним в течение 15 минут, подберём лучший формат, и назовём точную стоимость.",
+      "button": "Получить рекомендации",
+      "fields": [
+        {
+          "key": "name",
+          "type": "name",
+          "placeholder": "Елена",
+          "hint": "",
+          "required": true
+        },
+        {
+          "key": "phone",
+          "type": "phone",
+          "placeholder": "",
+          "hint": "",
+          "required": true
+        }
+      ]
+    },
+    "policy": "https://чезаквест.рф/privacy"
+  },
+  "6900ca92c48f8400198b05f4": {
+    "name": "Новый год - Ростов /new-year",
+    "colors": {
+      "main": "#c70000",
+      "buttonText": "#fff",
+      "bg": "#051d03",
+      "bgText": "#ffffff"
+    },
+    "start": {
+      "title": "Поможем подобрать праздничную программу",
+      "subtitle": "Пройдите тест и получите подарок!",
+      "button": "Начать",
+      "disclaimer": "",
+      "image": "/assets/quiz/33955f77ec27226e.webp",
+      "video": null,
+      "logo": null
+    },
+    "assistant": {
+      "name": "Марина Шевченко",
+      "title": "администратор квеструма №1 в Ростове",
+      "avatar": "/assets/quiz/12fc842b1b1c6a12.webp"
+    },
+    "bonus": null,
+    "questions": [
+      {
+        "title": "По какому поводу вы хотите устроить праздник?",
+        "type": "images",
+        "select": "one",
+        "hint": "У нас 15 разных программ, предложим несколько вариантов на выбор.",
+        "answers": [
+          {
+            "title": "Для школьного класса (10–30 детей)",
+            "note": "",
+            "image": "/assets/quiz/8fbf9b3a09a4ba58.webp"
+          },
+          {
+            "title": "Для детского коллектива (студии/кружка)",
+            "note": "",
+            "image": "/assets/quiz/44ae6fc5a53d0fa2.webp"
+          },
+          {
+            "title": "Индивидуально для семьи или небольшой компании",
+            "note": "",
+            "image": "/assets/quiz/f844be836c450b90.webp"
+          }
+        ]
+      },
+      {
+        "title": "Какой средний возраст детей будет на празднике?",
+        "type": "images",
+        "select": "one",
+        "hint": "Посматривайте в это окно, я буду пояснять часть вопросов :)",
+        "answers": [
+          {
+            "title": "6–8 лет",
+            "note": "",
+            "image": "/assets/quiz/d9d02d6413ba9481.webp"
+          },
+          {
+            "title": "9–10 лет",
+            "note": "",
+            "image": "/assets/quiz/7a1321b2b78f559b.webp"
+          },
+          {
+            "title": "11–13 лет",
+            "note": "",
+            "image": "/assets/quiz/2950f98322c9dc29.webp"
+          },
+          {
+            "title": "14+",
+            "note": "",
+            "image": "/assets/quiz/354ad9d8a688ac07.webp"
+          }
+        ]
+      },
+      {
+        "title": "Какие активности на празднике для вас важнее всего?",
+        "type": "variants",
+        "select": "many",
+        "hint": "Поберем квест под любой возраст наших гостей.",
+        "answers": [
+          {
+            "title": "Квест с любимыми героями",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Встреча с Дедом Морозом и Снегурочкой",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Дискотека и шоу-программа",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Групповое фото и фотозона",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Вручение новогодних подарков",
+            "note": "",
+            "image": null
+          }
+        ]
+      },
+      {
+        "title": "Мы любим наших гостей, поэтому дарим подарки :) Выберите 1 из 3 вариантов подарков для Вас!",
+        "type": "images",
+        "select": "one",
+        "hint": "С радостью дарим подарки!",
+        "answers": [
+          {
+            "title": "Пригласительные на мероприятие",
+            "note": "",
+            "image": "/assets/quiz/56eb97402d9b2628.webp"
+          },
+          {
+            "title": "Памятные сувениры всем участникам",
+            "note": "",
+            "image": "/assets/quiz/ef30111b8c095359.webp"
+          },
+          {
+            "title": "Фотографии с актерами игры",
+            "note": "",
+            "image": "/assets/quiz/f3e345fe5fd4239d.webp"
+          }
+        ]
+      },
+      {
+        "title": "Выберите дату мероприятия",
+        "type": "date",
+        "select": "one",
+        "hint": "С вами свяжется оператор для уточнения деталей",
+        "answers": []
+      }
+    ],
+    "form": {
+      "title": "Укажите телефон для получения бонуса",
+      "text": "Введите реальный номер. Вам придет SMS с промокодом подарка с предыдущего шага",
+      "button": "Получить бонус !",
+      "fields": [
+        {
+          "key": "name",
+          "type": "name",
+          "placeholder": "",
+          "hint": "",
+          "required": true
+        },
+        {
+          "key": "phone",
+          "type": "phone",
+          "placeholder": "",
+          "hint": "+7(999)000-00-00",
+          "required": true
+        }
+      ]
+    },
+    "policy": "https://чезаквест.рф/privacy"
+  },
+  "67b44fbe6a12ce00190ff367": {
+    "name": "🦑 Игра в кальмара РНД",
+    "colors": {
+      "main": "#ec406b",
+      "buttonText": "#fff",
+      "bg": "#031818",
+      "bgText": "#ffffff"
+    },
+    "start": {
+      "title": "Поможем подобрать праздничную программу",
+      "subtitle": "Пройдите тест и получите подарок!",
+      "button": "Начать",
+      "disclaimer": "",
+      "image": null,
+      "video": null,
+      "logo": "/assets/quiz/23528e2ae23742d5.webp"
+    },
+    "assistant": {
+      "name": "Вербовщик",
+      "title": "квеструма №1 в Ростове-на-Дону",
+      "avatar": "/assets/quiz/34d8c52adf5bdcd9.webp"
+    },
+    "bonus": null,
+    "questions": [
+      {
+        "title": "По какому поводу хотите устроить праздник?",
+        "type": "images",
+        "select": "one",
+        "hint": "\"Привет, друг! Добро пожаловать в игру! Для каждой группы игроков у нас есть свой сценарий игры\"",
+        "answers": [
+          {
+            "title": "Детский день рождения",
+            "note": "",
+            "image": "/assets/quiz/d84b4d54d4b7f1f9.webp"
+          },
+          {
+            "title": "Школьное мероприятие",
+            "note": "",
+            "image": "/assets/quiz/1558c00da8f956fb.webp"
+          },
+          {
+            "title": "Встреча с друзьями",
+            "note": "",
+            "image": "/assets/quiz/7afcbe48ec0f0b76.webp"
+          }
+        ]
+      },
+      {
+        "title": "Сколько планируется гостей?",
+        "type": "images",
+        "select": "one",
+        "hint": "\"Чем больше приведёшь с собой друзей, тем больше шансов на выживание!\"",
+        "answers": [
+          {
+            "title": "До 10 гостей",
+            "note": "",
+            "image": "/assets/quiz/e4dd35fdd47dc2fb.webp"
+          },
+          {
+            "title": "10-15 гостей",
+            "note": "",
+            "image": "/assets/quiz/59da06aa7f0b81a1.webp"
+          },
+          {
+            "title": "Более 15 гостей",
+            "note": "",
+            "image": "/assets/quiz/96970b75d1b43f2d.webp"
+          }
+        ]
+      },
+      {
+        "title": "Какой средний возраст участников?",
+        "type": "variants",
+        "select": "one",
+        "hint": "\"Не важно какого ты возраста, мы подберем для тебя интересный формат игры.\"",
+        "answers": [
+          {
+            "title": "6+",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "9+",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "12+",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "18+",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Смешанная команда (0-99+)",
+            "note": "",
+            "image": null
+          }
+        ]
+      },
+      {
+        "title": "Мы любим наших гостей, поэтому дарим подарки :) Выберите 1 из 3 вариантов подарков для Вас!",
+        "type": "images",
+        "select": "one",
+        "hint": "«Кажется, ты борешься, живя жизнью без будущего. У меня есть для тебя сегодня небольшой подарок».",
+        "answers": [
+          {
+            "title": "Пригласительные на мероприятие",
+            "note": "",
+            "image": "/assets/quiz/8bd092bab36c0926.webp"
+          },
+          {
+            "title": "Памятные сувениры всем участникам",
+            "note": "",
+            "image": "/assets/quiz/c57a69b39c3d3ce4.webp"
+          },
+          {
+            "title": "Фотографии с актерами игры",
+            "note": "",
+            "image": "/assets/quiz/4e1e5fbf10526110.webp"
+          }
+        ]
+      },
+      {
+        "title": "Выберите дату мероприятия (дату рождения именинника)",
+        "type": "date",
+        "select": "one",
+        "hint": "\"С этого дня твоя жизнь изменится навсегда!\"",
+        "answers": []
+      }
+    ],
+    "form": {
+      "title": "Оставьте свой телефон, чтобы попасть в игру и забрать свой бонус!",
+      "text": "Пожалуйста, указывайте настоящий номер. Вы получите на него SMS-сообщение с промокодом подарка, выбранного на предыдущем шаге.",
+      "button": "Получить бонус !",
+      "fields": [
+        {
+          "key": "name",
+          "type": "name",
+          "placeholder": "",
+          "hint": "",
+          "required": true
+        },
+        {
+          "key": "phone",
+          "type": "phone",
+          "placeholder": "",
+          "hint": "+7(999)000-00-00",
+          "required": true
+        }
+      ]
+    },
+    "policy": "https://чезаквест.рф/privacy"
+  },
+  "67d071e5d174cb00188cdd22": {
+    "name": "🔰 Выпускные | 🦑 Кальмар",
+    "colors": {
+      "main": "#ec406b",
+      "buttonText": "#fff",
+      "bg": "#031818",
+      "bgText": "#ffffff"
+    },
+    "start": {
+      "title": "Поможем подобрать праздничную программу на ваш выпускной",
+      "subtitle": "Пройдите тест и получите подарок!",
+      "button": "Начать",
+      "disclaimer": "",
+      "image": "/assets/quiz/33955f77ec27226e.webp",
+      "video": null,
+      "logo": "/assets/quiz/23528e2ae23742d5.webp"
+    },
+    "assistant": {
+      "name": "Вербовщик",
+      "title": "квеструма №1 в Ростове-на-Дону",
+      "avatar": "/assets/quiz/1888756b1d86c855.webp"
+    },
+    "bonus": {
+      "title": "Заберите свой бонус",
+      "items": [
+        {
+          "name": "Сувениры всем участникам!",
+          "emoji": "🎁"
+        }
+      ]
+    },
+    "questions": [
+      {
+        "title": "В какой тематике хотелось бы провести выпускной?",
+        "type": "images",
+        "select": "one",
+        "hint": "У нас 15 разных программ, предложим несколько вариантов на выбор.",
+        "answers": [
+          {
+            "title": "Игра в кальмара",
+            "note": "",
+            "image": "/assets/quiz/273ff3f02281948c.webp"
+          },
+          {
+            "title": "Майнкрафт",
+            "note": "",
+            "image": "/assets/quiz/2e416996d8c097de.webp"
+          },
+          {
+            "title": "Гарри Поттер",
+            "note": "",
+            "image": "/assets/quiz/8d6e931c3f8dba19.webp"
+          },
+          {
+            "title": "Portal Strike",
+            "note": "",
+            "image": "/assets/quiz/03891204b8215a16.webp"
+          },
+          {
+            "title": "Амонг Ас",
+            "note": "",
+            "image": "/assets/quiz/5d7c73b41314d2fe.webp"
+          },
+          {
+            "title": "Бегущий в лабиринте",
+            "note": "",
+            "image": "/assets/quiz/274a08a8bd5ebbfb.webp"
+          }
+        ]
+      },
+      {
+        "title": "Какой средний возраст участников?",
+        "type": "images",
+        "select": "one",
+        "hint": "Подберем задания для любого возраста. Никто скучать не будет!",
+        "answers": [
+          {
+            "title": "6+",
+            "note": "",
+            "image": "/assets/quiz/d9d02d6413ba9481.webp"
+          },
+          {
+            "title": "9+",
+            "note": "",
+            "image": "/assets/quiz/30329e5f64345f94.webp"
+          },
+          {
+            "title": "12+",
+            "note": "",
+            "image": "/assets/quiz/2950f98322c9dc29.webp"
+          },
+          {
+            "title": "16+",
+            "note": "",
+            "image": "/assets/quiz/34391333c0e12646.webp"
+          },
+          {
+            "title": "Смешанная команда (0-99+)",
+            "note": "",
+            "image": "/assets/quiz/a7eed8cb43779830.webp"
+          }
+        ]
+      },
+      {
+        "title": "Сколько планируется гостей?",
+        "type": "images",
+        "select": "one",
+        "hint": "Наши банкетные зоны вмещают даже большие компании выпускников.",
+        "answers": [
+          {
+            "title": "Для 15 гостей",
+            "note": "",
+            "image": "/assets/quiz/097682758ff61b27.webp"
+          },
+          {
+            "title": "Для 20 гостей",
+            "note": "",
+            "image": "/assets/quiz/433c95f7b22331e3.webp"
+          },
+          {
+            "title": "Для 25+ гостей",
+            "note": "",
+            "image": "/assets/quiz/9c65c3ec20c121a1.webp"
+          }
+        ]
+      },
+      {
+        "title": "Укажите дату мероприятия",
+        "type": "date",
+        "select": "one",
+        "hint": "Зарезервируем под ваше мероприятие дату и закрепим выбранный вами бонус.",
+        "answers": []
+      }
+    ],
+    "form": {
+      "title": "Оставьте свой телефон, чтобы мы смогли закрепить за ним ваш бонус",
+      "text": "Пожалуйста, указывайте настоящий номер. Вы получите на него SMS-сообщение с промокодом подарка, выбранного на предыдущем шаге.",
+      "button": "Получить бонус !",
+      "fields": [
+        {
+          "key": "name",
+          "type": "name",
+          "placeholder": "",
+          "hint": "",
+          "required": true
+        },
+        {
+          "key": "phone",
+          "type": "phone",
+          "placeholder": "",
+          "hint": "+7(999)000-00-00",
+          "required": true
+        }
+      ]
+    },
+    "policy": ""
+  },
+  "682f8ce24346f100198e7777": {
+    "name": "🧑‍🚀 AmongUs РНД",
+    "colors": {
+      "main": "#2982e7",
+      "buttonText": "#fff",
+      "bg": "#1f2034",
+      "bgText": "#ffffff"
+    },
+    "start": {
+      "title": "Поможем подобрать праздничную программу",
+      "subtitle": "Пройдите тест и получите подарок!",
+      "button": "Начать",
+      "disclaimer": "",
+      "image": null,
+      "video": null,
+      "logo": "/assets/quiz/23528e2ae23742d5.webp"
+    },
+    "assistant": {
+      "name": "Марина Шевченко ",
+      "title": "администратор квеструма №1 в Ростове",
+      "avatar": "/assets/quiz/8df0934800771e8d.webp"
+    },
+    "bonus": null,
+    "questions": [
+      {
+        "title": "По какому поводу вы хотите устроить праздник?",
+        "type": "images",
+        "select": "one",
+        "hint": "У нас 15 разных программ под каждый случай.",
+        "answers": [
+          {
+            "title": "День рождения ребенка",
+            "note": "",
+            "image": "/assets/quiz/5b7b2758f47b395e.webp"
+          },
+          {
+            "title": "Школьный праздник",
+            "note": "",
+            "image": "/assets/quiz/0b45022c22f942e6.webp"
+          },
+          {
+            "title": "Тематический праздник",
+            "note": "",
+            "image": "/assets/quiz/e67ca35fda435b63.webp"
+          }
+        ]
+      },
+      {
+        "title": "Какой средний возраст участников?",
+        "type": "images",
+        "select": "one",
+        "hint": "Поберем квест под любой возраст наших гостей.",
+        "answers": [
+          {
+            "title": "6+",
+            "note": "",
+            "image": "/assets/quiz/d9d02d6413ba9481.webp"
+          },
+          {
+            "title": "9+",
+            "note": "",
+            "image": "/assets/quiz/135b2735b189fdf1.webp"
+          },
+          {
+            "title": "12+",
+            "note": "",
+            "image": "/assets/quiz/2950f98322c9dc29.webp"
+          },
+          {
+            "title": "18+",
+            "note": "",
+            "image": "/assets/quiz/f591e9c42dcf9ca0.webp"
+          },
+          {
+            "title": "Смешанная команда (0-99+)",
+            "note": "",
+            "image": "/assets/quiz/1dd0f071918bbfbc.webp"
+          }
+        ]
+      },
+      {
+        "title": "Сколько планируется гостей?",
+        "type": "images",
+        "select": "one",
+        "hint": "Подберём лофт для комфортного размещения всех гостей.",
+        "answers": [
+          {
+            "title": "До 10 гостей",
+            "note": "",
+            "image": "/assets/quiz/8209ca87f04b6673.webp"
+          },
+          {
+            "title": "10-15 гостей",
+            "note": "",
+            "image": "/assets/quiz/f3dcc7bf8289bcde.webp"
+          },
+          {
+            "title": "Более 15 гостей",
+            "note": "",
+            "image": "/assets/quiz/433c95f7b22331e3.webp"
+          }
+        ]
+      },
+      {
+        "title": "Мы любим наших гостей, поэтому дарим подарки :) Выберите 1 из 3 вариантов подарков для Вас!",
+        "type": "images",
+        "select": "one",
+        "hint": "С радостью дарим подарки!",
+        "answers": [
+          {
+            "title": "Пригласительные на мероприятие",
+            "note": "",
+            "image": "/assets/quiz/8bd092bab36c0926.webp"
+          },
+          {
+            "title": "Памятные сувениры всем участникам",
+            "note": "",
+            "image": "/assets/quiz/c57a69b39c3d3ce4.webp"
+          },
+          {
+            "title": "Фотографии с актерами игры",
+            "note": "",
+            "image": "/assets/quiz/3bb518958056d70b.webp"
+          }
+        ]
+      },
+      {
+        "title": "Выберите дату мероприятия",
+        "type": "date",
+        "select": "one",
+        "hint": "С вами свяжется оператор для уточнения деталей",
+        "answers": []
+      }
+    ],
+    "form": {
+      "title": "Оставьте свой телефон, чтобы мы смогли закрепить за ним ваш бонус",
+      "text": "Пожалуйста, указывайте настоящий номер. Вы получите на него SMS-сообщение с промокодом подарка, выбранного на предыдущем шаге.",
+      "button": "Получить бонус !",
+      "fields": [
+        {
+          "key": "name",
+          "type": "name",
+          "placeholder": "",
+          "hint": "",
+          "required": true
+        },
+        {
+          "key": "phone",
+          "type": "phone",
+          "placeholder": "",
+          "hint": "+7(999)000-00-00",
+          "required": true
+        }
+      ]
+    },
+    "policy": "https://чезаквест.рф/privacy"
+  },
+  "65ffb50868c62b0026e1503f": {
+    "name": "🔰 Ростов -Выпускные",
+    "colors": {
+      "main": "#ff6900",
+      "buttonText": "#fff",
+      "bg": "#ffffff",
+      "bgText": "#363636"
+    },
+    "start": {
+      "title": "Поможем подобрать праздничную программу на ваш выпускной",
+      "subtitle": "Пройдите тест и получите подарок!",
+      "button": "Начать",
+      "disclaimer": "",
+      "image": "/assets/quiz/33955f77ec27226e.webp",
+      "video": null,
+      "logo": "/assets/quiz/23528e2ae23742d5.webp"
+    },
+    "assistant": {
+      "name": "Марина Шевченко",
+      "title": "администратор квеструма №1 в Ростове",
+      "avatar": "/assets/quiz/e72420c743d34fbb.webp"
+    },
+    "bonus": null,
+    "questions": [
+      {
+        "title": "В какой тематике хотелось бы провести мероприятие ?",
+        "type": "images",
+        "select": "one",
+        "hint": "У нас 15 разных программ, предложим несколько вариантов на выбор.",
+        "answers": [
+          {
+            "title": "Майнкрафт",
+            "note": "",
+            "image": "/assets/quiz/da556fd56a0a672e.webp"
+          },
+          {
+            "title": "Гарри Поттер",
+            "note": "",
+            "image": "/assets/quiz/8560296afebb4053.webp"
+          },
+          {
+            "title": "Амонг Ас",
+            "note": "",
+            "image": "/assets/quiz/3af82bc3409dd4c0.webp"
+          }
+        ]
+      },
+      {
+        "title": "Какой средний возраст участников?",
+        "type": "images",
+        "select": "one",
+        "hint": "Посматривайте в это окно, я буду пояснять часть вопросов :)",
+        "answers": [
+          {
+            "title": "6+",
+            "note": "",
+            "image": "/assets/quiz/d9d02d6413ba9481.webp"
+          },
+          {
+            "title": "9+",
+            "note": "",
+            "image": "/assets/quiz/30329e5f64345f94.webp"
+          },
+          {
+            "title": "12+",
+            "note": "",
+            "image": "/assets/quiz/2950f98322c9dc29.webp"
+          },
+          {
+            "title": "18+",
+            "note": "",
+            "image": "/assets/quiz/34391333c0e12646.webp"
+          },
+          {
+            "title": "Смешанная команда (0-99+)",
+            "note": "",
+            "image": "/assets/quiz/a7eed8cb43779830.webp"
+          }
+        ]
+      },
+      {
+        "title": "Сколько планируется гостей?",
+        "type": "images",
+        "select": "one",
+        "hint": "Поберем квест под любой возраст наших гостей.",
+        "answers": [
+          {
+            "title": "Для 15 гостей",
+            "note": "",
+            "image": "/assets/quiz/097682758ff61b27.webp"
+          },
+          {
+            "title": "Для 20 гостей",
+            "note": "",
+            "image": "/assets/quiz/433c95f7b22331e3.webp"
+          },
+          {
+            "title": "Для 25+ гостей",
+            "note": "",
+            "image": "/assets/quiz/9c65c3ec20c121a1.webp"
+          }
+        ]
+      },
+      {
+        "title": "Укажите дату мероприятия (мы зафиксируем ваш бонус на этот месяц)",
+        "type": "variants",
+        "select": "one",
+        "hint": "",
+        "answers": [
+          {
+            "title": "Середина мая",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Конец мая",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Начало июня",
+            "note": "",
+            "image": null
+          },
+          {
+            "title": "Середина июня",
+            "note": "",
+            "image": null
+          }
+        ]
+      }
+    ],
+    "form": {
+      "title": "Оставьте свой телефон, чтобы мы смогли закрепить за ним ваш бонус",
+      "text": "Пожалуйста, указывайте настоящий номер. Вы получите на него SMS-сообщение с промокодом подарка, выбранного на предыдущем шаге.",
+      "button": "Получить бонус !",
+      "fields": [
+        {
+          "key": "name",
+          "type": "name",
+          "placeholder": "",
+          "hint": "",
+          "required": true
+        },
+        {
+          "key": "phone",
+          "type": "phone",
+          "placeholder": "",
+          "hint": "+7(999)000-00-00",
+          "required": true
+        }
+      ]
+    },
+    "policy": ""
+  },
+  "64b5110b7b839400258d8c7e": {
+    "name": "Ростов - Квиз на праздники/РНД Ваш-Праздник.рф",
+    "colors": {
+      "main": "#ff6900",
+      "buttonText": "#fff",
+      "bg": "#1f202e",
+      "bgText": "#ffffff"
+    },
+    "start": {
+      "title": "Поможем подобрать праздничную программу",
+      "subtitle": "Пройдите тест и получите подарок!",
+      "button": "Начать",
+      "disclaimer": "",
+      "image": "/assets/quiz/33955f77ec27226e.webp",
+      "video": null,
+      "logo": null
+    },
+    "assistant": {
+      "name": "Марина Шевченко",
+      "title": "администратор квеструма №1 в Ростове",
+      "avatar": "/assets/quiz/12fc842b1b1c6a12.webp"
+    },
+    "bonus": null,
+    "questions": [
+      {
+        "title": "По какому поводу вы хотите устроить праздник?",
+        "type": "images",
+        "select": "one",
+        "hint": "У нас 15 разных программ, предложим несколько вариантов на выбор.",
+        "answers": [
+          {
+            "title": "День рождения",
+            "note": "",
+            "image": "/assets/quiz/9c2705c001f0f1e5.webp"
+          },
+          {
+            "title": "Школьный праздник",
+            "note": "",
+            "image": "/assets/quiz/8fbf9b3a09a4ba58.webp"
+          }
+        ]
+      },
+      {
+        "title": "Какой средний возраст участников?",
+        "type": "images",
+        "select": "one",
+        "hint": "Посматривайте в это окно, я буду пояснять часть вопросов :)",
+        "answers": [
+          {
+            "title": "6+",
+            "note": "",
+            "image": "/assets/quiz/d9d02d6413ba9481.webp"
+          },
+          {
+            "title": "9+",
+            "note": "",
+            "image": "/assets/quiz/7a1321b2b78f559b.webp"
+          },
+          {
+            "title": "12+",
+            "note": "",
+            "image": "/assets/quiz/2950f98322c9dc29.webp"
+          },
+          {
+            "title": "18+",
+            "note": "",
+            "image": "/assets/quiz/354ad9d8a688ac07.webp"
+          }
+        ]
+      },
+      {
+        "title": "Сколько планируется гостей?",
+        "type": "images",
+        "select": "one",
+        "hint": "Поберем квест под любой возраст наших гостей.",
+        "answers": [
+          {
+            "title": "До 10 гостей",
+            "note": "",
+            "image": "/assets/quiz/8209ca87f04b6673.webp"
+          },
+          {
+            "title": "10-15 гостей",
+            "note": "",
+            "image": "/assets/quiz/f3dcc7bf8289bcde.webp"
+          },
+          {
+            "title": "Более 15 гостей",
+            "note": "",
+            "image": "/assets/quiz/433c95f7b22331e3.webp"
+          }
+        ]
+      },
+      {
+        "title": "Мы любим наших гостей, поэтому дарим подарки :) Выберите 1 из 3 вариантов подарков для Вас!",
+        "type": "images",
+        "select": "one",
+        "hint": "С радостью дарим подарки!",
+        "answers": [
+          {
+            "title": "Пригласительные на мероприятие",
+            "note": "",
+            "image": "/assets/quiz/56eb97402d9b2628.webp"
+          },
+          {
+            "title": "Памятные сувениры всем участникам",
+            "note": "",
+            "image": "/assets/quiz/ef30111b8c095359.webp"
+          },
+          {
+            "title": "Фотографии с актерами игры",
+            "note": "",
+            "image": "/assets/quiz/f3e345fe5fd4239d.webp"
+          }
+        ]
+      },
+      {
+        "title": "Выберите дату мероприятия (дату рождения именинника)",
+        "type": "date",
+        "select": "one",
+        "hint": "С вами свяжется оператор для уточнения деталей",
+        "answers": []
+      }
+    ],
+    "form": {
+      "title": "Укажите телефон для получения бонуса",
+      "text": "Введите реальный номер. Вам придет SMS с промокодом подарка с предыдущего шага",
+      "button": "Получить бонус !",
+      "fields": [
+        {
+          "key": "name",
+          "type": "name",
+          "placeholder": "",
+          "hint": "",
+          "required": true
+        },
+        {
+          "key": "phone",
+          "type": "phone",
+          "placeholder": "",
+          "hint": "+7(999)000-00-00",
+          "required": true
+        }
+      ]
+    },
+    "policy": "https://чезаквест.рф/privacy"
+  }
+}
