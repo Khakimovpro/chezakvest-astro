@@ -830,7 +830,10 @@ const failures = Object.entries(out).flatMap(([key, data]) => {
   if (live?.sbs?.authored && (
     !live.sbs.allWrapped
     || (!live.sbs.reduced && live.sbs.activeRequired && (
-      live.sbs.representative?.display !== 'block' || live.sbs.representative?.animation === 'none'
+      // Обёртка sbs повторяет раскладку своего элемента артборда: у атома-ячейки
+      // это display:inherit (в вычисленном виде — table), у остальных block.
+      // Требуем от неё настоящий бокс, который донесёт transform до атома.
+      ['none', 'inline'].includes(live.sbs.representative?.display) || live.sbs.representative?.animation === 'none'
     ))
     || live.sbs.reducedAnimated
     || !live.sbs.blockedMobile
