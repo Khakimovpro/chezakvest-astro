@@ -1,1 +1,133 @@
-/* Стили модуля «media» живого слоя. */
+/* Стили модуля «media» живого слоя: кадр слайда и полноэкранный просмотр фото. */
+
+/* Слайд галереи Zero Block. Размер кадра ставит source-media.js по настройке
+   самого снимка, здесь остаётся общее для всех правило: кадр не размножаем. */
+.tn-atom__slds-img {
+  background-repeat: no-repeat;
+}
+
+/* Курсор «увеличить» — тот же сигнал, что даёт оригинал у кликабельных фото. */
+[data-source-zoom] {
+  cursor: zoom-in;
+}
+
+/* Полноэкранный просмотр повторяет t-zoomer оригинала: почти чёрный фон,
+   снимок целиком по центру, тонкие стрелки у краёв и крестик в углу. */
+.source-zoomer {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgb(20 20 20 / 97%);
+  color: #fff;
+  overflow: hidden;
+}
+
+.source-zoomer::backdrop {
+  background: rgb(20 20 20 / 97%);
+}
+
+.source-zoomer:focus {
+  outline: none;
+}
+
+.source-zoomer__stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 32px 60px 52px;
+  box-sizing: border-box;
+}
+
+.source-zoomer__img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.source-zoomer__arrow,
+.source-zoomer__close {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.source-zoomer__arrow:hover,
+.source-zoomer__close:hover,
+.source-zoomer__arrow:focus-visible,
+.source-zoomer__close:focus-visible {
+  opacity: 1;
+  outline: 2px solid rgb(255 255 255 / 70%);
+  outline-offset: 2px;
+}
+
+.source-zoomer__arrow {
+  top: 50%;
+  width: 48px;
+  height: 72px;
+  font-size: 46px;
+  transform: translateY(-50%);
+}
+
+.source-zoomer__arrow_prev {
+  left: 4px;
+}
+
+.source-zoomer__arrow_next {
+  right: 4px;
+}
+
+.source-zoomer__close {
+  top: 12px;
+  right: 12px;
+  width: 44px;
+  height: 44px;
+  font-size: 34px;
+}
+
+.source-zoomer__counter {
+  position: absolute;
+  right: 0;
+  bottom: 12px;
+  left: 0;
+  margin: 0;
+  color: rgb(255 255 255 / 65%);
+  font: 400 14px/1 Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+/* На телефоне стрелки не должны наезжать на снимок. */
+@media (max-width: 639px) {
+  .source-zoomer__stage {
+    padding: 56px 12px 72px;
+  }
+
+  .source-zoomer__arrow {
+    top: auto;
+    bottom: 10px;
+    width: 44px;
+    height: 44px;
+    font-size: 36px;
+    transform: none;
+  }
+
+  .source-zoomer__counter {
+    bottom: 24px;
+  }
+}

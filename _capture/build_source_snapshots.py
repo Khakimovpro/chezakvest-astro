@@ -120,6 +120,9 @@ MAP_MARKER_RE = re.compile(
 )
 # Marquiz registers its floating launcher through a script-only call. The archived
 # argument object is the only place that still holds the plaque's copy and colour.
+# Кнопка Play первого экрана квеста: адрес ролика записан в inline-скрипте блока
+# ровно одной строкой `var videoUrl = '…'`, и это единственная его копия в снимке.
+PLAY_BUTTON_VIDEO_RE = re.compile(r"videoUrl\s*=\s*'(?P<url>[^']+)'")
 MARQUIZ_FLOATING_RE = re.compile(r"\}\)\('(?P<kind>Pop|Widget)',\s*\{(?P<params>[^{}]*)\}\)")
 MARQUIZ_PARAM_RE = re.compile(r"(?P<key>\w+):\s*'(?P<value>[^']*)'")
 MARQUIZ_INLINE_RE = re.compile(r"\}\)\('Inline',\s*\{(?P<params>[^{}]*)\}\)")
@@ -1270,6 +1273,39 @@ def local_video_replacement(source_url: str) -> str | None:
     )
 
 
+def materialize_play_button_videos(root: Tag) -> int:
+    """Keep the quest hero's play button pointing at its film.
+
+    The button is an author-written HTML block: its markup and the whole modal
+    stylesheet survive the capture, but the film's address lives only in the
+    inline script beside it, and the sanitizer removes every script. Move that
+    address onto the button so the local module can rebuild the same modal.
+
+    The address stays on its own host. The 26 quest films weigh 1.7 GB together
+    and the archived page streams them from there as well, so vendoring them
+    would trade a faithful player for a repository nobody can clone. Percent
+    encoding keeps the value out of the snapshot's local-asset rewriter, which
+    would otherwise turn it into a vendored path that no build ever downloads.
+    """
+    bound = 0
+    for holder in root.select(".tn-atom__html"):
+        buttons = holder.select(".play-btn")
+        if not buttons:
+            continue
+        address = ""
+        for script in holder.select("script"):
+            match = PLAY_BUTTON_VIDEO_RE.search(str(script.string or ""))
+            if match:
+                address = match.group("url")
+                break
+        if not address:
+            continue
+        for button in buttons:
+            button["data-source-play-video"] = quote(address, safe="")
+            bound += 1
+    return bound
+
+
 def rutube_poster(video_id: str, *, download: bool) -> str | None:
     """Cache a Rutube thumbnail without putting Rutube in the initial page load."""
     if video_id in RUTUBE_POSTERS:
@@ -1744,6 +1780,7 @@ def prepare_snapshot(
     materialize_zero_forms(root, soup)
     normalize_phone_fields(root, soup)
     widgets_materialized |= bool(materialize_source_videos(root, soup, download=download))
+    materialize_play_button_videos(root)
 
     # Browser overrides are intentionally captured after the source runtime has
     # materialised script-only galleries and forms. Strip every viewport-bound
