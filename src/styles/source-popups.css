@@ -24,3 +24,29 @@
   .source-page-fade { display: none; }
   .t-popup { transition: none; }
 }
+
+/* Глобальный сброс намеренно не действует на страницах со снимком (global.css
+   ограничен `body:not(.source-snapshot-page)`), поэтому наши собственные шапка
+   и подвал считали ширину по content-box: на 390 px шапка вылезала за экран
+   на 20 px и утаскивала за собой всю страницу. */
+.source-snapshot-page :is(.hdr, .ft, .mmenu-shell),
+.source-snapshot-page :is(.hdr, .ft, .mmenu-shell) *,
+.source-snapshot-page :is(.hdr, .ft, .mmenu-shell) *::before,
+.source-snapshot-page :is(.hdr, .ft, .mmenu-shell) *::after {
+  box-sizing: border-box;
+}
+
+/* Абсолютные элементы Zero Block шире телефона по замыслу Tilda: на оригинале
+   их прячет артборд. Обрезаем на уровне страницы — clip, а не hidden, чтобы
+   липкая шапка осталась липкой. */
+.source-snapshot-page,
+html:has(> body.source-snapshot-page) {
+  overflow-x: clip;
+}
+
+/* Тот же обрез внутри самого снимка: часть страниц (например /amongus-land/)
+   раскладывает Zero Block на 1500 px и тянет прокрутку даже при обрезе выше. */
+.source-snapshot-page .source-snapshot-shell,
+.source-snapshot-page [data-source-snapshot] {
+  overflow-x: clip;
+}

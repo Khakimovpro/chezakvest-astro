@@ -12,3 +12,23 @@
      слайдам, а pointer-events наследуется — возвращаем его самой ссылке. */
   pointer-events: auto;
 }
+
+/* Переключатель праздников на телефоне не помещается в строку: у Tilda он в
+   этом месте уезжает за экран вместе со всей страницей, а после обреза вылета
+   вторая и третья вкладки стали недоступны. Даём строке собственную прокрутку. */
+@media (max-width: 700px) {
+  [data-source-snapshot] .t395__wrapper {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  [data-source-snapshot] .t395__wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
+  [data-source-snapshot] .t395__wrapper > .t395__tab {
+    flex: 0 0 auto;
+  }
+}
