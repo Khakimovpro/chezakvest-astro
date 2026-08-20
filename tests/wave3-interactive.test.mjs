@@ -72,10 +72,16 @@ test('renders source reviews from the local snapshot with one aggregate count', 
     read('src/styles/page.css'),
   ]);
 
-  assert.equal(reviews.counts.summary, 4429);
+  // Данные обновлены 20.08.2026 из виджета MyReviews оригинала: те же правила
+  // отбора, что стоят в его настройках — площадки Яндекс/2Gis/Google и оценки 4–5.
+  assert.equal(reviews.counts.summary, 4466);
   assert.equal(reviews.ratings.summaryWeight, 4.97);
-  assert.equal(reviews.reviews.length, 12);
+  assert.equal(reviews.reviews.length, 73);
+  assert.deepEqual(reviews.servicesOrder, ['1', '3', '2']);
+  assert.deepEqual(reviews.tags, ['квест', 'опыт', 'атмосфера', 'место', 'актеры', 'персонал', 'дети']);
   assert.ok(reviews.reviews.every((review) => review.rating >= 4));
+  assert.ok(reviews.reviews.every((review) => reviews.servicesOrder.includes(String(review.service))));
+  assert.ok(reviews.reviews.every((review) => Array.isArray(review.tags)));
   assert.match(component, /AggregateRating/);
   assert.match(component, /itemprop="review"/);
   assert.match(component, /review-card__stars" aria-label=.*role="img"/);

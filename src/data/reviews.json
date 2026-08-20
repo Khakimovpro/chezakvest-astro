@@ -1,26 +1,960 @@
 {
   "name": "Чё за Квест",
   "address": "Ростов-на-Дону",
-  "counts": { "summary": 4429 },
-  "ratings": { "summaryWeight": 4.97 },
+  "counts": {
+    "summary": 4466
+  },
+  "ratings": {
+    "summaryWeight": 4.97
+  },
+  "tags": [
+    "квест",
+    "опыт",
+    "атмосфера",
+    "место",
+    "актеры",
+    "персонал",
+    "дети"
+  ],
+  "servicesOrder": [
+    "1",
+    "3",
+    "2"
+  ],
+  "feedbackUrl": "https://feed.myreviews.ru/firm/d2bff4d4-0fd5-4752-accd-31e8d95dcaec/preview?from=widget",
   "services": {
-    "1": { "name": "Яндекс Карты", "rating": "5.0", "count": 3239 },
-    "2": { "name": "Google Maps", "rating": "4.8", "count": 198 },
-    "3": { "name": "2ГИС", "rating": "4.9", "count": 828 },
-    "15": { "name": "Яндекс Бизнес", "rating": "5.0", "count": 163 }
+    "1": {
+      "name": "Яндекс",
+      "rating": "5.0",
+      "count": 3275,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews"
+    },
+    "3": {
+      "name": "2Gis",
+      "rating": "4.9",
+      "count": 828,
+      "url": "https://2gis.ru/rostov/firm/70000001045468957/tab/reviews"
+    },
+    "2": {
+      "name": "Google",
+      "rating": "4.8",
+      "count": 198,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A3%D1%8D%D0%BD%D0%B7%D0%B4%D0%B5%D0%B9.%D0%9D%D0%BE%D0%B2%D0%B0%D1%8F+%D0%B1%D0%B8%D1%82%D0%B2%D0%B0,+%D0%9A%D0%BE%D1%80%D0%B0%D0%BB%D0%B8%D0%BD%D0%B0+%D0%B2+%D0%A1%D1%82%D1%80%D0%B0%D0%BD%D0%B5+%D0%9A%D0%BE%D1%88%D0%BC%D0%B0%D1%80%D0%BE%D0%B2,+%D0%A4%D0%B0%D0%BD%D1%82%D0%BE%D0%BC/@47.230796,39.724598,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b9a6b9ef8119:0xe341a92ce681879!8m2!3d47.230796!4d39.724598!16s%2Fg%2F11css7lnf7"
+    }
   },
   "reviews": [
-    {"username":"Виктор К.","message":"Крест очень понравился, ребята в восторге!","rating":5,"date_create":"09.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=jwzkp8fafx1h2chhvkc8mjw58r&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Гвардейский пер. 61"},
-    {"username":"Юлия Кошелева","message":"Супер место, день рождения удался, гостям понравилосб, родителям тоже","rating":5,"date_create":"09.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_3a_kvest/170074300912/reviews?reviews[publicId]=fhjz9pd0vd8c7udwz9vvvtt6v0&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Социалистическая 186"},
-    {"username":"Анька","message":"Сегодня отметили день рождения на квестах «Фантастический угон» и «Индиана Джонс». Сразу понравилась организация: нас встретили приветливо, всё объяснили, помогли с ориентированием и быстро провели инструктаж. Оба квеста прошли чётко, без накладок, время пролетело незаметно. Детям особенно зашла Индиана. Атмосфера, декорации и отношение персонала — всё на высоте. Я в полном восторге, обязательно вернёмся за новыми впечатлениями!\nА главное деткам очень очень понравилось 😊","rating":5,"date_create":"09.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=umqtcb1a72y0ye8wptxgt7b3p0&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"},
-    {"username":"Александра Некрасова","message":"Очень крутой квест, сюжет хороший, актеры здорово играли, всем понравилось","rating":5,"date_create":"09.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=k4w91xrkawbfy451jnecen4088&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Гвардейский пер. 61"},
-    {"username":"Атабекян Нарина","message":"Очень понравилось , было супер крипово и круто , ходили на квест ХОСТОЛ . Было супер круто , спасибо!<3\n","rating":5,"date_create":"08.08.2026","service":1,"url":null,"firmName":"ЧЁ ЗА КВЕСТ Нансена107/1"},
-    {"username":"Марина Б.","message":"Было супер. Спасибо!","rating":5,"date_create":"07.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=tdnvj6ppyb32ady23rvnedwe90&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"},
-    {"username":"Л Ш","message":"Ребенку понравилось","rating":5,"date_create":"05.08.2026","service":3,"url":"https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=265091655","firmName":"ЧЁ ЗА КВЕСТ Соколова 23"},
-    {"username":"Татьяна З.","message":"Отмечали день рождения ребёнка, всё понравилось","rating":5,"date_create":"05.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=r6jgvqw1h6kxzwgmkem6aqqrhw&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"},
-    {"username":"Лера Прудникова","message":"Очень классный квест, очень хорошие актеры, музыка добавляет антуража, вернемся ещё!","rating":5,"date_create":"04.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=yuaakb3nzm5rabux9yp1vag8x0&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нансена107/1"},
-    {"username":"Юлия шурова","message":"Детям очень понравились квесты,как только закончили,сказали,что хотят еще все пройти)Яркое качественное оформление,интересные задания,нестандартные темы квестов.Всем рекомендую это место!Обязательно пройдем и другие квесты в этом месте!","rating":5,"date_create":"03.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=c8hzdb9r9f4u066hwpxbar9ey4&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"},
-    {"username":"Александр Литвинов","message":"Очень понравилось, актёры отыгрывают свою роль на отлично. Квест очень интересный, много интерактивный. В общем, большое спасибо.","rating":5,"date_create":"02.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=renhkvtarh7yv94njmwd69pyqm&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"},
-    {"username":"Евгения Олаг","message":"Недавно посетили квест-комнату «Побег из Шоушенка» и остались в полном восторге! Очень интересные и продуманные загадки, атмосферные декорации и отличная организация. Отдельно хочется отметить приятных и приветливых сотрудников — с самого начала создали хорошее настроение и были очень внимательны. Спасибо за отличный отдых, обязательно вернемся снова и будем рекомендовать друзьям!","rating":5,"date_create":"01.08.2026","service":1,"url":"https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=gcxvtpgb8v15zyetuckfrxhej4&utm_source=review","firmName":"ЧЁ ЗА КВЕСТ Нагибина 14а"}
+    {
+      "username": "Вероника Турковская",
+      "message": "Все понравилось))в некоторых моментах было страшненько) цена кусается,а так было здорово) весь день потом вспоминали)",
+      "rating": 5,
+      "date_create": "19.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=m2rtcm16pq7rzbdrdc8bg23zng&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "цена"
+      ]
+    },
+    {
+      "username": "Юлиана",
+      "message": "Спасибо ребятам. Все очень понравилось.",
+      "rating": 5,
+      "date_create": "19.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=23xph3khe4trqk5m6a25r24jew&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "tags": []
+    },
+    {
+      "username": "Инкогнито 7720",
+      "message": "Отличный квест! Заставляет подумать! Антураж вполне реалистичен! Ребята отыграли роли замечательно! Чтобы развеять скуку и получить необычные эмоции - рекомендую к посещению.",
+      "rating": 5,
+      "date_create": "19.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=j9v8gh1n5ebjgcrzk06f1z7uzw&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "tags": [
+        "эмоции",
+        "роли",
+        "антураж",
+        "квест"
+      ]
+    },
+    {
+      "username": "Данил Беляков",
+      "message": "Отличное место для отдыха и не забываемых эмоций! Квесты интересные, атмосфера классная, всё организовано на хорошем уровне. Отлично провели время, обязательно придём ещё.",
+      "rating": 5,
+      "date_create": "17.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=au1ckn805a9yum6b5m6f0jxe9g&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "организация",
+        "атмосфера",
+        "квесты"
+      ]
+    },
+    {
+      "username": "Елизавета Г.",
+      "message": "Были на квесте Индиана Джонс, все понравилось, дети в восторге!",
+      "rating": 5,
+      "date_create": "16.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=acy6hujpktyedt3ghgj5bzpx0g&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Екатерина Рассказова",
+      "message": "Посетили квест Индиана Джонс\nСупер атмосфера и сюжет. Вернёмся ещё. Будем рекомендовать друзьям",
+      "rating": 5,
+      "date_create": "16.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=ckzgmt627bg2weh139yuwbe748&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "сюжет",
+        "атмосфера"
+      ]
+    },
+    {
+      "username": "Виталий Голяк",
+      "message": "Дети оказались в диком восторге. Говорят что показалось будто в квесте принимали участие какие-то артисты из \" главного театра Ростова\". В общем все великолепно. Большое спасибо за созданный праздник детям .",
+      "rating": 5,
+      "date_create": "16.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=05e4bnna309azfdcfdw49u31xg&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "праздник",
+        "артисты",
+        "квест"
+      ]
+    },
+    {
+      "username": "Дмитрий Овсиенко",
+      "message": "Ребята вы что творите !?\nОтличный квест , много локаций по всему Ростову , много выбора , хоррор , прятки , на логику , все на ваш вкус.\nПрофессиональные актеры , которые найдут подход к каждому , вы всегда пройдете квест , если вам что-то тяжко , они вам подскажут .\nНе первый раз к ним ходил и понимаю , что они будут на первом месте моего выбора !",
+      "rating": 5,
+      "date_create": "16.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=5hb45edy5vwvbhmm1he81mhycw&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "актеры",
+        "выбор",
+        "локации",
+        "квест"
+      ]
+    },
+    {
+      "username": "Светлана Голяк",
+      "message": "Побывали с детьми на квесте Пираты Карибского моря. Все очень довольны. Понравилась организация, артисты, декорации. Было очееь интересно и весело! Рекомендую этот квест. Приходите , не пожалеете",
+      "rating": 5,
+      "date_create": "16.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=8dn00gmr3vpkf343ubt3aq9kuw&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "декорации",
+        "артисты",
+        "организация"
+      ]
+    },
+    {
+      "username": "Влад Еганов",
+      "message": "Были недавно у вас на квесте,остались под бурными впечатлениями,повеселились от души",
+      "rating": 5,
+      "date_create": "16.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=9xm4f91jgu0m9u215thkqgwnqm&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Иван Спиридонов",
+      "message": "Идеальное место чтобы пощекотать нервишки, актеры играют на высшем уровне .",
+      "rating": 5,
+      "date_create": "16.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=jexg86a5nd9axpp5xr4wa9vxxg&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "актеры",
+        "место"
+      ]
+    },
+    {
+      "username": "Екатерина Многосмыслова",
+      "message": "Были с детьми на квест - \"Гарри Потер\", остались очень довольны! Увлекательно, для детей интересно, а взрослые возвращаются назад в детство. Рекомендую!",
+      "rating": 5,
+      "date_create": "16.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews?reviews[publicId]=zd9tnhv5nm2c8w7g5uuutxqmag&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Александра Янчук",
+      "message": "Очень понравилось,в моментах было страшно это +вайб",
+      "rating": 5,
+      "date_create": "16.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews?reviews[publicId]=51tnpqhvcrn48qdcnpg97dd7g4&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
+      "tags": [
+        "вайб"
+      ]
+    },
+    {
+      "username": "Головашко Ольга",
+      "message": "Было весело, очень понравилось",
+      "rating": 5,
+      "date_create": "16.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews",
+      "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
+      "tags": []
+    },
+    {
+      "username": "loli4forever",
+      "message": "были там компанией не один раз, отличное место, актеры лучшие, особенно Иван, отлично встретили, объяснили и провели квест на высшем уровне",
+      "rating": 5,
+      "date_create": "16.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=6m4ygx4mxyejke1cr4wr4rfujg&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "антураж",
+        "актеры",
+        "место"
+      ]
+    },
+    {
+      "username": "Алёна Суркова",
+      "message": "Классный квест , интересные задания , все понравилось 😻",
+      "rating": 5,
+      "date_create": "15.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews?reviews[publicId]=mtxg31hw3mvz86jw2dc3ywf2ug&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
+      "tags": [
+        "задания",
+        "квест"
+      ]
+    },
+    {
+      "username": "антон п.",
+      "message": "Супер! Очень понравилось! Дети в восторге 🔥",
+      "rating": 5,
+      "date_create": "15.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=kpdbmj4cfj2m8aj0x40z5c3414&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "tags": [
+        "сервис"
+      ]
+    },
+    {
+      "username": "Марина Зверева",
+      "message": "были на психбольнице, очень понравилось",
+      "rating": 5,
+      "date_create": "15.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=rzrnxe1xgrh9na2u67gkk1wang&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "психбольница"
+      ]
+    },
+    {
+      "username": "Сергей Блоков",
+      "message": "Были на психбольнице, очень испугались, актёры реально крутые, очень атмосферно и здорово!!",
+      "rating": 5,
+      "date_create": "15.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=xuyyymwvmnumbwmdr4g1gk941w&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "атмосфера",
+        "актёры"
+      ]
+    },
+    {
+      "username": "Ilya",
+      "message": "Были сегодня на квесте шизофрения нам понравилось!",
+      "rating": 5,
+      "date_create": "15.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/3387024908/reviews?reviews[publicId]=Ilya.alok&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ просп. Мира, 27",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Ольга Б.",
+      "message": "очень понравилось",
+      "rating": 5,
+      "date_create": "15.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=dvmj660a3955ptd24chfypkjrr&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "tags": []
+    },
+    {
+      "username": "Юлия шурова",
+      "message": "Уже не первый раз были на квестах в этой организации.Дети всегда в восторге.Последний раз старшая дочь ходила на квест Психбольница.Были прям под впечатлением.Все очень реалистичное,особенно впечатляет игра актеров,они создают невероятный накал страстей.Страшно было даже мне,хотя я ждала снаружи и в квесте не участвовала)",
+      "rating": 5,
+      "date_create": "15.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=c8hzdb9r9f4u066hwpxbar9ey4&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "игра_актеров",
+        "квест"
+      ]
+    },
+    {
+      "username": "Марина М.",
+      "message": "Были на квесте Гарри Потёр. Детям очень понравилось. В восторге",
+      "rating": 5,
+      "date_create": "15.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews?reviews[publicId]=8bxhpb7f4w1dewb6p83w5q09w4&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "кирка",
+      "message": "актеры были в образе до конца ! даже в форс мажорах! супер",
+      "rating": 5,
+      "date_create": "14.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=cxhcd57gz01gkzqb36zwgtpc4w&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "tags": [
+        "актеры"
+      ]
+    },
+    {
+      "username": "Полина Лукашова",
+      "message": "Очень страшный квест, эмоции супер, все сделано отлично и продумано",
+      "rating": 5,
+      "date_create": "14.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=r6rhf1gjfu7qa2k707f39h0a6c&utm_source=review",
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Ирина Тимина",
+      "message": "Провели отлично время 🌺 детям понравилось, по акции пойдем и на другие истории 🥳",
+      "rating": 5,
+      "date_create": "12.08.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=267899238",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "акция"
+      ]
+    },
+    {
+      "username": "Л Ш",
+      "message": "Ребенку понравилось",
+      "rating": 5,
+      "date_create": "05.08.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=265091655",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "еда"
+      ]
+    },
+    {
+      "username": "Киблицкая Анна 13б ЛПФ",
+      "message": "Хороший квест, нам все понравилось, были компанией, все провели в лучшем виде, спасибо большое администратору!",
+      "rating": 5,
+      "date_create": "01.08.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "администратор",
+        "сервис",
+        "квест"
+      ]
+    },
+    {
+      "username": "Елена Состина",
+      "message": "Прекрасная игра, очень интересный квест, всю игру держали в напряжении 👍всем советую!!!",
+      "rating": 5,
+      "date_create": "28.07.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "квест",
+        "игра"
+      ]
+    },
+    {
+      "username": "Елена Андреева",
+      "message": "Не понравилось! Ужасно",
+      "rating": 5,
+      "date_create": "18.07.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=259371270",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": []
+    },
+    {
+      "username": "Кристина",
+      "message": "Интересный и увлекательный квест, сложный, есть над чем подумать",
+      "rating": 5,
+      "date_create": "05.07.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Виктория",
+      "message": "Отличный квест Шерлок Холмс!\nНам понравилось, всем довольны, рекомендую",
+      "rating": 5,
+      "date_create": "07.06.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Марина Магакян",
+      "message": "Очень классное место, вежливые сотрудники, можно весело провести время со своими друзьями. Всем советую!",
+      "rating": 5,
+      "date_create": "07.06.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=248285435",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "сервис",
+        "персонал"
+      ]
+    },
+    {
+      "username": "Денис Кузнецов",
+      "message": "Отличный квест . Имениннику и его друзьям очень понравилось .",
+      "rating": 5,
+      "date_create": "06.06.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=248034484",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Виктория Петрова",
+      "message": "Были на квесте Патология, все понравилось, актерская игра хорошая, придем ещё!",
+      "rating": 5,
+      "date_create": "06.06.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=248059481",
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "tags": [
+        "актерская_игра",
+        "квест"
+      ]
+    },
+    {
+      "username": "Городской житель",
+      "message": "безумно хороший квест, актеры очень правдоподобно выполняли свою роль! всем советую сходить ❤️",
+      "rating": 5,
+      "date_create": "01.06.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=246731618",
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "tags": [
+        "актеры",
+        "квест"
+      ]
+    },
+    {
+      "username": "Илья Миш",
+      "message": "было круто, спасибо",
+      "rating": 5,
+      "date_create": "01.06.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=246570710",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": []
+    },
+    {
+      "username": "Дмитрий Лаврушин",
+      "message": "Отличные ребята, квест интересный. Рекомендую. 5/5!",
+      "rating": 5,
+      "date_create": "30.05.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=246170706",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "сервис",
+        "квест"
+      ]
+    },
+    {
+      "username": "Виктория",
+      "message": "Крутой страшный квест, мы испугались!",
+      "rating": 5,
+      "date_create": "25.05.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=244776218",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Fuyu Gyg",
+      "message": "Очень круто, Сикс севен актеры +вайб 😁",
+      "rating": 5,
+      "date_create": "16.05.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "вайб",
+        "актеры",
+        "сикс_севен"
+      ]
+    },
+    {
+      "username": "Вячеслав Мирончук",
+      "message": "Очень страшный квест, все орали 🔪",
+      "rating": 5,
+      "date_create": "16.05.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Аня Косуля",
+      "message": "Очень крутые актеры !!!",
+      "rating": 5,
+      "date_create": "11.05.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=241877494",
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "tags": [
+        "актеры"
+      ]
+    },
+    {
+      "username": "Son of Sun",
+      "message": "Супер крутой квест психбольница, были без актеров, но нас переубедили и не зря, было весело 🥰🥰🥰",
+      "rating": 5,
+      "date_create": "10.05.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "актеры",
+        "квест"
+      ]
+    },
+    {
+      "username": "Алиса Огородникова",
+      "message": "Были на квесте \"Ограбление банка\", это уже не первый наш квест в пространстве \"Че за квест\". 👍🔥 Очень понравилось, играли командой взрослых людей, актерам респект, особенно уборщице 🤭🤝 мы обязательно купим вам новый телефон😹😹",
+      "rating": 5,
+      "date_create": "09.05.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=241483300",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "актёры",
+        "пространство",
+        "квест"
+      ]
+    },
+    {
+      "username": "Дарина Ударцева",
+      "message": "Все супер, ходили на страшный квест, было реально страшно😅",
+      "rating": 5,
+      "date_create": "03.05.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=240162311",
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Андрей Балашов",
+      "message": "Квест Шерлок Холмс очень интересный и насыщенный загадками, подумать постоять придется👍",
+      "rating": 5,
+      "date_create": "01.05.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=239693390",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "загадки",
+        "квест"
+      ]
+    },
+    {
+      "username": "Анна",
+      "message": "Очень круто!👍",
+      "rating": 5,
+      "date_create": "26.04.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": []
+    },
+    {
+      "username": "Bom Bon",
+      "message": "Все очень понравилось, интересные загадки/ девчонки молодцы 🔝",
+      "rating": 5,
+      "date_create": "21.04.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov-on-don/search/%D0%A7%D0%81%20%D0%97%D0%90%20%D0%9A%D0%92%D0%95%D0%A1%D0%A2%20%D0%9D%D0%B0%D0%B3%D0%B8%D0%B1%D0%B8%D0%BD%D0%B0%2014%D0%B0%20%D0%B3%20%D0%A0%D0%BE%D1%81%D1%82%D0%BE%D0%B2-%D0%BD%D0%B0-%D0%94%D0%BE%D0%BD%D1%83%2C%20%D0%BF%D1%80-%D0%BA%D1%82%20%D0%9C%D0%B8%D1%85%D0%B0%D0%B8%D0%BB%D0%B0%20%D0%9D%D0%B0%D0%B3%D0%B8%D0%B1%D0%B8%D0%BD%D0%B0%2C%20%D0%B7%D0%B4%2014%D0%B0/firm/70000001007338983/tab/reviews",
+      "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "tags": [
+        "персонал",
+        "загадки"
+      ]
+    },
+    {
+      "username": "Vlad Kireev",
+      "message": "Классный квест понравилось, очень страшно и актеры профессионалы",
+      "rating": 5,
+      "date_create": "12.04.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "актеры",
+        "атмосфера",
+        "квест"
+      ]
+    },
+    {
+      "username": "Георгий Морозов",
+      "message": "Хороший квест мне очень понравился актёры бомба",
+      "rating": 5,
+      "date_create": "11.04.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "актёры",
+        "квест"
+      ]
+    },
+    {
+      "username": "Оксана Ефремова",
+      "message": "Были на квесте Призрачный Дом. Девочкам( 12 лет) квест очень понравился!! Вышли из локации под большим впечатлением.\nОбязательно вернёмся ещё на другой квест. Организаторам большое спасибо .",
+      "rating": 5,
+      "date_create": "11.04.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "сервис",
+        "локация",
+        "квест"
+      ]
+    },
+    {
+      "username": "Fuyu Gyg",
+      "message": "Классный квест, страшный и весёлый",
+      "rating": 5,
+      "date_create": "05.04.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Настя Князева",
+      "message": "Электрошокеры топ",
+      "rating": 5,
+      "date_create": "05.04.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "электрошокер"
+      ]
+    },
+    {
+      "username": "Соня",
+      "message": "Очень понравился квест, веселый, интересный и эмоциональный!",
+      "rating": 5,
+      "date_create": "04.04.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5+%D0%91%D0%B0%D0%BD%D0%BA%D0%B0+.+%D0%91%D1%83%D0%BC%D0%B0%D0%B6%D0%BD%D1%8B%D0%B9+%D0%B4%D0%BE%D0%BC,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D1%87%D1%83%D0%BB%D0%B0%D0%BD+%D0%B4%D0%BB%D1%8F+%D0%BC%D1%91%D1%82%D0%B5%D0%BB/@47.2249133,39.7367945,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b9e14b3f63bb:0x86b7597b879c891!8m2!3d47.2249133!4d39.7367945!16s%2Fg%2F11kf4bg1q2",
+      "firmName": "ЧЁ ЗА КВЕСТ Социалистическая 186",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Кристина",
+      "message": "Отличный квест, хорошие загадки, прекрасный персонал!",
+      "rating": 5,
+      "date_create": "29.03.2026",
+      "service": 2,
+      "url": "https://www.google.ru/maps/place/%D0%9E%D1%82%D0%BA%D1%80%D0%BE%D0%B9+%D0%B4%D0%B2%D0%B5%D1%80%D1%8C.+%D0%9A%D0%B2%D0%B5%D1%81%D1%82%D1%8B+%D0%B2+%D1%80%D0%B5%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8./@47.243557,39.711585,17z/data=!4m8!3m7!1s0x40e3b84b8bd99207:0xb85fbab981336b59!8m2!3d47.247969!4d39.714382!9m1!1b1!16s%2Fg%2F11b70gmms1?hl=ru&entry=ttu&g_ep=EgoyMDI2MDMxMS4wIKXMDSoASAFQAw%3D%3D",
+      "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "tags": [
+        "персонал",
+        "загадка",
+        "квест"
+      ]
+    },
+    {
+      "username": "Тимофей",
+      "message": "Квест отличный, испуг был очень сильный .",
+      "rating": 5,
+      "date_create": "28.03.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "испуг",
+        "квест"
+      ]
+    },
+    {
+      "username": "Андрей Балашов",
+      "message": "Были с друзьями в доме призраков, это просто отвал всего чего только можно, советую!!!!",
+      "rating": 5,
+      "date_create": "23.03.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=230950058",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "аттракцион"
+      ]
+    },
+    {
+      "username": "Андрей",
+      "message": "Дом призраков бомба пушка, нам понравилось 🤤",
+      "rating": 5,
+      "date_create": "22.03.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "дом"
+      ]
+    },
+    {
+      "username": "Андрей",
+      "message": "Психбольница супер крутой квест, было очень страшно, мне понравилось!!!",
+      "rating": 5,
+      "date_create": "21.03.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "квест"
+      ]
+    },
+    {
+      "username": "Кристина",
+      "message": "Очень классно было, вернемся ещё",
+      "rating": 5,
+      "date_create": "15.03.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%94%D0%BE%D0%BC+%D0%BF%D1%80%D0%B8%D0%B7%D1%80%D0%B0%D0%BA%D0%BE%D0%B2+,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D0%BF%D0%BE%D1%81%D0%BB%D0%B5%D0%B4%D0%BD%D0%B8%D0%B9+%D0%BA%D1%80%D0%B5%D1%81%D1%82%D1%80%D0%B0%D0%B6,+%D0%9D%D0%BE%D1%87%D1%8C+%D0%B2+%D0%BC%D1%83%D0%B7%D0%B5%D0%B5.+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5/@47.2246378,39.720346,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b90bae9c0001:0x23f427dfcd731d24!8m2!3d47.2246378!4d39.720346!16s%2Fg%2F11rylmylkf",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": []
+    },
+    {
+      "username": "Максим Власенко",
+      "message": "Эмоции получили 🤩",
+      "rating": 5,
+      "date_create": "08.03.2026",
+      "service": 3,
+      "url": "https://2gis.ru/spb/firm/70000001020491108/tab/reviews?reviewId=227746293",
+      "firmName": "ЧЁ ЗА КВЕСТ Социалистическая 186",
+      "tags": []
+    },
+    {
+      "username": "Татьяна Малегон",
+      "message": "Очень классный квест, игра актеров вау, локации реально страшные, вернемся ещё обязательно! Руки дрожат до сих пор",
+      "rating": 5,
+      "date_create": "07.03.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=227597091",
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "tags": [
+        "игра_актеров",
+        "локации",
+        "квест"
+      ]
+    },
+    {
+      "username": "Анна Салий",
+      "message": "Круто, но страшно прдём еще раз😍👍🏻",
+      "rating": 5,
+      "date_create": "23.02.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=221505615",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": []
+    },
+    {
+      "username": "​Анна Салий​",
+      "message": "Круто, но страшно прдём еще раз😍👍🏻\n1 посещение\nОтзыв подтверждён\n1",
+      "rating": 5,
+      "date_create": "23.02.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "страшное",
+        "впечатление"
+      ]
+    },
+    {
+      "username": "Дарья Миммммм",
+      "message": "Ходили на два квеста, нам понравилось 💪🏻\nБумажный дом и Гарри потер, очень интересно. Атомосфера волшебная 🪄",
+      "rating": 5,
+      "date_create": "22.02.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=221277226",
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "tags": [
+        "атмосфера",
+        "квест"
+      ]
+    },
+    {
+      "username": "Маргарита Янушевская",
+      "message": "Классный квест мне нам с друзьями всё очень понравилось, быть собачкой это классно. Спасибо ребятам, все просто чудо!!",
+      "rating": 5,
+      "date_create": "22.02.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=221215352",
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "tags": [
+        "время",
+        "квест"
+      ]
+    },
+    {
+      "username": "Анна Федотова",
+      "message": "Прекрасно провели время.\nИ ребенок и взрослые были в восторге.\nСпасибо ребятам за прекрасную игру.\nВсем советуем!!!",
+      "rating": 5,
+      "date_create": "21.02.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A3%D1%8D%D0%BD%D0%B7%D0%B4%D0%B5%D0%B9.%D0%9D%D0%BE%D0%B2%D0%B0%D1%8F+%D0%B1%D0%B8%D1%82%D0%B2%D0%B0,+%D0%9A%D0%BE%D1%80%D0%B0%D0%BB%D0%B8%D0%BD%D0%B0+%D0%B2+%D0%A1%D1%82%D1%80%D0%B0%D0%BD%D0%B5+%D0%9A%D0%BE%D1%88%D0%BC%D0%B0%D1%80%D0%BE%D0%B2,+%D0%A4%D0%B0%D0%BD%D1%82%D0%BE%D0%BC/@47.230796,39.724598,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b9a6b9ef8119:0xe341a92ce681879!8m2!3d47.230796!4d39.724598!16s%2Fg%2F11css7lnf7",
+      "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
+      "tags": [
+        "игра"
+      ]
+    },
+    {
+      "username": "Гусь Иванович",
+      "message": "Было просто отлично! Я был на дне рождения и мне понравилось 🤤",
+      "rating": 5,
+      "date_create": "21.02.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "событие",
+        "опыт"
+      ]
+    },
+    {
+      "username": "Саня Аракеллов",
+      "message": "Очень интересный квест, были толпой взрослых, всем понравилось разгадывать загадки, вернёмся ещё!",
+      "rating": 5,
+      "date_create": "21.02.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "игра",
+        "квест"
+      ]
+    },
+    {
+      "username": "Ксения Иванова",
+      "message": "Отличный квест, было очень жутко!\nУ нас был уровень с актёрами, психбольница. Одна из персонажей вообще ничего в себе внешне не меняла (кроме халата), но никто из нас её не узнал. Настолько отличная актёрская игра!\nБез чувства напряжения не оставляют.\nЕсли идти компанией, то и весело и, страшно. Не пожалела, что пошла, всё очень понравилось)",
+      "rating": 5,
+      "date_create": "14.02.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "времяпрепровождение",
+        "чувство",
+        "игра",
+        "опыт",
+        "квест"
+      ]
+    },
+    {
+      "username": "Людмила Шарыпина",
+      "message": "Очень классное место, мне оч понравилось\nВсем советую",
+      "rating": 5,
+      "date_create": "14.02.2026",
+      "service": 3,
+      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=219348395",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "место"
+      ]
+    },
+    {
+      "username": "Анастасия Холодная",
+      "message": "интересный квест, сложные задачки! все понравилось!",
+      "rating": 5,
+      "date_create": "07.02.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%9E%D0%B3%D1%80%D0%B0%D0%B1%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5+%D0%91%D0%B0%D0%BD%D0%BA%D0%B0+.+%D0%91%D1%83%D0%BC%D0%B0%D0%B6%D0%BD%D1%8B%D0%B9+%D0%B4%D0%BE%D0%BC,+%D0%93%D0%B0%D1%80%D1%80%D0%B8+%D0%B8+%D1%87%D1%83%D0%BB%D0%B0%D0%BD+%D0%B4%D0%BB%D1%8F+%D0%BC%D1%91%D1%82%D0%B5%D0%BB/@47.2249133,39.7367945,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b9e14b3f63bb:0x86b7597b879c891!8m2!3d47.2249133!4d39.7367945!16s%2Fg%2F11kf4bg1q2",
+      "firmName": "ЧЁ ЗА КВЕСТ Социалистическая 186",
+      "tags": [
+        "задачка",
+        "квест"
+      ]
+    },
+    {
+      "username": "Вика",
+      "message": "Было весело! Очень понравилось, покричали, испугались, актеры +вайб",
+      "rating": 5,
+      "date_create": "01.02.2026",
+      "service": 2,
+      "url": "https://www.google.com/maps/place/%D0%A7%D1%91+%D0%97%D0%B0+%D0%9A%D0%B2%D0%B5%D1%81%D1%82+-+%D0%A8%D0%B5%D1%80%D0%BB%D0%BE%D0%BA+%D0%A5%D0%BE%D0%BB%D0%BC%D1%81,+%D0%9F%D1%81%D0%B8%D1%85%D0%B1%D0%BE%D0%BB%D1%8C%D0%BD%D0%B8%D1%86%D0%B0/@47.2307839,39.6892903,17z/data=!3m1!4b1!4m6!3m5!1s0x40e3b994e76fc539:0xff3dd84f14e2a523!8m2!3d47.2307839!4d39.6892903!16s%2Fg%2F11rfn3plkb",
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "tags": [
+        "актеры",
+        "атмосфера",
+        "процесс"
+      ]
+    }
   ]
 }

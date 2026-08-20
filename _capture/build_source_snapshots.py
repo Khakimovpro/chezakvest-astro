@@ -176,20 +176,6 @@ SOURCE_WIDGET_STYLE = """
 [data-source-snapshot] .source-map .source-map__load[disabled]{opacity:.7;cursor:default}
 [data-source-snapshot] .source-map iframe{display:block!important;position:absolute;inset:0;z-index:1;width:100%;height:100%;border:0}
 [data-source-snapshot] .source-map[data-source-map-active] .source-map__poster,[data-source-snapshot] .source-map[data-source-map-active] .source-map__load{display:none}
-[data-source-snapshot] .source-reviews{box-sizing:border-box;display:flex;flex-direction:column;align-self:center;gap:16px;width:min(100%,calc(100vw - 32px));max-width:1170px;min-height:0;max-height:100%;color:#333;font-family:'Nunito',Arial,sans-serif}
-[data-source-snapshot] .source-reviews *{box-sizing:border-box}
-[data-source-snapshot] .source-reviews__summary{display:flex;align-self:center;align-items:center;gap:10px;padding:9px 18px;border-radius:999px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.1)}
-[data-source-snapshot] .source-reviews__score{font-size:22px;font-weight:700;line-height:1}
-[data-source-snapshot] .source-reviews__stars,[data-source-snapshot] .source-reviews .review-card__stars{color:#ff8a00;letter-spacing:1px}
-[data-source-snapshot] .source-reviews__count{font-size:14px;color:#474747}
-[data-source-snapshot] .source-reviews__list{display:flex;flex:0 1 auto;gap:16px;min-height:0;margin:0;padding:2px 2px 12px;overflow-x:auto;overflow-y:hidden;list-style:none;scroll-snap-type:x proximity;scrollbar-width:thin;overscroll-behavior-inline:contain}
-[data-source-snapshot] .source-reviews__list>li{flex:0 0 296px;max-width:296px;scroll-snap-align:start}
-[data-source-snapshot] .source-reviews .review-card{display:flex;flex-direction:column;height:100%;padding:20px;border-radius:16px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.1);color:#333;text-align:left}
-[data-source-snapshot] .source-reviews .review-card__top{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px}
-[data-source-snapshot] .source-reviews .review-card__top time{font-size:12px;color:#474747;white-space:nowrap}
-[data-source-snapshot] .source-reviews .review-card__body{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:8;overflow:hidden;margin:14px 0 0;font-size:14px;line-height:1.55}
-[data-source-snapshot] .source-reviews .review-card__footer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:13px;border-top:1px solid #eee;font-size:12px;color:#474747}
-[data-source-snapshot] .source-reviews .review-card__footer a{color:#9b3800;text-decoration:underline;text-underline-offset:2px}
 [data-source-snapshot] .source-reviews-host{display:flex;justify-content:center;width:100%}
 @media screen and (max-width:1199px){
 [data-source-snapshot] .source-reviews-slot{box-sizing:border-box;left:16px!important;width:calc(100vw - 32px)!important}
@@ -218,7 +204,6 @@ SOURCE_WIDGET_STYLE = """
 [data-source-snapshot] .source-video-stage[data-source-video-active]>:not(.source-video__media){display:none!important}
 [data-source-snapshot] .source-video-stage .source-video__media{display:block!important;position:absolute;inset:0;width:100%;height:100%;border:0;background:#111}
 @media screen and (max-width:640px){
-[data-source-snapshot] .source-reviews__list>li{flex:0 0 250px;max-width:250px}
 [data-source-snapshot] .source-quiz-cta{gap:10px;padding:18px 16px}
 [data-source-snapshot] .source-quiz-cta__title{font-size:19px}
 [data-source-snapshot] .source-quiz-cta__text{display:none}
@@ -993,34 +978,115 @@ def materialize_local_map(record: Tag, soup: BeautifulSoup) -> bool:
 
 
 def build_reviews_block(soup: BeautifulSoup) -> Tag:
-    """Local carousel of guest reviews, built from the site's own reviews.json.
+    """Local grid of guest reviews, built from the site's own reviews.json.
 
-    The archived block is a third-party review carousel; the markup below mirrors
-    `Reviews.astro` (same card classes) but scrolls horizontally, because part of
-    the source records reserve a fixed-height slot for it.
+    The archived block is a third-party review carousel (MyReviews). This markup
+    repeats what that widget renders: a white heading with the summary rating and
+    one chip per review platform, a row of tag chips, and a paged grid of cards —
+    four columns by three rows on the desktop of the source. Paging, filtering and
+    the arrows live in ``src/scripts/source-reviews.js``; without that script the
+    block still shows the first page as a plain grid.
     """
     data = local_data(REVIEWS_DATA)
-    section = soup.new_tag("section", attrs={"class": ["source-reviews"], "aria-label": "Отзывы гостей"})
-    rating = int(float(data["ratings"]["summaryWeight"]) * 10) / 10
-    count = f"{int(data['counts']['summary']):,}".replace(",", " ")
+    services = data["services"]
+    order = [str(key) for key in data.get("servicesOrder") or services.keys()]
 
+    section = soup.new_tag("section", attrs={
+        "class": ["source-reviews"],
+        "aria-label": "Отзывы гостей",
+        "data-source-reviews": "",
+    })
+
+    # Шапка: общая оценка слева, оценки площадок справа — они же фильтр по источнику.
+    head = soup.new_tag("div", attrs={"class": ["source-reviews__head"]})
     summary = soup.new_tag("div", attrs={"class": ["source-reviews__summary"]})
+    rating = int(float(data["ratings"]["summaryWeight"]) * 10) / 10
     score = soup.new_tag("span", attrs={"class": ["source-reviews__score"]})
-    score.string = f"{rating:.1f}".replace(".", ",")
-    stars = soup.new_tag("span", attrs={"class": ["source-reviews__stars"], "aria-hidden": "true"})
-    stars.string = "★★★★★"
+    score.string = f"{rating:.1f}"
+    star = soup.new_tag("span", attrs={"class": ["source-reviews__star"], "aria-hidden": "true"})
+    star.string = "★"
+    divider = soup.new_tag("span", attrs={"class": ["source-reviews__divider"], "aria-hidden": "true"})
+    divider.string = "|"
     total = soup.new_tag("span", attrs={"class": ["source-reviews__count"]})
-    total.string = f"{count} отзывов на картах"
-    summary.extend([score, stars, total])
+    total.string = f"{int(data['counts']['summary'])} отзывов"
+    summary.extend([score, star, divider, total])
 
-    items = soup.new_tag("ul", attrs={"class": ["source-reviews__list"]})
+    platforms = soup.new_tag("ul", attrs={"class": ["source-reviews__services"]})
+    for key in order:
+        service = services.get(key)
+        if not service:
+            continue
+        cell = soup.new_tag("li")
+        button = soup.new_tag("button", attrs={
+            "type": "button",
+            "class": ["source-reviews__service"],
+            "data-source-reviews-service": key,
+            "aria-pressed": "false",
+        })
+        name = soup.new_tag("span", attrs={"class": ["source-reviews__service-name"]})
+        name.string = str(service.get("name") or "Отзывы")
+        mark = soup.new_tag("span", attrs={"class": ["source-reviews__service-rating"]})
+        mark.string = str(service.get("rating") or "")
+        button.extend([name, mark])
+        cell.append(button)
+        platforms.append(cell)
+    head.extend([summary, platforms])
+
+    # Ряд тегов — фильтр по словам из самих отзывов, набор задан владельцем виджета.
+    tags = soup.new_tag("div", attrs={"class": ["source-reviews__tags"]})
+    for tag_name in data.get("tags") or []:
+        chip = soup.new_tag("button", attrs={
+            "type": "button",
+            "class": ["source-reviews__tag"],
+            "data-source-reviews-tag": str(tag_name),
+            "aria-pressed": "false",
+        })
+        chip.string = str(tag_name)
+        tags.append(chip)
+
+    stage = soup.new_tag("div", attrs={"class": ["source-reviews__stage"]})
+    for direction, label, glyph in (("prev", "Предыдущие отзывы", "‹"), ("next", "Следующие отзывы", "›")):
+        arrow = soup.new_tag("button", attrs={
+            "type": "button",
+            "class": ["source-reviews__arrow", f"source-reviews__arrow--{direction}"],
+            "data-source-reviews-arrow": direction,
+            "aria-label": label,
+        })
+        glyph_tag = soup.new_tag("span", attrs={"aria-hidden": "true"})
+        glyph_tag.string = glyph
+        arrow.append(glyph_tag)
+        stage.append(arrow)
+
+    items = soup.new_tag("ul", attrs={"class": ["source-reviews__list"], "data-source-reviews-list": ""})
     for review in data["reviews"]:
-        service = data["services"].get(str(review.get("service")), {})
+        service = services.get(str(review.get("service")), {})
         source_name = str(service.get("name") or "Отзыв гостя")
-        item = soup.new_tag("li")
+        review_tags = [str(value) for value in review.get("tags") or []]
+        item = soup.new_tag("li", attrs={
+            "class": ["source-reviews__item"],
+            "data-service": str(review.get("service")),
+            "data-tags": ",".join(review_tags),
+        })
         card = soup.new_tag("article", attrs={"class": ["review-card"]})
 
-        top = soup.new_tag("div", attrs={"class": ["review-card__top"]})
+        author = soup.new_tag("p", attrs={"class": ["review-card__name"]})
+        author.string = str(review.get("username", "Гость"))
+
+        meta = soup.new_tag("div", attrs={"class": ["review-card__meta"]})
+        day, month, year = (str(review.get("date_create", "")).split(".") + ["", "", ""])[:3]
+        date = soup.new_tag("time", attrs={"datetime": f"{year}-{month}-{day}"} if year else {})
+        date.string = human_review_date(str(review.get("date_create", "")))
+        origin = soup.new_tag("span", attrs={"class": ["review-card__source"]})
+        origin.append(NavigableString("на "))
+        url = str(review.get("url") or "")
+        if url.startswith("https://"):
+            link = soup.new_tag("a", attrs={"href": url, "target": "_blank", "rel": "noopener nofollow"})
+        else:
+            link = soup.new_tag("span")
+        link.string = source_name
+        origin.append(link)
+        meta.extend([date, origin])
+
         rank = int(review.get("rating", 5))
         card_stars = soup.new_tag("span", attrs={
             "class": ["review-card__stars"],
@@ -1028,29 +1094,70 @@ def build_reviews_block(soup: BeautifulSoup) -> Tag:
             "aria-label": f"Оценка {rank} из 5",
         })
         card_stars.string = "★" * rank + "☆" * (5 - rank)
-        day, month, year = (str(review.get("date_create", "")).split(".") + ["", "", ""])[:3]
-        date = soup.new_tag("time", attrs={"datetime": f"{year}-{month}-{day}"} if year else {})
-        date.string = str(review.get("date_create", ""))
-        top.extend([card_stars, date])
 
         body = soup.new_tag("p", attrs={"class": ["review-card__body"]})
         body.string = str(review.get("message", ""))
 
-        footer = soup.new_tag("footer", attrs={"class": ["review-card__footer"]})
-        author = soup.new_tag("span")
-        author.string = str(review.get("username", "Гость"))
-        url = str(review.get("url") or "")
-        origin = soup.new_tag("a", attrs={"href": url}) if url.startswith("https://") else soup.new_tag("span")
-        origin.string = source_name
-        footer.extend([author, origin])
+        # Кнопку показывает скрипт — только там, где текст реально не влез в карточку.
+        more = soup.new_tag("button", attrs={
+            "type": "button",
+            "class": ["review-card__more"],
+            "data-source-reviews-more": "",
+            "hidden": "",
+        })
+        more.string = "Читать дальше"
 
-        card.extend([top, body, footer])
+        card.extend([author, meta, card_stars, body, more])
         item.append(card)
         items.append(item)
+    stage.append(items)
 
-    section.extend([summary, items])
+    empty = soup.new_tag("p", attrs={
+        "class": ["source-reviews__empty"],
+        "data-source-reviews-empty": "",
+        "hidden": "",
+    })
+    empty.string = "Ничего не найдено 😞"
+    stage.append(empty)
+
+    foot = soup.new_tag("div", attrs={"class": ["source-reviews__foot"]})
+    dots = soup.new_tag("div", attrs={
+        "class": ["source-reviews__dots"],
+        "data-source-reviews-dots": "",
+        "role": "tablist",
+        "aria-label": "Страницы отзывов",
+    })
+    foot.append(dots)
+    feedback_url = str(data.get("feedbackUrl") or "")
+    if feedback_url.startswith("https://"):
+        feedback = soup.new_tag("a", attrs={
+            "class": ["source-reviews__feedback"],
+            "href": feedback_url,
+            "target": "_blank",
+            "rel": "noopener nofollow",
+        })
+        feedback.string = "Оставить отзыв"
+        foot.append(feedback)
+
+    section.extend([head, tags, stage, foot])
     return section
 
+
+REVIEW_MONTHS = (
+    "января", "февраля", "марта", "апреля", "мая", "июня",
+    "июля", "августа", "сентября", "октября", "ноября", "декабря",
+)
+
+
+def human_review_date(value: str) -> str:
+    """«09.08.2026» → «9 августа» — так дату подписывает виджет оригинала."""
+    parts = value.split(".")
+    if len(parts) != 3 or not parts[0].isdigit() or not parts[1].isdigit():
+        return value
+    month = int(parts[1])
+    if not 1 <= month <= 12:
+        return value
+    return f"{int(parts[0])} {REVIEW_MONTHS[month - 1]}"
 
 def materialize_local_reviews(record: Tag, soup: BeautifulSoup, root: Tag) -> bool:
     """Swap the third-party review carousel for the local one, in place.
