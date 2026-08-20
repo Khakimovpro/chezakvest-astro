@@ -525,4 +525,8 @@
   .source-quiz-modal { width: calc(100vw - 16px); }
   .source-quiz-modal > .source-quiz__stage { max-height: calc(100dvh - 24px); overflow-y: auto; }
   .source-quiz-card { right: 16px; bottom: 16px; left: 16px; width: auto; }
+
+  /* На телефоне карточка занимает всю ширину, поэтому кнопка мессенджеров
+     поднимается над ней — иначе она ложится прямо на «Подобрать программу». */
+  .source-quiz-card-visible .mfab { bottom: 284px; }
 }

@@ -373,7 +373,7 @@ const initQuizCard = (card) => {
   document.body.append(card);
   card.querySelector('[data-source-quiz-card-close]')?.addEventListener('click', () => {
     card.hidden = true;
-    document.body.classList.remove('quiz-pop-visible');
+    document.body.classList.remove('quiz-pop-visible', 'source-quiz-card-visible');
     remember(CARD_DISMISSED_KEY);
   });
   card.querySelector('[data-source-quiz-start]')?.addEventListener('click', async (event) => {
@@ -384,7 +384,7 @@ const initQuizCard = (card) => {
   const delay = Number(card.dataset.quizDelay);
   window.setTimeout(() => {
     card.hidden = false;
-    document.body.classList.add('quiz-pop-visible');
+    document.body.classList.add('quiz-pop-visible', 'source-quiz-card-visible');
   }, Number.isFinite(delay) && delay > 0 ? delay * 1000 : CARD_DELAY_MS);
 };
 
