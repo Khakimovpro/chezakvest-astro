@@ -1,10 +1,22 @@
-// Локальные виджеты внутри снимков Tilda: карта площадок, ленивые фоны и плашка
-// «БОНУС». Генератор снимков (_capture/build_source_snapshots.py) оставляет на
-// месте сторонних виджетов локальную разметку и маркеры с данными, а весь показ и
-// единственный внешний запрос (карта) живут здесь — запрос уходит только после
-// клика посетителя, как в src/components/LazyMap.astro.
+// Локальные виджеты внутри снимков Tilda: карта площадок, подсказки к адресам,
+// ленивые фоны и плашка «БОНУС». Генератор снимков
+// (_capture/build_source_snapshots.py) оставляет на месте сторонних виджетов
+// локальную разметку и маркеры с данными, а весь показ и единственный внешний
+// запрос (карта) живут здесь.
+//
+// Карта на оригинале живая сразу, поэтому кнопки «Показать карту» у нас больше
+// нет: iframe заказывается, когда блок подходит к экрану. Первый экран от этого
+// не тяжелеет — до карты надо доскроллить.
 
 const MAP_TITLE = 'Карта площадок «Чё за Квест» в Ростове-на-Дону';
+// Запас, за который до появления карты уходит запрос: примерно пол-экрана
+// прокрутки, чтобы к моменту показа Яндекс уже отрисовал плитки.
+const MAP_MARGIN = '500px 0px';
+// Подсказка площадки: те же паузы, что у tooltipster на оригинале.
+const TIP_OPEN_DELAY = 120;
+const TIP_CLOSE_DELAY = 200;
+// Отступ карточки от плитки — как в оригинале (низ плитки + 12 px).
+const TIP_OFFSET = 12;
 // Фон подставляем за полэкрана до появления, чтобы к прокрутке он уже был готов.
 const LAZY_BACKGROUND_MARGIN = '300px 0px';
 // Оригинальный Marquiz показывает плашку через 10 секунд. Такая пауза на статике
@@ -31,35 +43,168 @@ const remember = (key) => {
   }
 };
 
-const activateMap = (stage) => {
+export const activateMap = (stage) => {
   if (stage.querySelector('iframe')) return;
-  const button = stage.querySelector('[data-source-map-load]');
   const frame = stage.ownerDocument.createElement('iframe');
   frame.src = stage.dataset.sourceMapEmbed;
   frame.title = stage.dataset.sourceMapTitle || MAP_TITLE;
   frame.loading = 'lazy';
   frame.referrerPolicy = 'strict-origin-when-cross-origin';
   frame.allowFullscreen = true;
-  // Постер и кнопку убираем только после ответа Яндекса: пока карта едет,
-  // на месте блока остаётся картинка, а не белая дыра.
+  frame.setAttribute('allow', 'geolocation');
+  // Постер убираем только после ответа Яндекса: пока карта едет, на месте блока
+  // остаётся картинка, а не белая дыра.
   frame.addEventListener('load', () => {
     stage.dataset.sourceMapActive = 'true';
   }, { once: true });
   stage.append(frame);
-  if (button) {
-    button.setAttribute('aria-pressed', 'true');
-    button.textContent = 'Карта загружается…';
-    button.disabled = true;
-  }
+  // Кнопка осталась в старых снимках: пока она есть, ей нечего делать.
+  stage.querySelector('[data-source-map-load]')?.remove();
 };
 
 const initMaps = (root) => {
-  root.querySelectorAll('[data-source-map][data-source-map-embed]').forEach((stage) => {
-    if (!(stage instanceof HTMLElement) || stage.dataset.ready) return;
-    stage.dataset.ready = 'true';
-    const button = stage.querySelector('[data-source-map-load]');
-    button?.addEventListener('click', () => activateMap(stage), { once: true });
+  const stages = Array.from(root.querySelectorAll('[data-source-map][data-source-map-embed]'))
+    .filter((stage) => stage instanceof HTMLElement && !stage.dataset.ready);
+  if (!stages.length) return;
+  stages.forEach((stage) => { stage.dataset.ready = 'true'; });
+  if (typeof IntersectionObserver !== 'function') {
+    stages.forEach(activateMap);
+    return;
+  }
+  const observer = new IntersectionObserver((entries, self) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting || !(entry.target instanceof HTMLElement)) return;
+      self.unobserve(entry.target);
+      activateMap(entry.target);
+    });
+  }, { rootMargin: MAP_MARGIN });
+  stages.forEach((stage) => observer.observe(stage));
+};
+
+// Подсказка адреса: название площадки и список её квестов. Разметку отдаёт
+// запись T300 из самого снимка (`[data-source-tooltip-id]`), связь с плиткой
+// ставит генератор (`link_venue_tooltips`), а тут — показ и раскладка.
+const buildTip = (source, document_) => {
+  const tip = document_.createElement('div');
+  tip.className = 'source-tip';
+  tip.setAttribute('role', 'tooltip');
+  tip.id = `source-tip-${source.dataset.sourceTooltipId}`;
+  tip.hidden = true;
+  const colour = source.dataset.sourceTooltipColor;
+  if (colour) tip.style.background = colour;
+  const content = source.querySelector('.t300__content');
+  if (content) {
+    const copy = content.cloneNode(true);
+    while (copy.firstChild) tip.append(copy.firstChild);
+  }
+  const arrow = document_.createElement('span');
+  arrow.className = 'source-tip__arrow';
+  arrow.setAttribute('aria-hidden', 'true');
+  tip.append(arrow);
+  return tip;
+};
+
+// Карточку кладём под плитку и центруем по ней, а если снизу места нет —
+// поднимаем над плиткой. Считаем в координатах окна и переводим их в систему
+// того предка, от которого карточка отсчитывается, — так раскладка не зависит
+// от прокрутки и от того, где именно в снимке она висит.
+const placeTip = (chip, tip) => {
+  if (!chip || !tip) return;
+  const rect = chip.getBoundingClientRect();
+  const width = tip.offsetWidth;
+  const height = tip.offsetHeight;
+  const view = tip.ownerDocument.defaultView;
+  const centre = rect.left + rect.width / 2;
+  const left = Math.min(
+    Math.max(8, centre - width / 2),
+    Math.max(8, view.innerWidth - width - 8),
+  );
+  const below = rect.bottom + TIP_OFFSET;
+  const above = rect.top - TIP_OFFSET - height;
+  const up = below + height > view.innerHeight && above > 0;
+  const anchored = up ? above : below;
+  // Самый длинный список (18 позиций на 40-летия Победы) не влезает ни вниз, ни
+  // вверх. Оригинал в этом случае увозит карточку за верхний край экрана —
+  // подтягиваем её обратно в окно, а стрелку-указатель убираем: она бы уже не
+  // смотрела на плитку.
+  const top = height + 16 <= view.innerHeight
+    ? Math.min(Math.max(8, anchored), view.innerHeight - height - 8)
+    : anchored;
+  const host = tip.offsetParent || tip.ownerDocument.documentElement;
+  const origin = host.getBoundingClientRect();
+  tip.classList.toggle('source-tip_up', up);
+  tip.style.left = `${left - origin.left}px`;
+  tip.style.top = `${top - origin.top}px`;
+  const arrow = tip.querySelector('.source-tip__arrow');
+  if (arrow) {
+    arrow.hidden = Math.abs(top - anchored) > 1;
+    arrow.style.left = `${Math.min(Math.max(12, centre - left), width - 12)}px`;
+  }
+};
+
+const initVenueTips = (root) => {
+  const sources = new Map();
+  root.querySelectorAll('[data-source-tooltip-id]').forEach((source) => {
+    sources.set(String(source.dataset.sourceTooltipId), source);
   });
+  const chips = Array.from(root.querySelectorAll('[data-source-tooltip]'))
+    .filter((chip) => chip instanceof HTMLElement && !chip.dataset.tipReady);
+  if (!chips.length || !sources.size) return;
+  // На телефоне плитка — обычная ссылка на страницу площадки, и подсказка там
+  // только мигнёт перед переходом. Показываем её там, где есть настоящий курсор.
+  if (window.matchMedia && !window.matchMedia('(hover: hover)').matches) return;
+
+  let openChip = null;
+  let timer = 0;
+  const tips = new Map();
+
+  const tipFor = (chip) => {
+    const name = String(chip.dataset.sourceTooltip);
+    if (tips.has(name)) return tips.get(name);
+    const source = sources.get(name);
+    if (!source) return null;
+    const tip = buildTip(source, document);
+    // Карточка живёт внутри снимка: её оформление в SOURCE_WIDGET_STYLE
+    // подписано `[data-source-snapshot]`, за пределами корня оно не действует.
+    root.append(tip);
+    tips.set(name, tip);
+    return tip;
+  };
+
+  const close = () => {
+    if (!openChip) return;
+    const tip = tips.get(String(openChip.dataset.sourceTooltip));
+    if (tip) tip.hidden = true;
+    openChip.removeAttribute('aria-describedby');
+    openChip = null;
+  };
+  const open = (chip) => {
+    const tip = tipFor(chip);
+    if (!tip) return;
+    if (openChip && openChip !== chip) close();
+    tip.hidden = false;
+    chip.setAttribute('aria-describedby', tip.id);
+    openChip = chip;
+    placeTip(chip, tip);
+  };
+  const later = (action, delay) => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(action, delay);
+  };
+
+  chips.forEach((chip) => {
+    chip.dataset.tipReady = 'true';
+    chip.addEventListener('mouseenter', () => later(() => open(chip), TIP_OPEN_DELAY));
+    chip.addEventListener('mouseleave', () => later(close, TIP_CLOSE_DELAY));
+    chip.addEventListener('focus', () => open(chip));
+    chip.addEventListener('blur', () => later(close, TIP_CLOSE_DELAY));
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') close();
+  });
+  // Прокрутка и поворот экрана уводят плитку из-под карточки — держим их рядом.
+  window.addEventListener('scroll', () => openChip && placeTip(openChip, tips.get(String(openChip.dataset.sourceTooltip))), { passive: true });
+  window.addEventListener('resize', () => openChip && placeTip(openChip, tips.get(String(openChip.dataset.sourceTooltip))), { passive: true });
 };
 
 // Фоновые слои Tilda, которым генератор не выдал инлайновый background-image:
@@ -280,6 +425,7 @@ export function initSourceWidgets() {
   const root = document.querySelector('[data-source-snapshot]');
   if (!root) return;
   initMaps(root);
+  initVenueTips(root);
   initLazyBackgrounds(root);
   initLocalVideos(root);
   initSourceVideos(root);
