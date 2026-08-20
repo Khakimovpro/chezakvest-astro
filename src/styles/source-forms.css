@@ -1,1 +1,397 @@
-/* Стили модуля «forms» живого слоя. */
+/* Стили модуля «forms» живого слоя.
+ *
+ * Три части, и все три Tilda отдавала не в CSS страницы, а инъекцией из
+ * вырезанных скриптов, поэтому в снятые стили они не попали:
+ *   1. выпадающий список стран телефонной маски (tilda-phone-mask-1.1);
+ *   2. календарь поля даты (tilda-date-picker-1.0);
+ *   3. подсветка полей с ошибкой и подсказка «Обязательное поле» (tilda-forms-1.0).
+ * Значения сняты один в один с оригинала — архив `work/tester-report/origin/js/`
+ * и `public/assets/static.tildacdn.com/css/tilda-date-picker-1.0.min.css`.
+ *
+ * Список стран и календарь живут в `body`, за пределами `.source-snapshot-shell`
+ * (иначе их обрежет overflow формы), поэтому область действия задаём через
+ * `body >` — этой специфичности хватает, чтобы перебить одноимённые правила
+ * из бандлов оригинала там, где они есть.
+ */
+
+/* ---------- список стран телефонной маски ---------- */
+
+body > .t-input-phonemask__options-wrap {
+  position: fixed;
+  z-index: 99999999;
+  display: none;
+  box-sizing: border-box;
+  min-width: 410px;
+  max-height: 200px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border: 1px solid #eee;
+  border-radius: 7px;
+  background-color: #fff;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+  overflow-y: scroll;
+}
+
+body > .t-input-phonemask__options-wrap.t-input-phonemask__options-wrap_open {
+  display: block;
+}
+
+body > .t-input-phonemask__options-wrap .t-input-phonemask__options-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  color: #000;
+  font-family: sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+body > .t-input-phonemask__options-wrap .t-input-phonemask__options-item:hover,
+body > .t-input-phonemask__options-wrap .t-input-phonemask__options-item_chosen {
+  background-color: #eee;
+}
+
+body > .t-input-phonemask__options-wrap .t-input-phonemask__options-right {
+  display: flex;
+  align-items: center;
+}
+
+body > .t-input-phonemask__options-wrap .t-input-phonemask__options-code {
+  margin-left: 10px;
+}
+
+body > .t-input-phonemask__options-wrap .t-input-phonemask__options-flag {
+  display: inline-block;
+  width: 18px;
+  min-width: 18px;
+  height: 13px;
+  margin-left: 8px;
+  background-color: #c5c5c5;
+  background-image: var(--source-flags-url);
+  background-repeat: no-repeat;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+body > .t-input-phonemask__options-wrap::-webkit-scrollbar {
+  width: 8px;
+  height: 15px;
+}
+
+body > .t-input-phonemask__options-wrap::-webkit-scrollbar-thumb {
+  border-radius: 7px;
+  background: #c2c9d2;
+}
+
+@media screen and (max-width: 640px) {
+  /* на телефоне 410 px не влезают — оригинал снимает минимальную ширину */
+  body > .t-input-phonemask__options-wrap {
+    min-width: auto;
+    max-width: calc(100vw - 20px);
+  }
+}
+
+/* ---------- поле даты и календарь ---------- */
+
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-datepicker__wrapper {
+  position: relative;
+  display: table;
+  width: 100%;
+}
+
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-datepicker {
+  width: 100%;
+  cursor: pointer;
+}
+
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-datepicker__icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  margin: auto 0;
+  padding-right: 20px;
+  padding-left: 20px;
+  /* иконка нарисована поверх поля: клик по ней должен попадать в само поле */
+  pointer-events: none;
+}
+
+body > .t_datepicker__inner {
+  position: absolute;
+  z-index: 100000000;
+  margin: 6px 0;
+  padding: 10px;
+  border: 1px solid #444;
+  border-radius: 2px;
+  background: #fff;
+  box-shadow: 8px 8px 12px rgba(0, 0, 0, 0.2);
+  color: #000;
+  font-family: Arial, sans-serif;
+  font-size: 1em;
+  text-align: center;
+  cursor: default;
+}
+
+body > .t_datepicker__inner .t_datepicker__header {
+  min-width: 180px;
+  padding: 5px 5px 6px;
+  border-radius: 2px 2px 0 0;
+  background: #efefef;
+}
+
+body > .t_datepicker__inner .t_datepicker__label {
+  position: relative;
+  display: inline-block;
+  margin: 0 2px -5px;
+  overflow: hidden;
+  text-decoration: 1px underline dotted;
+  text-transform: capitalize;
+}
+
+/* Список месяцев и годов лежит прозрачным слоем поверх подписи — так у Tilda
+   подпись «Август 2026» и оказывается кликабельной. */
+body > .t_datepicker__inner select.t_datepicker__select {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+body > .t_datepicker__inner .t_datepicker__arrow {
+  display: block;
+  position: relative;
+  float: left;
+  width: 10px;
+  height: 17.5px;
+  margin: 0 -3px;
+  padding: 0;
+  border: none;
+  outline: 0;
+  background-color: transparent;
+  opacity: 0.5;
+  overflow: hidden;
+  text-indent: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+body > .t_datepicker__inner .t_datepicker__arrow_next {
+  float: right;
+}
+
+body > .t_datepicker__inner .t_datepicker__arrow::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  margin: -6px;
+  border: 6px solid #000;
+}
+
+body > .t_datepicker__inner .t_datepicker__arrow_prev::after {
+  border-color: transparent #000 transparent transparent;
+}
+
+body > .t_datepicker__inner .t_datepicker__arrow_next::after {
+  border-color: transparent transparent transparent #000;
+}
+
+body > .t_datepicker__inner .t_datepicker__arrow:hover {
+  opacity: 1;
+}
+
+body > .t_datepicker__inner .t_datepicker__body {
+  margin: 0;
+  border-collapse: collapse;
+}
+
+body > .t_datepicker__inner .t_datepicker__week-day {
+  padding: 5px 7px;
+  border-bottom: 1px solid #666;
+  color: #777;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+body > .t_datepicker__inner .t_datepicker__day-cell {
+  position: relative;
+  z-index: 0;
+  padding: 5px 7px;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+body > .t_datepicker__inner .t_datepicker__previous-month,
+body > .t_datepicker__inner .t_datepicker__next-month {
+  opacity: 0.4;
+}
+
+body > .t_datepicker__inner .t_datepicker__day-cell--disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+body > .t_datepicker__inner .t_datepicker__day-cell:hover::before,
+body > .t_datepicker__inner .t_datepicker__selected-day::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  box-sizing: border-box;
+  width: 28px;
+  height: 28px;
+  margin: -14px;
+  border-radius: 50%;
+  background-color: #bdbdbd;
+}
+
+body > .t_datepicker__inner .t_datepicker__selected-day {
+  color: #fff;
+}
+
+body > .t_datepicker__inner .t_datepicker__selected-day::before {
+  background-color: #000;
+}
+
+/* ---------- ошибки формы ---------- */
+
+/* Красная рамка на поле с ошибкой. Внутреннее поле телефона рамку не получает —
+   её рисует обёртка `.t-input-phonemask__wrap`, иначе рамок было бы две. */
+:is(.source-snapshot-shell, [data-source-snapshot])
+  .js-error-control-box
+  :is(.t-input:not(.t-input-phonemask), .t-select, .t-datepicker__wrapper .t-input) {
+  border: 1px solid red !important;
+}
+
+/* Согласие на обработку данных: рамка обводит саму строку с галочкой. */
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-checkbox__control {
+  position: relative;
+}
+
+:is(.source-snapshot-shell, [data-source-snapshot])
+  .js-error-control-box
+  .t-checkbox__control::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 100%;
+  height: calc(100% + 6px);
+  border: 1px solid red;
+  pointer-events: none;
+}
+
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-input-error {
+  position: absolute;
+  left: 0;
+  z-index: 2;
+  margin-top: 5px;
+  padding: 8px 10px;
+  border-radius: 2px;
+  background-color: #fff;
+  box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.2);
+  color: red;
+  font-family: 'Nunito', Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: left;
+  white-space: nowrap;
+}
+
+/* Пустой контейнер ошибки в разметке есть всегда — показываем только с текстом. */
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-input-error:empty {
+  display: none !important;
+}
+
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-input-error:not(:empty) {
+  display: block !important;
+}
+
+/* Плашка в правом нижнем углу — её показывают формы с data-error-popup="y". */
+body > #tilda-popup-for-error {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 10000;
+  box-sizing: border-box;
+  width: auto;
+  min-width: 260px;
+  max-width: 400px;
+  padding: 10px 30px 10px 10px;
+  border-radius: 3px;
+  background: #f95d51;
+  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+/* В бандлах оригинала `.t-form__errorbox-item` скрыт, а показывает его Tilda
+   инлайновым стилем — у нас за это отвечает правило. */
+body > #tilda-popup-for-error .t-form__errorbox-text,
+body > #tilda-popup-for-error .t-form__errorbox-item {
+  display: block;
+  margin: 0;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+body > #tilda-popup-for-error .tn-form__errorbox-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+body > #tilda-popup-for-error .tn-form__errorbox-close-line {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 12px;
+  height: 2px;
+  background: #fff;
+}
+
+body > #tilda-popup-for-error .tn-form__errorbox-close-line-left {
+  transform: rotate(45deg);
+}
+
+body > #tilda-popup-for-error .tn-form__errorbox-close-line-right {
+  transform: rotate(-45deg);
+}
+
+@media screen and (max-width: 640px) {
+  body > #tilda-popup-for-error {
+    max-width: 280px;
+  }
+}
+
+:is(.source-snapshot-shell, [data-source-snapshot]) .t-input-error:not(:empty)::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 15%;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-bottom-color: #fff;
+}

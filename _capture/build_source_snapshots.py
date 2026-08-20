@@ -134,6 +134,13 @@ NON_TEXT_PARENTS = {"style", "script", "noscript"}
 # в снимке нет. Заготовка полей ниже повторяет его результат один в один — блок
 # страны (флаг, треугольник, код) плюс само поле ввода.
 PHONE_MASK_PLACEHOLDER = "(000) 000-00-00"
+# Иконка календаря у поля даты: контуры сняты из архивной разметки Tilda
+# (`src/source-snapshots/den-rozhdeniya-na-vr-arene.html`), viewBox 0 0 69.5 76.2.
+DATEPICKER_ICON_PATHS = (
+    "M9.6 42.9H21V31.6H9.6v11.3zm3-8.3H18v5.3h-5.3v-5.3zm16.5 8.3h11.3V31.6H29.1v11.3zm3-8.3h5.3v5.3h-5.3v-5.3zM48 42.9h11.3V31.6H48v11.3zm3-8.3h5.3v5.3H51v-5.3zM9.6 62H21V50.6H9.6V62zm3-8.4H18V59h-5.3v-5.4zM29.1 62h11.3V50.6H29.1V62zm3-8.4h5.3V59h-5.3v-5.4zM48 62h11.3V50.6H48V62zm3-8.4h5.3V59H51v-5.4z",
+    "M59.7 6.8V5.3c0-2.9-2.4-5.3-5.3-5.3s-5.3 2.4-5.3 5.3v1.5H40V5.3C40 2.4 37.6 0 34.7 0s-5.3 2.4-5.3 5.3v1.5h-9.1V5.3C20.3 2.4 18 0 15 0c-2.9 0-5.3 2.4-5.3 5.3v1.5H0v69.5h69.5V6.8h-9.8zm-7.6-1.5c0-1.3 1-2.3 2.3-2.3s2.3 1 2.3 2.3v7.1c0 1.3-1 2.3-2.3 2.3s-2.3-1-2.3-2.3V5.3zm-19.7 0c0-1.3 1-2.3 2.3-2.3S37 4 37 5.3v7.1c0 1.3-1 2.3-2.3 2.3s-2.3-1-2.3-2.3V5.3zm-19.6 0C12.8 4 13.8 3 15 3c1.3 0 2.3 1 2.3 2.3v7.1c0 1.3-1 2.3-2.3 2.3-1.3 0-2.3-1-2.3-2.3V5.3zm53.7 67.9H3V9.8h6.8v2.6c0 2.9 2.4 5.3 5.3 5.3s5.3-2.4 5.3-5.3V9.8h9.1v2.6c0 2.9 2.4 5.3 5.3 5.3s5.3-2.4 5.3-5.3V9.8h9.1v2.6c0 2.9 2.4 5.3 5.3 5.3s5.3-2.4 5.3-5.3V9.8h6.8l-.1 63.4z",
+)
+
 # Инлайновые объявления, которые на самом поле обязаны уехать в обёртку: рамку,
 # фон и высоту рисует теперь она, а инлайн у поля перебил бы source-phonemask.css.
 PHONE_INPUT_STYLE_DROP = ("border", "background", "height", "padding", "width", "box-shadow", "outline")
@@ -774,6 +781,8 @@ def materialize_zero_forms(root: Tag, soup: BeautifulSoup) -> None:
                     })
                     phone.append(control)
                     block.append(phone)
+                elif field_type == "da":
+                    block.append(date_field_block(soup, field, field_name, control_style, input_color))
                 else:
                     control = soup.new_tag("input", attrs={
                         "aria-label": str(field.get("li_ph") or field_name or "Поле формы"),
@@ -829,6 +838,62 @@ def phone_country_block(soup: BeautifulSoup) -> Tag:
     code.string = "+7"
     select.extend([flag, triangle, code])
     return select
+
+
+def date_field_block(
+    soup: BeautifulSoup,
+    field: dict,
+    field_name: str,
+    control_style: str,
+    icon_color: str,
+) -> Tag:
+    """Поле даты зеро-блока: обёртка, поле с правилами Tilda и иконка календаря.
+
+    В экспорте зеро-блока от поля остаётся только контракт (`li_type: "da"`),
+    а разметку на живой странице собирает `tilda-date-picker-1.0.min.js`.
+    Ниже — ровно его результат, сверенный с DOM оригинала: обёртка
+    `.t-datepicker__wrapper`, поле `.t-datepicker` с форматом, разделителем и
+    маской из контракта и SVG-иконка календаря справа. Поведение (маска ввода
+    и сам календарь) поднимает `src/scripts/source-forms.js`.
+    """
+    unavailable = []
+    if field.get("li_dateUnavailPast") == "y":
+        unavailable.append("past")
+    if field.get("li_dateUnavailFuture") == "y":
+        unavailable.append("future")
+
+    wrapper = soup.new_tag("div", attrs={"class": ["t-datepicker__wrapper"]})
+    attrs = {
+        "aria-label": str(field.get("li_ph") or field_name or "Дата"),
+        "class": ["t-input", "t-datepicker", "js-tilda-mask", "js-tilda-rule", "t-input-inline-styles"],
+        "data-tilda-datediv": str(field.get("li_datediv", "dot")),
+        "data-tilda-dateformat": str(field.get("li_dateformat", "DD-MM-YYYY")),
+        "data-tilda-mask": str(field.get("li_datemask", "99.99.9999")),
+        "data-tilda-rule": "date",
+        "name": field_name or "date",
+        "placeholder": str(field.get("li_ph", "")),
+        "style": control_style,
+        "type": "text",
+    }
+    if unavailable:
+        attrs["data-tilda-dateunvailable"] = ",".join(unavailable)
+    control = soup.new_tag("input", attrs=attrs)
+    if field.get("li_req") == "y":
+        control["required"] = ""
+    wrapper.append(control)
+
+    icon = soup.new_tag("svg", attrs={
+        "class": ["t-datepicker__icon"],
+        "fill": icon_color,
+        "role": "presentation",
+        "style": "width:25px;",
+        "viewBox": "0 0 69.5 76.2",
+        "xmlns": "http://www.w3.org/2000/svg",
+    })
+    for path in DATEPICKER_ICON_PATHS:
+        icon.append(soup.new_tag("path", attrs={"d": path}))
+    wrapper.append(icon)
+    return wrapper
 
 
 def strip_style_declarations(style: str, properties: tuple[str, ...]) -> str:
