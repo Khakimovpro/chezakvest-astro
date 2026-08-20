@@ -1,1 +1,217 @@
 /* Стили модуля «cosmetics» живого слоя. */
+
+/*
+  1. Центровка текста в zero-блоках Tilda (пункты отчёта 21, 42, 43, 46, 54, 62).
+
+  В оригинале элемент `.t396__elem` — это `display: table`, а `.tn-atom` внутри —
+  `display: table-cell` с `text-align: center`. Ячейка растягивается на всю ширину
+  таблицы, поэтому текст стоит ровно по центру блока.
+
+  Живой слой для пошаговой анимации (sbs) заворачивает `.tn-atom` в свою обёртку
+  `span.tn-atom__sbs-wrapper` с инлайновым `display: block`. Блок разрывает цепочку
+  table → table-cell: ячейка ужимается по содержимому и прилипает к левому краю,
+  а текст уезжает влево тем сильнее, чем он короче.
+
+  Оригинальная обёртка Tilda (`.tn-atom__sbs-anim-wrapper`) наследует раскладку
+  родителя — `display: inherit; width: inherit; height: inherit`. Повторяем это
+  поведение и для нашей обёртки: раскладка снимка становится такой же, как в оригинале,
+  а анимация (transform на обёртке) продолжает работать. Обёртка встречается и прямо
+  внутри `.t396__elem`, и вложенной в родную обёртку Tilda, поэтому правило общее.
+*/
+[data-source-snapshot] .tn-atom__sbs-wrapper {
+  display: inherit !important;
+  width: inherit !important;
+  height: inherit !important;
+}
+
+/*
+  2. Кнопка «ОТПРАВИТЬ» в формах zero-блоков (пункт 21).
+
+  Часть форм попала в снимок не из отрисованного DOM, а из исходной разметки, и вместе
+  с ней потерялся инлайновый стиль Tilda `padding: 0 15px`. Осталась библиотечная
+  подкладка `.t-submit { padding: 1px 60px }`: при ширине кнопки 180px на текст остаётся
+  60px, надпись вылезает из внутренней коробки и прижимается вправо — кнопка выглядит
+  несимметричной. Возвращаем отступы оригинала, надпись снова встаёт по центру.
+*/
+[data-source-snapshot] .t396__elem[data-elem-type='form'] .tn-form__submit .t-submit {
+  padding: 0 15px;
+}
+
+/*
+  Там же потерялись размер и насыщенность шрифта кнопки — берём их из настроек блока,
+  которые снимок сохранил в data-атрибутах (у Tilda по умолчанию 16px/700, и надпись
+  выглядит крупнее оригинала).
+*/
+[data-source-snapshot] .t396__elem[data-elem-type='form'][data-field-buttonfontsize-value='14'] .t-submit {
+  font-size: 14px;
+}
+
+[data-source-snapshot] .t396__elem[data-elem-type='form'][data-field-buttonfontsize-value='18'] .t-submit {
+  font-size: 18px;
+}
+
+[data-source-snapshot] .t396__elem[data-elem-type='form'][data-field-buttonfontweight-value='600'] .t-submit {
+  font-weight: 600;
+}
+
+[data-source-snapshot] .t396__elem[data-elem-type='form'][data-field-buttonfontweight-value='700'] .t-submit {
+  font-weight: 700;
+}
+
+[data-source-snapshot] .t396__elem[data-elem-type='form'][data-field-buttonfontweight-value='800'] .t-submit {
+  font-weight: 800;
+}
+
+/*
+  3. Спасибо-сообщение после отправки формы (пункт 53).
+
+  После отправки живой слой прячет поля через атрибут `hidden`, но у Tilda класс
+  `.t-form__inputsbox_flex` задаёт `display: flex`, и авторский стиль перебивает
+  браузерное `[hidden] { display: none }`. Поля остаются на месте, сообщение
+  раздвигает форму вниз, и кнопка уезжает под картинку торта. Заставляем `hidden`
+  работать — форма схлопывается до сообщения, как в оригинале.
+*/
+[data-source-snapshot] .t-form__inputsbox[hidden] {
+  display: none !important;
+}
+
+/*
+  4. Стрелки галерей zero-блоков (пункты 49, 60).
+
+  Живой слой перекрашивает стрелки Tilda в оранжевый круг 40px. Там, где у галереи
+  стрелки «внутри» (`slds_arrowcontrols="in"`), рядом с родной жёлтой стрелкой появляется
+  вторая — «оранжевая и белая». А там, где в оригинале стрелок нет вовсе
+  (`slds_arrowcontrols="none"`, листание идёт точками и отдельной парой стрелок под
+  галереей), они всё равно нарисованы.
+
+  Галереи со стрелками «рядом» (`near`) не трогаем: там оранжевая подложка живого слоя
+  как раз повторяет оранжевую стрелку оригинала.
+
+  Инлайновые стили живого слоя стоят с `!important`, перебить их цветом нельзя,
+  поэтому прячем подложку через `visibility` (её живой слой не трогает) и возвращаем
+  видимость самой стрелке Tilda.
+*/
+[data-source-snapshot]
+  .t396__elem[data-elem-type='gallery'][data-field-slds_arrowcontrols-value='in']
+  .t-slds__arrow_wrapper {
+  visibility: hidden !important;
+}
+
+[data-source-snapshot]
+  .t396__elem[data-elem-type='gallery'][data-field-slds_arrowcontrols-value='in']
+  .t-slds__arrow_wrapper
+  .t-slds__arrow {
+  visibility: visible !important;
+}
+
+/*
+  Живой слой раздвигает контейнер стрелок на 20px в каждую сторону, из-за чего стрелки
+  «внутри» вылезают за край галереи. Возвращаем их на место — как в оригинале.
+*/
+[data-source-snapshot]
+  .t396__elem[data-elem-type='gallery'][data-field-slds_arrowcontrols-value='in']
+  .t-slds__arrow_wrapper-left {
+  transform: translateX(20px);
+}
+
+[data-source-snapshot]
+  .t396__elem[data-elem-type='gallery'][data-field-slds_arrowcontrols-value='in']
+  .t-slds__arrow_wrapper-right {
+  transform: translateX(-20px);
+}
+
+[data-source-snapshot]
+  .t396__elem[data-elem-type='gallery'][data-field-slds_arrowcontrols-value='none']
+  .t-slds__arrow_container,
+[data-source-snapshot]
+  .t396__elem[data-elem-type='gallery'][data-field-slds_arrowcontrols-value='none']
+  .t-slds__arrow_container * {
+  visibility: hidden !important;
+}
+
+/*
+  5. Новогодняя страница: свой фон вместо сквозного (пункт 67).
+
+  У сайта два блока-фона T674: сквозной «праздничный» из футера (rec1097984951) и
+  локальный новогодний (rec1453104741) — с ёлками, варежками, леденцами и оленями.
+  Оба растянуты на всю страницу с `z-index: -1`, поэтому побеждает тот, что идёт
+  позже, то есть футерный. В оригинале страница держит HTML-блок rec1496953351,
+  скрипт которого удаляет сквозной фон; скрипты в снимок не переносятся, и фон
+  вернулся к общему. Повторяем ту же логику стилями: если на странице есть этот
+  блок-маркер, сквозной фон убираем.
+*/
+[data-source-snapshot]:has(#rec1496953351) #rec1097984951 {
+  display: none !important;
+}
+
+/*
+  6. Снегопад новогодней страницы (пункт 67).
+
+  Блок T971 в оригинале рисует 50 снежинок скриптом и кладёт их слоем поверх первой
+  высоты экрана. Скрипты в снимок не попали, остался пустой блок. Возвращаем эффект
+  чистым CSS: два слоя снежинок (тайл с SVG-снежинками цвета #90c5ea, как в оригинале)
+  едут сверху вниз с разной скоростью и размером.
+*/
+[data-source-snapshot] [data-record-type='971'] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 50000;
+  display: block;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  backface-visibility: hidden;
+}
+
+[data-source-snapshot] [data-record-type='971']::before,
+[data-source-snapshot] [data-record-type='971']::after {
+  position: absolute;
+  top: -360px;
+  right: 0;
+  left: 0;
+  height: calc(100% + 360px);
+  background-repeat: repeat;
+  content: '';
+}
+
+[data-source-snapshot] [data-record-type='971']::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360' fill='none'%3E%3Cg stroke='%2390c5ea' stroke-linecap='round' stroke-linejoin='round' opacity='0.55'%3E%3Cg transform='translate(40 26) scale(1.0)'%3E%3Cpath d='M13.6 1V26.3M26.3 13.6H1M22.7 4.6L4.6 22.7M22.7 22.7L4.6 4.6'/%3E%3C/g%3E%3Cg transform='translate(232 136) scale(1.05)'%3E%3Cpath d='M13.6 1V26.3M26.3 13.6H1M22.7 4.6L4.6 22.7M22.7 22.7L4.6 4.6M17.2 2.8L13.6 6.4L10 2.8M10 24.5L13.6 21.8L17.2 24.5M24.5 17.3L20.9 13.7L24.5 10M2.8 10L6.4 13.7L2.8 17.3'/%3E%3C/g%3E%3Cg transform='translate(126 262) scale(0.7)'%3E%3Cpath d='M13.6 1V26.3M26.3 13.6H1M22.7 4.6L4.6 22.7M22.7 22.7L4.6 4.6'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 360px 360px;
+  animation: source-snowfall-near 17s linear infinite;
+}
+
+[data-source-snapshot] [data-record-type='971']::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220' fill='none'%3E%3Cg stroke='%2390c5ea' stroke-linecap='round' stroke-linejoin='round' opacity='0.55'%3E%3Cg transform='translate(150 34) scale(0.6)'%3E%3Cpath d='M13.6 1V26.3M26.3 13.6H1M22.7 4.6L4.6 22.7M22.7 22.7L4.6 4.6'/%3E%3C/g%3E%3Cg transform='translate(46 140) scale(0.85)'%3E%3Cpath d='M13.6 1V26.3M26.3 13.6H1M22.7 4.6L4.6 22.7M22.7 22.7L4.6 4.6'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  opacity: 0.55;
+  animation: source-snowfall-far 26s linear infinite -11s;
+}
+
+@keyframes source-snowfall-near {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-32px, 360px, 0);
+  }
+}
+
+@keyframes source-snowfall-far {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(22px, 220px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-source-snapshot] [data-record-type='971']::before,
+  [data-source-snapshot] [data-record-type='971']::after {
+    animation: none;
+  }
+}
