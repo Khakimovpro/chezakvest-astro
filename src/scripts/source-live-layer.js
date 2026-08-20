@@ -381,9 +381,16 @@ function ensureSbsWrapper(atom) {
   // Tilda wraps the atom itself, rather than its children. That makes the
   // transform include atom-owned backgrounds, borders and pseudo-elements on
   // empty shape/button atoms as well as regular text and images.
-  wrapper.style.display = 'block';
-  wrapper.style.width = '100%';
-  wrapper.style.height = '100%';
+  // Атом с display:table-cell — ячейка таблицы, которой служит сам элемент
+  // артборда. Блочная обёртка разрывает эту связку: ячейка попадает в
+  // анонимную таблицу, её width:100% считать не от чего, и карточка
+  // схлопывается в ноль (пакеты на /kids/, надпись «Kids» в шапке раздела).
+  // Оригинал в таком случае даёт обёртке display/width/height: inherit —
+  // повторяем это, для остальных атомов оставляем блок на 100%.
+  const cell = getComputedStyle(atom).display === 'table-cell';
+  wrapper.style.display = cell ? 'inherit' : 'block';
+  wrapper.style.width = cell ? 'inherit' : '100%';
+  wrapper.style.height = cell ? 'inherit' : '100%';
   wrapper.style.transformOrigin = 'center';
   return wrapper;
 }
