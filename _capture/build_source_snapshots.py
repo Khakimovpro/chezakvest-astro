@@ -99,6 +99,15 @@ MAP_ALT = "Карта девяти площадок «Чё за Квест» в 
 # marker of that very record.
 MAP_WIDGET_ORIGIN = "https://yandex.ru/map-widget/v1/"
 MAP_PIN = "pm2rdm"
+# Карта площадки в подвале адресной страницы: «Конструктор карт» отдаёт свой
+# идентификатор в адресе скрипта, а тот же идентификатор понимает и обычный
+# iframe-виджет — так карта живёт без стороннего рантайма.
+CONSTRUCTOR_MAP_RE = re.compile(r"um=constructor%3A(?P<id>[0-9a-f]+)")
+CONSTRUCTOR_MAP_ALT = "Карта площадки «Чё за Квест» на Яндекс Картах"
+# Цвет подсказки берётся из стиля самой записи T300; #333333 — тот, что стоит у
+# восьми из девяти площадок оригинала.
+TOOLTIP_COLOR_RE = re.compile(r"t300__tooltipster-noir_\d+\s*\{[^}]*background-color:\s*(?P<color>#[0-9a-fA-F]{3,8}|rgba?\([^)]*\))")
+TOOLTIP_FALLBACK_COLOR = "#333333"
 MAP_MARKER_RE = re.compile(
     r'\{title:"(?P<title>[^"]*)",descr:"[^"]*",lat:"(?P<lat>-?[\d.]+)",lng:"(?P<lng>-?[\d.]+)"'
 )
@@ -171,11 +180,19 @@ LOCAL_IMAGE_REPLACEMENTS = {
 SOURCE_WIDGET_STYLE = """
 [data-source-snapshot] .source-map{position:relative;box-sizing:border-box;overflow:hidden;background:#e5e3df}
 [data-source-snapshot] .source-map .source-map__poster{display:block;width:100%;height:100%;margin:0;object-fit:cover}
-[data-source-snapshot] .source-map .source-map__load{position:absolute;left:50%;bottom:22px;z-index:2;transform:translateX(-50%);padding:14px 28px;border:0;border-radius:30px;background:#ff6900;color:#fff;font:700 15px/1 'Montserrat',Arial,sans-serif;box-shadow:0 8px 22px rgba(0,0,0,.28);cursor:pointer}
-[data-source-snapshot] .source-map .source-map__load:hover{background:#ff8a00}
-[data-source-snapshot] .source-map .source-map__load[disabled]{opacity:.7;cursor:default}
+[data-source-snapshot] .source-map_constructor{width:100%;height:100%}
 [data-source-snapshot] .source-map iframe{display:block!important;position:absolute;inset:0;z-index:1;width:100%;height:100%;border:0}
-[data-source-snapshot] .source-map[data-source-map-active] .source-map__poster,[data-source-snapshot] .source-map[data-source-map-active] .source-map__load{display:none}
+[data-source-snapshot] .source-map[data-source-map-active] .source-map__poster{display:none}
+[data-source-snapshot] .source-tip{position:absolute;z-index:9999998;box-sizing:border-box;width:max-content;max-width:320px;padding:18px;border:1px solid #fff;border-radius:10px;background:#333;color:#fff;font-family:'Montserrat',Arial,sans-serif;text-align:left}
+[data-source-snapshot] .source-tip[hidden]{display:none}
+[data-source-snapshot] .source-tip .t300__content-title{margin:-4px 0 0;color:#fff;font:400 20px/28px 'Montserrat',Arial,sans-serif}
+[data-source-snapshot] .source-tip .t300__content-text{margin:0;color:#fff;font-size:14px;line-height:20px}
+[data-source-snapshot] .source-tip .t300__content-text ul{margin:14px 0;padding:0 0 0 40px;list-style:disc}
+[data-source-snapshot] .source-tip .t300__content-text li{font-size:14px;line-height:20px;list-style:disc}
+[data-source-snapshot] .source-tip .t300__content-text strong{font-weight:700}
+[data-source-snapshot] .source-tip__arrow{position:absolute;top:-7px;left:50%;width:12px;height:12px;margin-left:-6px;border-top:1px solid #fff;border-left:1px solid #fff;border-radius:2px 0 0 0;background:inherit;rotate:45deg}
+[data-source-snapshot] .source-tip_up .source-tip__arrow{top:auto;bottom:-7px;border:0;border-right:1px solid #fff;border-bottom:1px solid #fff;border-radius:0 0 2px 0}
+[data-source-snapshot] .source-tip__arrow[hidden]{display:none}
 [data-source-snapshot] .source-reviews{box-sizing:border-box;display:flex;flex-direction:column;align-self:center;gap:16px;width:min(100%,calc(100vw - 32px));max-width:1170px;min-height:0;max-height:100%;color:#333;font-family:'Nunito',Arial,sans-serif}
 [data-source-snapshot] .source-reviews *{box-sizing:border-box}
 [data-source-snapshot] .source-reviews__summary{display:flex;align-self:center;align-items:center;gap:10px;padding:9px 18px;border-radius:999px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.1)}
@@ -222,7 +239,9 @@ SOURCE_WIDGET_STYLE = """
 [data-source-snapshot] .source-quiz-cta{gap:10px;padding:18px 16px}
 [data-source-snapshot] .source-quiz-cta__title{font-size:19px}
 [data-source-snapshot] .source-quiz-cta__text{display:none}
-[data-source-snapshot] .source-map .source-map__load{bottom:14px;padding:12px 22px;font-size:14px}
+[data-source-snapshot] .source-tip{max-width:min(320px,calc(100vw - 32px));padding:14px}
+[data-source-snapshot] .source-tip .t300__content-title{font-size:17px;line-height:24px}
+[data-source-snapshot] .source-tip .t300__content-text ul{padding-left:24px}
 }
 """
 
@@ -975,21 +994,79 @@ def materialize_local_map(record: Tag, soup: BeautifulSoup) -> bool:
         anchor["aria-hidden"] = "true"
         canvas.append(anchor)
 
+    # Постер — заглушка на те доли секунды, пока едет карта, и запасной кадр,
+    # если Яндекс не ответил. Кнопки «Показать карту» тут нет: на оригинале карта
+    # живая сразу, а `src/scripts/source-widgets.js` подгружает её на подходе
+    # блока к экрану, поэтому первая загрузка страницы всё так же чиста.
     poster = soup.new_tag("img", attrs={
         "class": ["source-map__poster"],
         "src": f"{BASE_TOKEN}{MAP_POSTER}",
         "alt": MAP_ALT,
         "decoding": "async",
     })
-    button = soup.new_tag("button", attrs={
-        "class": ["source-map__load"],
-        "type": "button",
-        "data-source-map-load": "",
-        "aria-pressed": "false",
-    })
-    button.string = "Показать карту"
-    canvas.extend([poster, button])
+    canvas.append(poster)
     return True
+
+
+def link_venue_tooltips(root: Tag) -> bool:
+    """Связать плитки адресов с их подсказками из записей T300.
+
+    Оригинал показывает при наведении на адрес тёмную карточку: название
+    площадки и список её квестов. Разметка карточки в снимке цела (записи T300
+    со своим `data-tooltip-hook`), а вот связь с плиткой терялась: якорь
+    `#gvardeyskiy` мы переписываем на страницу площадки, и по нему подсказку уже
+    не найти. Ставим связь отдельным атрибутом, пока якорь ещё на месте, — показ
+    берёт на себя `src/scripts/source-widgets.js`.
+    """
+    linked = False
+    for tooltip in root.select("[data-tooltip-hook]"):
+        hook = str(tooltip.get("data-tooltip-hook", ""))
+        if hook not in VENUE_HASH_ROUTES:
+            continue
+        name = hook.removeprefix("#")
+        chips = root.select(f'a[href="{hook}"]')
+        if not chips:
+            continue
+        record = tooltip.find_parent(id=re.compile(r"^rec\d+$"))
+        colour = TOOLTIP_COLOR_RE.search(str(record) if record else "")
+        tooltip["data-source-tooltip-id"] = name
+        tooltip["data-source-tooltip-color"] = colour.group("color") if colour else TOOLTIP_FALLBACK_COLOR
+        for chip in chips:
+            chip["data-source-tooltip"] = name
+            linked = True
+    return linked
+
+
+def materialize_constructor_map(record: Tag, soup: BeautifulSoup) -> bool:
+    """Собрать карту «Конструктора Яндекса» вместо её скрипта-загрузчика.
+
+    На адресных страницах под блоком «Построить маршрут» стоит карта площадки:
+    в оригинале её рисует скрипт `api-maps.yandex.ru/services/constructor`,
+    который сам подставляет iframe `map-widget/v1/?...&um=constructor:<id>`.
+    Санитайзер снимка вырезает скрипт, и на его месте оставался пустой слот
+    в 400 px. Кладём туда тот же самый iframe, только отложенный: его создаёт
+    `source-widgets.js`, когда блок подходит к экрану.
+    """
+    materialized = False
+    for script in list(record.select('script[src*="services/constructor"]')):
+        source = str(script.get("src", ""))
+        match = CONSTRUCTOR_MAP_RE.search(source)
+        holder = script.parent
+        if match is None or not isinstance(holder, Tag):
+            continue
+        script.decompose()
+        stage = soup.new_tag("div", attrs={
+            "class": ["source-map", "source-map_constructor"],
+            "data-source-map": "",
+            "data-source-map-embed": (
+                f"{MAP_WIDGET_ORIGIN}?lang=ru_RU&scroll=false&source=constructor-api"
+                f"&um=constructor%3A{match.group('id')}"
+            ),
+            "data-source-map-title": CONSTRUCTOR_MAP_ALT,
+        })
+        holder.append(stage)
+        materialized = True
+    return materialized
 
 
 def build_reviews_block(soup: BeautifulSoup) -> Tag:
@@ -1391,8 +1468,14 @@ def prepare_snapshot(
             or "t_appendyandexmap" in record_html
         ):
             widgets_materialized |= materialize_local_map(record, soup)
+        if "services/constructor" in record_html:
+            widgets_materialized |= materialize_constructor_map(record, soup)
         if "myreviews" in record_html:
             widgets_materialized |= materialize_local_reviews(record, soup, root)
+
+    # Пока якоря площадок ещё указывают на записи подсказок, а не на страницы
+    # площадок, — связываем плитки адресов с их карточками квестов.
+    widgets_materialized |= link_venue_tooltips(root)
 
     # T979's justified masonry requires the two numeric arguments that Tilda
     # stores only in a stripped inline init call.

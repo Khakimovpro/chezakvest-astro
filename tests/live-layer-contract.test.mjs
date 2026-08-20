@@ -212,12 +212,43 @@ test('кнопка локального видео запускает ролик
   assert.ok(!classes.has('hidden'), 'при паузе кнопка вновь доступна');
 });
 
-test('карта площадок стоит на каждом снимке', async () => {
+test('карта площадок стоит на каждом снимке и едет сама, без кнопки', async () => {
+  const widgets = await read('src/scripts/source-widgets.js');
   const pages = await snapshots();
   const withMap = pages.filter((page) => /class="[^"]*\bsource-map\b/u.test(page.html));
   assert.equal(withMap.length, pages.length, 'карта пропала на части маршрутов');
-  for (const page of withMap.slice(0, 5)) {
-    assert.match(page.html, /Показать карту/u, `${page.name}: карта без кнопки активации`);
+  // Как на оригинале: карта живая сразу, запрос уходит на подходе блока к экрану.
+  assert.match(widgets, /IntersectionObserver[\s\S]*activateMap/u, 'карта больше не подгружается по появлению блока');
+  for (const page of withMap) {
+    assert.match(page.html, /data-source-map-embed="https:\/\/yandex\.ru\/map-widget/u, `${page.name}: у карты нет адреса виджета`);
+    assert.doesNotMatch(page.html, /Показать карту/u, `${page.name}: кнопка активации карты вернулась`);
+  }
+});
+
+test('карта площадки в подвале адресной страницы собрана из «Конструктора»', async () => {
+  const pages = await snapshots();
+  const withConstructor = pages.filter((page) => /\bsource-map_constructor\b/u.test(page.html));
+  // Восемь адресных страниц оригинала держат свою карту-конструктор; на
+  // Нансена, 107/1 её нет и в самом оригинале.
+  assert.equal(withConstructor.length, 8, `карта-конструктор осталась на ${withConstructor.length} маршрутах`);
+  for (const page of withConstructor) {
+    assert.match(page.html, /um=constructor%3A[0-9a-f]{16}/u, `${page.name}: потерян идентификатор карты`);
+    assert.doesNotMatch(page.html, /services\/constructor/u, `${page.name}: остался сторонний скрипт карты`);
+  }
+});
+
+test('плитки адресов связаны со своими подсказками', async () => {
+  const widgets = await read('src/scripts/source-widgets.js');
+  assert.match(widgets, /initVenueTips\(root\)/u, 'подсказки площадок не поднимаются');
+  const pages = await snapshots();
+  const withChips = pages.filter((page) => /data-source-tooltip="/u.test(page.html));
+  assert.ok(withChips.length >= 60, `подсказки достались только ${withChips.length} маршрутам`);
+  for (const page of withChips) {
+    const chips = new Set([...page.html.matchAll(/data-source-tooltip="([^"]+)"/gu)].map((m) => m[1]));
+    const tips = new Set([...page.html.matchAll(/data-source-tooltip-id="([^"]+)"/gu)].map((m) => m[1]));
+    for (const chip of chips) {
+      assert.ok(tips.has(chip), `${page.name}: у плитки «${chip}» нет карточки с квестами`);
+    }
   }
 });
 
