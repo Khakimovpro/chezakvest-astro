@@ -28,7 +28,10 @@ const countAll = async (pattern) => {
 const FROZEN = {
   forms: 308,
   popups: 231,
-  bookingLinks: 622,
+  // 20.08.2026: три кнопки «Подобрать квест» на /kids/, /new-year/ и
+  // /den-rozhdeniya-uznik-azkabana/ вели на общую форму вместо подбора программы.
+  // Теперь там свой пошаговый подбор со своей заявкой, поэтому ссылок на три меньше.
+  bookingLinks: 619,
   dateMarkers: 484,
   phoneWraps: 322,
   contactChoice: 210,

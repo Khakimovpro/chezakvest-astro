@@ -2,10 +2,19 @@
 // Local replacement for the former YourGood widget: no network activity before a visitor chooses a channel.
 import site from '../data/site.json';
 import { siteHref } from '../lib/urls.js';
+import { qrSvg } from '../lib/qr.js';
 
 const { messengers } = site;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const link = (href) => siteHref(base, href);
+// QR рисуется на сборке своим генератором: на оригинале в окне мессенджеров тоже
+// стоит код, а любой публичный сервис картинок — это запрос на чужой сервер.
+const codes = Object.fromEntries(messengers.items.map((item) => [
+  item.id,
+  qrSvg(item.href, { size: 168, label: `QR-код для перехода в ${item.label}` }),
+]));
+// Первым показываем WhatsApp: именно его значок стоит в шапке и в подвале.
+const defaultChannel = messengers.items.some((item) => item.id === 'wa') ? 'wa' : messengers.items[0].id;
 ---
 
 <div class="mfab-root" data-messenger-root>
@@ -19,18 +28,257 @@ const link = (href) => siteHref(base, href);
     ))}
   </button>
 
-  <dialog class="mfab__dialog" id="messenger-panel" aria-labelledby="messenger-panel-title">
-    <button class="mfab__close" type="button" data-messenger-close aria-label="Закрыть">×</button>
-    <h2 id="messenger-panel-title">{messengers.title}</h2>
-    <p class="mfab__intro">Выберите удобный канал связи.</p>
-    <ul class="mfab__channels">
-      {messengers.items.map((item) => (
-        <li><a class:list={['mfab__channel', `mfab__channel--${item.id}`]} href={item.href} target="_blank" rel="noopener">{item.label}</a></li>
-      ))}
-    </ul>
-    <p class="mfab__privacy">Переходя в мессенджер, вы соглашаетесь с <a href={link('/privacy')}>политикой обработки данных</a>.</p>
+  <dialog class="msgr" id="messenger-panel" aria-labelledby="messenger-panel-title" data-messenger-dialog data-messenger-channel={defaultChannel}>
+    <button class="msgr__close" type="button" data-messenger-close aria-label="Закрыть">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m7 7 10 10M17 7 7 17"/></svg>
+    </button>
+    <h2 class="msgr__title" id="messenger-panel-title">{messengers.title}</h2>
+    <p class="msgr__intro">Согласитесь с политикой обработки персональных данных, чтобы связаться с нами.</p>
+
+    <div class="msgr__grid">
+      <div class="msgr__qr">
+        <span class="msgr__qr-badge">Сканируйте QR с телефона</span>
+        <div class="msgr__qr-stack">
+          {messengers.items.map((item) => (
+            <span class="msgr__qr-slot" data-messenger-qr={item.id} hidden={item.id !== defaultChannel} set:html={codes[item.id]} />
+          ))}
+        </div>
+      </div>
+
+      <ul class="msgr__channels">
+        {messengers.items.map((item) => (
+          <li>
+            <a
+              class:list={['msgr__channel', `msgr__channel--${item.id}`]}
+              href={item.href}
+              target="_blank"
+              rel="noopener"
+              data-messenger-channel-link={item.id}
+            >
+              <span class="msgr__channel-icon" aria-hidden="true">
+                {item.id === 'max' && <svg viewBox="-2 0 19 15" focusable="false"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M8.202 15.81c-1.48 0-2.168-.216-3.363-1.08-.756.972-3.15 1.732-3.255.432 0-.976-.216-1.8-.461-2.701C.831 11.352.5 10.117.5 8.327.5 4.053 4.007.837 8.163.837c4.159 0 7.418 3.374 7.418 7.53.007 1.965-.766 3.852-2.15 5.247-1.383 1.396-3.264 2.185-5.229 2.196Zm.061-11.278c-2.024-.104-3.6 1.296-3.95 3.493-.288 1.818.224 4.033.66 4.148.208.05.734-.375 1.061-.702a4.68 4.68 0 0 0 1.83.652c1.008.049 1.994-.3 2.748-.971a3.72 3.72 0 0 0 1.28-2.618 3.72 3.72 0 0 0-.998-2.74 3.72 3.72 0 0 0-2.631-1.258Z"/></svg>}
+                {item.id === 'wa' && <svg viewBox="0 0 32 32" focusable="false"><path fill="currentColor" d="M16 3C9.4 3 4 8.4 4 15c0 2.1.6 4.1 1.6 5.9L4 29l8.3-1.6c1.7.9 3.6 1.4 5.7 1.4 6.6 0 12-5.4 12-12S22.6 3 16 3zm0 21.8c-1.8 0-3.5-.5-5-1.3l-.4-.2-3.7.7.7-3.6-.2-.4a9.8 9.8 0 0 1-1.5-5.2c0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.4 9.8-9.8 9.8zm5.4-7.3c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.6.1a8 8 0 0 1-2.4-1.5 9 9 0 0 1-1.6-2c-.2-.3 0-.4.1-.6l.5-.5c.1-.2.2-.3.3-.5s0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1 2.2 3.4 5.3 4.7c2 .9 2.8.9 3.7.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4l-.6-.3z"/></svg>}
+                {item.id === 'tg' && <svg viewBox="0 0 24 24" focusable="false"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M3.24 11.832c4.666-2.032 7.776-3.372 9.332-4.019 4.443-1.848 5.367-2.17 5.969-2.18.132-.003.428.03.62.186.161.131.206.308.227.433.022.125.048.408.027.63-.24 2.53-1.283 8.67-1.813 11.503-.224 1.2-.666 1.601-1.093 1.641-.93.085-1.635-.615-2.535-1.205-1.408-.923-2.204-1.498-3.57-2.399-1.58-1.041-.556-1.613.344-2.548.236-.245 4.329-3.969 4.409-4.306.01-.043.019-.2-.075-.283-.093-.083-.232-.055-.331-.032-.141.032-2.39 1.519-6.749 4.46-.638.44-1.217.652-1.735.64-.571-.012-1.67-.335-2.487-.6-1.002-.326-1.798-.498-1.729-1.052.036-.288.433-.582 1.19-.884Z"/></svg>}
+              </span>
+              <span class="msgr__channel-label">{item.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="msgr__consent">
+      <label class="msgr__check">
+        <input type="checkbox" checked data-messenger-consent />
+        <span>Я прочитал(а) и согласен(а) с <a href={link('/privacy')} target="_blank" rel="noopener">Политикой обработки данных</a></span>
+      </label>
+      <label class="msgr__check">
+        <input type="checkbox" data-messenger-ads />
+        <span>Я согласен(а) на инфо- и рекламные сообщения</span>
+      </label>
+    </div>
   </dialog>
 </div>
+
+<style>
+  /* Окно мессенджеров повторяет оригинальное: по центру экрана, слева QR,
+     справа три канала, снизу согласия. Оно одно на страницу и открывается
+     из шапки, из подвала и с плавающей кнопки. */
+  .msgr, .msgr :global(*) { box-sizing: border-box; }
+
+  .msgr {
+    position: fixed;
+    inset: 0;
+    width: min(478px, calc(100vw - 32px));
+    max-width: none;
+    max-height: calc(100dvh - 32px);
+    margin: auto;
+    padding: 26px 28px 22px;
+    overflow: visible;
+    border: 0;
+    border-radius: 18px;
+    background: #fff;
+    color: #1c1c1c;
+    box-shadow: 0 24px 60px rgb(0 0 0 / 28%);
+  }
+
+  .msgr::backdrop { background: rgb(0 0 0 / 45%); }
+
+  /* Появление: окно всплывает от центра, подложка проступает следом. */
+  .msgr[open] { animation: msgr-in 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2); }
+  .msgr[open]::backdrop { animation: msgr-fade 0.22s ease-out; }
+
+  @keyframes msgr-in {
+    from { opacity: 0; transform: translateY(12px) scale(0.94); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes msgr-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .msgr[open], .msgr[open]::backdrop { animation: none; }
+  }
+
+  .msgr__close {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #c9ccd3;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s ease-out, transform 0.15s ease-out;
+  }
+
+  .msgr__close svg { width: 18px; height: 18px; }
+  .msgr__close:hover { background: #aab0ba; }
+  .msgr__close:active { transform: scale(0.92); }
+
+  .msgr__title {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .msgr__intro {
+    margin: 8px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .msgr__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .msgr__qr,
+  .msgr__channels {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    background: #f4f7fb;
+  }
+
+  .msgr__qr-badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #dbe9fd;
+    color: #2563c9;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .msgr__qr-stack {
+    display: grid;
+    place-items: center;
+    padding: 8px;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  .msgr__qr-slot { display: block; }
+  .msgr__qr-slot[hidden] { display: none; }
+  .msgr__qr-slot :global(svg) { display: block; width: 100%; height: auto; max-width: 168px; }
+
+  .msgr__channels {
+    justify-content: space-between;
+    margin: 0;
+    list-style: none;
+  }
+
+  .msgr__channels li { width: 100%; }
+
+  .msgr__channel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 52px;
+    padding: 0 14px;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.15s ease-out, filter 0.15s ease-out;
+  }
+
+  .msgr__channel:hover,
+  .msgr__channel:focus-visible { color: #fff; text-decoration: none; filter: brightness(1.06); transform: translateY(-1px); }
+  .msgr__channel:active { transform: translateY(0) scale(0.99); }
+
+  .msgr__channel--max { background: linear-gradient(92.92deg, #19d1f5 18%, #5f3aef 82%); }
+  .msgr__channel--wa { background: linear-gradient(180deg, #5cd767 0%, #22bc3c 100%); }
+  .msgr__channel--tg { background: linear-gradient(180deg, #2aabee 0%, #229ed9 100%); }
+
+  .msgr__channel-icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 22%);
+  }
+
+  .msgr__channel-icon :global(svg) { width: 18px; height: 18px; }
+  .msgr__channel-label { flex: 1; text-align: center; }
+
+  .msgr__consent {
+    display: grid;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #f4f7fb;
+  }
+
+  .msgr__check {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    color: #7c8494;
+    font-size: 11px;
+    line-height: 1.4;
+    cursor: pointer;
+  }
+
+  .msgr__check input { flex: none; width: 14px; height: 14px; margin: 1px 0 0; accent-color: #2563c9; }
+  .msgr__check a { color: inherit; text-decoration: underline; }
+
+  /* Пока согласие не отмечено, переход в мессенджер закрыт — как на оригинале. */
+  .msgr[data-consent='off'] .msgr__channel {
+    filter: grayscale(0.7) opacity(0.55);
+    pointer-events: none;
+  }
+
+  @media (max-width: 520px) {
+    .msgr { padding: 22px 18px 18px; }
+    .msgr__grid { grid-template-columns: 1fr; }
+    .msgr__title { font-size: 19px; }
+    .msgr__close { top: -12px; right: -6px; }
+  }
+</style>
 
 <script>
   const initMessengerPanel = () => {
@@ -48,8 +296,28 @@ const link = (href) => siteHref(base, href);
       opener = trigger;
       if (!dialog.open) dialog.showModal();
       sync(true);
-      dialog.querySelector('.mfab__close')?.focus();
+      dialog.querySelector('.msgr__close')?.focus();
     };
+
+    // QR под рукой всегда один: тот канал, на который смотрит посетитель.
+    const showCode = (id) => {
+      const slots = dialog.querySelectorAll('[data-messenger-qr]');
+      if (!Array.from(slots).some((slot) => slot.dataset.messengerQr === id)) return;
+      slots.forEach((slot) => { slot.hidden = slot.dataset.messengerQr !== id; });
+      dialog.dataset.messengerChannel = id;
+    };
+    dialog.querySelectorAll('[data-messenger-channel-link]').forEach((link) => {
+      const id = link.dataset.messengerChannelLink;
+      link.addEventListener('mouseenter', () => showCode(id));
+      link.addEventListener('focus', () => showCode(id));
+      link.addEventListener('click', close);
+    });
+
+    // Согласие на обработку данных отпирает кнопки каналов.
+    const consent = dialog.querySelector('[data-messenger-consent]');
+    const syncConsent = () => { dialog.dataset.consent = consent?.checked ? 'on' : 'off'; };
+    consent?.addEventListener('change', syncConsent);
+    syncConsent();
 
     document.addEventListener('click', (event) => {
       const trigger = event.target.closest?.('[data-messenger-open]');
@@ -58,8 +326,8 @@ const link = (href) => siteHref(base, href);
       open(trigger);
     });
     dialog.querySelector('[data-messenger-close]')?.addEventListener('click', close);
-    dialog.querySelectorAll('.mfab__channel').forEach((link) => link.addEventListener('click', close));
     dialog.addEventListener('click', (event) => {
+      // Клик мимо карточки: у модального `dialog` фон — это сам элемент.
       if (event.target === dialog) close();
     });
     dialog.addEventListener('close', () => {
