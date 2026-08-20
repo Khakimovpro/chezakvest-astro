@@ -1,1 +1,487 @@
-/* Стили модуля «reviews» живого слоя. */
+/* Стили модуля «reviews» живого слоя.
+   Блок повторяет виджет отзывов оригинала (MyReviews «Карусель»): белая плашка
+   с общей оценкой и оценками площадок, ряд тегов-фильтров и сетка карточек
+   4×3 со стрелками листания. Замеры сняты с живого виджета оригинала
+   20.08.2026: карточка 263×290, радиус 14, имя #B7B7B7/16px, текст #333/15px
+   с обрезкой на 5 строке, стрелки 65px #404040 при прозрачности .35,
+   активный тег #83929c, активная площадка #f5f5f7.
+   Селекторы держатся на `[data-source-snapshot]`, чтобы перебивать
+   постраничные правила снимка (`img{height:auto}` и прочее). */
+
+[data-source-snapshot] .source-reviews {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  gap: 20px;
+  width: min(100%, calc(100vw - 32px));
+  max-width: 1170px;
+  padding: 20px 30px 0;
+  color: #333;
+  font-family: 'Montserrat', 'Nunito', Arial, sans-serif;
+  text-align: left;
+}
+
+[data-source-snapshot] .source-reviews * {
+  box-sizing: border-box;
+}
+
+/* Скрипт прячет стрелки, точки и сетку атрибутом `hidden`; собственные
+   `display` этих узлов иначе перебивают его. */
+[data-source-snapshot] .source-reviews [hidden] {
+  display: none !important;
+}
+
+/* --- шапка: общая оценка + оценки площадок ------------------------------- */
+
+[data-source-snapshot] .source-reviews__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 58px;
+  padding: 7px 10px;
+  border-radius: 14px;
+  background: #fff;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+[data-source-snapshot] .source-reviews__head::-webkit-scrollbar {
+  display: none;
+}
+
+[data-source-snapshot] .source-reviews__summary {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #f5f5f7;
+  white-space: nowrap;
+}
+
+[data-source-snapshot] .source-reviews__score {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+}
+
+[data-source-snapshot] .source-reviews__star {
+  color: #fac816;
+  font-size: 15px;
+  line-height: 1;
+}
+
+[data-source-snapshot] .source-reviews__divider {
+  color: #d8d7dd;
+}
+
+[data-source-snapshot] .source-reviews__count {
+  font-size: 14px;
+  line-height: 1;
+  color: #84839c;
+}
+
+[data-source-snapshot] .source-reviews__services {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+[data-source-snapshot] .source-reviews__services > li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+[data-source-snapshot] .source-reviews__service {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #000;
+  font: 400 14px/20px 'Montserrat', Arial, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color .2s ease;
+}
+
+[data-source-snapshot] .source-reviews__service:hover,
+[data-source-snapshot] .source-reviews__service:focus-visible {
+  background: #f5f5f7;
+}
+
+[data-source-snapshot] .source-reviews__service[aria-pressed='true'] {
+  background: #f5f5f7;
+  font-weight: 600;
+}
+
+/* --- ряд тегов ----------------------------------------------------------- */
+
+[data-source-snapshot] .source-reviews__tags {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0 2px 2px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+[data-source-snapshot] .source-reviews__tags::-webkit-scrollbar {
+  display: none;
+}
+
+[data-source-snapshot] .source-reviews__tag {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border: 1px solid #d8d7dd;
+  border-radius: 50px;
+  background: transparent;
+  color: #000;
+  font: 400 14px/22px 'Montserrat', Arial, sans-serif;
+  cursor: pointer;
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+
+[data-source-snapshot] .source-reviews__tag:hover,
+[data-source-snapshot] .source-reviews__tag:focus-visible {
+  border-color: #83929c;
+}
+
+[data-source-snapshot] .source-reviews__tag[aria-pressed='true'] {
+  border-color: transparent;
+  background: #83929c;
+  color: #fff;
+}
+
+/* --- сетка карточек ------------------------------------------------------ */
+
+[data-source-snapshot] .source-reviews__stage {
+  position: relative;
+}
+
+[data-source-snapshot] .source-reviews__list {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+[data-source-snapshot] .source-reviews__item {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+[data-source-snapshot] .source-reviews .review-card {
+  display: flex;
+  flex-direction: column;
+  height: 290px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #fff;
+  color: #333;
+  text-align: left;
+  overflow: hidden;
+}
+
+[data-source-snapshot] .source-reviews .review-card__name {
+  margin: 0;
+  font: 500 16px/24px 'Montserrat', Arial, sans-serif;
+  color: #b7b7b7;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-source-snapshot] .source-reviews .review-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 15px;
+  color: #b7b7b7;
+}
+
+[data-source-snapshot] .source-reviews .review-card__meta time {
+  white-space: nowrap;
+}
+
+/* Ссылку на площадку перекрашивает фирменная палитра Tilda из снимка,
+   поэтому цвет и подчёркивание приходится ставить жёстко. */
+[data-source-snapshot] .source-reviews .review-card__source a {
+  color: #b7b7b7 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+}
+
+[data-source-snapshot] .source-reviews .review-card__stars {
+  margin-top: 10px;
+  color: #fac816;
+  font-size: 18px;
+  line-height: 1;
+  letter-spacing: 2px;
+}
+
+[data-source-snapshot] .source-reviews .review-card__body {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+  margin: 14px 0 0;
+  font-size: 15px;
+  line-height: 24px;
+  color: #333;
+  overflow-wrap: anywhere;
+}
+
+/* Развёрнутая карточка перестаёт держать фиксированную высоту — иначе длинный
+   отзыв просто упрётся в нижний край и «Читать дальше» окажется обманкой. */
+[data-source-snapshot] .source-reviews .review-card.is-expanded {
+  height: auto;
+  min-height: 290px;
+}
+
+[data-source-snapshot] .source-reviews .review-card.is-expanded .review-card__body {
+  display: block;
+  overflow: visible;
+}
+
+[data-source-snapshot] .source-reviews .review-card__more {
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #000;
+  font: 500 14px/22px 'Montserrat', Arial, sans-serif;
+  cursor: pointer;
+}
+
+[data-source-snapshot] .source-reviews .review-card__more:hover,
+[data-source-snapshot] .source-reviews .review-card__more:focus-visible {
+  text-decoration: underline;
+}
+
+[data-source-snapshot] .source-reviews__empty {
+  margin: 0;
+  padding: 60px 0;
+  color: #504d74;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* --- стрелки, точки, кнопка отзыва --------------------------------------- */
+
+[data-source-snapshot] .source-reviews__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: none;
+  place-items: center;
+  width: 65px;
+  height: 65px;
+  padding: 0 0 4px;
+  border: 0;
+  border-radius: 15px;
+  background: #404040;
+  color: #fff;
+  font: 400 34px/1 Arial, sans-serif;
+  opacity: .35;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: opacity .2s ease;
+}
+
+[data-source-snapshot] .source-reviews__arrow:hover,
+[data-source-snapshot] .source-reviews__arrow:focus-visible {
+  opacity: .6;
+}
+
+[data-source-snapshot] .source-reviews__arrow[disabled] {
+  opacity: .12;
+  cursor: default;
+}
+
+[data-source-snapshot] .source-reviews__arrow--prev {
+  left: -45px;
+}
+
+[data-source-snapshot] .source-reviews__arrow--next {
+  right: -45px;
+}
+
+[data-source-snapshot] .source-reviews.is-live .source-reviews__arrow {
+  display: grid;
+}
+
+[data-source-snapshot] .source-reviews__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 20px;
+}
+
+[data-source-snapshot] .source-reviews__dots {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+[data-source-snapshot] .source-reviews__dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #d8d7dd;
+  cursor: pointer;
+  transition: background-color .2s ease;
+}
+
+[data-source-snapshot] .source-reviews__dot[aria-selected='true'] {
+  background: #404040;
+}
+
+[data-source-snapshot] .source-reviews__feedback {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: #333;
+  color: #fff !important;
+  font: 400 14px/20px 'Montserrat', Arial, sans-serif;
+  text-decoration: none !important;
+}
+
+[data-source-snapshot] .source-reviews__feedback:hover,
+[data-source-snapshot] .source-reviews__feedback:focus-visible {
+  background: #1f1f1f;
+  color: #fff !important;
+}
+
+/* --- страница без скрипта: показываем ровно первую страницу сетки --------- */
+
+[data-source-snapshot] .source-reviews:not(.is-live) .source-reviews__item:nth-child(n + 13) {
+  display: none;
+}
+
+/* Пять лендингов (Among Us, Калмар, Minecraft, Roblox, выпускной) ставят виджет
+   на тёмный Zero-Block. Чипы там чёрным по тёмному не читаются, поэтому на этих
+   местах они получают белую подложку. */
+[data-source-snapshot] .source-reviews-slot .source-reviews__tag {
+  background: #fff;
+}
+
+[data-source-snapshot] .source-reviews-slot .source-reviews__tag[aria-pressed='true'] {
+  background: #83929c;
+}
+
+/* В Zero-Block под виджет отведён блок фиксированной высоты, туда влезает один
+   ряд карточек. Ограничиваем и первую отрисовку до запуска скрипта. */
+[data-source-snapshot] .source-reviews-slot .source-reviews:not(.is-live) .source-reviews__item:nth-child(n + 5) {
+  display: none;
+}
+
+/* --- адаптив: колонок столько же, сколько у оригинала на этой ширине ------ */
+
+@media screen and (max-width: 1079px) {
+  [data-source-snapshot] .source-reviews__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  [data-source-snapshot] .source-reviews:not(.is-live) .source-reviews__item:nth-child(n + 10) {
+    display: none;
+  }
+
+  [data-source-snapshot] .source-reviews-slot .source-reviews:not(.is-live) .source-reviews__item:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 959px) {
+  [data-source-snapshot] .source-reviews__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  [data-source-snapshot] .source-reviews:not(.is-live) .source-reviews__item:nth-child(n + 7) {
+    display: none;
+  }
+
+  [data-source-snapshot] .source-reviews-slot .source-reviews:not(.is-live) .source-reviews__item:nth-child(n + 3) {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 799px) {
+  [data-source-snapshot] .source-reviews {
+    gap: 16px;
+    padding: 16px 0 0;
+  }
+
+  [data-source-snapshot] .source-reviews__list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-source-snapshot] .source-reviews:not(.is-live) .source-reviews__item:nth-child(n + 4) {
+    display: none;
+  }
+
+  [data-source-snapshot] .source-reviews-slot .source-reviews:not(.is-live) .source-reviews__item:nth-child(n + 2) {
+    display: none;
+  }
+
+  [data-source-snapshot] .source-reviews__tags {
+    justify-content: flex-start;
+  }
+
+  /* На узком экране стрелки не помещаются по бокам сетки — оригинал держит их
+     поверх карточек, так же делаем и мы. */
+  [data-source-snapshot] .source-reviews__arrow--prev {
+    left: -12px;
+  }
+
+  [data-source-snapshot] .source-reviews__arrow--next {
+    right: -12px;
+  }
+
+  [data-source-snapshot] .source-reviews__foot {
+    flex-direction: column-reverse;
+    gap: 12px;
+    padding-bottom: 16px;
+  }
+
+  /* Двадцать пять точек на телефоне превращаются в кашу — оригинал их тут
+     тоже прячет и оставляет одни стрелки. */
+  [data-source-snapshot] .source-reviews__dots {
+    display: none;
+  }
+
+  [data-source-snapshot] .source-reviews__feedback {
+    align-self: flex-end;
+  }
+}
+
+/* Плашка виджета внутри артборда площадок: снимок резервировал под карусель
+   фиксированную высоту, сетке нужна своя. */
+[data-source-snapshot] .source-reviews-host {
+  height: auto !important;
+}
+
+[data-source-snapshot] .source-reviews-slot {
+  height: auto !important;
+}

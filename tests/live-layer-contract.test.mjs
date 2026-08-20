@@ -259,6 +259,30 @@ test('блок отзывов остаётся там, где он был у о�
   assert.ok(withReviews.length >= 21, `отзывы остались только на ${withReviews.length} маршрутах`);
 });
 
+test('блок отзывов даёт сетку, фильтры и стрелки, а не одну строку со скроллом', async () => {
+  const reviews = JSON.parse(await read('src/data/reviews.json'));
+  const pages = (await snapshots()).filter((page) => /class="[^"]*\bsource-reviews\b/u.test(page.html));
+  assert.ok(pages.length >= 21, `отзывы остались только на ${pages.length} маршрутах`);
+  for (const page of pages) {
+    for (const tag of reviews.tags) {
+      assert.match(page.html, new RegExp(`data-source-reviews-tag="${tag}"`, 'u'), `${page.name}: нет тега «${tag}»`);
+    }
+    for (const key of reviews.servicesOrder) {
+      assert.match(page.html, new RegExp(`data-source-reviews-service="${key}"`, 'u'), `${page.name}: нет фильтра площадки ${key}`);
+    }
+    assert.match(page.html, /data-source-reviews-arrow="prev"/u, `${page.name}: нет стрелки назад`);
+    assert.match(page.html, /data-source-reviews-arrow="next"/u, `${page.name}: нет стрелки вперёд`);
+    assert.match(page.html, /data-source-reviews-dots/u, `${page.name}: нет точек листания`);
+    const cards = (page.html.match(/class="review-card"/gu) ?? []).length;
+    assert.equal(cards, reviews.reviews.length, `${page.name}: карточек ${cards}, а в данных ${reviews.reviews.length}`);
+  }
+
+  const styles = await read('src/styles/source-reviews.css');
+  assert.match(styles, /\.source-reviews__list \{[^}]*display: grid/u, 'сетка карточек перестала быть гридом');
+  const script = await read('src/scripts/source-reviews.js');
+  assert.match(script, /data-source-reviews-arrow/u, 'скрипт перестал обслуживать стрелки');
+});
+
 test('поле телефона везде приходит с блоком страны, а не одной строкой', async () => {
   for (const page of await snapshots()) {
     const wraps = (page.html.match(/t-input-phonemask__wrap/gu) ?? []).length;
