@@ -94,12 +94,21 @@ const html = fillEmptyImages(withBase(snapshot.html
     initSourceLiveLayer(shell?.querySelector('[data-source-snapshot]'));
     initSourceSchedule();
   };
+  // Раскладка снимка пересобирает записи Zero Block уже после первого кадра, и
+  // вместе с ними исчезают обёртки анимаций, которые слой успел поставить.
+  // Поэтому слой зовём ещё раз, когда раскладка улеглась: повторный вызов на
+  // нетронутом снимке ничего не делает, а на пересобранном — возвращает
+  // карусели, галереи и анимации Tilda (на /kids/ их не было вовсе).
+  const reinitialiseLiveLayer = () => {
+    window.setTimeout(() => initSourceLiveLayer(shell?.querySelector('[data-source-snapshot]')), 1200);
+  };
   if (shell?.hasAttribute('aria-busy')) {
     new MutationObserver(() => {
-      if (!shell.hasAttribute('aria-busy')) initialiseLiveLayer();
+      if (!shell.hasAttribute('aria-busy')) { initialiseLiveLayer(); reinitialiseLiveLayer(); }
     }).observe(shell, { attributes: true, attributeFilter: ['aria-busy'] });
   } else {
     initialiseLiveLayer();
+    reinitialiseLiveLayer();
   }
 </script>
 

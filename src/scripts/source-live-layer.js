@@ -457,7 +457,13 @@ function initialiseSbs(root) {
   const responsiveStates = [];
   const intoViewStates = [];
   root.querySelectorAll('[data-animate-sbs-event]').forEach((element) => {
-    const hydratedWrapper = element.querySelector(':scope > .tn-atom__sbs-anim-wrapper');
+    // Снимок бывает снят уже с обёрткой Tilda, причём в двух видах: рантайм
+    // называет её `tn-atom__sbs-anim-wrapper`, а вёрстка страницы — просто
+    // `tn-atom__sbs-wrapper`. Пока знали только первый, все анимации таких
+    // страниц (56 элементов на /kids/) молча пропускались.
+    const hydratedWrapper = element.querySelector(
+      ':scope > .tn-atom__sbs-anim-wrapper, :scope > .tn-atom__sbs-wrapper',
+    );
     const atom = hydratedWrapper?.querySelector(':scope > .tn-atom')
       ?? element.querySelector(':scope > .tn-atom');
     const desktopFrames = parseSbsOptions(element.getAttribute('data-animate-sbs-opts'));
