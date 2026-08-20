@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-20T10:43:40Z",
+  "generatedAt": "2026-08-20T11:14:52Z",
   "runtime": [],
   "routes": {
     "/": {
       "route": "/",
       "snapshot": "home.html",
-      "source": "wt-extras/migration/parity/source-overrides/home.html",
+      "source": "astro-clone/migration/parity/source-overrides/home.html",
       "styles": [
         "d329e63da9147b9d.css",
         "b8a78a18dba06735.css",
@@ -556,7 +556,7 @@
     "/kids/": {
       "route": "/kids/",
       "snapshot": "kids.html",
-      "source": "wt-extras/migration/parity/source-overrides/kids.html",
+      "source": "astro-clone/migration/parity/source-overrides/kids.html",
       "styles": [
         "d329e63da9147b9d.css",
         "4628d57cdb3a5fa8.css",
