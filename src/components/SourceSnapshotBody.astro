@@ -69,6 +69,7 @@ const html = fillEmptyImages(withBase(snapshot.html
   import { initSourceLiveLayer } from '../scripts/source-live-layer.js';
   import { initSourceWidgets } from '../scripts/source-widgets.js';
   import { initSourcePopups } from '../scripts/source-popups.js';
+  import { initSourceNavigation } from '../scripts/source-navigation.js';
   import { initSourceForms } from '../scripts/source-forms.js';
   import { initSourceControls } from '../scripts/source-controls.js';
   import { initSourceMedia } from '../scripts/source-media.js';
@@ -78,6 +79,7 @@ const html = fillEmptyImages(withBase(snapshot.html
   initCardHover();
   initSourceWidgets();
   initSourcePopups();
+  initSourceNavigation();
   initSourceForms();
   initSourceControls();
   initSourceMedia();
@@ -876,12 +878,6 @@ const html = fillEmptyImages(withBase(snapshot.html
         }
         return;
       }
-      const anchor = event.target instanceof Element ? event.target.closest('a[href^="#popup:"], a[href^="#form:"]') : null;
-      if (anchor) {
-        event.preventDefault();
-        location.hash = 'source-booking';
-        return;
-      }
       const menuControl = event.target instanceof Element
         ? event.target.closest('a[href="#mobile-menu"]')
         : null;
@@ -1220,7 +1216,8 @@ const html = fillEmptyImages(withBase(snapshot.html
     place-items: center;
     padding: 20px;
   }
-  .source-booking:target { display: grid; }
+  .source-booking:target,
+  .source-booking.source-booking_show { display: grid; }
   .source-booking__backdrop {
     position: absolute;
     inset: 0;

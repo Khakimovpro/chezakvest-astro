@@ -44,6 +44,13 @@ RUNTIME_DIR = PUBLIC_ASSETS / "source-runtime"
 RUTUBE_POSTER_DIR = PUBLIC_ASSETS / "rutube"
 BASE_TOKEN = "__SITE_BASE__"
 SOURCE_ORIGIN = "https://xn--80aehcht5ci1b.xn--p1ai"
+# Часть ссылок в исходнике записана кириллическим доменом. По punycode-хосту такая
+# ссылка не опознаётся как своя и уезжает наружу — логотип в подвале так и уводил
+# посетителя с превью на боевой сайт.
+SOURCE_HOSTS = {
+    urlparse(SOURCE_ORIGIN).netloc,
+    urlparse(SOURCE_ORIGIN).netloc.encode().decode("idna") if urlparse(SOURCE_ORIGIN).netloc.startswith("xn--") else urlparse(SOURCE_ORIGIN).netloc,
+}
 ALLOWED_REMOTE_HOSTS = {
     "static.tildacdn.com",
     "optim.tildacdn.com",
@@ -454,10 +461,16 @@ def rewrite_fragment_urls(fragment: Tag, resources: set[str]) -> None:
                 elif attribute == "href" and text in BROKEN_ROUTE_ALIASES:
                     element[attribute] = f"{BASE_TOKEN}{BROKEN_ROUTE_ALIASES[text]}"
                 elif text.startswith(("#popup:", "#form:", "javascript:")):
+                    # Родной попап Tilda остаётся в снимке целиком, поэтому связь
+                    # «кнопка → своё окно» переезжает в data-атрибут: по нему живой
+                    # слой открывает именно то окно, которое открывал оригинал.
+                    # Сам href ведёт на общую форму — это запасной путь без JS.
+                    if attribute == "href" and text.startswith("#popup:"):
+                        element["data-source-popup"] = text
                     element[attribute] = "#source-booking"
                 elif text.startswith(("http://", "https://", "//")):
                     parsed = urlparse(clean_remote_url(text))
-                    if parsed.netloc.lower().removeprefix("www.") == urlparse(SOURCE_ORIGIN).netloc:
+                    if parsed.netloc.lower().removeprefix("www.") in SOURCE_HOSTS:
                         element[attribute] = f"{BASE_TOKEN}{canonical_route(parsed.path)}"
                     elif attribute == "href":
                         element["target"] = "_blank"
@@ -1330,6 +1343,33 @@ def restore_missing_records(soup: BeautifulSoup, contract_soup: BeautifulSoup) -
     return restored
 
 
+def restore_popup_hooks(root: Tag, contract_soup: BeautifulSoup) -> int:
+    """Возвращает кнопкам связь с родным попапом Tilda.
+
+    Гидратированный источник (override) снят уже после того, как рантайм Tilda
+    забрал у кнопки href="#popup:…" и повесил на неё свой обработчик. Архивный
+    исходник той же страницы держит кнопку с целым href, а Zero Block у обеих
+    один: элементы совпадают по data-elem-id.
+    """
+    hooks: dict[str, str] = {}
+    for anchor in contract_soup.select('a[href^="#popup:"]'):
+        holder = anchor.find_parent(attrs={"data-elem-id": True})
+        if holder is None:
+            continue
+        hooks[str(holder.get("data-elem-id"))] = str(anchor.get("href"))
+    restored = 0
+    for holder in root.select("[data-elem-id]"):
+        hook = hooks.get(str(holder.get("data-elem-id")))
+        if not hook:
+            continue
+        anchor = holder.find("a")
+        if anchor is None or anchor.get("data-source-popup"):
+            continue
+        anchor["data-source-popup"] = hook
+        restored += 1
+    return restored
+
+
 def prepare_snapshot(
         route: str,
         raw_path: Path,
@@ -1663,6 +1703,7 @@ def prepare_snapshot(
         if fragment in {"prazdnik", "quiz", "callback"} and fragment not in local_targets:
             anchor["href"] = "#source-booking"
 
+    restore_popup_hooks(root, contract_soup)
     rewrite_fragment_urls(root, resources)
     for image in root.select("img[data-original]"):
         if image.get("data-original"):

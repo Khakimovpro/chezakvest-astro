@@ -1,1 +1,26 @@
-/* Стили модуля «popups» живого слоя. */
+/* Окна снимка и переход между страницами. */
+
+/* Белая вспышка перехода: перекрывает и шапку, и снимок. */
+.source-page-fade {
+  position: fixed;
+  inset: 0;
+  z-index: 100000002;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .22s ease;
+}
+
+.source-page-fade.is-active {
+  opacity: 1;
+}
+
+/* Окно Tilda из снимка перекрывает шапку сайта — как на оригинале. */
+.t-popup {
+  z-index: 100000001;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .source-page-fade { display: none; }
+  .t-popup { transition: none; }
+}

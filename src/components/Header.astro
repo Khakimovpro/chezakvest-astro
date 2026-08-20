@@ -194,7 +194,9 @@ const currentAttrs = (href) => (isCurrent(href) ? { 'aria-current': 'page' } : {
     if (!items.length || document.body.dataset.megaReady) return;
     document.body.dataset.megaReady = 'true';
 
-    const CLOSE_DELAY = 320;
+    // Оригинал убирает панель заметно раньше: с 320 мс она успевала попасться под курсор
+    // при переходе между вкладками браузера и читалась как «залипшая».
+    const CLOSE_DELAY = 160;
     let timer;
     const closeAll = () => items.forEach((item) => item.classList.remove('is-open'));
 
