@@ -1769,22 +1769,46 @@ def restore_popup_hooks(root: Tag, contract_soup: BeautifulSoup) -> int:
     исходник той же страницы держит кнопку с целым href, а Zero Block у обеих
     один: элементы совпадают по data-elem-id.
     """
-    hooks: dict[str, str] = {}
+    by_elem: dict[str, str] = {}
+    by_id: dict[str, str] = {}
+    by_field: dict[str, str] = {}
     for anchor in contract_soup.select('a[href^="#popup:"]'):
+        hook = str(anchor.get("href"))
         holder = anchor.find_parent(attrs={"data-elem-id": True})
-        if holder is None:
-            continue
-        hooks[str(holder.get("data-elem-id"))] = str(anchor.get("href"))
+        if holder is not None:
+            by_elem[str(holder.get("data-elem-id"))] = hook
+        # Карточки услуг и мастер-классов — обычные записи Tilda: у ссылки там свой
+        # уникальный id («cardtitle3_844797091»), а у её обёртки — field.
+        if anchor.get("id"):
+            by_id[str(anchor.get("id"))] = hook
+        field_owner = anchor.find_parent(attrs={"field": True}) or anchor
+        if field_owner.get("field"):
+            by_field[str(field_owner.get("field"))] = hook
+
     restored = 0
+
+    def mark(node: Tag, hook: str) -> None:
+        nonlocal restored
+        if node.get("data-source-popup"):
+            return
+        node["data-source-popup"] = hook
+        restored += 1
+
     for holder in root.select("[data-elem-id]"):
-        hook = hooks.get(str(holder.get("data-elem-id")))
+        hook = by_elem.get(str(holder.get("data-elem-id")))
+        anchor = holder.find("a") if hook else None
+        if hook and anchor is not None:
+            mark(anchor, hook)
+    for node in root.select("[id]"):
+        hook = by_id.get(str(node.get("id")))
+        if hook:
+            mark(node, hook)
+    for node in root.select("[field]"):
+        hook = by_field.get(str(node.get("field")))
         if not hook:
             continue
-        anchor = holder.find("a")
-        if anchor is None or anchor.get("data-source-popup"):
-            continue
-        anchor["data-source-popup"] = hook
-        restored += 1
+        anchor = node.find("a") or node
+        mark(anchor, hook)
     return restored
 
 

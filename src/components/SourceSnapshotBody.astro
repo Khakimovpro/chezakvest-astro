@@ -903,6 +903,12 @@ const html = fillEmptyImages(withBase(snapshot.html
       await wait(760);
       await initialise();
       if (!(snapshotShell instanceof HTMLElement)) return;
+      // Tilda держит записи прозрачными до своего появления и снимает прозрачность
+      // классом t-records_visible. Рантайма нет, поэтому класс ставим сами — иначе
+      // на узких экранах страница оставалась пустой (было на /kids/ и /new-year/).
+      document.querySelectorAll('.t-records').forEach((records) => {
+        records.classList.add('t-records_visible');
+      });
       snapshotShell.style.display = 'block';
       await initialise();
       initialiseLazyImages();
