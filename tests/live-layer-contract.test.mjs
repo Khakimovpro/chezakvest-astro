@@ -246,6 +246,31 @@ test('снимки не тянут медиа за пределами перво
   }
 });
 
+test('нижние изображения получают источник только у локального lazy-наблюдателя', async () => {
+  const generator = await read('_capture/build_source_snapshots.py');
+  const component = await read('src/components/SourceSnapshotBody.astro');
+  assert.match(generator, /data-source-lazy-img/u, 'генератор переносит источник из parsed HTML');
+  assert.match(component, /initialiseLazyImages/u, 'снимок подключает локальный lazy-наблюдатель');
+  assert.match(component, /rootMargin: '800px 0px'/u, 'картинка начинает предзагрузку до появления в кадре');
+  assert.match(component, /typeof IntersectionObserver !== 'function'/u, 'старый браузер получает безопасную eager-подстановку');
+  assert.match(component, /src\|data-original\|data-src\|data-source-lazy-img/u, 'санитайзер не подменяет отложенную картинку пустым пикселем');
+  assert.match(component, /imageWrapper\.style\.aspectRatio/u, 'ленивая T829-карточка резервирует место до загрузки');
+  assert.match(component, /sourceLazyHydrated/u, 'гидратированная картинка сохраняет проверяемый runtime-маркер');
+
+  const pages = await snapshots();
+  const deferred = pages.flatMap((page) => descendants(parse(page.html), (node) => (
+    node.nodeName === 'img'
+      && attr(node, 'loading') === 'lazy'
+      && Boolean(attr(node, 'data-source-lazy-img'))
+  )));
+  assert.ok(deferred.length > 1_000, `отложенных изображений всего ${deferred.length}`);
+  for (const image of deferred) {
+    assert.equal(attr(image, 'src'), undefined, 'parsed HTML не содержит источник нижней картинки');
+  }
+  const kids = await readFile(new URL('kids.html', snapshotDir), 'utf8');
+  assert.match(kids, /id="rec844797119"/u, 'контрольная T829-сетка присутствует в исходном снимке');
+});
+
 test('на страницах один телефон — тот, что в site.json', async () => {
   const site = JSON.parse(await read('src/data/site.json'));
   const digits = (value) => String(value).replace(/\D/gu, '');

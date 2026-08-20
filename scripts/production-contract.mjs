@@ -349,6 +349,18 @@ function validateInternalLinks({ pages, basePath, errors }) {
   }
 }
 
+function validateDeferredImagePaths(html, pagePath, basePath, errors) {
+  const normalizedBase = normalizeBasePath(basePath);
+  const expectedPrefix = `${normalizedBase}/assets/`;
+  for (const tag of html.match(/<img\b[^>]*>/gi) ?? []) {
+    const source = getAttribute(tag, 'data-source-lazy-img');
+    if (!source) continue;
+    if (!source.startsWith(expectedPrefix)) {
+      errors.push(`${pagePath}: deferred image bypasses SITE_BASE: ${source}`);
+    }
+  }
+}
+
 function validatePage({ html, pagePath, origin, errors, legacyRedirectTargets, noindexPaths }) {
   const legacyTarget = legacyRedirectTargets.get(pagePath);
   const expectedCanonical = canonicalForPath(origin, legacyTarget || pagePath);
@@ -500,6 +512,7 @@ export async function verifyProductionContract({
     const html = await readFile(filePath, 'utf8');
     pages.set(pagePath, html);
     validatePage({ html, pagePath, origin: normalizedOrigin, errors, legacyRedirectTargets, noindexPaths });
+    validateDeferredImagePaths(html, pagePath, basePath, errors);
     const leadFormCount = validateLeadForms(html, pagePath, errors);
     const localSourceFormCount = validateLocalSourceForms(html, pagePath, errors);
     if (pagePath === '/' && leadFormCount + localSourceFormCount < 1) {

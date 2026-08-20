@@ -15,6 +15,86 @@ await fs.mkdir(OUT, { recursive: true });
 
 const ROUTES = (process.argv[4] || '/,/kids/,/contacts/,/40letpobedy216/,/igra_v_kalmara/,/nansena107/,/prazdniki-pod-kluch/,/strashnye-kvesty/,/new-year/,/prazdnik-maxi/,/roblox-land/,/pryatki_v_temnote/,/brawl_stars/,/den-rozhdeniya-na-vr-arene/').split(',');
 
+// Source snapshots deliberately retain the URL in data-source-lazy-img until
+// our observer has a nearby, rendered target. Native `loading=lazy` alone is
+// too eager on tall desktop pages, so prove both sides of the contract: the
+// initial viewport has no unresolved or broken image and the final viewport
+// resolves every image brought into view by a full-page scroll.
+const lazyImageHealth = () => {
+  const isRenderedInViewport = (image) => {
+    const rect = image.getBoundingClientRect();
+    if (rect.width < 2 || rect.height < 2 || rect.bottom <= 0 || rect.top >= innerHeight) return false;
+    for (let element = image; element instanceof HTMLElement; element = element.parentElement) {
+      const style = getComputedStyle(element);
+      if (style.display === 'none' || style.visibility === 'hidden' || Number(style.opacity) < 0.02) return false;
+    }
+    return true;
+  };
+  const images = [...document.images];
+  const deferred = images.filter((image) => image.dataset.sourceLazyImg);
+  const hydrated = images.filter((image) => image.dataset.sourceLazyHydrated === 'true');
+  const broken = images.filter((image) => (
+    image.hasAttribute('src')
+    && !image.currentSrc.startsWith('data:')
+    && image.complete
+    && image.naturalWidth === 0
+  ));
+  const describe = (image) => ({
+    alt: image.alt.slice(0, 60),
+    source: (image.dataset.sourceLazyImg || image.getAttribute('src') || '').slice(0, 100),
+  });
+  return {
+    deferred: deferred.length,
+    hydrated: hydrated.length,
+    visibleDeferred: deferred.filter(isRenderedInViewport).slice(0, 6).map(describe),
+    visibleBroken: broken.filter(isRenderedInViewport).slice(0, 6).map(describe),
+    // A marker-less image without src is an impossible steady state: a normal
+    // source image has src and a waiting source image keeps its lazy marker.
+    // This catches a broken hydrate routine that removes the marker first.
+    visibleBlank: images.filter((image) => !image.hasAttribute('src') && !image.dataset.sourceLazyImg && isRenderedInViewport).slice(0, 6).map(describe),
+    invalidHydrated: hydrated.filter((image) => !image.hasAttribute('src') || !image.currentSrc).slice(0, 6).map(describe),
+    // Once a marker has been consumed it must resolve even if the visitor has
+    // already scrolled past that card. A final-viewport-only test would miss
+    // a broken image in the middle of a long source snapshot.
+    brokenHydrated: hydrated.filter((image) => image.complete && image.naturalWidth === 0).slice(0, 6).map(describe),
+  };
+};
+
+const t829Geometry = () => {
+  const record = document.querySelector('#rec844797119');
+  const container = record?.querySelector('.t829__container');
+  const grid = container?.querySelector('.t829__grid');
+  const item = grid?.querySelector(':scope > .t829__grid-item');
+  const wrapper = item?.querySelector('.t829__imgwrapper');
+  if (!(record instanceof HTMLElement) || !(container instanceof HTMLElement) || !(grid instanceof HTMLElement)
+    || !(item instanceof HTMLElement) || !(wrapper instanceof HTMLElement)) return null;
+  const round = (value) => Math.round(value);
+  return {
+    record: round(record.getBoundingClientRect().height),
+    grid: round(grid.getBoundingClientRect().height),
+    item: round(item.getBoundingClientRect().height),
+    wrapper: round(wrapper.getBoundingClientRect().height),
+    itemBounds: [...grid.querySelectorAll(':scope > .t829__grid-item')].map((card) => {
+      const rect = card.getBoundingClientRect();
+      return [round(rect.x), round(rect.y), round(rect.width), round(rect.height)];
+    }),
+  };
+};
+
+const footerGeometry = () => {
+  const footer = document.querySelector('.t977');
+  const logo = footer?.querySelector('.t977__logo');
+  const social = footer?.querySelector('.t-sociallinks__customimg');
+  if (!(footer instanceof HTMLElement) || !(logo instanceof HTMLImageElement)
+    || !(social instanceof HTMLImageElement)) return null;
+  const round = (value) => Math.round(value);
+  const rect = (element) => {
+    const box = element.getBoundingClientRect();
+    return [round(box.width), round(box.height)];
+  };
+  return { footer: round(footer.getBoundingClientRect().height), logo: rect(logo), social: rect(social) };
+};
+
 const probe = () => {
   const px = (v) => Math.round(v);
   const R = (el) => { const r = el.getBoundingClientRect(); return [px(r.x), px(r.y), px(r.width), px(r.height)]; };
@@ -95,6 +175,8 @@ const browser = await chromium.launch();
 const out = {};
 for (const route of ROUTES) {
   const viewports = [{ width: 1440 }, { width: 390 }];
+  if (route === '/kids/') viewports.push({ width: 1024 }, { width: 1920 });
+  if (route === '/prazdniki-pod-kluch/') viewports.push({ width: 1024 }, { width: 1920 });
   // The narrowest source artboards can be scaled by Tilda at 360px. Keep a
   // real gallery route in the regression pass so controls cannot disappear
   // beyond either edge while its photo still fits the viewport.
@@ -123,6 +205,9 @@ for (const route of ROUTES) {
     try {
       await page.goto(base + route, { waitUntil: 'domcontentloaded', timeout: 45000 });
       await page.waitForTimeout(3500);
+      const lazyBefore = await page.evaluate(lazyImageHealth);
+      const t829Before = route === '/kids/' ? await page.evaluate(t829Geometry) : null;
+      const footerBefore = await page.evaluate(footerGeometry);
       const fullCarouselCoverage = route === '/den-rozhdeniya-na-vr-arene/' && width === 1440 && !reducedMotion;
       const coverAdditionalAutoplay = route === '/igra_v_kalmara/' && width === 1440 && !reducedMotion;
       const liveControls = await page.evaluate(async ({ coverCarouselInteractions, checkAdditionalAutoplay }) => {
@@ -531,14 +616,36 @@ for (const route of ROUTES) {
       const initialKb = await page.evaluate(() => Math.round(performance.getEntriesByType('resource').reduce((s, r) => s + (r.encodedBodySize || r.transferSize || 0), 0) / 1024));
       await page.evaluate(async () => {
         for (let y = 0; y < document.body.scrollHeight; y += 900) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 100)); }
-        window.scrollTo(0, 0);
       });
       await page.waitForTimeout(1800);
+      const lazyAfterScroll = await page.evaluate(lazyImageHealth);
+      const t829After = route === '/kids/' ? await page.evaluate(t829Geometry) : null;
+      const footerAfter = await page.evaluate(footerGeometry);
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.waitForTimeout(300);
       const data = await page.evaluate(probe);
       data.initialKb = initialKb;
+      data.lazyBefore = lazyBefore;
+      data.lazyAfterScroll = lazyAfterScroll;
+      data.t829 = { before: t829Before, after: t829After };
+      data.footer = { before: footerBefore, after: footerAfter };
       data.liveControls = liveControls;
       data.firstFrame = firstFrame;
       data.errors = errors.slice(0, 5);
+      // The controlled strategy must still render in clients without native
+      // IntersectionObserver. Exercise that real fallback once, before any
+      // page script has a chance to capture the browser implementation.
+      if (route === '/prazdniki-pod-kluch/' && width === 1440 && !reducedMotion) {
+        const fallbackContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+        await fallbackContext.addInitScript(() => {
+          Object.defineProperty(window, 'IntersectionObserver', { configurable: true, value: undefined });
+        });
+        const fallbackPage = await fallbackContext.newPage();
+        await fallbackPage.goto(base + route, { waitUntil: 'domcontentloaded', timeout: 45000 });
+        await fallbackPage.waitForTimeout(1800);
+        data.lazyFallback = await fallbackPage.evaluate(lazyImageHealth);
+        await fallbackContext.close();
+      }
       // The main path above proves a real WhatsApp draft. On one desktop page
       // also exercise the two defensive branches in fresh documents: persisted
       // cooldown after reload and honeypot without opening WhatsApp.
@@ -642,6 +749,7 @@ for (const [key, d] of Object.entries(out)) {
     `x:${(d.cards.cols || []).slice(0, 3).join('/') || '—'}`,
     `меню:${d.menu[0]?.color || '—'}`,
     `img:${d.imgs}/lazy:${d.lazy}`,
+    `lazy:${d.lazyBefore?.deferred ?? '—'}→${d.lazyAfterScroll?.deferred ?? '—'}+${d.lazyAfterScroll?.hydrated ?? '—'}`,
     `вес:старт ${d.initialKb}/после скролла ${d.totalKb}KB`,
     `внешние:${d.external.length}/до-клика:${d.liveControls?.externalBeforeInteraction?.length ?? '—'}`,
     `live:${d.liveControls?.carousel ? (d.liveControls.carousel.active ? 'carousel-ok' : 'carousel-FAIL') : '—'}${d.liveControls?.gallery ? (d.liveControls.gallery.activeBullets === 1 ? '/gallery-ok' : '/gallery-FAIL') : ''}${d.liveControls?.video ? (d.liveControls.video.mountedAfterClick ? '/video-ok' : '/video-FAIL') : ''}${d.liveControls?.exit ? (d.liveControls.exit.desktop ? (d.liveControls.exit.truthfulStatus && d.liveControls.exit.cooldown ? '/exit-ok' : '/exit-FAIL') : '/exit-skip-touch') : ''}`,
@@ -691,6 +799,34 @@ const failures = Object.entries(out).flatMap(([key, data]) => {
   if (live?.video && (!live.video.deferredBeforeClick || !live.video.mountedAfterClick || !live.video.localDirectVideo || !live.video.directVideoPlayback)) problems.push('video');
   if (live?.videoHealth?.some((stage) => !stage.poster || !stage.deferred || !stage.signedRutube || !stage.playable || !stage.localDirectVideo)) problems.push('video-health');
   if (live?.externalBeforeInteraction?.length) problems.push('pre-click-network');
+  if (data.lazyBefore?.visibleDeferred?.length || data.lazyBefore?.visibleBroken?.length || data.lazyBefore?.visibleBlank?.length
+    || data.lazyAfterScroll?.visibleDeferred?.length || data.lazyAfterScroll?.visibleBroken?.length || data.lazyAfterScroll?.visibleBlank?.length
+    || data.lazyAfterScroll?.invalidHydrated?.length || data.lazyAfterScroll?.brokenHydrated?.length) problems.push('lazy-visible');
+  if (key.startsWith('/prazdniki-pod-kluch/ @') && (data.lazyBefore?.deferred ?? 0) < 20) problems.push('lazy-deferred');
+  if (key.startsWith('/kids/ @') && (!data.t829.before || !data.t829.after || (
+    data.t829.before.wrapper < 32
+    || data.t829.before.item !== data.t829.after.item
+    || data.t829.before.grid !== data.t829.after.grid
+    || data.t829.before.record !== data.t829.after.record
+    || data.t829.after.itemBounds.length !== 5
+    || data.t829.after.itemBounds.some((bounds, index, all) => all.slice(0, index).some((other) => (
+      bounds[0] < other[0] + other[2] && bounds[0] + bounds[2] > other[0]
+      && bounds[1] < other[1] + other[3] && bounds[1] + bounds[3] > other[1]
+    )))
+  ))) problems.push('lazy-layout');
+  if (key === '/prazdniki-pod-kluch/ @1440' && (!data.lazyFallback
+    || data.lazyFallback.deferred !== 0
+    || data.lazyFallback.visibleBlank.length
+    || data.lazyFallback.visibleBroken.length
+    || data.lazyFallback.invalidHydrated.length
+    || data.lazyFallback.brokenHydrated.length)) problems.push('lazy-fallback');
+  if (data.footer.before && data.footer.after && (
+    data.footer.before.footer !== data.footer.after.footer
+    || data.footer.before.logo[0] !== data.footer.after.logo[0]
+    || data.footer.before.logo[1] !== data.footer.after.logo[1]
+    || data.footer.before.social[0] !== data.footer.after.social[0]
+    || data.footer.before.social[1] !== data.footer.after.social[1]
+  )) problems.push('lazy-footer-layout');
   if (live?.sbs?.authored && (
     !live.sbs.allWrapped
     || (!live.sbs.reduced && live.sbs.activeRequired && (

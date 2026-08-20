@@ -1750,6 +1750,15 @@ def defer_offscreen_media(soup: BeautifulSoup) -> None:
         if node.name == "img":
             node["loading"] = "lazy"
             node["decoding"] = "async"
+            # Native `loading=lazy` is only a browser hint. Chromium may fetch
+            # a large grid several viewports early, which still makes the tail
+            # of an image-heavy archived page compete with the first screen.
+            # Keep the actual URL out of parsed HTML and let the local runtime
+            # insert it from an IntersectionObserver prefetch window instead.
+            source = str(node.get("src") or "")
+            if source and not source.startswith("data:"):
+                node["data-source-lazy-img"] = source
+                node.attrs.pop("src", None)
         background = str(node.get("data-original") or "")
         style = str(node.get("style", ""))
         if not background or "background-image" not in style:
