@@ -1370,6 +1370,24 @@ def restore_popup_hooks(root: Tag, contract_soup: BeautifulSoup) -> int:
     return restored
 
 
+def restore_booking_schedule(root: Tag, contract_html: str) -> bool:
+    """Помечает слот расписания идентификатором квеста.
+
+    Расписание на оригинале рисует собственный сервер компании: страница шлёт
+    POST на chezakvest.ru/calendar.php?quest=N и кладёт ответ в пустой div.resq.
+    Сам вызов жил в inline-скрипте, который санитайзер убирает, и слот оставался
+    пустым — вместо брони посетитель видел одну подпись «Расписание не загрузилось».
+    """
+    slot = root.select_one("div.resq")
+    if slot is None:
+        return False
+    match = re.search(r"calendar\.php\?quest=(\d+)", contract_html)
+    if not match:
+        return False
+    slot["data-source-schedule"] = match.group(1)
+    return True
+
+
 def prepare_snapshot(
         route: str,
         raw_path: Path,
@@ -1704,6 +1722,7 @@ def prepare_snapshot(
             anchor["href"] = "#source-booking"
 
     restore_popup_hooks(root, contract_soup)
+    restore_booking_schedule(root, contract_html)
     rewrite_fragment_urls(root, resources)
     for image in root.select("img[data-original]"):
         if image.get("data-original"):

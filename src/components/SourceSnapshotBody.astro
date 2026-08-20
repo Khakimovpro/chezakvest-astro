@@ -12,6 +12,7 @@ import '../styles/source-media.css';
 import '../styles/source-reviews.css';
 import '../styles/source-extras.css';
 import '../styles/source-cosmetics.css';
+import '../styles/source-schedule.css';
 
 const { snapshot } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/u, '');
@@ -70,6 +71,7 @@ const html = fillEmptyImages(withBase(snapshot.html
   import { initSourceWidgets } from '../scripts/source-widgets.js';
   import { initSourcePopups } from '../scripts/source-popups.js';
   import { initSourceNavigation } from '../scripts/source-navigation.js';
+  import { initSourceSchedule } from '../scripts/source-schedule.js';
   import { initSourceForms } from '../scripts/source-forms.js';
   import { initSourceControls } from '../scripts/source-controls.js';
   import { initSourceMedia } from '../scripts/source-media.js';
@@ -86,7 +88,12 @@ const html = fillEmptyImages(withBase(snapshot.html
   initSourceReviews();
   initSourceExtras();
   const shell = document.querySelector('.source-snapshot-shell');
-  const initialiseLiveLayer = () => initSourceLiveLayer(shell?.querySelector('[data-source-snapshot]'));
+  // Расписание ждёт готового снимка: пока он скрыт, у слота нет прямоугольника
+  // и наблюдатель не понимает, подошёл ли блок к экрану.
+  const initialiseLiveLayer = () => {
+    initSourceLiveLayer(shell?.querySelector('[data-source-snapshot]'));
+    initSourceSchedule();
+  };
   if (shell?.hasAttribute('aria-busy')) {
     new MutationObserver(() => {
       if (!shell.hasAttribute('aria-busy')) initialiseLiveLayer();
