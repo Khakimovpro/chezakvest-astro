@@ -301,6 +301,7 @@ body.menu-open{overflow:hidden}
 /* ===================== МЕССЕНДЖЕРЫ ===================== */
 .mfab{position:fixed;right:32px;bottom:24px;z-index:1100;width:64px;height:64px;padding:0;border:0;border-radius:50%;
   cursor:pointer;isolation:isolate;box-shadow:0 8px 24px rgba(0,0,0,.25);transition:transform .3s cubic-bezier(.175,.885,.32,1.5)}
+body.has-support-chat .mfab-root{display:none}
 .mfab:hover{transform:scale(1.15)}
 .mfab:active{transform:scale(1.2)}
 .mfab__face{position:absolute;inset:0;display:grid;place-items:center;border-radius:50%;color:#fff;opacity:0;

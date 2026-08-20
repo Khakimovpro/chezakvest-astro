@@ -21,6 +21,24 @@ function appendWidget() {
   // Параметр now есть и в оригинале: сервис отдаёт свежую сборку виджета.
   script.src = `${WIDGET_SRC}?id=${WIDGET_ID}&now=${Date.now()}`;
   document.head.appendChild(script);
+  hideOwnFabWhenWidgetIsUp();
+}
+
+// Виджет и наша плавающая кнопка делают одно и то же — открывают мессенджеры,
+// и оба садятся в правый нижний угол. Как только виджет действительно нарисовал
+// свою кнопку, свою убираем: на оригинале в этом углу стоит именно он. Если
+// виджет не поднялся (кончился тариф, блокировщик, нет сети), остаётся наша.
+function hideOwnFabWhenWidgetIsUp() {
+  const deadline = Date.now() + 30000;
+  const check = () => {
+    const button = document.querySelector('pf-widget')?.shadowRoot?.querySelector('section');
+    if (button) {
+      document.body.classList.add('has-support-chat');
+      return;
+    }
+    if (Date.now() < deadline) window.setTimeout(check, 1000);
+  };
+  check();
 }
 
 export function initSupportChat() {
