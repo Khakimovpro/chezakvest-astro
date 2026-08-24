@@ -26,7 +26,7 @@
     "ci": "npm run verify:redirects && npm run verify:seo && npm run test && npm run build && npm run verify:assets && npm run verify:redirect-targets && npm run verify:production && npm run audit:production && npm run verify:github-pages && npm run build && npm run verify:assets && npm run verify:redirect-targets && npm run verify:production"
   },
   "dependencies": {
-    "astro": "^7.2.0"
+    "astro": "^7.2.4"
   },
   "optionalDependencies": {
     "sharp": "^0.35.3"
