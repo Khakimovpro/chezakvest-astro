@@ -1,5 +1,11 @@
 const RUSSIAN_PHONE_PATTERN = /^(?:7\d{10}|\d{10})$/;
 const MOSCOW_TIME_ZONE = 'Europe/Moscow';
+// Обычная заявка не должна принимать произвольную двухсимвольную строку вместо имени.
+const PERSON_NAME_PATTERN = /^(?=.{2,80}$)\p{L}(?:[\p{L}\s'-]*\p{L})?$/u;
+
+export function isValidLeadName(value) {
+  return PERSON_NAME_PATTERN.test(String(value || '').trim());
+}
 
 export function getPhoneDigits(value) {
   const digits = value.replace(/\D/g, '');
@@ -121,6 +127,11 @@ function validatePhone(input) {
   return digits;
 }
 
+function validateName(input) {
+  const value = input.value.trim();
+  input.setCustomValidity(!value || isValidLeadName(value) ? '' : 'Введите настоящее имя.');
+}
+
 function createLeadPayload(form, phone) {
   const data = new FormData(form);
   const date = String(data.get('date') || '').trim();
@@ -180,7 +191,8 @@ function initialiseLeadForm(form) {
   form.dataset.leadReady = 'true';
 
   const phoneInput = form.elements.namedItem('phone');
-  if (!(phoneInput instanceof HTMLInputElement)) return;
+  const nameInput = form.elements.namedItem('name');
+  if (!(phoneInput instanceof HTMLInputElement) || !(nameInput instanceof HTMLInputElement)) return;
   setDateMinimums(form);
   const submission = createSubmissionGuard();
 
@@ -193,8 +205,17 @@ function initialiseLeadForm(form) {
 
   phoneInput.addEventListener('input', () => refreshPhoneValidity(true));
   phoneInput.addEventListener('blur', () => refreshPhoneValidity());
+  const refreshNameValidity = () => {
+    validateName(nameInput);
+    clearValidationState(form, nameInput);
+  };
+  nameInput.addEventListener('input', () => {
+    submission.reset();
+    refreshNameValidity();
+  });
+  nameInput.addEventListener('blur', refreshNameValidity);
   form.querySelectorAll('input').forEach((input) => {
-    if (input === phoneInput) return;
+    if (input === phoneInput || input === nameInput) return;
     input.addEventListener('input', () => {
       submission.reset();
       clearValidationState(form, input);
@@ -208,6 +229,7 @@ function initialiseLeadForm(form) {
   const submitLead = async (event) => {
     event?.preventDefault();
 
+    validateName(nameInput);
     const phone = validatePhone(phoneInput);
     if (!form.checkValidity()) {
       showValidationStatus(form);

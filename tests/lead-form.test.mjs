@@ -6,6 +6,7 @@ import {
   createWhatsAppUrl,
   getMoscowDate,
   getPhoneDigits,
+  isValidLeadName,
   sendLead,
 } from '../src/scripts/lead-form.js';
 
@@ -27,6 +28,13 @@ test('normalises Russian phone input before lead delivery', () => {
   assert.equal(getPhoneDigits('+7 928 216 36 23'), '79282163623');
   assert.equal(getPhoneDigits('928 216 36 23'), '79282163623');
   assert.equal(getPhoneDigits('123'), '');
+});
+
+test('accepts a real name and rejects placeholder characters before lead delivery', () => {
+  assert.equal(isValidLeadName('А'), false);
+  assert.equal(isValidLeadName('Анна'), true);
+  assert.equal(isValidLeadName('Анна-Мария'), true);
+  assert.equal(isValidLeadName('Анна2'), false);
 });
 
 test('uses Rostov local date as the minimum booking date', () => {

@@ -836,7 +836,11 @@ function initDateField(input) {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@.]+\.[^\s@]{2,}$/u;
 // Имя у Tilda — буквы, пробелы, дефис и апостроф; цифры и служебные знаки — ошибка.
-const NAME_RE = /^[^\d!@#$%^&*()_+=<>{}[\]|\\/:;"?]+$/u;
+const NAME_RE = /^(?=.{2,80}$)\p{L}(?:[\p{L}\s'-]*\p{L})?$/u;
+
+export function isValidSourceName(value) {
+  return NAME_RE.test(String(value || '').trim());
+}
 
 /** Мусорные номера вида 111-11-11 — набор проверок из tilda-forms-1.0. */
 function looksLikeSpamPhone(value) {
@@ -940,7 +944,7 @@ function collectErrors(form) {
       errors.push([control, 'email']);
       return;
     }
-    if (rule === 'name' && !NAME_RE.test(value)) {
+    if (rule === 'name' && !isValidSourceName(value)) {
       errors.push([control, 'name']);
       return;
     }

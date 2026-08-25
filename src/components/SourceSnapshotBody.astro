@@ -1,6 +1,7 @@
 ---
 import Header from './Header.astro';
 import MessengerFab from './MessengerFab.astro';
+import site from '../data/site.json';
 import '../styles/page.css';
 // Локальные надстройки поверх снимка: раскладка телефонной маски и виджеты,
 // которых нет в санированном HTML Tilda.
@@ -17,6 +18,7 @@ import '../styles/source-schedule.css';
 const { snapshot } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/u, '');
 const asset = (path) => `${base}${path}`;
+const link = (path) => `${base}${path}`;
 const localSourceForm = /(<form\b(?=[^>]*\bdata-local-source-form(?:\s|=|>))[^>]*>)([\s\S]*?<\/form>)/giu;
 const disableLocalFormControls = (form) => form.replace(/<(input|textarea|select|button)\b[^>]*>/giu, (tag) => (
   /\bdisabled(?:\s|=|>|$)/iu.test(tag) ? tag : tag.replace(/\s*\/?>$/u, (end) => ` disabled${end}`)
@@ -114,14 +116,23 @@ const html = fillEmptyImages(withBase(snapshot.html
 
 <section class="source-booking" id="source-booking" aria-labelledby="source-booking-title">
   <a class="source-booking__backdrop" href="#" aria-label="Закрыть форму"></a>
-  <form class="source-booking__dialog" data-local-source-form data-local-form-pending>
+  <form
+    class="source-booking__dialog"
+    data-local-source-form
+    data-local-form-pending
+    data-lead-form
+    data-lead-kind="booking"
+    data-lead-target={site.header.wa}
+    data-lead-recipient={site.leads?.recipient || ''}
+    aria-describedby="source-booking-status"
+  >
     <a class="source-booking__close" href="#" aria-label="Закрыть форму">×</a>
     <h2 id="source-booking-title">Забронировать игру</h2>
-    <label>Имя<input name="name" autocomplete="name" required disabled /></label>
-    <label>Телефон<input name="phone" type="tel" autocomplete="tel" required disabled /></label>
-    <label class="source-booking__consent"><input name="consent" type="checkbox" required disabled /> Я согласен на обработку персональных данных</label>
-    <button type="submit" disabled>Отправить заявку</button>
-    <p class="source-booking__success" data-local-form-success hidden role="status">Спасибо! Заявка принята.</p>
+    <label for="source-booking-name">Имя<input id="source-booking-name" name="name" autocomplete="name" minlength="2" maxlength="80" required disabled /></label>
+    <label for="source-booking-phone">Телефон<input id="source-booking-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 (999) 999-99-99" maxlength="24" required disabled /></label>
+    <label class="source-booking__consent"><input name="consent" type="checkbox" required disabled /> <span>Я согласен на обработку персональных данных по <a href={link('/privacy/')}>Политике обработки персональных данных</a>.</span></label>
+    <button type="button" data-lead-submit disabled>Отправить заявку</button>
+    <p class="source-booking__success" id="source-booking-status" data-lead-status data-local-form-success hidden role="status" aria-live="polite"></p>
   </form>
 </section>
 
@@ -854,7 +865,10 @@ const html = fillEmptyImages(withBase(snapshot.html
 
     document.addEventListener('submit', (event) => {
       const form = event.target;
-      if (!(form instanceof HTMLFormElement)) return;
+      if (!(form instanceof HTMLFormElement)
+        || !form.hasAttribute('data-local-source-form')
+        || form.hasAttribute('data-lead-form')
+        || event.defaultPrevented) return;
       event.preventDefault();
       submitLocally(form);
     });
@@ -1196,7 +1210,7 @@ const html = fillEmptyImages(withBase(snapshot.html
     white-space: nowrap !important;
   }
   [data-local-source-form] { position: relative; }
-  [data-local-source-form] [data-local-form-success] {
+  [data-local-source-form]:not([data-lead-form]) [data-local-form-success] {
     position: absolute;
     inset: 0;
     z-index: 2;

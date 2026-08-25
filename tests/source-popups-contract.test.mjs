@@ -45,3 +45,10 @@ test('живой слой открывает окно без обращения 
   const component = await read('src/components/SourceSnapshotBody.astro');
   assert.doesNotMatch(component, /location\.hash = 'source-booking'/u, 'вернулся перехват всех кнопок в общую форму');
 });
+
+test('запасная форма бронирования не принимает заявку без понятного согласия', async () => {
+  const component = await read('src/components/SourceSnapshotBody.astro');
+  assert.match(component, /source-booking__dialog[\s\S]*?data-lead-form/u, 'запасная форма использует общий обработчик заявки');
+  assert.match(component, /id="source-booking-phone"[\s\S]*?placeholder="\+7 \(999\) 999-99-99"/u, 'в поле телефона есть понятный пример');
+  assert.match(component, /href=\{link\('\/privacy\/'\)\}/u, 'перед согласием есть ссылка на политику');
+});
