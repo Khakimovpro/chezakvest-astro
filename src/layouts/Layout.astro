@@ -2,7 +2,8 @@
 import '../styles/fonts.css';
 import '../styles/global.css';
 import site from '../data/site.json';
-import { canonicalUrl } from '../lib/urls.js';
+import { canonicalUrl, ORIGIN } from '../lib/urls.js';
+import { globalJsonLd } from '../lib/seo.js';
 import Lightbox from '../components/Lightbox.astro';
 import Analytics from '../components/Analytics.astro';
 import SourceSnapshotBody from '../components/SourceSnapshotBody.astro';
@@ -11,13 +12,11 @@ import { sourceSnapshotFor } from '../lib/source-snapshots.js';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => base + p;              // /assets/x -> /<base>/assets/x
 
-// Канонический хост боевого сайта (punycode кириллического домена).
-const ORIGIN = 'https://xn--80aehcht5ci1b.xn--p1ai';
-
 const m = site.meta;
 const {
   title = m.title,
   description = m.description,
+  schemaName = title,
   keywords = m.keywords,
   path = '/',                 // путь страницы на боевом домене, из него собирается canonical
   ogImage = m.ogimage,
@@ -38,7 +37,14 @@ const {
 } = Astro.props;
 
 const canonical = canonicalUrl(path);
+const pageImage = typeof Astro.props.ogImage === 'string' ? Astro.props.ogImage.trim() : '';
 const sourceSnapshot = sourceSnapshotFor(path);
+const verifiedPageImage = pageImage && (!sourceSnapshot || sourceSnapshot.html.includes(pageImage))
+  ? pageImage
+  : '';
+const renderedJsonLd = noindex
+  ? jsonld
+  : globalJsonLd({ site, path, title: schemaName, image: verifiedPageImage, visibleSource: sourceSnapshot?.html || '', jsonld });
 // Keep archived source snapshots independent from route-specific legacy theme
 // classes, which otherwise leak backgrounds and sizing into the source DOM.
 const renderedBodyClass = sourceSnapshot ? 'source-snapshot-page' : bodyClass;
@@ -97,7 +103,7 @@ const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1
       <link rel="stylesheet" href={asset(`/${['assets', 'source-css', name].join('/')}`)} />
     ))}
 
-    {jsonld.map((data) => (
+    {renderedJsonLd.map((data) => (
       <script type="application/ld+json" set:html={JSON.stringify(data)} />
     ))}
     <Analytics />

@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import QuestCard from '../components/QuestCard.astro';
-import { absoluteUrl, breadcrumbJsonLd } from '../lib/seo.js';
+import { breadcrumbJsonLd, collectionPageJsonLd } from '../lib/seo.js';
 import '../styles/page.css';
 import '../styles/catalog.css';
 
@@ -72,29 +72,20 @@ const breadcrumbs = [
   { t: 'Все квесты', href: null },
 ];
 const jsonld = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    '@id': absoluteUrl(`${path}#collectionpage`),
+  collectionPageJsonLd({
+    path,
     name: 'Квесты в Ростове-на-Дону',
-    url: absoluteUrl(path),
-    mainEntity: {
-      '@type': 'ItemList',
-      '@id': absoluteUrl(`${path}#items`),
-      numberOfItems: quests.length,
-      itemListElement: quests.map(({ page }, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        name: page.hero?.h1 || page.seo?.h1 || page.slug,
-        url: absoluteUrl(`/${page.slug}`),
-      })),
-    },
-  },
+    description,
+    items: quests.map(({ page }) => ({
+      name: page.hero?.h1 || page.seo?.h1 || page.slug,
+      url: `/${page.slug}`,
+    })),
+  }),
   breadcrumbJsonLd(breadcrumbs, path),
 ];
 ---
 
-<Layout title={title} description={description} keywords={keywords} path={path} jsonld={jsonld} preloadImage={null}>
+<Layout title={title} description={description} schemaName="Квесты в Ростове-на-Дону" keywords={keywords} path={path} jsonld={jsonld} preloadImage={null}>
   <Header />
 
   <main>

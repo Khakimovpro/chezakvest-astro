@@ -6,7 +6,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import site from '../data/site.json';
-import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
@@ -29,34 +29,10 @@ const messenger = links.find((l) => /написать в мессенджер/iu
 const hours = raw.find((t) => /работаем/u.test(t)) || 'Работаем с 10:00 до 23:30';
 
 const jsonld = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    '@id': absoluteUrl('/#organization'),
-    name: 'Чё за Квест',
-    url: absoluteUrl('/'),
-    logo: absoluteAssetUrl(site.header.logo),
-    telephone: site.header.phone,
-    email: email ? email.href.replace('mailto:', '') : undefined,
-    sameAs: vk ? [vk.href] : undefined,
-    contactPoint: {
-      '@type': 'ContactPoint',
-      telephone: site.header.phone,
-      contactType: 'reservations',
-      areaServed: 'RU',
-      availableLanguage: 'Russian',
-    },
-    location: venues.map((venue) => ({
-      '@type': 'Place',
-      '@id': absoluteUrl(`/${venue.slug}#location`),
-      name: `Чё за Квест — ${venue.address}`,
-      url: absoluteUrl(`/${venue.slug}`),
-    })),
-  },
   breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
 ].filter(Boolean);
 ---
-<Layout title={seo.title} description={seo.description} keywords={seo.keywords}
+<Layout title={seo.title} description={seo.description} schemaName={seo.h1} keywords={seo.keywords}
         path={path} jsonld={jsonld} preloadImage={null}>
   <Header />
 

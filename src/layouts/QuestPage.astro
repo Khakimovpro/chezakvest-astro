@@ -14,7 +14,7 @@ import ZoomImg from '../components/ZoomImg.astro';
 import OnoVenueHall from '../components/OnoVenueHall.astro';
 import ZapadSourceArtboard from '../components/ZapadSourceArtboard.astro';
 import site from '../data/site.json';
-import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { breadcrumbJsonLd, questServiceJsonLd, videoObjectJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { canonicalizeCardItems } from '../lib/card-items.js';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
@@ -77,6 +77,10 @@ const celebrationVenues = (page.celebrationVenues?.length
   : ((venueContent.photos?.length || venueContent.lines?.length)
     ? [{ ...venueContent, venueSlug: page.venueSlug }]
     : []));
+const serviceVenueVisible = celebrationVenues.some((hall) => {
+  const hallVenue = venues.find((candidate) => candidate.slug === hall.venueSlug) || venue;
+  return hallVenue?.slug === venue?.slug && Boolean(hall.address || hallVenue?.address);
+});
 // The Ono source T396 slider changes its linked venue together with the visible
 // hall. Keep that mapping route-local instead of teaching the shared qvenue
 // renderer about the source-specific artboard.
@@ -90,7 +94,6 @@ const onoCelebrationHalls = sourceParity.hall === 't396'
     };
   })
   : [];
-const visiblePrice = Number(page.priceFrom) || null;
 // The generic quest source has its own body marker in addition to the dark
 // variant. It lets the measured callback artboard remain local to QuestPage
 // instead of changing the callback used by unrelated page families.
@@ -113,45 +116,14 @@ const difficultyKeys = Number.isInteger(page.difficulty)
 
 // ---- Schema.org: услуга + хлебные крошки ----
 const jsonld = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    '@id': absoluteUrl(`${path}#service`),
-    name: seo.h1,
-    serviceType: 'Квест в реальности',
-    description: seo.description,
-    url: absoluteUrl(path),
-    image: hero.bg ? absoluteAssetUrl(hero.bg) : undefined,
-    areaServed: { '@type': 'City', name: 'Ростов-на-Дону' },
-    audience: age ? { '@type': 'PeopleAudience', suggestedMinAge: parseInt(age, 10) } : undefined,
-    provider: {
-      '@type': 'EntertainmentBusiness',
-      '@id': absoluteUrl('/#organization'),
-      name: 'Чё за Квест',
-      telephone: site.header.phone,
-      url: absoluteUrl('/'),
-      address: { '@type': 'PostalAddress', addressLocality: 'Ростов-на-Дону', addressCountry: 'RU' },
-    },
-    ...(venue ? {
-      availableAtOrFrom: {
-        '@type': 'Place',
-        '@id': absoluteUrl(`/${venue.slug}#location`),
-        name: `Чё за Квест — ${venue.address}`,
-        url: absoluteUrl(`/${venue.slug}`),
-      },
-    } : {}),
-    ...(visiblePrice ? {
-      offers: {
-        '@type': 'Offer',
-        availability: 'https://schema.org/InStock',
-        price: visiblePrice,
-        priceCurrency: 'RUB',
-        url: absoluteUrl(path),
-        category: 'Квест',
-      },
-    } : {}),
-  },
+  questServiceJsonLd({ page, venue, venueVisible: serviceVenueVisible, site }),
   breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
+  videoObjectJsonLd({
+    video: page.video,
+    path,
+    pageName: seo.h1,
+    description: seo.description,
+  }),
 ].filter(Boolean);
 
 const heroSrcset = hero.bgset
@@ -181,6 +153,7 @@ const preload = hero.bg
 <Layout
   title={seo.title}
   description={seo.description}
+  schemaName={seo.h1}
   keywords={seo.keywords}
   path={path}
   ogImage={hero.bg}

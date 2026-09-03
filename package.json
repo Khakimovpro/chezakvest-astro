@@ -23,7 +23,7 @@
     "verify:public-preview": "node scripts/public-preview-contract.mjs",
     "verify:live": "node scripts/live-smoke.mjs",
     "audit:production": "npm audit --omit=dev --audit-level=high",
-    "ci": "npm run verify:redirects && npm run verify:seo && npm run test && npm run build && npm run verify:assets && npm run verify:redirect-targets && npm run verify:production && npm run audit:production && npm run verify:github-pages && npm run build && npm run verify:assets && npm run verify:redirect-targets && npm run verify:production"
+    "ci": "npm run verify:redirects && npm run verify:seo && node scripts/structured-data-audit.mjs && npm run test && npm run build && node scripts/structured-data-audit.mjs --dist && npm run verify:assets && npm run verify:redirect-targets && npm run verify:production && npm run audit:production && npm run verify:github-pages && npm run build && node scripts/structured-data-audit.mjs --dist && npm run verify:assets && npm run verify:redirect-targets && npm run verify:production"
   },
   "dependencies": {
     "astro": "^7.2.0"

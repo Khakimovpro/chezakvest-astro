@@ -29,7 +29,13 @@ import KidsArtboard from '../components/KidsArtboard.astro';
 import Reviews from '../components/Reviews.astro';
 import VenuesSection from '../components/VenuesSection.astro';
 import site from '../data/site.json';
-import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import {
+  breadcrumbJsonLd,
+  holidayServiceJsonLd,
+  visibleHolidayFaqJsonLd,
+  visibleHolidayVideoJsonLd,
+  withCollectionBreadcrumbs,
+} from '../lib/seo.js';
 import { canonicalizeCardItems } from '../lib/card-items.js';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
@@ -71,59 +77,14 @@ const venuesSubtitle = page.venuesSubtitle
 const pagesBySlug = new Map(index.map((item) => [item.slug, item]));
 const canonicalCardItems = (items = []) => canonicalizeCardItems(items, pagesBySlug);
 
-// ---- Schema.org: услуга «организация праздника» + цена, если она названа на странице ----
-// цена для разметки: явное поле страницы или первое число из ценника пакета
-// (в ценнике встречается «30 900 ₽ за 8 участников, +1000 ₽ …» — берём только первую сумму)
-const priceBlock = sections.find((s) => s.kind === 'packages' && s.items?.some((i) => i.price));
-const firstPrice = (t) => Number((String(t).match(/\d[\d  ]*/) || [''])[0].replace(/\D/g, '')) || null;
-const minPrice = page.priceFrom
-  || (priceBlock ? Math.min(...priceBlock.items.filter((i) => i.price).map((i) => firstPrice(i.price)).filter(Boolean)) : null);
 const faq = sourceVypusknoj ? null : sections.find((s) => s.kind === 'faq');
 const reviewSection = sections.find((s) => s.kind === 'reviews');
 
 const jsonld = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
-    '@id': absoluteUrl(`${path}#service`),
-    name: seo.h1,
-    serviceType: page.serviceType || 'Организация детского праздника',
-    description: seo.description,
-    url: absoluteUrl(path),
-    image: hero.bg ? absoluteAssetUrl(hero.bg) : undefined,
-    areaServed: { '@type': 'City', name: 'Ростов-на-Дону' },
-    provider: {
-      '@type': 'EntertainmentBusiness',
-      '@id': absoluteUrl('/#organization'),
-      name: 'Чё за Квест',
-      telephone: site.header.phone,
-      url: absoluteUrl('/'),
-      address: { '@type': 'PostalAddress', addressLocality: 'Ростов-на-Дону', addressCountry: 'RU' },
-    },
-    ...(minPrice ? {
-      offers: {
-        '@type': 'Offer',
-        availability: 'https://schema.org/InStock',
-        priceCurrency: 'RUB',
-        url: absoluteUrl(path),
-        price: minPrice,
-        priceSpecification: {
-          '@type': 'PriceSpecification', price: minPrice, priceCurrency: 'RUB',
-          valueAddedTaxIncluded: true,
-        },
-      },
-    } : {}),
-  },
+  holidayServiceJsonLd({ page, site }),
   breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
-  faq && {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faq.items.map((q) => ({
-      '@type': 'Question',
-      name: q.q,
-      acceptedAnswer: { '@type': 'Answer', text: q.a },
-    })),
-  },
+  visibleHolidayFaqJsonLd(page, faq),
+  visibleHolidayVideoJsonLd(page),
 ].filter(Boolean);
 
 const heroSrcset = hero.bgset
@@ -204,6 +165,7 @@ const bodyClass = [
 <Layout
   title={seo.title}
   description={seo.description}
+  schemaName={seo.h1}
   keywords={seo.keywords}
   path={path}
   ogImage={hero.bg}

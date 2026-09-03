@@ -6,6 +6,7 @@ import VenuePage from '../layouts/VenuePage.astro';
 import CategoryPage from '../layouts/CategoryPage.astro';
 import InfoPage from '../layouts/InfoPage.astro';
 import HolidayPage from '../layouts/HolidayPage.astro';
+import venuesData from '../data/venues.json';
 
 export async function getStaticPaths() {
   const legacyQuestSlug = 'wednesday_ukradennaya_vesch';
@@ -16,12 +17,18 @@ export async function getStaticPaths() {
   });
   // Venue pages own the public address. Quest data only stores the verified
   // venueSlug, so consumers never need to infer a venue from address text.
+  const venueDetails = Object.fromEntries(venuesData.chips.map((venue) => [venue.slug, venue]));
   const venues = all.filter((p) => p.type === 'venue')
-    .map((p) => ({
-      slug: p.slug,
-      address: (p.breadcrumbs || []).slice(-1)[0]?.t || p.hall?.address || p.seo?.h1 || '',
-      name: p.seo?.h1 || p.slug,
-    }))
+    .map((p) => {
+      const details = venueDetails[p.slug] || {};
+      return {
+        slug: p.slug,
+        address: details.t || (p.breadcrumbs || []).slice(-1)[0]?.t || p.hall?.address || p.seo?.h1 || '',
+        name: p.seo?.h1 || p.slug,
+        lat: details.lat,
+        lon: details.lon,
+      };
+    })
     .sort((a, b) => a.address.localeCompare(b.address, 'ru'));
   const venueBySlug = Object.fromEntries(venues.map((venue) => [venue.slug, venue]));
   // короткая карточка каждой страницы — из неё собирается перелинковка там, где её нет в оригинале

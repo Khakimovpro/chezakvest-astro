@@ -10,6 +10,7 @@ import VenuesSection from '../components/VenuesSection.astro';
 import ZoomImg from '../components/ZoomImg.astro';
 import site from '../data/site.json';
 import venues from '../data/venues.json';
+import { websiteJsonLd } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/home.css';
@@ -114,35 +115,13 @@ const tabs = s.tabs.map((tab, index) => ({
   panelId: `catalog-panel-${index}`,
 }));
 const panelIdByCategory = new Map(tabs.map((tab) => [tab.cat, tab.panelId]));
-const origin = 'https://xn--80aehcht5ci1b.xn--p1ai';
 const homeHeroPreload = {
   href: asset(s.hero.bg),
 };
-const jsonld = [{
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'Organization',
-      '@id': `${origin}/#organization`,
-      name: 'Чё за Квест',
-      url: `${origin}/`,
-      logo: `${origin}${s.header.logo}`,
-      telephone: s.header.phone,
-      sameAs: [s.header.vk],
-    },
-    {
-      '@type': 'WebSite',
-      '@id': `${origin}/#website`,
-      name: 'Чё за Квест',
-      url: `${origin}/`,
-      inLanguage: 'ru-RU',
-      publisher: { '@id': `${origin}/#organization` },
-    },
-  ],
-}];
+const jsonld = [websiteJsonLd()];
 ---
 
-<Layout bodyClass="home-page" jsonld={jsonld} preloadImage={homeHeroPreload}>
+<Layout bodyClass="home-page" schemaName={[s.hero.h1line1, s.hero.h1line2].filter(Boolean).join(' ')} ogImage={s.hero.bg} jsonld={jsonld} preloadImage={homeHeroPreload}>
   <Header />
 
   <main>

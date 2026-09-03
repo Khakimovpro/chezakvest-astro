@@ -12,7 +12,7 @@ import Reviews from '../components/Reviews.astro';
 import VenuesSection from '../components/VenuesSection.astro';
 import HorrorCategoryArtboard from '../components/HorrorCategoryArtboard.astro';
 import site from '../data/site.json';
-import { absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { breadcrumbJsonLd, collectionPageJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
@@ -56,26 +56,12 @@ const games = (page.games?.items || []).map((g) => {
 
 // ---- Schema.org: список игр категории + крошки ----
 const jsonld = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    '@id': absoluteUrl(`${path}#collectionpage`),
+  collectionPageJsonLd({
+    path,
     name: seo.h1,
     description: seo.description,
-    url: absoluteUrl(path),
-    isPartOf: { '@type': 'WebSite', '@id': absoluteUrl('/#website'), name: 'Чё за Квест', url: absoluteUrl('/') },
-    mainEntity: {
-      '@type': 'ItemList',
-      '@id': absoluteUrl(`${path}#items`),
-      numberOfItems: games.length,
-      itemListElement: games.map((g, i) => ({
-        '@type': 'ListItem',
-        position: i + 1,
-        name: g.t,
-        url: absoluteUrl(g.href),
-      })),
-    },
-  },
+    items: games.map((game) => ({ name: game.t, url: game.href })),
+  }),
   breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
 ].filter(Boolean);
 
@@ -97,6 +83,7 @@ const categoryBodyClass = [
 <Layout
   title={seo.title}
   description={seo.description}
+  schemaName={seo.h1}
   keywords={seo.keywords}
   path={path}
   ogImage={hero.bg}

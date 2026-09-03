@@ -14,7 +14,7 @@ import LazyMap from '../components/LazyMap.astro';
 import Reviews from '../components/Reviews.astro';
 import VenuesSection from '../components/VenuesSection.astro';
 import site from '../data/site.json';
-import { absoluteAssetUrl, absoluteUrl, breadcrumbJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { breadcrumbJsonLd, venueBusinessJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { canonicalizeCardItems } from '../lib/card-items.js';
 import { groupVenueGameItems } from '../lib/venue-games.js';
 import '../styles/page.css';
@@ -27,7 +27,8 @@ const asset = (p) => (p ? base + p : '');
 const path = '/' + page.slug;
 const seo = page.seo;
 const howto = page.howto || {};
-const address = (page.breadcrumbs || []).slice(-1)[0]?.t || page.hall?.address || '';
+const venue = venues.find((candidate) => candidate.slug === page.slug);
+const address = venue?.address || (page.breadcrumbs || []).slice(-1)[0]?.t || page.hall?.address || '';
 const breadcrumbs = withCollectionBreadcrumbs(page.breadcrumbs || []);
 const mapsUrl = howto.routeUrl
   || `https://yandex.ru/maps/?text=${encodeURIComponent('Ростов-на-Дону, ' + address)}`;
@@ -37,25 +38,7 @@ const gameGroups = groupVenueGameItems(page.games?.items, page.games?.groups);
 
 // ---- Schema.org: площадка как заведение + хлебные крошки ----
 const jsonld = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'EntertainmentBusiness',
-    '@id': absoluteUrl(`${path}#location`),
-    name: `Чё за Квест — ${address}`,
-    description: seo.description,
-    url: absoluteUrl(path),
-    telephone: site.header.phone,
-    image: howto.photos?.[0] ? absoluteAssetUrl(howto.photos[0]) : undefined,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: address,
-      addressLocality: 'Ростов-на-Дону',
-      addressRegion: 'Ростовская область',
-      addressCountry: 'RU',
-    },
-    hasMap: mapsUrl,
-    parentOrganization: { '@type': 'Organization', '@id': absoluteUrl('/#organization'), name: 'Чё за Квест', url: absoluteUrl('/') },
-  },
+  venueBusinessJsonLd({ page, venue, site }),
   breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
 ].filter(Boolean);
 
@@ -65,6 +48,7 @@ const preload = lcp ? { href: asset(lcp), srcset: `${asset(lcp)} 1000w`, sizes: 
 <Layout
   title={seo.title}
   description={seo.description}
+  schemaName={seo.h1}
   keywords={seo.keywords}
   path={path}
   ogImage={lcp}
