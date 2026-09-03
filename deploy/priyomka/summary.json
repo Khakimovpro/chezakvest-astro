@@ -1,0 +1,174 @@
+{
+  "generatedAt": "2026-09-03T21:36:15.004Z",
+  "origin": "http://82.146.60.212",
+  "repositoryHead": "176dd8d9073ca8f84f4efaff0cca88a21ca61d59",
+  "expectedDeployedCommit": "669ace69640d4753c790a29597b1d864c3f513fd",
+  "verdict": "PASS",
+  "checks": {
+    "manifest": {
+      "localFiles": 4371,
+      "localBytes": 552030244,
+      "serverContentFiles": 4371,
+      "serverContentBytes": 552030244,
+      "deploymentMetadataFiles": 1,
+      "mismatches": 0,
+      "categories": {
+        "all": {
+          "local": {
+            "files": 4371,
+            "bytes": 552030244
+          },
+          "server": {
+            "files": 4371,
+            "bytes": 552030244
+          }
+        },
+        "_astro": {
+          "local": {
+            "files": 25,
+            "bytes": 143420
+          },
+          "server": {
+            "files": 25,
+            "bytes": 143420
+          }
+        },
+        "images": {
+          "local": {
+            "files": 4050,
+            "bytes": 356868166
+          },
+          "server": {
+            "files": 4050,
+            "bytes": 356868166
+          }
+        },
+        "videos": {
+          "local": {
+            "files": 8,
+            "bytes": 115454223
+          },
+          "server": {
+            "files": 8,
+            "bytes": 115454223
+          }
+        },
+        "media_total": {
+          "local": {
+            "files": 4058,
+            "bytes": 472322389
+          },
+          "server": {
+            "files": 4058,
+            "bytes": 472322389
+          }
+        }
+      }
+    },
+    "sitemap": {
+      "urls": 64,
+      "non200": 0,
+      "totalResponseBytes": 70968862
+    },
+    "legacy": {
+      "nginxLines": 100,
+      "nginxRules": 96,
+      "csvRows": 103,
+      "redirectRows": 96,
+      "published200Rows": 7,
+      "publishedSourceNormalizationRedirects": 7,
+      "publishedSelfRedirects": 0,
+      "contractMismatches": 0,
+      "responseMismatches": 0,
+      "queryStringMismatches": 0
+    },
+    "headers": {
+      "samples": 4,
+      "mismatches": 0
+    },
+    "edges": {
+      "cases": 4,
+      "mismatches": 0,
+      "project404Sha256": "0a421fc06230acfa7503e5ef1536a34bb7a6fe7128c72fcd7f46240b728ed920"
+    },
+    "version": {
+      "valid": true,
+      "data": {
+        "commit": "669ace69640d4753c790a29597b1d864c3f513fd",
+        "shortCommit": "669ace69",
+        "branch": "master",
+        "builtAt": "2026-09-03T21:00:08Z",
+        "release": "20260903T210008Z-669ace69",
+        "node": "v22.22.1"
+      }
+    },
+    "timings": [
+      {
+        "source": "dev-server",
+        "path": "/",
+        "measurements": 5,
+        "avg_ttfb_ms": 23.148,
+        "max_ttfb_ms": 23.35,
+        "avg_total_ms": 180.476,
+        "max_total_ms": 184.202,
+        "result": "PASS"
+      },
+      {
+        "source": "dev-server",
+        "path": "/prazdniki-pod-kluch/",
+        "measurements": 5,
+        "avg_ttfb_ms": 23.683,
+        "max_ttfb_ms": 24.304,
+        "avg_total_ms": 296.905,
+        "max_total_ms": 324.145,
+        "result": "PASS"
+      },
+      {
+        "source": "dev-server",
+        "path": "/roblox-land/",
+        "measurements": 5,
+        "avg_ttfb_ms": 23.354,
+        "max_ttfb_ms": 23.481,
+        "avg_total_ms": 168.283,
+        "max_total_ms": 182.785,
+        "result": "PASS"
+      },
+      {
+        "source": "moscow-server-loopback",
+        "path": "/",
+        "measurements": 5,
+        "avg_ttfb_ms": 0.732,
+        "max_ttfb_ms": 0.84,
+        "avg_total_ms": 1.731,
+        "max_total_ms": 1.874,
+        "result": "PASS"
+      },
+      {
+        "source": "moscow-server-loopback",
+        "path": "/prazdniki-pod-kluch/",
+        "measurements": 5,
+        "avg_ttfb_ms": 0.823,
+        "max_ttfb_ms": 1.089,
+        "avg_total_ms": 2.431,
+        "max_total_ms": 2.894,
+        "result": "PASS"
+      },
+      {
+        "source": "moscow-server-loopback",
+        "path": "/roblox-land/",
+        "measurements": 5,
+        "avg_ttfb_ms": 0.851,
+        "max_ttfb_ms": 1.086,
+        "avg_total_ms": 2.09,
+        "max_total_ms": 2.264,
+        "result": "PASS"
+      }
+    ],
+    "liveSmoke": {
+      "defaultGuardExit": 1,
+      "allowedHttpExit": 0,
+      "sitemapPages": 64
+    }
+  },
+  "errors": []
+}

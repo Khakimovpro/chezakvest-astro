@@ -1,0 +1,5 @@
+case	path_preview	path_length	status	size_bytes	body_sha256	project_404_match	server_header	leak_detected	result
+not_found	/definitely-not-found-priyomka-669ace6	38	404	184915	0a421fc06230acfa7503e5ef1536a34bb7a6fe7128c72fcd7f46240b728ed920	yes	nginx/1.24.0 (Ubuntu)	no	PASS
+path_traversal	/../etc/passwd	14	400	166	8e933d270bb186b147cb5973405650b578874697c0d730ceed0670a82be6fa02	no	nginx/1.24.0 (Ubuntu)	no	PASS
+double_slash	//	2	200	1300848	536d4b5800ac79252a53b2787c9e663df4ee02332e1a021a5d6b7833905bef99	no	nginx/1.24.0 (Ubuntu)	no	PASS
+long_path	/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...	2049	404	184915	0a421fc06230acfa7503e5ef1536a34bb7a6fe7128c72fcd7f46240b728ed920	yes	nginx/1.24.0 (Ubuntu)	no	PASS

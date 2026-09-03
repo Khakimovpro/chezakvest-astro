@@ -1,0 +1,6 @@
+category	local_files	server_files	local_bytes	server_bytes	result
+all	4371	4371	552030244	552030244	PASS
+_astro	25	25	143420	143420	PASS
+images	4050	4050	356868166	356868166	PASS
+videos	8	8	115454223	115454223	PASS
+media_total	4058	4058	472322389	472322389	PASS

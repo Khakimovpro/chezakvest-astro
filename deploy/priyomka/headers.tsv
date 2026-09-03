@@ -1,0 +1,5 @@
+resource	path	status	content_type	cache_control	content_encoding	x_robots_tag	x_content_type_options	referrer_policy	x_frame_options	result
+HTML	/	200	text/html	no-cache	gzip	noindex, nofollow	nosniff	strict-origin-when-cross-origin	SAMEORIGIN	PASS
+_astro JS	/_astro/SourceSnapshotBody.astro_astro_type_script_index_0_lang.DIF0pUOB.js	200	application/javascript	public, max-age=31536000, immutable	gzip	noindex, nofollow	nosniff	strict-origin-when-cross-origin	SAMEORIGIN	PASS
+image	/assets/static.tildacdn.com/tild3664-3863-4964-a135-323536623164/Fondo.png	200	image/png	max-age=2592000	<none>	noindex, nofollow	nosniff	strict-origin-when-cross-origin	SAMEORIGIN	PASS
+video	/assets/quiz/kids-start.mp4	200	video/mp4	max-age=2592000	<none>	noindex, nofollow	nosniff	strict-origin-when-cross-origin	SAMEORIGIN	PASS

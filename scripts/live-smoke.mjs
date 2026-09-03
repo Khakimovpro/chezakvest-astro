@@ -119,13 +119,16 @@ export async function verifyLiveSite({
   origin,
   fetchImpl = fetch,
   requiredPaths,
+  allowInsecureOrigin = process.env.ALLOW_INSECURE_ORIGIN === '1',
   requireServerRedirects = process.env.REQUIRE_SERVER_REDIRECTS === '1',
 } = {}) {
   const errors = [];
   if (!origin) return { pagesChecked: 0, errors: ['SITE_ORIGIN is required for a live smoke check'] };
 
   const normalizedOrigin = normalizeOrigin(origin);
-  if (!isUrlOnOrigin(normalizedOrigin, normalizedOrigin) || !normalizedOrigin.startsWith('https://')) {
+  const isHttpsOrigin = normalizedOrigin.startsWith('https://');
+  const isExplicitlyAllowedHttpOrigin = allowInsecureOrigin && normalizedOrigin.startsWith('http://');
+  if (!isUrlOnOrigin(normalizedOrigin, normalizedOrigin) || (!isHttpsOrigin && !isExplicitlyAllowedHttpOrigin)) {
     return { pagesChecked: 0, errors: [`SITE_ORIGIN must be an absolute HTTPS origin: ${origin}`] };
   }
 
@@ -141,17 +144,15 @@ export async function verifyLiveSite({
 
   const robotsUrl = `${normalizedOrigin}/robots.txt`;
   const robotsResponse = await fetchUrl(fetchImpl, robotsUrl);
+  let robots = '';
   if (robotsResponse.error) {
     errors.push(`${robotsUrl}: request failed: ${robotsResponse.error}`);
   } else if (!robotsResponse.ok) {
     errors.push(`${robotsUrl}: expected status 200, got ${robotsResponse.status}`);
   } else {
-    const robots = await robotsResponse.text();
+    robots = await robotsResponse.text();
     if (!/^User-agent:\s*\*/mi.test(robots)) errors.push(`${robotsUrl}: missing User-agent: *`);
     if (!/^Allow:\s*\/$/mi.test(robots)) errors.push(`${robotsUrl}: missing Allow: /`);
-    if (!new RegExp(`^Sitemap:\\s*${normalizedOrigin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/sitemap\\.xml$`, 'mi').test(robots)) {
-      errors.push(`${robotsUrl}: canonical sitemap URL is missing`);
-    }
   }
 
   const sitemapUrl = `${normalizedOrigin}/sitemap.xml`;
@@ -169,21 +170,49 @@ export async function verifyLiveSite({
     if (sitemapUrls.length > 250) errors.push(`${sitemapUrl}: unexpectedly contains more than 250 URLs`);
   }
 
+  let canonicalOrigin = normalizedOrigin;
+  if (isExplicitlyAllowedHttpOrigin && sitemapUrls.length > 0) {
+    const sitemapOrigins = new Set();
+    for (const pageUrl of sitemapUrls) {
+      try {
+        sitemapOrigins.add(new URL(pageUrl).origin);
+      } catch {
+        errors.push(`${sitemapUrl}: invalid URL: ${pageUrl}`);
+      }
+    }
+    if (sitemapOrigins.size !== 1) {
+      errors.push(`${sitemapUrl}: HTTP stage sitemap must use one canonical origin`);
+    } else {
+      [canonicalOrigin] = sitemapOrigins;
+      if (!canonicalOrigin.startsWith('https://')) {
+        errors.push(`${sitemapUrl}: HTTP stage sitemap canonical origin must use HTTPS`);
+      }
+    }
+  }
+
+  if (robots && !new RegExp(`^Sitemap:\\s*${canonicalOrigin.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/sitemap\\.xml$`, 'mi').test(robots)) {
+    errors.push(`${robotsUrl}: canonical sitemap URL is missing`);
+  }
+
   for (const pageUrl of sitemapUrls) {
-    if (!isUrlOnOrigin(pageUrl, normalizedOrigin)) {
-      errors.push(`${sitemapUrl}: URL is not on canonical origin: ${pageUrl}`);
+    if (!isUrlOnOrigin(pageUrl, canonicalOrigin)) {
+      errors.push(`${sitemapUrl}: URL is not on canonical origin ${canonicalOrigin}: ${pageUrl}`);
       continue;
     }
-    const response = await fetchUrl(fetchImpl, pageUrl);
+    const parsedPageUrl = new URL(pageUrl);
+    const deployedPageUrl = canonicalOrigin === normalizedOrigin
+      ? pageUrl
+      : `${normalizedOrigin}${parsedPageUrl.pathname}${parsedPageUrl.search}`;
+    const response = await fetchUrl(fetchImpl, deployedPageUrl);
     if (response.error) {
-      errors.push(`${pageUrl}: request failed: ${response.error}`);
+      errors.push(`${deployedPageUrl}: request failed: ${response.error}`);
       continue;
     }
     if (!response.ok) {
-      errors.push(`${pageUrl}: expected status 200, got ${response.status}`);
+      errors.push(`${deployedPageUrl}: expected status 200, got ${response.status}`);
       continue;
     }
-    validateIndexedPage({ html: await response.text(), pageUrl, origin: normalizedOrigin, errors });
+    validateIndexedPage({ html: await response.text(), pageUrl, origin: canonicalOrigin, errors });
   }
 
   for (const pathname of resolvedRequiredPaths) {
@@ -196,6 +225,7 @@ export async function verifyLiveSite({
       continue;
     }
     const expectedLegacyTarget = legacyTarget ? `${normalizedOrigin}${legacyTarget}` : '';
+    const expectedLegacyCanonical = legacyTarget ? `${canonicalOrigin}${legacyTarget}` : '';
     if (legacyTarget && REDIRECT_STATUS_CODES.has(response.status)) {
       const location = response.headers.get('location');
       if (!location || !isRedirectOnOrigin(location, url, normalizedOrigin)) {
@@ -221,8 +251,8 @@ export async function verifyLiveSite({
           validateLegacyFallback({
             html: await fallbackResponse.text(),
             pageUrl: fallbackUrl,
-            expectedCanonical: expectedLegacyTarget,
-            origin: normalizedOrigin,
+            expectedCanonical: expectedLegacyCanonical,
+            origin: canonicalOrigin,
             errors,
           });
         }
@@ -241,14 +271,14 @@ export async function verifyLiveSite({
         validateLegacyFallback({
           html,
           pageUrl: url,
-          expectedCanonical: expectedLegacyTarget,
-          origin: normalizedOrigin,
+          expectedCanonical: expectedLegacyCanonical,
+          origin: canonicalOrigin,
           errors,
         });
       }
     } else {
       const canonical = getCanonical(html);
-      if (!canonical || !isUrlOnOrigin(canonical, normalizedOrigin)) {
+      if (!canonical || !isUrlOnOrigin(canonical, canonicalOrigin)) {
         errors.push(`${url}: published page is missing an on-origin canonical`);
       }
     }

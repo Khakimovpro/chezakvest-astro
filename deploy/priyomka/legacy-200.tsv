@@ -1,0 +1,8 @@
+source	map_status	source_request	source_status	source_location	source_self_redirect	query_preserved	canonical_request	canonical_status	canonical_location	result
+/amongus-land	200	/amongus-land?utm_source=test	301	http://82.146.60.212/amongus-land/?utm_source=test	no	yes	/amongus-land/?utm_source=test	200		PASS
+/igra-v-kalmara-lend	200	/igra-v-kalmara-lend?utm_source=test	301	http://82.146.60.212/igra-v-kalmara-lend/?utm_source=test	no	yes	/igra-v-kalmara-lend/?utm_source=test	200		PASS
+/minecraft-lend	200	/minecraft-lend?utm_source=test	301	http://82.146.60.212/minecraft-lend/?utm_source=test	no	yes	/minecraft-lend/?utm_source=test	200		PASS
+/new-year	200	/new-year?utm_source=test	301	http://82.146.60.212/new-year/?utm_source=test	no	yes	/new-year/?utm_source=test	200		PASS
+/prazdniki-pod-kluch	200	/prazdniki-pod-kluch?utm_source=test	301	http://82.146.60.212/prazdniki-pod-kluch/?utm_source=test	no	yes	/prazdniki-pod-kluch/?utm_source=test	200		PASS
+/privacy	200	/privacy?utm_source=test	301	http://82.146.60.212/privacy/?utm_source=test	no	yes	/privacy/?utm_source=test	200		PASS
+/roblox-land	200	/roblox-land?utm_source=test	301	http://82.146.60.212/roblox-land/?utm_source=test	no	yes	/roblox-land/?utm_source=test	200		PASS

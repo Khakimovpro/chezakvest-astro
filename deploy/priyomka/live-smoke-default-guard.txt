@@ -1,0 +1,6 @@
+
+> chezakvest-astro@1.0.0 verify:live
+> node scripts/live-smoke.mjs
+
+Live smoke check failed: 1 issue(s) across 0 sitemap page(s).
+- SITE_ORIGIN must be an absolute HTTPS origin: http://82.146.60.212
