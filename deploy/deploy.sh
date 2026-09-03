@@ -88,7 +88,9 @@ current_target="$2"
 while IFS= read -r release_name; do
     [[ "$release_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ ]] || continue
     candidate="${releases_dir}/${release_name}"
-    if [[ "$candidate" != "$current_target" && -f "${candidate}/version.json" ]]; then
+    if [[ "$candidate" != "$current_target" \
+        && -f "${candidate}/version.json" \
+        && -f "${candidate}/.deploy-verified" ]]; then
         printf '%s\n' "$candidate"
         exit 0
     fi
@@ -426,13 +428,16 @@ trap - EXIT
 FINALIZED_NOT_ACTIVE=1
 cleanup_unactivated_release() {
     if (( FINALIZED_NOT_ACTIVE )); then
-        "${SSH[@]}" bash -s -- "$REMOTE_RELEASES" "$REMOTE_RELEASE" <<'REMOTE_SCRIPT' || true
+        "${SSH[@]}" bash -s -- "$REMOTE_RELEASES" "$REMOTE_RELEASE" "$REMOTE_CURRENT" <<'REMOTE_SCRIPT' || true
 set -euo pipefail
 releases_dir="$1"
 release_dir="$2"
+current_link="$3"
 release_name="${release_dir##*/}"
 [[ "$release_dir" == "${releases_dir}/${release_name}" ]]
 [[ "$release_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ ]]
+active_target="$(readlink -f -- "$current_link" 2>/dev/null || true)"
+[[ "$active_target" != "$release_dir" ]] || exit 0
 rm -rf -- "$release_dir"
 REMOTE_SCRIPT
     fi
@@ -461,6 +466,24 @@ restore_release_link() {
         "${SSH[@]}" "unlink '${REMOTE_CURRENT}' 2>/dev/null || true"
         printf 'Предыдущего релиза не было; новый current снят.\n' >&2
     fi
+}
+
+discard_failed_release() {
+    "${SSH[@]}" bash -s -- "$REMOTE_RELEASES" "$REMOTE_RELEASE" "$REMOTE_CURRENT" <<'REMOTE_SCRIPT'
+set -euo pipefail
+releases_dir="$1"
+release_dir="$2"
+current_link="$3"
+release_name="${release_dir##*/}"
+[[ "$release_dir" == "${releases_dir}/${release_name}" ]]
+[[ "$release_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ ]]
+active_target="$(readlink -f -- "$current_link" 2>/dev/null || true)"
+[[ "$active_target" != "$release_dir" ]] || {
+    printf 'Нельзя удалить активный неуспешный релиз.\n' >&2
+    exit 1
+}
+rm -rf -- "$release_dir"
+REMOTE_SCRIPT
 }
 
 restore_nginx_state() {
@@ -551,6 +574,7 @@ then
     printf '\nОШИБКА: nginx не принял конфигурацию; возвращаю предыдущий релиз.\n' >&2
     restore_release_link
     "${SSH[@]}" "nginx -t && systemctl reload nginx"
+    discard_failed_release
     exit 1
 fi
 
@@ -558,6 +582,15 @@ if ! smoke_site "$FULL_COMMIT"; then
     printf '\nОШИБКА: смоук завершился неуспешно; восстанавливаю релиз и nginx.\n' >&2
     restore_release_link
     restore_nginx_state
+    discard_failed_release
+    exit 1
+fi
+
+if ! "${SSH[@]}" "install -o root -g root -m 0444 /dev/null '${REMOTE_RELEASE}/.deploy-verified'"; then
+    printf '\nОШИБКА: не удалось отметить релиз как проверенный; восстанавливаю прежнее состояние.\n' >&2
+    restore_release_link
+    restore_nginx_state
+    discard_failed_release
     exit 1
 fi
 
