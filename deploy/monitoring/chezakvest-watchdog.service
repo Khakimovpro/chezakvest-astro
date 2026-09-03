@@ -1,0 +1,29 @@
+[Unit]
+Description=Проверка доступности сайта «Чё за Квест»
+After=network.target nginx.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/chezakvest/chezakvest-watchdog.sh
+StateDirectory=chezakvest-monitor
+StateDirectoryMode=0750
+UMask=0027
+TimeoutStartSec=45s
+Nice=10
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateTmp=yes
+ProtectControlGroups=yes
+ProtectHome=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/chezakvest-monitor
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=chezakvest-watchdog
