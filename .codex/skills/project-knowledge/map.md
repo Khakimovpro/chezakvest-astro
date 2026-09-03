@@ -1,4 +1,4 @@
-<!-- MAP-SIG: 2fa7b08f873eb1d38ca94cd1a72dc3b6f404ea35 | blessed: 2026-09-03 -->
+<!-- MAP-SIG: 08b07da4dfc90f26b89b25d24eeffb0e3d7bc559 | blessed: 2026-09-03 -->
 
 # Навигационная карта «Чё за Квест»
 

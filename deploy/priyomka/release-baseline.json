@@ -1,9 +1,9 @@
 {
-  "capturedFromLocalDistAt": "2026-09-03T21:27:09Z",
-  "commit": "669ace69640d4753c790a29597b1d864c3f513fd",
-  "shortCommit": "669ace69",
+  "capturedFromLocalDistAt": "2026-09-03T23:10:56Z",
+  "commit": "4e7930cc21f796ed78debe10a89049e63d9161b9",
+  "shortCommit": "4e7930cc",
   "files": 4371,
-  "bytes": 552030244,
+  "bytes": 552055257,
   "sitemapUrls": 64,
   "project404Sha256": "0a421fc06230acfa7503e5ef1536a34bb7a6fe7128c72fcd7f46240b728ed920"
 }

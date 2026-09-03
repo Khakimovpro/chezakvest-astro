@@ -1,26 +1,26 @@
 {
-  "generatedAt": "2026-09-03T21:36:15.004Z",
+  "generatedAt": "2026-09-03T23:11:59.142Z",
   "origin": "http://82.146.60.212",
-  "repositoryHead": "176dd8d9073ca8f84f4efaff0cca88a21ca61d59",
-  "expectedDeployedCommit": "669ace69640d4753c790a29597b1d864c3f513fd",
+  "repositoryHead": "4e7930cc21f796ed78debe10a89049e63d9161b9",
+  "expectedDeployedCommit": "4e7930cc21f796ed78debe10a89049e63d9161b9",
   "verdict": "PASS",
   "checks": {
     "manifest": {
       "localFiles": 4371,
-      "localBytes": 552030244,
+      "localBytes": 552055257,
       "serverContentFiles": 4371,
-      "serverContentBytes": 552030244,
+      "serverContentBytes": 552055257,
       "deploymentMetadataFiles": 1,
       "mismatches": 0,
       "categories": {
         "all": {
           "local": {
             "files": 4371,
-            "bytes": 552030244
+            "bytes": 552055257
           },
           "server": {
             "files": 4371,
-            "bytes": 552030244
+            "bytes": 552055257
           }
         },
         "_astro": {
@@ -68,7 +68,7 @@
     "sitemap": {
       "urls": 64,
       "non200": 0,
-      "totalResponseBytes": 70968862
+      "totalResponseBytes": 70993875
     },
     "legacy": {
       "nginxLines": 100,
@@ -94,11 +94,11 @@
     "version": {
       "valid": true,
       "data": {
-        "commit": "669ace69640d4753c790a29597b1d864c3f513fd",
-        "shortCommit": "669ace69",
+        "commit": "4e7930cc21f796ed78debe10a89049e63d9161b9",
+        "shortCommit": "4e7930cc",
         "branch": "master",
-        "builtAt": "2026-09-03T21:00:08Z",
-        "release": "20260903T210008Z-669ace69",
+        "builtAt": "2026-09-03T23:08:43Z",
+        "release": "20260903T230843Z-4e7930cc",
         "node": "v22.22.1"
       }
     },
@@ -107,60 +107,60 @@
         "source": "dev-server",
         "path": "/",
         "measurements": 5,
-        "avg_ttfb_ms": 23.148,
-        "max_ttfb_ms": 23.35,
-        "avg_total_ms": 180.476,
-        "max_total_ms": 184.202,
+        "avg_ttfb_ms": 19.982,
+        "max_ttfb_ms": 21.681,
+        "avg_total_ms": 218.397,
+        "max_total_ms": 247.118,
         "result": "PASS"
       },
       {
         "source": "dev-server",
         "path": "/prazdniki-pod-kluch/",
         "measurements": 5,
-        "avg_ttfb_ms": 23.683,
-        "max_ttfb_ms": 24.304,
-        "avg_total_ms": 296.905,
-        "max_total_ms": 324.145,
+        "avg_ttfb_ms": 19.905,
+        "max_ttfb_ms": 20.615,
+        "avg_total_ms": 318.25,
+        "max_total_ms": 369.706,
         "result": "PASS"
       },
       {
         "source": "dev-server",
         "path": "/roblox-land/",
         "measurements": 5,
-        "avg_ttfb_ms": 23.354,
-        "max_ttfb_ms": 23.481,
-        "avg_total_ms": 168.283,
-        "max_total_ms": 182.785,
+        "avg_ttfb_ms": 19.773,
+        "max_ttfb_ms": 20.815,
+        "avg_total_ms": 168.493,
+        "max_total_ms": 174.216,
         "result": "PASS"
       },
       {
         "source": "moscow-server-loopback",
         "path": "/",
         "measurements": 5,
-        "avg_ttfb_ms": 0.732,
-        "max_ttfb_ms": 0.84,
-        "avg_total_ms": 1.731,
-        "max_total_ms": 1.874,
+        "avg_ttfb_ms": 0.881,
+        "max_ttfb_ms": 1.081,
+        "avg_total_ms": 1.936,
+        "max_total_ms": 2.244,
         "result": "PASS"
       },
       {
         "source": "moscow-server-loopback",
         "path": "/prazdniki-pod-kluch/",
         "measurements": 5,
-        "avg_ttfb_ms": 0.823,
-        "max_ttfb_ms": 1.089,
-        "avg_total_ms": 2.431,
-        "max_total_ms": 2.894,
+        "avg_ttfb_ms": 0.855,
+        "max_ttfb_ms": 0.952,
+        "avg_total_ms": 2.54,
+        "max_total_ms": 2.89,
         "result": "PASS"
       },
       {
         "source": "moscow-server-loopback",
         "path": "/roblox-land/",
         "measurements": 5,
-        "avg_ttfb_ms": 0.851,
-        "max_ttfb_ms": 1.086,
-        "avg_total_ms": 2.09,
-        "max_total_ms": 2.264,
+        "avg_ttfb_ms": 0.847,
+        "max_ttfb_ms": 1.064,
+        "avg_total_ms": 2,
+        "max_total_ms": 2.193,
         "result": "PASS"
       }
     ],
