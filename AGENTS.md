@@ -37,12 +37,19 @@ Node: `22.22.1` из `.nvmrc`; сборка: `npm run build` → `dist/`.
 | `public/assets/` | Публичные локальные картинки, шрифты, видео и CSS снимков | Добавление подтверждённого медиа |
 | `migration/` | Источники редиректов, реестр миграции и история переноса | Редиректы и миграционные задачи; история — `migration/MIGRATION.md` |
 | `scripts/`, `tests/` | Контракты сборки, SEO, ассетов, редиректов и тесты | Вместе с меняемым поведением |
-| `docs/` | SEO, миграционные и приёмочные контракты | `docs/SEO-RAZMETKA.md`; в `docs/PRODUCTION_CUTOVER.md` полезен release gate, но вводный pre-deploy статус устарел |
+| `docs/` | SEO, миграционные и приёмочные контракты | `docs/SEO-RAZMETKA.md`; release gate и cutover-приёмка — `docs/PRODUCTION_CUTOVER.md` |
 | `deploy/` | Атомарная выкладка, откат, nginx и эксплуатация | Только релизные задачи; вход — `deploy/README.md` |
 
 Текущий эксплуатационный источник истины — `deploy/README.md`: релизный механизм и московский
-сервер уже существуют. `docs/PRODUCTION_CUTOVER.md` создавался до их появления; используй оттуда
-приёмочные проверки и таблицу редиректов, но не утверждение, что способа выкладки ещё нет.
+сервер уже существуют. `docs/PRODUCTION_CUTOVER.md` хранит release gate, сгенерированную таблицу
+редиректов и приёмочные проверки переключения домена.
+
+## Связанные документы знаний
+
+- [`.claude/skills/project-knowledge/map.md`](.claude/skills/project-knowledge/map.md) — точные точки входа и якоря в крупных файлах кода и эксплуатации.
+- [`.claude/skills/project-knowledge/soderzhanie-sayta.md`](.claude/skills/project-knowledge/soderzhanie-sayta.md) — предметная карта контента, предложения и известных противоречий данных.
+- [`docs/SEO-RAZMETKA.md`](docs/SEO-RAZMETKA.md) — человекочитаемый контракт SEO и Schema.org.
+- [`docs/inventar-sayta.csv`](docs/inventar-sayta.csv) — компактный сгенерированный реестр страниц; полный машиночитаемый инвентарь лежит рядом в JSON.
 
 ## Как страница превращается в HTML
 

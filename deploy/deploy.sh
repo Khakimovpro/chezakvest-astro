@@ -8,8 +8,10 @@ REMOTE_RELEASES="${REMOTE_ROOT}/releases"
 REMOTE_CURRENT="${REMOTE_ROOT}/current"
 ORIGIN="http://82.146.60.212"
 NGINX_SOURCE="deploy/nginx/chezakvest-stage.conf"
+COMMON_SOURCE="deploy/nginx/chezakvest-common.conf"
 REDIRECTS_SOURCE="docs/nginx-legacy-redirects.conf"
 NGINX_TARGET="/etc/nginx/sites-available/chezakvest.conf"
+COMMON_TARGET="/etc/nginx/snippets/chezakvest-common.conf"
 REDIRECTS_TARGET="/etc/nginx/snippets/chezakvest-legacy-redirects.conf"
 
 DRY_RUN=0
@@ -56,7 +58,7 @@ REPOSITORY_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" \
     || die "команда должна запускаться из Git-репозитория"
 [[ "$(pwd -P)" == "$(cd "$REPOSITORY_ROOT" && pwd -P)" ]] \
     || die "запустите скрипт из корня репозитория: ${REPOSITORY_ROOT}"
-[[ -f package.json && -f "$NGINX_SOURCE" && -f "$REDIRECTS_SOURCE" ]] \
+[[ -f package.json && -f "$NGINX_SOURCE" && -f "$COMMON_SOURCE" && -f "$REDIRECTS_SOURCE" ]] \
     || die "не найдены обязательные файлы проекта"
 [[ -r "$SSH_KEY" ]] || die "не найден SSH-ключ; задайте CHEZAKVEST_SSH_KEY"
 
@@ -314,7 +316,7 @@ if (( DRY_RUN )); then
     fi
     printf '%s\n' \
         'Далее: version.json, установка rsync при необходимости, доставка с checksum-проверкой,' \
-        'атомарное переключение current, установка nginx-конфига с резервными копиями,' \
+        'атомарное переключение current, установка site/common/redirect nginx-конфигов с резервными копиями,' \
         'nginx -t, reload, HTTP-смоук и сохранение трёх последних релизов.'
     exit 0
 fi
@@ -445,18 +447,21 @@ REMOTE_SCRIPT
 trap cleanup_unactivated_release EXIT
 
 PREVIOUS_TARGET="$(remote_current_target)"
-NGINX_STATE="$("${SSH[@]}" bash -s -- "$NGINX_TARGET" "$REDIRECTS_TARGET" <<'REMOTE_SCRIPT'
+NGINX_STATE="$("${SSH[@]}" bash -s -- "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" <<'REMOTE_SCRIPT'
 nginx_target="$1"
-redirects_target="$2"
-had_nginx=0; had_redirects=0; had_enabled=0; had_default=0
+common_target="$2"
+redirects_target="$3"
+had_nginx=0; had_common=0; had_redirects=0; had_enabled=0; had_default=0
 [[ -e "$nginx_target" ]] && had_nginx=1
+[[ -e "$common_target" ]] && had_common=1
 [[ -e "$redirects_target" ]] && had_redirects=1
 [[ -L /etc/nginx/sites-enabled/chezakvest.conf ]] && had_enabled=1
 [[ -L /etc/nginx/sites-enabled/default ]] && had_default=1
-printf '%s %s %s %s\n' "$had_nginx" "$had_redirects" "$had_enabled" "$had_default"
+printf '%s %s %s %s %s\n' \
+    "$had_nginx" "$had_common" "$had_redirects" "$had_enabled" "$had_default"
 REMOTE_SCRIPT
 )"
-read -r HAD_NGINX HAD_REDIRECTS HAD_ENABLED HAD_DEFAULT <<< "$NGINX_STATE"
+read -r HAD_NGINX HAD_COMMON HAD_REDIRECTS HAD_ENABLED HAD_DEFAULT <<< "$NGINX_STATE"
 
 restore_release_link() {
     if [[ -n "$PREVIOUS_TARGET" ]]; then
@@ -487,17 +492,22 @@ REMOTE_SCRIPT
 }
 
 restore_nginx_state() {
-    "${SSH[@]}" bash -s -- "$NGINX_TARGET" "$REDIRECTS_TARGET" "$RELEASE_STAMP" \
-        "$HAD_NGINX" "$HAD_REDIRECTS" "$HAD_ENABLED" "$HAD_DEFAULT" <<'REMOTE_SCRIPT'
+    "${SSH[@]}" bash -s -- "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" "$RELEASE_STAMP" \
+        "$HAD_NGINX" "$HAD_COMMON" "$HAD_REDIRECTS" "$HAD_ENABLED" "$HAD_DEFAULT" <<'REMOTE_SCRIPT'
 set -euo pipefail
-nginx_target="$1"; redirects_target="$2"; suffix="$3"
-had_nginx="$4"; had_redirects="$5"; had_enabled="$6"; had_default="$7"
+nginx_target="$1"; common_target="$2"; redirects_target="$3"; suffix="$4"
+had_nginx="$5"; had_common="$6"; had_redirects="$7"; had_enabled="$8"; had_default="$9"
 
 rm -f /etc/nginx/sites-enabled/chezakvest.conf /etc/nginx/sites-enabled/default
 if (( had_nginx )); then
     cp -a "${nginx_target}.bak-${suffix}" "$nginx_target"
 else
     rm -f "$nginx_target"
+fi
+if (( had_common )); then
+    cp -a "${common_target}.bak-${suffix}" "$common_target"
+else
+    rm -f "$common_target"
 fi
 if (( had_redirects )); then
     cp -a "${redirects_target}.bak-${suffix}" "$redirects_target"
@@ -520,12 +530,14 @@ apply_nginx_config() {
     scp -q -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=15 \
         "$NGINX_SOURCE" "${REMOTE_HOST}:/tmp/chezakvest.conf.new" || return 1
     scp -q -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=15 \
+        "$COMMON_SOURCE" "${REMOTE_HOST}:/tmp/chezakvest-common.conf.new" || return 1
+    scp -q -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=15 \
         "$REDIRECTS_SOURCE" "${REMOTE_HOST}:/tmp/chezakvest-legacy-redirects.conf.new" || return 1
-    "${SSH[@]}" bash -s -- "$NGINX_TARGET" "$REDIRECTS_TARGET" "$RELEASE_STAMP" \
-        "$HAD_NGINX" "$HAD_REDIRECTS" "$HAD_ENABLED" "$HAD_DEFAULT" <<'REMOTE_SCRIPT'
+    "${SSH[@]}" bash -s -- "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" "$RELEASE_STAMP" \
+        "$HAD_NGINX" "$HAD_COMMON" "$HAD_REDIRECTS" "$HAD_ENABLED" "$HAD_DEFAULT" <<'REMOTE_SCRIPT'
 set -euo pipefail
-nginx_target="$1"; redirects_target="$2"; backup_suffix="$3"
-had_nginx="$4"; had_redirects="$5"; had_enabled="$6"; had_default="$7"
+nginx_target="$1"; common_target="$2"; redirects_target="$3"; backup_suffix="$4"
+had_nginx="$5"; had_common="$6"; had_redirects="$7"; had_enabled="$8"; had_default="$9"
 
 restore_previous_config() {
     rm -f /etc/nginx/sites-enabled/chezakvest.conf /etc/nginx/sites-enabled/default
@@ -534,6 +546,11 @@ restore_previous_config() {
     elif (( ! had_nginx )); then
         rm -f "$nginx_target"
     fi
+    if (( had_common )) && [[ -e "${common_target}.bak-${backup_suffix}" ]]; then
+        cp -a "${common_target}.bak-${backup_suffix}" "$common_target"
+    elif (( ! had_common )); then
+        rm -f "$common_target"
+    fi
     if (( had_redirects )) && [[ -e "${redirects_target}.bak-${backup_suffix}" ]]; then
         cp -a "${redirects_target}.bak-${backup_suffix}" "$redirects_target"
     elif (( ! had_redirects )); then
@@ -541,7 +558,10 @@ restore_previous_config() {
     fi
     (( had_enabled == 0 )) || ln -sfn "$nginx_target" /etc/nginx/sites-enabled/chezakvest.conf
     (( had_default == 0 )) || ln -sfn /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
-    rm -f /tmp/chezakvest.conf.new /tmp/chezakvest-legacy-redirects.conf.new
+    rm -f \
+        /tmp/chezakvest.conf.new \
+        /tmp/chezakvest-common.conf.new \
+        /tmp/chezakvest-legacy-redirects.conf.new
     if nginx -t; then systemctl reload nginx || true; fi
 }
 
@@ -554,16 +574,21 @@ on_exit() {
 trap on_exit EXIT
 
 (( had_nginx == 0 )) || cp -a "$nginx_target" "${nginx_target}.bak-${backup_suffix}"
+(( had_common == 0 )) || cp -a "$common_target" "${common_target}.bak-${backup_suffix}"
 (( had_redirects == 0 )) || cp -a "$redirects_target" "${redirects_target}.bak-${backup_suffix}"
 
 install -m 0644 /tmp/chezakvest.conf.new "$nginx_target"
+install -m 0644 /tmp/chezakvest-common.conf.new "$common_target"
 install -m 0644 /tmp/chezakvest-legacy-redirects.conf.new "$redirects_target"
 ln -sfn "$nginx_target" /etc/nginx/sites-enabled/chezakvest.conf.new
 mv -Tf /etc/nginx/sites-enabled/chezakvest.conf.new /etc/nginx/sites-enabled/chezakvest.conf
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl reload nginx
-rm -f /tmp/chezakvest.conf.new /tmp/chezakvest-legacy-redirects.conf.new
+rm -f \
+    /tmp/chezakvest.conf.new \
+    /tmp/chezakvest-common.conf.new \
+    /tmp/chezakvest-legacy-redirects.conf.new
 trap - EXIT
 REMOTE_SCRIPT
 }

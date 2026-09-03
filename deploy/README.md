@@ -15,9 +15,10 @@ deploy/deploy.sh
 проверяет её контрольными суммами. Только после проверки каталог получает окончательное имя,
 а файлы на сервере принадлежат `root:root`. Затем скрипт атомарно переключает
 `/var/www/chezakvest/current`, проверяет и перезагружает nginx, выполняет HTTP-смоук и оставляет
-три последних релиза. При ошибке после переключения `current` автоматически возвращается на
-предыдущий релиз. Только зелёный релиз получает внутренний маркер `.deploy-verified`; откат
-игнорирует все каталоги без него.
+три последних релиза. Вместе с site-конфигом он доставляет общий nginx-конфиг и legacy-редиректы,
+сохраняя предыдущую версию каждого файла перед `nginx -t`. При ошибке после переключения `current`
+автоматически возвращается на предыдущий релиз. Только зелёный релиз получает внутренний маркер
+`.deploy-verified`; откат игнорирует все каталоги без него.
 
 Полезные режимы:
 
@@ -47,11 +48,12 @@ deploy/deploy.sh --rollback
 - релизы: `/var/www/chezakvest/releases/<UTC-время>-<короткий-коммит>`;
 - активный релиз: `/var/www/chezakvest/current`;
 - конфигурация nginx: `/etc/nginx/sites-available/chezakvest.conf`;
+- общий nginx-конфиг: `/etc/nginx/snippets/chezakvest-common.conf`;
 - legacy-редиректы: `/etc/nginx/snippets/chezakvest-legacy-redirects.conf`;
 - ACME webroot: `/var/www/acme/.well-known/acme-challenge/`;
 - логи: `/var/log/nginx/chezakvest.access.log` и `/var/log/nginx/chezakvest.error.log`.
 
-Перед заменой существующих файлов nginx скрипт сохраняет рядом копии с суффиксом
+Перед заменой существующих site/common/redirect-файлов nginx скрипт сохраняет рядом копии с суффиксом
 `.bak-<UTC-время>`. Стандартный `/etc/nginx/sites-enabled/default` отключается, но исходный файл
 `/etc/nginx/sites-available/default` остаётся на месте.
 

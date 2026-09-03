@@ -1,10 +1,13 @@
 # Production cutover
 
-The repository deliberately contains no workflow that publishes to production. The
-current production domain is still served by Tilda, and a safe deployment requires
-the owner-controlled DNS/hosting target and a repository with Pages (or another
-static-hosting) configuration. CI always produces a verified `dist/` artifact; it
-never deploys or changes DNS.
+The repository has a repeatable release path to the configured Moscow server. The operational
+entry point, [`deploy/README.md`](../deploy/README.md), documents how `deploy/deploy.sh` verifies
+and builds `dist/`, publishes an atomic release, installs the nginx configuration, and runs HTTP
+smoke checks. Until the owner switches DNS, `http://82.146.60.212` remains a noindex staging
+endpoint and the current production domain continues to be served by Tilda. The prepared DNS,
+TLS, and rollback cutover through `deploy/enable-domain.sh` is documented in
+[`deploy/DOMEN.md`](../deploy/DOMEN.md). CI verifies artifacts and can publish the GitHub Pages
+preview; it does not deploy to the Moscow server or change DNS.
 
 ## Release gate
 
@@ -149,8 +152,8 @@ artifact.
 
 ## Host cutover checklist
 
-1. Configure the host to publish the CI `dist/` artifact from the selected GitHub
-   repository. Do not use the GitHub Pages preview artifact as production.
+1. Publish a verified `dist/` artifact to the configured Moscow host with
+   `deploy/deploy.sh`. Do not use the GitHub Pages preview artifact as production.
 2. Attach `чезаквест.рф` and its punycode equivalent
    `xn--80aehcht5ci1b.xn--p1ai` at the host, issue TLS, and choose one HTTPS
    canonical host. Redirect HTTP and every alternate host to it with a permanent
@@ -185,8 +188,8 @@ The canonical list of external facts and their delivery impact is
 
 ## Public smoke command
 
-After the host is configured, run the following from this repository against the
-new host (not the previous Tilda host):
+After the domain cutover, run the following from this repository against the new host
+(not the previous Tilda host):
 
 ```bash
 SITE_ORIGIN=https://xn--80aehcht5ci1b.xn--p1ai npm run verify:live
@@ -205,4 +208,4 @@ server-side redirect. Without `REQUIRE_SERVER_REDIRECTS=1`, it additionally
 supports GitHub Pages' one-time slash normalization followed by the noindex static
 fallback with the mapped canonical. The remaining HTTP/HTTPS/www redirects and
 lead submission must still be checked manually in a real browser because they
-depend on the chosen host and lead channel.
+depend on the configured host and lead channel.

@@ -1,4 +1,4 @@
-<!-- MAP-SIG: 8e1579a6632c8b9453a837f2b0e1779c72ea7197 | blessed: 2026-09-03 -->
+<!-- MAP-SIG: 2fa7b08f873eb1d38ca94cd1a72dc3b6f404ea35 | blessed: 2026-09-03 -->
 
 # Навигационная карта «Чё за Квест»
 
@@ -22,7 +22,7 @@
 | Тип | Макет и ключевые места |
 | --- | --- |
 | Общий документ | [`src/layouts/Layout.astro:16`](../../../src/layouts/Layout.astro#L16) — props `<head>`; [`:39`](../../../src/layouts/Layout.astro#L39) — canonical; [`:45`](../../../src/layouts/Layout.astro#L45) — глобальная схема |
-| Квест | [`src/layouts/QuestPage.astro:27`](../../../src/layouts/QuestPage.astro#L27) — данные; [`:114`](../../../src/layouts/QuestPage.astro#L114) — `Service` и breadcrumbs |
+| Квест | [`src/layouts/QuestPage.astro:27`](../../../src/layouts/QuestPage.astro#L27) — данные; [`:117`](../../../src/layouts/QuestPage.astro#L117) — `Service` и breadcrumbs |
 | Площадка | [`src/layouts/VenuePage.astro:23`](../../../src/layouts/VenuePage.astro#L23) — данные и адрес; [`:40`](../../../src/layouts/VenuePage.astro#L40) — `EntertainmentBusiness` |
 | Категория | [`src/layouts/CategoryPage.astro:23`](../../../src/layouts/CategoryPage.astro#L23) — данные; [`:58`](../../../src/layouts/CategoryPage.astro#L58) — `CollectionPage` |
 | Инфостраница | [`src/layouts/InfoPage.astro:14`](../../../src/layouts/InfoPage.astro#L14) — данные; [`:31`](../../../src/layouts/InfoPage.astro#L31) — breadcrumbs |
@@ -55,11 +55,11 @@
 | Что | Точка входа |
 | --- | --- |
 | Релизный интерфейс и ограничения | [`deploy/README.md`](../../../deploy/README.md) |
-| Реализация релиза | проверки рабочего дерева начинаются у [`deploy/deploy.sh:291`](../../../deploy/deploy.sh#L291), гейт — у [`:334`](../../../deploy/deploy.sh#L334), доставка — у [`:372`](../../../deploy/deploy.sh#L372) |
-| Откат | `rollback_to` в [`deploy/deploy.sh:252`](../../../deploy/deploy.sh#L252) |
+| Реализация релиза | проверки рабочего дерева начинаются у [`deploy/deploy.sh:293`](../../../deploy/deploy.sh#L293), гейт — у [`:339`](../../../deploy/deploy.sh#L339), доставка релиза — у [`:374`](../../../deploy/deploy.sh#L374), транзакционная установка nginx-конфигов — у [`:529`](../../../deploy/deploy.sh#L529) |
+| Откат | `rollback_to` в [`deploy/deploy.sh:254`](../../../deploy/deploy.sh#L254) |
 | Домен и TLS | [`deploy/DOMEN.md`](../../../deploy/DOMEN.md) |
 | Дежурство и аварии | [`deploy/EKSPLUATACIYA.md`](../../../deploy/EKSPLUATACIYA.md) |
-| Приёмочный контракт до появления deploy-скрипта | release gate и редиректы в [`docs/PRODUCTION_CUTOVER.md`](../../../docs/PRODUCTION_CUTOVER.md); вводный pre-deploy статус устарел, текущая эксплуатация — в `deploy/` |
+| Cutover-контракт | release gate, редиректы и приёмочные проверки в [`docs/PRODUCTION_CUTOVER.md`](../../../docs/PRODUCTION_CUTOVER.md); текущая эксплуатация — в `deploy/` |
 
 ## Проверка свежести карты
 
