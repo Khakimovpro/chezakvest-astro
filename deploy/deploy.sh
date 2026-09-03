@@ -64,7 +64,17 @@ SSH=(ssh -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=15 "$REMOTE_HOST")
 RSYNC_SSH="ssh -i ${SSH_KEY} -o BatchMode=yes -o ConnectTimeout=15"
 
 remote_current_target() {
-    "${SSH[@]}" "readlink -f '${REMOTE_CURRENT}' 2>/dev/null || true"
+    "${SSH[@]}" bash -s -- "$REMOTE_CURRENT" "$REMOTE_RELEASES" <<'REMOTE_SCRIPT'
+set -euo pipefail
+current_link="$1"
+releases_dir="$2"
+
+[[ -L "$current_link" ]] || exit 0
+target="$(readlink -f -- "$current_link" 2>/dev/null)" || exit 0
+if [[ "$target" == "${releases_dir}/"* && -d "$target" && -f "${target}/version.json" ]]; then
+    printf '%s\n' "$target"
+fi
+REMOTE_SCRIPT
 }
 
 remote_previous_release() {
@@ -126,26 +136,44 @@ smoke_site() {
 
     log "Смоук 1/6: главная страница и запрет индексации"
     status="$(curl -sS -D "$headers" -o "$body" -w '%{http_code}' "${ORIGIN}/")"
-    [[ "$status" == "200" ]] || return 1
-    grep -Eiq '^X-Robots-Tag:[[:space:]]*noindex,[[:space:]]*nofollow\r?$' "$headers" || return 1
+    [[ "$status" == "200" ]] || {
+        printf 'Смоук: главная вернула HTTP %s вместо 200.\n' "$status" >&2
+        return 1
+    }
+    tr -d '\r' < "$headers" | grep -Eiq '^X-Robots-Tag:[[:space:]]*noindex,[[:space:]]*nofollow$' || {
+        printf 'Смоук: отсутствует X-Robots-Tag: noindex, nofollow.\n' >&2
+        return 1
+    }
 
     log "Смоук 2/6: версия релиза"
     status="$(curl -sS -D "$headers" -o "$body" -w '%{http_code}' "${ORIGIN}/version.json")"
-    [[ "$status" == "200" ]] || return 1
+    [[ "$status" == "200" ]] || {
+        printf 'Смоук: version.json вернул HTTP %s вместо 200.\n' "$status" >&2
+        return 1
+    }
     actual_commit="$(node -e '
         const fs = require("node:fs");
         const value = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
         if (!/^[0-9a-f]{40}$/.test(value.commit ?? "")) process.exit(1);
         process.stdout.write(value.commit);
     ' "$body")"
-    [[ "$actual_commit" == "$expected_commit" ]] || return 1
+    [[ "$actual_commit" == "$expected_commit" ]] || {
+        printf 'Смоук: в version.json коммит %s, ожидался %s.\n' "$actual_commit" "$expected_commit" >&2
+        return 1
+    }
 
     log "Смоук 3/6: пять legacy-редиректов"
     while IFS=$'\t' read -r source target; do
         status="$(curl -sS -D "$headers" -o /dev/null -w '%{http_code}' "${ORIGIN}${source}")"
-        [[ "$status" == "301" ]] || return 1
-        location="$(sed -nE 's/^[Ll]ocation:[[:space:]]*([^[:space:]]+)\r?$/\1/p' "$headers" | tail -n 1)"
-        [[ "$location" == "$target" || "$location" == "${ORIGIN}${target}" ]] || return 1
+        [[ "$status" == "301" ]] || {
+            printf 'Смоук: %s вернул HTTP %s вместо 301.\n' "$source" "$status" >&2
+            return 1
+        }
+        location="$(tr -d '\r' < "$headers" | sed -nE 's/^[Ll]ocation:[[:space:]]*([^[:space:]]+)$/\1/p' | tail -n 1)"
+        [[ "$location" == "$target" || "$location" == "${ORIGIN}${target}" ]] || {
+            printf 'Смоук: %s направляет в %s вместо %s.\n' "$source" "$location" "$target" >&2
+            return 1
+        }
     done < <(node --input-type=module <<'NODE'
 import { readFileSync } from 'node:fs';
 
@@ -165,21 +193,33 @@ NODE
     log "Смоук 4/6: обязательные страницы"
     for target in /kvesty-v-rostove-na-donu/ /contacts/ /privacy/ /new-year/; do
         status="$(curl -sS -o /dev/null -w '%{http_code}' "${ORIGIN}${target}")"
-        [[ "$status" == "200" ]] || return 1
+        [[ "$status" == "200" ]] || {
+            printf 'Смоук: %s вернул HTTP %s вместо 200.\n' "$target" "$status" >&2
+            return 1
+        }
     done
 
     log "Смоук 5/6: robots.txt и sitemap.xml"
     for target in /robots.txt /sitemap.xml; do
         status="$(curl -sS -o "$body" -w '%{http_code}' "${ORIGIN}${target}")"
-        [[ "$status" == "200" && -s "$body" ]] || return 1
+        [[ "$status" == "200" && -s "$body" ]] || {
+            printf 'Смоук: %s вернул HTTP %s или пустое тело.\n' "$target" "$status" >&2
+            return 1
+        }
     done
 
     log "Смоук 6/6: проектная страница 404"
     status="$(curl -sS -o "$body" -w '%{http_code}' "${ORIGIN}/proverka-404-deploy-script")"
-    [[ "$status" == "404" ]] || return 1
+    [[ "$status" == "404" ]] || {
+        printf 'Смоук: несуществующий путь вернул HTTP %s вместо 404.\n' "$status" >&2
+        return 1
+    }
     remote_404_hash="$("${SSH[@]}" "sha256sum '${REMOTE_CURRENT}/404.html' | cut -d' ' -f1")"
     local_404_hash="$(sha256sum "$body" | cut -d' ' -f1)"
-    [[ -n "$remote_404_hash" && "$local_404_hash" == "$remote_404_hash" ]] || return 1
+    [[ -n "$remote_404_hash" && "$local_404_hash" == "$remote_404_hash" ]] || {
+        printf 'Смоук: тело ответа 404 не совпадает с 404.html активного релиза.\n' >&2
+        return 1
+    }
 
     rm -rf -- "$temporary_dir"
     trap - RETURN
