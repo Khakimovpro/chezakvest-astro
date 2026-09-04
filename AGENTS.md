@@ -123,7 +123,9 @@ Node: `22.22.1` из `.nvmrc`; сборка: `npm run build` → `dist/`.
 2. Согласованно обнови `src/data/site.json`: `header.phone/phoneHref/wa`, `footer.phone/phoneHref/email/hours`,
    `messengers.items`, а также реквизиты/соцсети при их изменении.
 3. Обнови дубли в `src/data/pages/contacts.json`: `contacts.items`, `contacts.links`, `contacts.raw`.
-4. Проверь снимок `/contacts/`: архивные вхождения тоже требуют правки источника и пересборки снимков.
+4. Полностью пересобери снимки: генератор берёт видимый номер и `tel:` из
+   `site.header.phone/phoneHref`, а WhatsApp-fallback — из элемента `site.messengers.items` с
+   `id: "wa"`, и сам заменяет архивные значения. Ради телефона raw/override руками не правят.
 5. Запусти `node scripts/structured-data-audit.mjs`, сборку и поиск старого значения в `dist/`.
 
 ### Обновить отзывы

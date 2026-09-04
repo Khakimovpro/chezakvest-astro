@@ -1,4 +1,4 @@
-<!-- MAP-SIG: 08b07da4dfc90f26b89b25d24eeffb0e3d7bc559 | blessed: 2026-09-03 -->
+<!-- MAP-SIG: 5f6dd2427742decae0f8c15f7258ce3926beb3ac | blessed: 2026-09-04 -->
 
 # Навигационная карта «Чё за Квест»
 
@@ -44,6 +44,7 @@
 | Что | Точка входа |
 | --- | --- |
 | Полная генерация снимков | `main` в [`_capture/build_source_snapshots.py:2339`](../../../_capture/build_source_snapshots.py#L2339); выбор raw/override — [`:380`](../../../_capture/build_source_snapshots.py#L380); встраивание локальных отзывов — [`:1153`](../../../_capture/build_source_snapshots.py#L1153) |
+| Телефон и WhatsApp в снимках | `link_messenger_buttons` в [`_capture/build_source_snapshots.py:1625`](../../../_capture/build_source_snapshots.py#L1625) берёт WhatsApp из `site.messengers`; `normalize_phone_numbers` в [`:1666`](../../../_capture/build_source_snapshots.py#L1666) заменяет архивный номер и `tel:` значениями `site.header.phone/phoneHref`; вызов — [`:2210`](../../../_capture/build_source_snapshots.py#L2210) |
 | Legacy-редиректы | источник `migration/legacy-url-map.csv`; полный набор выходов объявлен в [`migration/legacy-redirects.mjs:214`](../../../migration/legacy-redirects.mjs#L214) |
 | SEO данных | [`scripts/seo-data-audit.mjs`](../../../scripts/seo-data-audit.mjs) |
 | Schema.org | [`scripts/structured-data-audit.mjs`](../../../scripts/structured-data-audit.mjs) |

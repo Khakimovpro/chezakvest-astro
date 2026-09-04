@@ -357,9 +357,9 @@
       ],
       "content_description_chars": 781,
       "story_description_chars": 0,
-      "seo_title": "Детский день рождения в стиле игры ROBLOX в Ростове-на-Дону | Скидки и Акции",
-      "seo_description": "День рождения под ключ в Ростове-на-Дону. Квест-шоу РОБЛОКС на детский праздник.",
-      "seo_description_chars": 80,
+      "seo_title": "День рождения в стиле Амонг Ас в Ростове-на-Дону",
+      "seo_description": "Детский праздник в стиле Амонг Ас в Ростове-на-Дону: квест-шоу по мотивам игры, программа под ключ для компании от 2 до 24 участников.",
+      "seo_description_chars": 134,
       "explicit_price_mentions": [],
       "internal_reference_source_count": 23,
       "referenced_by": [
@@ -387,7 +387,7 @@
         "src/data/pages/zvonok.json",
         "src/data/site.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-03",
       "source_file": "src/data/pages/amongus-land.json"
     },
     {
@@ -585,7 +585,7 @@
         "src/data/pages/sokolova23.json",
         "src/data/site.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-03",
       "source_file": "src/data/pages/contacts.json"
     },
     {
@@ -2948,15 +2948,15 @@
       "content_description_chars": 1360,
       "story_description_chars": 0,
       "seo_title": "Новый год в Чё За Квест в Ростове-на-Дону, цены, программы",
-      "seo_description": "День рождения — это особенный момент в жизни каждого человека. Провести его незабываемо и с комфортом можно в студии праздников, где все внимание уделяется только вам и вашим близким. Мы предлагаем полный комплекс услуг «под ключ», который сделает ваш праздник волшебным.",
-      "seo_description_chars": 271,
+      "seo_description": "Новогодний праздник для школьников 6–17 лет в Ростове-на-Дону: программа под ключ с квестами, шоу и мастер-классами для групп от 10 до 25 детей.",
+      "seo_description_chars": 144,
       "explicit_price_mentions": [],
       "internal_reference_source_count": 2,
       "referenced_by": [
         "src/data/pages/den-rozhdeniya-uznik-azkabana.json",
         "src/data/site.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-03",
       "source_file": "src/data/pages/new-year.json"
     },
     {
@@ -4345,9 +4345,9 @@
       ],
       "content_description_chars": 817,
       "story_description_chars": 0,
-      "seo_title": "Детский день рождения в стиле игры ROBLOX в Ростове-на-Дону | Скидки и Акции",
-      "seo_description": "День рождения под ключ в Ростове-на-Дону. Квест-шоу РОБЛОКС на детский праздник.",
-      "seo_description_chars": 80,
+      "seo_title": "День рождения в стиле Roblox в Ростове-на-Дону",
+      "seo_description": "Детский праздник в стиле Roblox в Ростове-на-Дону: квест-шоу по мотивам игры, программа под ключ для компании от 2 до 24 участников.",
+      "seo_description_chars": 132,
       "explicit_price_mentions": [],
       "internal_reference_source_count": 23,
       "referenced_by": [
@@ -4375,7 +4375,7 @@
         "src/data/pages/zvonok.json",
         "src/data/site.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-03",
       "source_file": "src/data/pages/roblox-land.json"
     },
     {
@@ -5784,15 +5784,7 @@
         ]
       }
     ],
-    "duplicate_seo_title": [
-      {
-        "value": "детский день рождения в стиле игры roblox в ростове-на-дону | скидки и акции",
-        "slugs": [
-          "amongus-land",
-          "roblox-land"
-        ]
-      }
-    ],
+    "duplicate_seo_title": [],
     "pages_without_structured_data_references": [
       "brawl_stars"
     ],
