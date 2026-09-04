@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-09-04T04:41:24.482Z",
+  "generatedAt": "2026-09-04T04:46:00.565Z",
   "origin": "http://82.146.60.212",
-  "repositoryHead": "f17ad74f10d630a4aa39357beb2fe8cf908f16d5",
-  "expectedDeployedCommit": "f17ad74f10d630a4aa39357beb2fe8cf908f16d5",
+  "repositoryHead": "f6f21a608eac0754763858192e48537278af80ac",
+  "expectedDeployedCommit": "f6f21a608eac0754763858192e48537278af80ac",
   "verdict": "PASS",
   "checks": {
     "manifest": {
@@ -94,11 +94,11 @@
     "version": {
       "valid": true,
       "data": {
-        "commit": "f17ad74f10d630a4aa39357beb2fe8cf908f16d5",
-        "shortCommit": "f17ad74f",
+        "commit": "f6f21a608eac0754763858192e48537278af80ac",
+        "shortCommit": "f6f21a60",
         "branch": "master",
-        "builtAt": "2026-09-04T04:36:38Z",
-        "release": "20260904T043638Z-f17ad74f",
+        "builtAt": "2026-09-04T04:43:36Z",
+        "release": "20260904T044336Z-f6f21a60",
         "node": "v22.22.1"
       }
     },
@@ -107,60 +107,60 @@
         "source": "dev-server",
         "path": "/",
         "measurements": 5,
-        "avg_ttfb_ms": 20.59,
-        "max_ttfb_ms": 20.956,
-        "avg_total_ms": 203.769,
-        "max_total_ms": 259.309,
+        "avg_ttfb_ms": 27.124,
+        "max_ttfb_ms": 27.613,
+        "avg_total_ms": 254.649,
+        "max_total_ms": 316.564,
         "result": "PASS"
       },
       {
         "source": "dev-server",
         "path": "/prazdniki-pod-kluch/",
         "measurements": 5,
-        "avg_ttfb_ms": 20.55,
-        "max_ttfb_ms": 20.96,
-        "avg_total_ms": 304.461,
-        "max_total_ms": 338.661,
+        "avg_ttfb_ms": 27.014,
+        "max_ttfb_ms": 28.718,
+        "avg_total_ms": 384.916,
+        "max_total_ms": 421.015,
         "result": "PASS"
       },
       {
         "source": "dev-server",
         "path": "/roblox-land/",
         "measurements": 5,
-        "avg_ttfb_ms": 20.745,
-        "max_ttfb_ms": 22.502,
-        "avg_total_ms": 165.159,
-        "max_total_ms": 179.07,
+        "avg_ttfb_ms": 26.861,
+        "max_ttfb_ms": 27.044,
+        "avg_total_ms": 212.125,
+        "max_total_ms": 213.625,
         "result": "PASS"
       },
       {
         "source": "moscow-server-loopback",
         "path": "/",
         "measurements": 5,
-        "avg_ttfb_ms": 0.808,
-        "max_ttfb_ms": 0.92,
-        "avg_total_ms": 1.81,
-        "max_total_ms": 1.877,
+        "avg_ttfb_ms": 0.854,
+        "max_ttfb_ms": 1.099,
+        "avg_total_ms": 1.939,
+        "max_total_ms": 2.068,
         "result": "PASS"
       },
       {
         "source": "moscow-server-loopback",
         "path": "/prazdniki-pod-kluch/",
         "measurements": 5,
-        "avg_ttfb_ms": 0.786,
-        "max_ttfb_ms": 0.992,
-        "avg_total_ms": 2.355,
-        "max_total_ms": 2.725,
+        "avg_ttfb_ms": 0.674,
+        "max_ttfb_ms": 0.887,
+        "avg_total_ms": 2.152,
+        "max_total_ms": 2.292,
         "result": "PASS"
       },
       {
         "source": "moscow-server-loopback",
         "path": "/roblox-land/",
         "measurements": 5,
-        "avg_ttfb_ms": 0.737,
-        "max_ttfb_ms": 0.995,
-        "avg_total_ms": 1.924,
-        "max_total_ms": 2.411,
+        "avg_ttfb_ms": 0.66,
+        "max_ttfb_ms": 0.717,
+        "avg_total_ms": 1.725,
+        "max_total_ms": 1.781,
         "result": "PASS"
       }
     ],

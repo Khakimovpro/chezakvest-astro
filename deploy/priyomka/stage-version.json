@@ -1,8 +1,8 @@
 {
-  "commit": "f17ad74f10d630a4aa39357beb2fe8cf908f16d5",
-  "shortCommit": "f17ad74f",
+  "commit": "f6f21a608eac0754763858192e48537278af80ac",
+  "shortCommit": "f6f21a60",
   "branch": "master",
-  "builtAt": "2026-09-04T04:36:38Z",
-  "release": "20260904T043638Z-f17ad74f",
+  "builtAt": "2026-09-04T04:43:36Z",
+  "release": "20260904T044336Z-f6f21a60",
   "node": "v22.22.1"
 }
