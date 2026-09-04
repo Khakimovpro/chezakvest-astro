@@ -7,6 +7,7 @@ import {
   collectionPageJsonLd,
   globalJsonLd,
   holidayServiceJsonLd,
+  isValidIso8601DateTime,
   questServiceJsonLd,
   venueBusinessJsonLd,
   videoObjectJsonLd,
@@ -487,6 +488,11 @@ function validateGenericSchema(schema, label, errors) {
     for (const property of nestedRequired[value['@type']] || []) {
       if (!(property in value)) errors.push(`${label}: nested ${value['@type']} is missing ${property} at ${valuePath}`);
     }
+    if (valueTypes.includes('VideoObject')
+      && Object.hasOwn(value, 'uploadDate')
+      && !isValidIso8601DateTime(value.uploadDate)) {
+      errors.push(`${label}: VideoObject uploadDate must be a valid ISO 8601 date-time with timezone at ${valuePath}`);
+    }
     if (value['@type'] === 'ListItem') {
       for (const property of ['position', 'name']) {
         if (!(property in value)) errors.push(`${label}: nested ListItem is missing ${property} at ${valuePath}`);
@@ -774,10 +780,12 @@ function validateRecord(record, site, venueBySlug, errors) {
   if (record.kind === 'home' && !types.has('WebSite')) errors.push('/: home page is missing WebSite');
 
   const video = visiblePlayableVideo(record.page || {});
-  if (video?.uploadDate && !video?.caption) errors.push(`${record.path}: video uploadDate exists but a visible caption is missing`);
-  if (video?.uploadDate && video?.caption && !types.has('VideoObject')) errors.push(`${record.path}: eligible visible video is missing VideoObject`);
-  if (types.has('VideoObject') && (!video?.uploadDate || !video?.caption)) errors.push(`${record.path}: VideoObject has no verified visible source data`);
-  if (video?.uploadDate && video?.caption) {
+  const hasValidUploadDate = isValidIso8601DateTime(video?.uploadDate);
+  if (video?.uploadDate && !hasValidUploadDate) errors.push(`${record.path}: video uploadDate must be a valid ISO 8601 date-time with timezone`);
+  if (hasValidUploadDate && !video?.caption) errors.push(`${record.path}: video uploadDate exists but a visible caption is missing`);
+  if (hasValidUploadDate && video?.caption && !types.has('VideoObject')) errors.push(`${record.path}: eligible visible video is missing VideoObject`);
+  if (types.has('VideoObject') && (!hasValidUploadDate || !video?.caption)) errors.push(`${record.path}: VideoObject has no verified visible source data`);
+  if (hasValidUploadDate && video?.caption) {
     const videoSchema = parsedSchemas.find((schema) => hasType(schema, 'VideoObject'));
     const expectedVideo = videoObjectJsonLd({
       video,

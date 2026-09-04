@@ -271,12 +271,23 @@ export const visibleHolidayFaqJsonLd = (page = {}, faqSection) => {
   return faqPageJsonLd(faq?.items || [], path);
 };
 
-// Google requires a trustworthy first-publication date for VideoObject. The
-// captured pages do not currently carry one, so the helper deliberately skips
-// those videos instead of manufacturing an uploadDate. A future page opts in by
-// adding the verified ISO date next to its visible video data.
+const ISO_8601_DATE_TIME_PATTERN = /^\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/u;
+
+export const isValidIso8601DateTime = (value) => {
+  if (typeof value !== 'string' || !ISO_8601_DATE_TIME_PATTERN.test(value)) return false;
+  if (!Number.isFinite(Date.parse(value))) return false;
+  const [year, month, day] = value.slice(0, 10).split('-').map(Number);
+  const calendarDate = new Date(Date.UTC(year, month - 1, day));
+  return calendarDate.getUTCFullYear() === year
+    && calendarDate.getUTCMonth() === month - 1
+    && calendarDate.getUTCDate() === day;
+};
+
+// Google requires a trustworthy first-publication date for VideoObject. A page
+// opts in only with a verified ISO 8601 value next to its visible video data;
+// missing or malformed dates deliberately keep the video out of JSON-LD.
 export const videoObjectJsonLd = ({ video = {}, path = '/', pageName = '' } = {}) => {
-  if (!video.poster || !video.src || !video.caption || !video.uploadDate) return null;
+  if (!video.poster || !video.src || !video.caption || !isValidIso8601DateTime(video.uploadDate)) return null;
 
   return {
     '@context': 'https://schema.org',
