@@ -1,10 +1,10 @@
 {
-  "capturedFromLocalDistAt": "2026-09-03T23:10:56Z",
-  "commit": "4e7930cc21f796ed78debe10a89049e63d9161b9",
-  "shortCommit": "4e7930cc",
-  "release": "20260903T230843Z-4e7930cc",
-  "files": 4371,
-  "bytes": 552055257,
-  "sitemapUrls": 64,
-  "project404Sha256": "0a421fc06230acfa7503e5ef1536a34bb7a6fe7128c72fcd7f46240b728ed920"
+  "capturedFromLocalDistAt": "2026-09-04T03:15:25Z",
+  "commit": "4bd56d0aa7985f0f9b129aaba413a88438182e33",
+  "shortCommit": "4bd56d0a",
+  "release": "20260904T025221Z-4bd56d0a",
+  "files": 4388,
+  "bytes": 554802657,
+  "sitemapUrls": 65,
+  "project404Sha256": "c32a102b22eba7e3ad5553619b7b2486567941f5a85f2547382130dc5aed3d26"
 }

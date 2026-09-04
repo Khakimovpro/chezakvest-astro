@@ -2,4 +2,4 @@
 > chezakvest-astro@1.0.0 verify:live
 > node scripts/live-smoke.mjs
 
-Live smoke check passed: 64 sitemap page(s) checked.
+Live smoke check passed: 65 sitemap page(s) checked.

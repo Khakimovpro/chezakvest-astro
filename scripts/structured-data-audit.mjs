@@ -1032,7 +1032,7 @@ export async function auditStructuredData({ rendered = false } = {}) {
   validateVideoGuardContract(errors);
   await validateSourceWiring(errors);
   if (rendered) await loadRenderedSchemas(records, errors);
-  if (records.length < 64) errors.push(`expected at least the 64 audited indexable pages, found ${records.length}`);
+  if (records.length < 65) errors.push(`expected at least the 65 audited indexable pages, found ${records.length}`);
   const auditedRecords = records.map((record) => validateRecord(record, site, venueBySlug, errors));
   const typeCounts = {};
   for (const record of auditedRecords) {

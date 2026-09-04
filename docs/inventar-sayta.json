@@ -13,6 +13,7 @@
     "src/data/pages/contacts.json",
     "src/data/pages/den-rozhdeniya-na-vr-arene.json",
     "src/data/pages/den-rozhdeniya-uznik-azkabana.json",
+    "src/data/pages/fnaf.json",
     "src/data/pages/garri-potter-i-kubok-ognya.json",
     "src/data/pages/guardeskypereulog61.json",
     "src/data/pages/hostel-podval-pytok.json",
@@ -77,15 +78,15 @@
     "venue_slugs": "Явно заданные venueSlug/venueSlugs; если их нет — площадки, чей полный адрес найден в основных данных страницы без архивного sourceParity. declared_venue_slugs и mentioned_venue_slugs сохраняют происхождение связи."
   },
   "counts": {
-    "pages": 63,
+    "pages": 64,
     "by_type": {
       "category": 1,
       "holiday": 11,
       "info": 1,
-      "quest": 41,
+      "quest": 42,
       "venue": 9
     },
-    "catalog_cards": 35,
+    "catalog_cards": 36,
     "venues": 9,
     "stored_reviews": 73,
     "quizzes": 8
@@ -206,7 +207,7 @@
       "video_refs": [
         "/assets/video/among-us.mp4"
       ],
-      "photo_count": 40,
+      "photo_count": 42,
       "photo_refs": [
         "/assets/q/0254d72340.webp",
         "/assets/q/050196f952.webp",
@@ -247,18 +248,21 @@
         "/assets/q/e6ee5459a9.webp",
         "/assets/q/edb4b7b38c.webp",
         "/assets/q/f57ff562ef.webp",
-        "/assets/q/f900fb55ae.webp"
+        "/assets/q/f900fb55ae.webp",
+        "/assets/rutube/c2c4656e59b75d07cfb4068d8a1535b1.jpg",
+        "https://pic.rtbcdn.ru/video/2025-09-17/60/d5/60d5129508b5631b70fafa33c7a9da2a.jpg"
       ],
-      "content_description_chars": 2279,
+      "content_description_chars": 2335,
       "story_description_chars": 394,
       "seo_title": "Квест в лабиринте Амонг Ас - от компании «Чё За Квест»",
       "seo_description": "АмонгАс - квест-лабиринт по мотивам компьютерной игры в Ростове-на-Дону от компании Чё За Квест. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
       "seo_description_chars": 168,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 18,
+      "internal_reference_source_count": 19,
       "referenced_by": [
         "src/data/pages/40letpobedy216.json",
         "src/data/pages/beguschij_v_labirinte.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/magnitogorskaya1.json",
@@ -276,7 +280,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/among_us.json"
     },
     {
@@ -361,11 +365,12 @@
       "seo_description": "Детский праздник в стиле Амонг Ас в Ростове-на-Дону: квест-шоу по мотивам игры, программа под ключ для компании от 2 до 24 участников.",
       "seo_description_chars": 134,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 23,
+      "internal_reference_source_count": 24,
       "referenced_by": [
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
         "src/data/pages/den-rozhdeniya-uznik-azkabana.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/kids.json",
@@ -419,7 +424,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 32,
+      "photo_count": 34,
       "photo_refs": [
         "/assets/q/050196f952.webp",
         "/assets/q/11f413afe7.webp",
@@ -452,18 +457,21 @@
         "/assets/q/df90be308f.webp",
         "/assets/q/eb358c6fce.webp",
         "/assets/q/edb4b7b38c.webp",
-        "/assets/q/fa8053b3d1.webp"
+        "/assets/q/fa8053b3d1.webp",
+        "/assets/rutube/9042f4c94e1b4dc75dd87fc79d420beb.jpg",
+        "https://pic.rtbcdn.ru/video/2025-09-17/bd/42/bd42183357260079886cbf32f78a5f14.jpg"
       ],
-      "content_description_chars": 1418,
+      "content_description_chars": 1474,
       "story_description_chars": 566,
       "seo_title": "Бегущий в лабиринте - страшный перфоманс от «Чё За Квест»",
       "seo_description": "Бегущий в лабиринте - хоррор квест-перфоманс в Ростове-на-Дону от компании Чё За Квест. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
       "seo_description_chars": 159,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 18,
+      "internal_reference_source_count": 19,
       "referenced_by": [
         "src/data/pages/40letpobedy216.json",
         "src/data/pages/among_us.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/magnitogorskaya1.json",
@@ -481,7 +489,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/beguschij_v_labirinte.json"
     },
     {
@@ -766,10 +774,11 @@
       "seo_description": "Детский день рождения с квестом на 60 минут и банкетной зоной внутри квеста (до 12 гостей). Ростов-на-Дону, пр-т Нагибина, 14а.",
       "seo_description_chars": 127,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 22,
+      "internal_reference_source_count": 23,
       "referenced_by": [
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/kids.json",
@@ -793,6 +802,79 @@
       ],
       "last_modified": "2026-08-12",
       "source_file": "src/data/pages/den-rozhdeniya-uznik-azkabana.json"
+    },
+    {
+      "slug": "fnaf",
+      "type": "quest",
+      "h1": "5 ночей с Фредди",
+      "venue_slugs": [
+        "magnitogorskaya1"
+      ],
+      "venue_addresses": [
+        "ул. Магнитогорская, 1"
+      ],
+      "declared_venue_slugs": [
+        "magnitogorskaya1"
+      ],
+      "mentioned_venue_slugs": [
+        "magnitogorskaya1"
+      ],
+      "age": "10+",
+      "players": "4-24",
+      "duration": "60 мин.",
+      "catalog_category": "Квест-шоу на площадке 200м²",
+      "venue_groups": [
+        "АКТИВНЫЕ ИГРЫ"
+      ],
+      "theme": "",
+      "difficulty": "",
+      "has_video": false,
+      "video_count": 0,
+      "video_refs": [],
+      "photo_count": 27,
+      "photo_refs": [
+        "/assets/fnaf/hero-1200.webp",
+        "/assets/fnaf/hero-1600.webp",
+        "/assets/fnaf/hero-760.webp",
+        "/assets/fnaf/related-card.webp",
+        "/assets/q/0254d72340.webp",
+        "/assets/q/050196f952.webp",
+        "/assets/q/227fefb580.webp",
+        "/assets/q/233ae2d249.webp",
+        "/assets/q/23fd611f3e.webp",
+        "/assets/q/284e072514.webp",
+        "/assets/q/346b76e32d.webp",
+        "/assets/q/5db46846ba.webp",
+        "/assets/q/65ea1782eb.webp",
+        "/assets/q/6b76a9943e.webp",
+        "/assets/q/764862d04e.webp",
+        "/assets/q/80c181cfa3.webp",
+        "/assets/q/833ac838ee.webp",
+        "/assets/q/887f5cc2af.webp",
+        "/assets/q/95f3e1349e.webp",
+        "/assets/q/abacf2edc6.webp",
+        "/assets/q/c715e67eb0.webp",
+        "/assets/q/cefd6c9c46.webp",
+        "/assets/q/dabc8834b5.webp",
+        "/assets/q/de1eab3f60.webp",
+        "/assets/q/df90be308f.webp",
+        "/assets/q/edb4b7b38c.webp",
+        "/assets/q/f900fb55ae.webp"
+      ],
+      "content_description_chars": 1583,
+      "story_description_chars": 679,
+      "seo_title": "Квест в стиле 5 ночей с Фредди в Ростове-на-Дону",
+      "seo_description": "5 ночей с Фредди - квест в стиле популярной игры в Ростове-на-Дону от компании Чё за Квест. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
+      "seo_description_chars": 163,
+      "explicit_price_mentions": [],
+      "internal_reference_source_count": 3,
+      "referenced_by": [
+        "src/data/pages/magnitogorskaya1.json",
+        "src/data/site.json",
+        "src/data/venues.json"
+      ],
+      "last_modified": "2026-09-04",
+      "source_file": "src/data/pages/fnaf.json"
     },
     {
       "slug": "garri-potter-i-kubok-ognya",
@@ -823,7 +905,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 33,
+      "photo_count": 35,
       "photo_refs": [
         "/assets/q/050196f952.webp",
         "/assets/q/0f817fecaf.webp",
@@ -857,19 +939,22 @@
         "/assets/q/df6838b963.webp",
         "/assets/q/df90be308f.webp",
         "/assets/q/ebbad8eb4b.webp",
-        "/assets/q/edb4b7b38c.webp"
+        "/assets/q/edb4b7b38c.webp",
+        "/assets/rutube/42340095221d021fac1eb5328ba0735b.jpg",
+        "https://pic.rtbcdn.ru/video/2025-09-17/43/5f/435fe03b98fdf22e12b6f8e4af85ced6.jpg"
       ],
-      "content_description_chars": 1287,
+      "content_description_chars": 1343,
       "story_description_chars": 435,
       "seo_title": "Квест для детей Гарри Поттер и Кубок огня в Ростове-на-Дону",
       "seo_description": "Квест Гарри Поттер и Кубок Огня от компании Чё за Квест в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
       "seo_description_chars": 146,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 19,
+      "internal_reference_source_count": 20,
       "referenced_by": [
         "src/data/pages/40letpobedy216.json",
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/magnitogorskaya1.json",
         "src/data/pages/minecraft.json",
@@ -887,7 +972,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/garri-potter-i-kubok-ognya.json"
     },
     {
@@ -1068,7 +1153,7 @@
       "video_refs": [
         "/assets/video/kalmar.mp4"
       ],
-      "photo_count": 40,
+      "photo_count": 42,
       "photo_refs": [
         "/assets/q/0254d72340.webp",
         "/assets/q/050196f952.webp",
@@ -1109,19 +1194,22 @@
         "/assets/q/df90be308f.webp",
         "/assets/q/e99845bc72.webp",
         "/assets/q/edb4b7b38c.webp",
-        "/assets/q/f900fb55ae.webp"
+        "/assets/q/f900fb55ae.webp",
+        "/assets/rutube/b7c18d4bd380160f7b68c2488ab69792.jpg",
+        "https://pic.rtbcdn.ru/video/2025-09-17/3d/62/3d621186038ac8f1b993474ba9d866b8.jpg"
       ],
-      "content_description_chars": 2405,
+      "content_description_chars": 2461,
       "story_description_chars": 520,
       "seo_title": "Квест для детей Игра в Кальмара в Ростове-на-Дону",
       "seo_description": "Квест Игра в Кальмара от компании Чё за Квест в Ростове-на-Дону. Работем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
       "seo_description_chars": 135,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 18,
+      "internal_reference_source_count": 19,
       "referenced_by": [
         "src/data/pages/40letpobedy216.json",
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/magnitogorskaya1.json",
         "src/data/pages/minecraft.json",
@@ -1138,7 +1226,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/igra_v_kalmara.json"
     },
     {
@@ -1230,11 +1318,12 @@
       "seo_description": "День рождения под ключ в Ростове-на-Дону. Квест \"Игра в кальмара\" на детский праздник.",
       "seo_description_chars": 86,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 23,
+      "internal_reference_source_count": 24,
       "referenced_by": [
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
         "src/data/pages/den-rozhdeniya-uznik-azkabana.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/kids.json",
@@ -1523,7 +1612,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 19,
+      "photo_count": 21,
       "photo_refs": [
         "/assets/q/04370b1ee3.webp",
         "/assets/q/1decc15420.webp",
@@ -1543,9 +1632,11 @@
         "/assets/q/8b25cfd904.webp",
         "/assets/q/cda3e7b518.webp",
         "/assets/q/cf806fe1e3.webp",
-        "/assets/q/ddf4a5c23a.webp"
+        "/assets/q/ddf4a5c23a.webp",
+        "/assets/rutube/359bf78c4a45a34dd30af35f7229604b.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-06/0d/56/0d5641d061851c0a6ec7454f03636d9a.jpg"
       ],
-      "content_description_chars": 958,
+      "content_description_chars": 1014,
       "story_description_chars": 489,
       "seo_title": "Квест Дом Призраков в Ростове-на-Дону",
       "seo_description": "Страшный квест, полный загадок - хоррор Дом Призраков от компании Чё за Квест в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
@@ -1570,7 +1661,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/kvest_v_realnosti_dom_prizrakov.json"
     },
     {
@@ -1720,7 +1811,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 15,
+      "photo_count": 17,
       "photo_refs": [
         "/assets/q/05ac17afde.webp",
         "/assets/q/1e958119ed.webp",
@@ -1736,9 +1827,11 @@
         "/assets/q/b67b37e254.webp",
         "/assets/q/c93f7e8e97.webp",
         "/assets/q/d327bbe7e4.webp",
-        "/assets/q/e2d644c19a.webp"
+        "/assets/q/e2d644c19a.webp",
+        "/assets/rutube/3651e713b9efc51ebb4c12cebd85b6a3.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-02/0d/9d/0d9d05e9ba01357bc04f7bad3318e810.jpg"
       ],
-      "content_description_chars": 808,
+      "content_description_chars": 864,
       "story_description_chars": 354,
       "seo_title": "Гарри и последний крестраж - квест для поклонников Хогвартс от «Чё За Квест»",
       "seo_description": "Школа магии Хогвартс просит о помощи - нужно найти последний Крестраж в Ростове-на-Дону от компании Чё за Квест. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
@@ -1757,7 +1850,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/kvest_v_realnosti_harry_potter_i_krestrazh.json"
     },
     {
@@ -1788,7 +1881,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 22,
+      "photo_count": 24,
       "photo_refs": [
         "/assets/q/074188b3c7.webp",
         "/assets/q/0e1551f907.webp",
@@ -1811,9 +1904,11 @@
         "/assets/q/cda3e7b518.webp",
         "/assets/q/cf806fe1e3.webp",
         "/assets/q/d5fed6d185.webp",
-        "/assets/q/f7f0c51efb.webp"
+        "/assets/q/f7f0c51efb.webp",
+        "/assets/rutube/f56d566660e94a2888bf7d16b3f9f278.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-06/38/86/3886477080920296aef1fa1f6cd5c275.jpg"
       ],
-      "content_description_chars": 980,
+      "content_description_chars": 1036,
       "story_description_chars": 541,
       "seo_title": "Коралина в Стране Кошмаров- Квест в Ростове-на-Дону",
       "seo_description": "Квест-перфоманс Коралина в Стране Кошмаров от компании Чё за Квест в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
@@ -1838,7 +1933,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-10",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/kvest_v_realnosti_koralina.json"
     },
     {
@@ -1869,7 +1964,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 16,
+      "photo_count": 18,
       "photo_refs": [
         "/assets/q/05ac17afde.webp",
         "/assets/q/0cec6775d8.webp",
@@ -1886,9 +1981,11 @@
         "/assets/q/d775a85a7d.webp",
         "/assets/q/e08583c1b7.webp",
         "/assets/q/e235030d6b.webp",
-        "/assets/q/e2d644c19a.webp"
+        "/assets/q/e2d644c19a.webp",
+        "/assets/rutube/136b4c42cf6ef34ffa0093af9fec55cc.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-02/8c/1c/8c1c9bf3bffda3ae48f2ef26cbc8ef08.jpg"
       ],
-      "content_description_chars": 705,
+      "content_description_chars": 761,
       "story_description_chars": 252,
       "seo_title": "Ночь в музее. Ограбление - квест от компании «Чё За Квест»",
       "seo_description": "Приключенческий квест Ночь в музее. Ограбление - компания Чё за Квест в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
@@ -1907,7 +2004,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/kvest_v_realnosti_noch_v_museum_ograblenie.json"
     },
     {
@@ -1938,7 +2035,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 16,
+      "photo_count": 18,
       "photo_refs": [
         "/assets/q/05ac17afde.webp",
         "/assets/q/081a83c939.webp",
@@ -1955,9 +2052,11 @@
         "/assets/q/99d1942b4a.webp",
         "/assets/q/a52335e169.webp",
         "/assets/q/aef2b3bcd2.webp",
-        "/assets/q/e2d644c19a.webp"
+        "/assets/q/e2d644c19a.webp",
+        "/assets/rutube/44a74c56d67be5a88471869fdc0fae10.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-01/ed/a1/eda10a15f32e3951a56d6d12a7566050.jpg"
       ],
-      "content_description_chars": 1019,
+      "content_description_chars": 1075,
       "story_description_chars": 466,
       "seo_title": "Ограбление банка. Бумажный дом - весёлый квест от компании «Чё За Квест»",
       "seo_description": "Весёлый квест Ограбление банка в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте. Компания Чё за Квест.",
@@ -1976,7 +2075,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom.json"
     },
     {
@@ -2009,7 +2108,7 @@
       "video_refs": [
         "/assets/video/psihbolnitsa.mp4"
       ],
-      "photo_count": 20,
+      "photo_count": 22,
       "photo_refs": [
         "/assets/q/14a28ff293.webp",
         "/assets/q/1586134e3d.webp",
@@ -2030,9 +2129,11 @@
         "/assets/q/cda3e7b518.webp",
         "/assets/q/cf806fe1e3.webp",
         "/assets/q/db5d371539.webp",
-        "/assets/q/eadb9c5a05.webp"
+        "/assets/q/eadb9c5a05.webp",
+        "/assets/rutube/b3141fdc8390c1392b366d4b782ff4b7.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-02/96/38/9638cdc9164b6e92cc4fdc56f7dbcdb8.jpg"
       ],
-      "content_description_chars": 933,
+      "content_description_chars": 989,
       "story_description_chars": 272,
       "seo_title": "Хоррор квест Психбольница в Ростове-на-Дону",
       "seo_description": "Страшный квест Психбольница с элементами пряток от компании Чё за Квест в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
@@ -2057,7 +2158,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/kvest_v_realnosti_psihbolnitsa.json"
     },
     {
@@ -2128,7 +2229,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-10",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/kvest_v_realnosti_sherlock_holms.json"
     },
     {
@@ -2228,7 +2329,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 20,
+      "photo_count": 22,
       "photo_refs": [
         "/assets/q/14174d59b9.webp",
         "/assets/q/1de9a73029.webp",
@@ -2249,9 +2350,11 @@
         "/assets/q/b58facb5f1.webp",
         "/assets/q/cda3e7b518.webp",
         "/assets/q/cf806fe1e3.webp",
-        "/assets/q/d3c0ed11b6.webp"
+        "/assets/q/d3c0ed11b6.webp",
+        "/assets/rutube/a45f2fee9beefc170244ffbab50814c1.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-06/c4/de/c4decda1a259ab2253e8c3bc80bc3e14.jpg"
       ],
-      "content_description_chars": 828,
+      "content_description_chars": 884,
       "story_description_chars": 228,
       "seo_title": "Квест «Замок Графа Дракулы» - от «Чё За Квест»",
       "seo_description": "Квест Замок Дракулы от компании Чё За Квест в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
@@ -2275,7 +2378,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/kvest_v_realnosti_zamok_drakuly.json"
     },
     {
@@ -2356,8 +2459,9 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 21,
+      "photo_count": 22,
       "photo_refs": [
+        "/assets/fnaf/card.webp",
         "/assets/q/0254d72340.webp",
         "/assets/q/2019d89462.webp",
         "/assets/q/227fefb580.webp",
@@ -2403,7 +2507,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/magnitogorskaya1.json"
     },
     {
@@ -2476,11 +2580,12 @@
       "seo_description": "День рождения под ключ в Ростове-на-Дону. Шоу Майнкрафт на детский праздник.",
       "seo_description_chars": 76,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 23,
+      "internal_reference_source_count": 24,
       "referenced_by": [
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
         "src/data/pages/den-rozhdeniya-uznik-azkabana.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/kids.json",
@@ -2534,7 +2639,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 34,
+      "photo_count": 36,
       "photo_refs": [
         "/assets/q/048b9c68aa.webp",
         "/assets/q/050196f952.webp",
@@ -2569,19 +2674,22 @@
         "/assets/q/ed963cda7e.webp",
         "/assets/q/edb4b7b38c.webp",
         "/assets/q/f22415d178.webp",
-        "/assets/q/f2f40de84e.webp"
+        "/assets/q/f2f40de84e.webp",
+        "/assets/rutube/9434f5b19a2359eaa7446a34a96a4b81.jpg",
+        "https://pic.rtbcdn.ru/video/2025-09-17/86/3c/863cac6add7950cf7cc5e35abacbebac.jpg"
       ],
-      "content_description_chars": 1058,
+      "content_description_chars": 1114,
       "story_description_chars": 206,
       "seo_title": "Квест в стиле Майнкрафт в Ростове-на-Дону",
       "seo_description": "День рождения под ключ в Ростове-на-Дону. Шоу Майнкрафт на детский праздник. Работаем без выходных с 10:00 до 23:00. Бронируйте на сайте.",
       "seo_description_chars": 137,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 18,
+      "internal_reference_source_count": 19,
       "referenced_by": [
         "src/data/pages/40letpobedy216.json",
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/magnitogorskaya1.json",
@@ -2598,7 +2706,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/minecraft.json"
     },
     {
@@ -2690,7 +2798,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 18,
+      "photo_count": 20,
       "photo_refs": [
         "/assets/q/17a084a90b.webp",
         "/assets/q/3dd20e9b3c.webp",
@@ -2709,9 +2817,11 @@
         "/assets/q/dd22acc119.webp",
         "/assets/q/e71ca476cf.webp",
         "/assets/q/ee51e2112f.webp",
-        "/assets/q/f6ea5c55ff.webp"
+        "/assets/q/f6ea5c55ff.webp",
+        "/assets/rutube/a85b156ec0dc4f1a4cb52584c7568f4f.jpg",
+        "https://pic.rtbcdn.ru/video/2026-03-07/2b/8d/2b8d2548b0350c010c983bd4370851a1.jpg"
       ],
-      "content_description_chars": 521,
+      "content_description_chars": 577,
       "story_description_chars": 229,
       "seo_title": "Хижина Чудес - весёлый квест от компании «Чё За Квест»",
       "seo_description": "Весёлый квест Хижина Чудес в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте. Компания Чё за Квест.",
@@ -2728,7 +2838,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/mystery_shack.json"
     },
     {
@@ -2990,7 +3100,7 @@
       "video_refs": [
         "/assets/video/ono-zvonok-reznya.mp4"
       ],
-      "photo_count": 31,
+      "photo_count": 33,
       "photo_refs": [
         "/assets/q/0254d72340.webp",
         "/assets/q/065ebd7e6c.webp",
@@ -3022,9 +3132,11 @@
         "/assets/q/dabc8834b5.webp",
         "/assets/q/de1eab3f60.webp",
         "/assets/q/e450d8e388.webp",
-        "/assets/q/f900fb55ae.webp"
+        "/assets/q/f900fb55ae.webp",
+        "/assets/rutube/f2461e284083e7b8c28c0f97ba0f4c03.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-05/a3/1f/a31f1cfa3fb7eca397dcd02bf44dddc5.jpg"
       ],
-      "content_description_chars": 2605,
+      "content_description_chars": 2661,
       "story_description_chars": 912,
       "seo_title": "Хоррор квест ОНО в Ростове-на-Дону",
       "seo_description": "Квест ОНО - хоррор от компании Чё За Квест в Ростове-на-Дону. Думаете, что попали в цирк ? Наш клоун докажет обратное . Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
@@ -3050,7 +3162,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/ono.json"
     },
     {
@@ -3081,7 +3193,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 24,
+      "photo_count": 26,
       "photo_refs": [
         "/assets/q/0579d3acf6.webp",
         "/assets/q/2112f3f046.webp",
@@ -3106,9 +3218,11 @@
         "/assets/q/e284a95388.webp",
         "/assets/q/e42e582d59.webp",
         "/assets/q/e862ae3bb6.webp",
-        "/assets/q/f227889e92.webp"
+        "/assets/q/f227889e92.webp",
+        "/assets/rutube/2faa07428c951fd191a4806d0fee90b7.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-10/8c/9a/8c9a98d09fa5f9c99392a8f2ba54f30f.jpg"
       ],
-      "content_description_chars": 954,
+      "content_description_chars": 1010,
       "story_description_chars": 208,
       "seo_title": "VR-игра PARTY GAMES",
       "seo_description": "Коллекция казуальных игр, разработанных специально для детей от 6 лет. Пять мини-игр с уникальной и в то же время простой механикой, тщательно проработанными картами и захватывающим и разнообразным геймплеем.",
@@ -3126,7 +3240,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/party-games.json"
     },
     {
@@ -3227,7 +3341,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 19,
+      "photo_count": 21,
       "photo_refs": [
         "/assets/q/01df4a321c.webp",
         "/assets/q/17707c23cf.webp",
@@ -3247,9 +3361,11 @@
         "/assets/q/d610d116dd.webp",
         "/assets/q/dd22acc119.webp",
         "/assets/q/e6e1dbb4b9.webp",
-        "/assets/q/f8e8ad7cf9.webp"
+        "/assets/q/f8e8ad7cf9.webp",
+        "/assets/rutube/7160e919e383376f0319e0ede42fcbc0.jpg",
+        "https://pic.rtbcdn.ru/video/2026-03-07/34/51/345189ca2bb9a8553079375f5629e0e0.jpg"
       ],
-      "content_description_chars": 684,
+      "content_description_chars": 740,
       "story_description_chars": 404,
       "seo_title": "Пираты - весёлый квест от компании «Чё За Квест»",
       "seo_description": "Весёлый квест Пираты в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте. Компания Чё за Квест.",
@@ -3266,7 +3382,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/pirati.json"
     },
     {
@@ -3364,7 +3480,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 24,
+      "photo_count": 26,
       "photo_refs": [
         "/assets/q/0579d3acf6.webp",
         "/assets/q/1f4dea8736.webp",
@@ -3389,9 +3505,11 @@
         "/assets/q/ddd009732a.webp",
         "/assets/q/e42e582d59.webp",
         "/assets/q/e862ae3bb6.webp",
-        "/assets/q/f227889e92.webp"
+        "/assets/q/f227889e92.webp",
+        "/assets/rutube/2faa07428c951fd191a4806d0fee90b7.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-10/8c/9a/8c9a98d09fa5f9c99392a8f2ba54f30f.jpg"
       ],
-      "content_description_chars": 929,
+      "content_description_chars": 985,
       "story_description_chars": 183,
       "seo_title": "VR-игра PORTAL STRIKE KIDS",
       "seo_description": "Яркий PvP-шутер в аркадном стиле для свободного перемещения по виртуальным аренам, созданный для поклонников красочных миров, эстетики, вдохновленной Fortnite, и культовых персонажей.",
@@ -3407,7 +3525,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/portal-strike-kids.json"
     },
     {
@@ -3438,7 +3556,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 24,
+      "photo_count": 26,
       "photo_refs": [
         "/assets/q/0579d3acf6.webp",
         "/assets/q/2112f3f046.webp",
@@ -3463,9 +3581,11 @@
         "/assets/q/ddd009732a.webp",
         "/assets/q/e42e582d59.webp",
         "/assets/q/e862ae3bb6.webp",
-        "/assets/q/f227889e92.webp"
+        "/assets/q/f227889e92.webp",
+        "/assets/rutube/2faa07428c951fd191a4806d0fee90b7.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-10/8c/9a/8c9a98d09fa5f9c99392a8f2ba54f30f.jpg"
       ],
-      "content_description_chars": 1059,
+      "content_description_chars": 1115,
       "story_description_chars": 313,
       "seo_title": "VR-игра PORTAL STRIKE",
       "seo_description": "Приготовьтесь к захватывающим битвам с друзьями в Portal Strike! Эта игра представляет собой динамичный командный шутер в виртуальной реальности, напоминающий лазертаг, но с элементами, похожими на Counter-Strike. Разделитесь на команды или играйте каждый сам за себя, цель остаётся одной — уничтожить противника!",
@@ -3483,7 +3603,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/portal-strike.json"
     },
     {
@@ -3514,7 +3634,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 24,
+      "photo_count": 26,
       "photo_refs": [
         "/assets/q/0579d3acf6.webp",
         "/assets/q/2112f3f046.webp",
@@ -3539,9 +3659,11 @@
         "/assets/q/e08b6b0978.webp",
         "/assets/q/e42e582d59.webp",
         "/assets/q/e862ae3bb6.webp",
-        "/assets/q/f227889e92.webp"
+        "/assets/q/f227889e92.webp",
+        "/assets/rutube/2faa07428c951fd191a4806d0fee90b7.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-10/8c/9a/8c9a98d09fa5f9c99392a8f2ba54f30f.jpg"
       ],
-      "content_description_chars": 1013,
+      "content_description_chars": 1069,
       "story_description_chars": 267,
       "seo_title": "VR-игра PORTAL ZOMBIE",
       "seo_description": "Совместная игра в жанре хоррор от первого лица, действие которой разворачивается в старом заброшенном особняке, подвергшемся нападению орд зомби. Объединяйтесь с друзьями, переживите многочисленные волны атак зомби и сразитесь с могущественным боссом, чтобы победить!",
@@ -3556,7 +3678,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-12",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/portal-zombie.json"
     },
     {
@@ -3860,7 +3982,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 29,
+      "photo_count": 31,
       "photo_refs": [
         "/assets/q/007e0441ff.webp",
         "/assets/q/050196f952.webp",
@@ -3890,19 +4012,22 @@
         "/assets/q/d225a8036c.webp",
         "/assets/q/df90be308f.webp",
         "/assets/q/edb4b7b38c.webp",
-        "/assets/q/f26be9c5a6.webp"
+        "/assets/q/f26be9c5a6.webp",
+        "/assets/rutube/25247657f74a0861e3d66c887bc570d4.jpg",
+        "https://pic.rtbcdn.ru/video/2025-09-19/0c/fb/0cfb7163b331dfed9df6667f24e1ca32.jpg"
       ],
-      "content_description_chars": 1536,
+      "content_description_chars": 1592,
       "story_description_chars": 715,
       "seo_title": "Квест в темноте Прятки KIDS в Ростове-на-Дону",
       "seo_description": "Прятки KIDS - квест в темноте в Ростове-на-Дону от компании Чё за Квест. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
       "seo_description_chars": 144,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 16,
+      "internal_reference_source_count": 17,
       "referenced_by": [
         "src/data/pages/40letpobedy216.json",
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/magnitogorskaya1.json",
@@ -3917,7 +4042,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/pryatki_kids.json"
     },
     {
@@ -3949,7 +4074,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 33,
+      "photo_count": 35,
       "photo_refs": [
         "/assets/q/050196f952.webp",
         "/assets/q/09a9e69afb.webp",
@@ -3983,19 +4108,22 @@
         "/assets/q/df90be308f.webp",
         "/assets/q/e038286033.webp",
         "/assets/q/edb4b7b38c.webp",
-        "/assets/q/ff10528434.webp"
+        "/assets/q/ff10528434.webp",
+        "/assets/rutube/7f65d61328a410d046daad4b6c48d84c.jpg",
+        "https://pic.rtbcdn.ru/video/2025-09-19/fd/b6/fdb6b12324e27f1d2598979842de17ef.jpg"
       ],
-      "content_description_chars": 1331,
+      "content_description_chars": 1387,
       "story_description_chars": 449,
       "seo_title": "Квест в лабиринте «Прятки. Портал в другое измерение» - в Ростове-на-Дону",
       "seo_description": "Прятки Портал в другое Измерение - квест в лабиринте от компании Чё за Квест. Ростов-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
       "seo_description_chars": 165,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 16,
+      "internal_reference_source_count": 17,
       "referenced_by": [
         "src/data/pages/40letpobedy216.json",
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/magnitogorskaya1.json",
@@ -4010,7 +4138,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/pryatki_portal.json"
     },
     {
@@ -4042,7 +4170,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 27,
+      "photo_count": 29,
       "photo_refs": [
         "/assets/q/050196f952.webp",
         "/assets/q/15a44f9b19.webp",
@@ -4070,20 +4198,23 @@
         "/assets/q/df90be308f.webp",
         "/assets/q/edb4b7b38c.webp",
         "/assets/q/f4411d1873.webp",
-        "/assets/q/f54d913c44.webp"
+        "/assets/q/f54d913c44.webp",
+        "/assets/rutube/eb717113bb313e2dce1aa3c42a2fbbf1.jpg",
+        "https://pic.rtbcdn.ru/video/2025-09-19/a5/d5/a5d568058ae801aa3f42113580107a72.jpg"
       ],
-      "content_description_chars": 1553,
+      "content_description_chars": 1609,
       "story_description_chars": 671,
       "seo_title": "«Прятки в темноте» Квест-лабиринт в Ростове-на-Дону",
       "seo_description": "Прятки в темноте - квест в тёмном лабиринте от компании Чё за Квест. Ростов-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
       "seo_description_chars": 156,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 18,
+      "internal_reference_source_count": 19,
       "referenced_by": [
         "src/data/pages/40letpobedy216.json",
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
         "src/data/pages/den-rozhdeniya-uznik-azkabana.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/magnitogorskaya1.json",
@@ -4099,7 +4230,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/pryatki_v_temnote.json"
     },
     {
@@ -4200,7 +4331,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 33,
+      "photo_count": 35,
       "photo_refs": [
         "/assets/q/050196f952.webp",
         "/assets/q/08f7158e8d.webp",
@@ -4234,19 +4365,22 @@
         "/assets/q/cefd6c9c46.webp",
         "/assets/q/df90be308f.webp",
         "/assets/q/edb4b7b38c.webp",
-        "/assets/q/ff17c7dc51.webp"
+        "/assets/q/ff17c7dc51.webp",
+        "/assets/rutube/df4cf5b70836a2b5b0fb3ca9acf863a7.jpg",
+        "https://pic.rtbcdn.ru/video/2025-12-02/84/12/841208d04f04a03648d214608f251f73.jpg"
       ],
-      "content_description_chars": 1203,
+      "content_description_chars": 1259,
       "story_description_chars": 351,
       "seo_title": "Квест в стиле Роблокс Дорс в Ростове-на-Дону",
       "seo_description": "Квест Роблокс в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте. Компания Чё За Квест.",
       "seo_description_chars": 126,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 15,
+      "internal_reference_source_count": 16,
       "referenced_by": [
         "src/data/pages/40letpobedy216.json",
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/magnitogorskaya1.json",
@@ -4260,7 +4394,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/roblox-dors.json"
     },
     {
@@ -4349,11 +4483,12 @@
       "seo_description": "Детский праздник в стиле Roblox в Ростове-на-Дону: квест-шоу по мотивам игры, программа под ключ для компании от 2 до 24 участников.",
       "seo_description_chars": 132,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 23,
+      "internal_reference_source_count": 24,
       "referenced_by": [
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
         "src/data/pages/den-rozhdeniya-uznik-azkabana.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/kids.json",
@@ -4407,7 +4542,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 34,
+      "photo_count": 36,
       "photo_refs": [
         "/assets/q/050196f952.webp",
         "/assets/q/100d41f2e5.webp",
@@ -4442,18 +4577,21 @@
         "/assets/q/de9c96f9b8.webp",
         "/assets/q/df90be308f.webp",
         "/assets/q/edb4b7b38c.webp",
-        "/assets/q/f839f0a46c.webp"
+        "/assets/q/f839f0a46c.webp",
+        "/assets/rutube/952765793929dd865b868a36ec37c3c7.jpg",
+        "https://pic.rtbcdn.ru/video/2025-09-14/53/a1/53a118ab612efde42556e0ab49c4c54b.jpg"
       ],
-      "content_description_chars": 1262,
+      "content_description_chars": 1318,
       "story_description_chars": 410,
       "seo_title": "Квест в стиле Роблокс. Радужные Друзья в Ростове-на-Дону",
       "seo_description": "Роблокс - квест в стиле популярной игры в Ростове-на-Дону от компании Чё за Квест. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
       "seo_description_chars": 154,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 15,
+      "internal_reference_source_count": 16,
       "referenced_by": [
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/magnitogorskaya1.json",
@@ -4468,7 +4606,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/roblox.json"
     },
     {
@@ -4807,7 +4945,7 @@
       "video_refs": [
         "/assets/video/ono-zvonok-reznya.mp4"
       ],
-      "photo_count": 25,
+      "photo_count": 27,
       "photo_refs": [
         "/assets/q/1decc15420.webp",
         "/assets/q/233ae2d249.webp",
@@ -4833,9 +4971,11 @@
         "/assets/q/cf806fe1e3.webp",
         "/assets/q/de3c09fe72.webp",
         "/assets/q/df81ba43f8.webp",
-        "/assets/q/f88fe98715.webp"
+        "/assets/q/f88fe98715.webp",
+        "/assets/rutube/576799a1ecf87e4967c73ac168ec1f28.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-05/2f/67/2f67002c96c5a652ea8ccfe3b9571278.jpg"
       ],
-      "content_description_chars": 1702,
+      "content_description_chars": 1758,
       "story_description_chars": 768,
       "seo_title": "Хоррор квест Техасская резня бензопилой -в Ростове-на-Дону",
       "seo_description": "Страшный квест Техасская резня бензопилой - хоррор от компании Чё За Квест в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
@@ -4860,7 +5000,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/tekhasskaya-reznya-benzopiloj.json"
     },
     {
@@ -4891,7 +5031,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 17,
+      "photo_count": 19,
       "photo_refs": [
         "/assets/q/00f59e49ff.webp",
         "/assets/q/1da6a994df.webp",
@@ -4909,9 +5049,11 @@
         "/assets/q/d542b46aa9.webp",
         "/assets/q/dd22acc119.webp",
         "/assets/q/f96e9e3b8c.webp",
-        "/assets/q/fd95a2cecf.webp"
+        "/assets/q/fd95a2cecf.webp",
+        "/assets/rutube/1e815546dadd964ec1c3adf744c11cb0.jpg",
+        "https://pic.rtbcdn.ru/video/2026-03-07/d6/b8/d6b8dfb65ffc3edc9d7514ca3cfc5aa9.jpg"
       ],
-      "content_description_chars": 570,
+      "content_description_chars": 626,
       "story_description_chars": 278,
       "seo_title": "Фантастический угон - весёлый квест от компании «Чё За Квест»",
       "seo_description": "Весёлый квест Фантастический угон в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте. Компания Чё за Квест.",
@@ -4928,7 +5070,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/ugon.json"
     },
     {
@@ -5140,7 +5282,7 @@
       "has_video": false,
       "video_count": 0,
       "video_refs": [],
-      "photo_count": 34,
+      "photo_count": 36,
       "photo_refs": [
         "/assets/q/017eb633c4.webp",
         "/assets/q/037f1c4cfd.webp",
@@ -5175,19 +5317,22 @@
         "/assets/q/cefd6c9c46.webp",
         "/assets/q/df90be308f.webp",
         "/assets/q/e20982debd.webp",
-        "/assets/q/edb4b7b38c.webp"
+        "/assets/q/edb4b7b38c.webp",
+        "/assets/rutube/7d57783b95681114149b68e7cf23280e.jpg",
+        "https://pic.rtbcdn.ru/video/2025-09-17/d1/69/d1694199decfaf77dc1e16766db09386.jpg"
       ],
-      "content_description_chars": 1331,
+      "content_description_chars": 1387,
       "story_description_chars": 465,
       "seo_title": "Уэнсдей. Потерянная душа - квест в Ростове-на-Дону",
       "seo_description": "Квест в лабиринте Уэнсдей. Потерянная душа от компании Чё За Квест в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
       "seo_description_chars": 157,
       "explicit_price_mentions": [],
-      "internal_reference_source_count": 15,
+      "internal_reference_source_count": 16,
       "referenced_by": [
         "src/data/pages/40letpobedy216.json",
         "src/data/pages/among_us.json",
         "src/data/pages/beguschij_v_labirinte.json",
+        "src/data/pages/fnaf.json",
         "src/data/pages/garri-potter-i-kubok-ognya.json",
         "src/data/pages/igra_v_kalmara.json",
         "src/data/pages/magnitogorskaya1.json",
@@ -5201,7 +5346,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-11",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/wednesday-poteryannaya-dusha.json"
     },
     {
@@ -5235,7 +5380,7 @@
       "video_refs": [
         "/assets/video/ono-zvonok-reznya.mp4"
       ],
-      "photo_count": 31,
+      "photo_count": 33,
       "photo_refs": [
         "/assets/q/0254d72340.webp",
         "/assets/q/026ab5c33d.webp",
@@ -5267,9 +5412,11 @@
         "/assets/q/cf806fe1e3.webp",
         "/assets/q/dabc8834b5.webp",
         "/assets/q/de1eab3f60.webp",
-        "/assets/q/f900fb55ae.webp"
+        "/assets/q/f900fb55ae.webp",
+        "/assets/rutube/4372607d50f5de28143601221ce32e21.jpg",
+        "https://pic.rtbcdn.ru/video/2025-10-05/62/8d/628db5a4c8a5305fbd5987f3adc25db9.jpg"
       ],
-      "content_description_chars": 2434,
+      "content_description_chars": 2490,
       "story_description_chars": 495,
       "seo_title": "Звонок - страшный квест в Ростове-на-Дону",
       "seo_description": "Хоррор квест Звонок в Ростове-на-Дону. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте. Компания Чё За Квест.",
@@ -5285,7 +5432,7 @@
         "src/data/site.json",
         "src/data/venues.json"
       ],
-      "last_modified": "2026-08-10",
+      "last_modified": "2026-09-04",
       "source_file": "src/data/pages/zvonok.json"
     }
   ],
@@ -5485,6 +5632,7 @@
             "among_us",
             "igra_v_kalmara",
             "roblox",
+            "fnaf",
             "roblox-dors"
           ]
         }
@@ -5492,6 +5640,7 @@
       "registry_quest_slugs": [
         "among_us",
         "beguschij_v_labirinte",
+        "fnaf",
         "garri-potter-i-kubok-ognya",
         "igra_v_kalmara",
         "minecraft",
@@ -5508,6 +5657,7 @@
       "page_quest_slugs": [
         "among_us",
         "beguschij_v_labirinte",
+        "fnaf",
         "garri-potter-i-kubok-ognya",
         "igra_v_kalmara",
         "minecraft",

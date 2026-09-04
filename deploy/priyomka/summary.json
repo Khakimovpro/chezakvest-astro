@@ -1,6 +1,174 @@
 {
-  "generatedAt": "2026-09-04T02:17:50.146Z",
+  "generatedAt": "2026-09-04T03:16:21.597Z",
   "origin": "http://82.146.60.212",
-  "verdict": "FAIL",
-  "fatalError": "acceptance baseline 4e7930cc is not the active release 20260904T001944Z-ce76e477 (ce76e477); capture a new baseline first"
+  "repositoryHead": "4bd56d0aa7985f0f9b129aaba413a88438182e33",
+  "expectedDeployedCommit": "4bd56d0aa7985f0f9b129aaba413a88438182e33",
+  "verdict": "PASS",
+  "checks": {
+    "manifest": {
+      "localFiles": 4388,
+      "localBytes": 554802657,
+      "serverContentFiles": 4388,
+      "serverContentBytes": 554802657,
+      "deploymentMetadataFiles": 1,
+      "mismatches": 0,
+      "categories": {
+        "all": {
+          "local": {
+            "files": 4388,
+            "bytes": 554802657
+          },
+          "server": {
+            "files": 4388,
+            "bytes": 554802657
+          }
+        },
+        "_astro": {
+          "local": {
+            "files": 25,
+            "bytes": 143420
+          },
+          "server": {
+            "files": 25,
+            "bytes": 143420
+          }
+        },
+        "images": {
+          "local": {
+            "files": 4064,
+            "bytes": 358453481
+          },
+          "server": {
+            "files": 4064,
+            "bytes": 358453481
+          }
+        },
+        "videos": {
+          "local": {
+            "files": 8,
+            "bytes": 115454223
+          },
+          "server": {
+            "files": 8,
+            "bytes": 115454223
+          }
+        },
+        "media_total": {
+          "local": {
+            "files": 4072,
+            "bytes": 473907704
+          },
+          "server": {
+            "files": 4072,
+            "bytes": 473907704
+          }
+        }
+      }
+    },
+    "sitemap": {
+      "urls": 65,
+      "non200": 0,
+      "totalResponseBytes": 72085837
+    },
+    "legacy": {
+      "nginxLines": 100,
+      "nginxRules": 96,
+      "csvRows": 103,
+      "redirectRows": 96,
+      "published200Rows": 7,
+      "publishedSourceNormalizationRedirects": 7,
+      "publishedSelfRedirects": 0,
+      "contractMismatches": 0,
+      "responseMismatches": 0,
+      "queryStringMismatches": 0
+    },
+    "headers": {
+      "samples": 4,
+      "mismatches": 0
+    },
+    "edges": {
+      "cases": 4,
+      "mismatches": 0,
+      "project404Sha256": "c32a102b22eba7e3ad5553619b7b2486567941f5a85f2547382130dc5aed3d26"
+    },
+    "version": {
+      "valid": true,
+      "data": {
+        "commit": "4bd56d0aa7985f0f9b129aaba413a88438182e33",
+        "shortCommit": "4bd56d0a",
+        "branch": "master",
+        "builtAt": "2026-09-04T02:52:21Z",
+        "release": "20260904T025221Z-4bd56d0a",
+        "node": "v22.22.1"
+      }
+    },
+    "timings": [
+      {
+        "source": "dev-server",
+        "path": "/",
+        "measurements": 5,
+        "avg_ttfb_ms": 24.636,
+        "max_ttfb_ms": 25.432,
+        "avg_total_ms": 245.665,
+        "max_total_ms": 267.732,
+        "result": "PASS"
+      },
+      {
+        "source": "dev-server",
+        "path": "/prazdniki-pod-kluch/",
+        "measurements": 5,
+        "avg_ttfb_ms": 24.633,
+        "max_ttfb_ms": 24.91,
+        "avg_total_ms": 385.311,
+        "max_total_ms": 433.788,
+        "result": "PASS"
+      },
+      {
+        "source": "dev-server",
+        "path": "/roblox-land/",
+        "measurements": 5,
+        "avg_ttfb_ms": 24.395,
+        "max_ttfb_ms": 25.044,
+        "avg_total_ms": 203.204,
+        "max_total_ms": 216.64,
+        "result": "PASS"
+      },
+      {
+        "source": "moscow-server-loopback",
+        "path": "/",
+        "measurements": 5,
+        "avg_ttfb_ms": 0.859,
+        "max_ttfb_ms": 1.046,
+        "avg_total_ms": 1.807,
+        "max_total_ms": 1.881,
+        "result": "PASS"
+      },
+      {
+        "source": "moscow-server-loopback",
+        "path": "/prazdniki-pod-kluch/",
+        "measurements": 5,
+        "avg_ttfb_ms": 0.769,
+        "max_ttfb_ms": 0.955,
+        "avg_total_ms": 2.171,
+        "max_total_ms": 2.402,
+        "result": "PASS"
+      },
+      {
+        "source": "moscow-server-loopback",
+        "path": "/roblox-land/",
+        "measurements": 5,
+        "avg_ttfb_ms": 0.714,
+        "max_ttfb_ms": 0.788,
+        "avg_total_ms": 1.837,
+        "max_total_ms": 2.122,
+        "result": "PASS"
+      }
+    ],
+    "liveSmoke": {
+      "defaultGuardExit": 1,
+      "allowedHttpExit": 0,
+      "sitemapPages": 65
+    }
+  },
+  "errors": []
 }
