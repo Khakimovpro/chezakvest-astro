@@ -15,6 +15,7 @@ import {
   isRedirect,
   loadLegacyUrlMap,
 } from '../../migration/legacy-redirects.mjs';
+import { verifyRepresentativeResources } from './verify-resources.mjs';
 
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(SCRIPT_DIR, '../..');
@@ -446,7 +447,7 @@ async function main() {
     errors.push('release baseline metadata does not match release-manifest.tsv');
   }
 
-  console.log('[1/7] Comparing local and deployed manifests');
+  console.log('[1/8] Comparing local and deployed manifests');
   const remoteOutput = await runChecked('ssh', [
     ...sshArgs(),
     `cd ${REMOTE_CURRENT} && find . -type f -printf '%P\\t%s\\n' | LC_ALL=C sort`,
@@ -486,7 +487,7 @@ async function main() {
   await writeTsv('manifest-summary.tsv', ['category', 'local_files', 'server_files', 'local_bytes', 'server_bytes', 'result'], manifestSummaryRows);
   console.log(`  ${localEntries.length} local files / ${sumManifest(localEntries)} bytes; ${remoteContentEntries.length} deployed files / ${sumManifest(remoteContentEntries)} bytes; mismatches: ${manifestDiff.length}`);
 
-  console.log('[2/7] Requesting every sitemap URL');
+  console.log('[2/8] Requesting every sitemap URL');
   const sitemapUrls = await readReleaseSitemapUrls();
   const uniqueSitemapUrls = new Set(sitemapUrls);
   if (sitemapUrls.length === 0) errors.push('sitemap: contains no URLs');
@@ -513,7 +514,7 @@ async function main() {
   await writeTsv('sitemap-pages.tsv', ['sitemap_url', 'stage_path', 'status', 'size_bytes', 'ttfb_ms', 'total_ms', 'result'], sitemapRows);
   console.log(`  ${sitemapRows.length} URLs checked; non-200: ${sitemapRows.filter(({ status }) => status !== 200).length}`);
 
-  console.log('[3/7] Verifying every legacy redirect and every canonical 200 row');
+  console.log('[3/8] Verifying every legacy redirect and every canonical 200 row');
   const legacyEntries = await loadLegacyUrlMap();
   const redirectEntries = legacyEntries.filter(isRedirect);
   const publishedEntries = legacyEntries.filter((entry) => !isRedirect(entry));
@@ -609,7 +610,7 @@ async function main() {
   await writeTsv('legacy-contract-diff.tsv', ['mismatch'], contractMismatches.map((mismatch) => ({ mismatch })));
   console.log(`  nginx lines/rules: ${nginx.lines.length}/${nginx.rules.length}; CSV rows: ${legacyEntries.length} (${redirectEntries.length} redirects, ${publishedEntries.length} published); response mismatches: ${redirectRows.filter(({ result }) => result !== 'PASS').length + publishedRows.filter(({ result }) => result !== 'PASS').length}`);
 
-  console.log('[4/7] Checking representative response headers');
+  console.log('[4/8] Checking representative response headers');
   const largestMatching = (predicate) => [...localEntries].filter(predicate).sort((first, second) => second.size_bytes - first.size_bytes)[0];
   const smallestMatching = (predicate) => [...localEntries].filter(predicate).sort((first, second) => first.size_bytes - second.size_bytes)[0];
   const astroAsset = largestMatching(({ path }) => path.startsWith('_astro/') && ['.css', '.js'].includes(extname(path)));
@@ -651,7 +652,7 @@ async function main() {
   ], headerRows);
   console.log(`  ${headerRows.length} resource classes checked; mismatches: ${headerRows.filter(({ result }) => result !== 'PASS').length}`);
 
-  console.log('[5/7] Exercising 404, path handling, and version.json');
+  console.log('[5/8] Exercising 404, path handling, and version.json');
   const local404Sha = releaseBaseline.project404Sha256;
   const longPath = `/${'a'.repeat(2048)}`;
   const edgeCases = [
@@ -719,7 +720,15 @@ async function main() {
   await writeFile(join(SCRIPT_DIR, 'stage-version.json'), `${JSON.stringify(version, null, 2)}\n`, 'utf8');
   console.log(`  ${edgeRows.length} edge cases checked; edge mismatches: ${edgeRows.filter(({ result }) => result !== 'PASS').length}; version: ${versionIssues.length === 0 ? 'valid' : 'invalid'}`);
 
-  console.log('[6/7] Measuring three pages five times from dev and Moscow');
+  console.log('[6/8] Checking real resources referenced by representative pages');
+  const resourceReport = await verifyRepresentativeResources({ origin: ORIGIN });
+  for (const error of resourceReport.errors) errors.push(`resource smoke: ${error}`);
+  await writeTsv('resources.tsv', [
+    'kind', 'page', 'pageStatus', 'asset', 'assetStatus', 'assetBytes', 'contentType', 'result',
+  ], resourceReport.rows);
+  console.log(`  ${resourceReport.rows.length} page/resource samples checked; mismatches: ${resourceReport.errors.length}`);
+
+  console.log('[7/8] Measuring three pages five times from dev and Moscow');
   const htmlEntries = localEntries
     .filter(({ path }) => path === 'index.html' || path.endsWith('/index.html'))
     .sort((first, second) => second.size_bytes - first.size_bytes);
@@ -790,7 +799,7 @@ done
   ], timingSummaryRows);
   console.log(`  ${timingRows.length} measurements written (${timingSummaryRows.length} source/page summaries)`);
 
-  console.log('[7/7] Proving the HTTP opt-in and running the live smoke');
+  console.log('[8/8] Proving the HTTP opt-in and running the live smoke');
   const smokeBaseEnv = {
     ...process.env,
     SITE_ORIGIN: ORIGIN,
@@ -877,6 +886,10 @@ done
         data: version,
       },
       timings: timingSummaryRows,
+      resources: {
+        samples: resourceReport.rows.length,
+        mismatches: resourceReport.errors.length,
+      },
       liveSmoke: {
         defaultGuardExit: defaultGuard.code,
         allowedHttpExit: allowedSmoke.code,

@@ -12,7 +12,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test tests/*.test.mjs deploy/priyomka/*.test.mjs",
     "generate:redirects": "node migration/build_legacy_redirects.mjs",
     "verify:redirects": "node migration/build_legacy_redirects.mjs --check",
     "verify:redirect-targets": "node scripts/redirect-target-contract.mjs",

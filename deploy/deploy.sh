@@ -866,7 +866,7 @@ smoke_site() {
     redirects_sample="${temporary_dir}/redirects.tsv"
     trap 'rm -rf -- "$temporary_dir"' RETURN
 
-    log "Смоук 1/6: главная страница и запрет индексации"
+    log "Смоук 1/7: главная страница и запрет индексации"
     status="$(curl -sS -D "$headers" -o "$body" -w '%{http_code}' "${ORIGIN}/")"
     [[ "$status" == "200" ]] || {
         printf 'Смоук: главная вернула HTTP %s вместо 200.\n' "$status" >&2
@@ -877,7 +877,7 @@ smoke_site() {
         return 1
     }
 
-    log "Смоук 2/6: версия релиза"
+    log "Смоук 2/7: версия релиза"
     status="$(curl -sS -D "$headers" -o "$body" -w '%{http_code}' "${ORIGIN}/version.json")"
     [[ "$status" == "200" ]] || {
         printf 'Смоук: version.json вернул HTTP %s вместо 200.\n' "$status" >&2
@@ -904,7 +904,7 @@ smoke_site() {
         return 1
     }
 
-    log "Смоук 3/6: пять legacy-редиректов"
+    log "Смоук 3/7: пять legacy-редиректов"
     "${SSH[@]}" "cat '${REDIRECTS_TARGET}'" > "$redirects_contract" || {
         printf 'Смоук: не удалось прочитать активный nginx-конфиг редиректов.\n' >&2
         return 1
@@ -940,7 +940,7 @@ NODE
         }
     done < "$redirects_sample"
 
-    log "Смоук 4/6: обязательные страницы"
+    log "Смоук 4/7: обязательные страницы"
     for target in /kvesty-v-rostove-na-donu/ /contacts/ /privacy/ /new-year/; do
         status="$(curl -sS -o /dev/null -w '%{http_code}' "${ORIGIN}${target}")"
         [[ "$status" == "200" ]] || {
@@ -949,7 +949,7 @@ NODE
         }
     done
 
-    log "Смоук 5/6: robots.txt и sitemap.xml"
+    log "Смоук 5/7: robots.txt и sitemap.xml"
     for target in /robots.txt /sitemap.xml; do
         status="$(curl -sS -o "$body" -w '%{http_code}' "${ORIGIN}${target}")"
         [[ "$status" == "200" && -s "$body" ]] || {
@@ -958,7 +958,10 @@ NODE
         }
     done
 
-    log "Смоук 6/6: проектная страница 404"
+    log "Смоук 6/7: реальные ресурсы типовых страниц"
+    SITE_ORIGIN="$ORIGIN" node deploy/priyomka/verify-resources.mjs || return 1
+
+    log "Смоук 7/7: проектная страница 404"
     status="$(curl -sS -o "$body" -w '%{http_code}' "${ORIGIN}/proverka-404-deploy-script")"
     [[ "$status" == "404" ]] || {
         printf 'Смоук: несуществующий путь вернул HTTP %s вместо 404.\n' "$status" >&2
@@ -1515,10 +1518,25 @@ trap cleanup_before_finalization EXIT
 
 log "Доставляю полный dist/ в ${RELEASE_NAME}"
 assert_remote_lock
-rsync -a --delete --chown=root:root -e "$RSYNC_SSH" dist/ "${REMOTE_HOST}:${REMOTE_STAGING}/"
+rsync -a --no-perms --delete --chown=root:root -e "$RSYNC_SSH" dist/ "${REMOTE_HOST}:${REMOTE_STAGING}/"
+
+log "Нормализую права доставленного релиза"
+assert_remote_lock
+"${SSH[@]}" bash -s -- "$REMOTE_RELEASES" "$REMOTE_STAGING" <<'REMOTE_SCRIPT'
+set -euo pipefail
+releases_dir="$1"
+staging_dir="$2"
+[[ "$staging_dir" == "${releases_dir}/"*.incoming && -d "$staging_dir" ]]
+find "$staging_dir" -type d -exec chmod 0755 -- {} +
+find "$staging_dir" -type f -exec chmod 0644 -- {} +
+if find "$staging_dir" \( -type d ! -perm 0755 -o -type f ! -perm 0644 \) -print -quit | grep -q .; then
+    printf 'Не удалось выставить предсказуемые права в staging-релизе.\n' >&2
+    exit 1
+fi
+REMOTE_SCRIPT
 
 log "Проверяю доставку побайтовыми контрольными суммами"
-RSYNC_DIFFERENCES="$(rsync -a --delete --chown=root:root --checksum --dry-run --itemize-changes \
+RSYNC_DIFFERENCES="$(rsync -a --no-perms --delete --chown=root:root --checksum --dry-run --itemize-changes \
     -e "$RSYNC_SSH" dist/ "${REMOTE_HOST}:${REMOTE_STAGING}/")"
 [[ -z "$RSYNC_DIFFERENCES" ]] || {
     printf '%s\n' "$RSYNC_DIFFERENCES" >&2

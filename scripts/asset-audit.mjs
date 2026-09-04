@@ -52,6 +52,26 @@ async function listFiles(directory) {
   return files;
 }
 
+async function listDirectories(directory) {
+  let entries;
+  try {
+    entries = await readdir(directory, { withFileTypes: true });
+  } catch (error) {
+    if (error?.code === 'ENOENT') return [];
+    throw error;
+  }
+
+  const directories = [directory];
+  for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
+    if (entry.isDirectory()) directories.push(...await listDirectories(join(directory, entry.name)));
+  }
+  return directories;
+}
+
+function fileMode(metadata) {
+  return `0${(metadata.mode & 0o777).toString(8).padStart(3, '0')}`;
+}
+
 function isTextFile(path) {
   return TEXT_EXTENSIONS.has(extname(path).toLowerCase());
 }
@@ -132,8 +152,13 @@ export async function auditPublicAssets({
   const sourceRoots = sourceDirectories.map((directory) => absolutePath(projectRoot, directory));
 
   const publicFiles = await listFiles(resolvedPublicDir);
+  const publicDirectories = await listDirectories(resolvedPublicDir);
   const sourceFiles = (await Promise.all(sourceRoots.map(listFiles))).flat().filter(isTextFile);
   const allDistFiles = await listFiles(resolvedDistDir);
+  const builtAssetFiles = allDistFiles.filter((file) => (
+    toPosix(relative(resolvedDistDir, file)).startsWith('assets/')
+  ));
+  const builtAssetDirectories = await listDirectories(join(resolvedDistDir, 'assets'));
   const buildFiles = allDistFiles.filter((file) => {
     const outputPath = toPosix(relative(resolvedDistDir, file));
     // Public files are copied to dist verbatim. Looking inside them would let
@@ -152,12 +177,54 @@ export async function auditPublicAssets({
   }
 
   const assets = [];
+  const unreadableAssets = [];
   for (const file of publicFiles) {
     const filePath = toPosix(relative(resolvedPublicDir, file));
     const metadata = await stat(file);
     assets.push({ path: `/assets/${filePath}`, bytes: metadata.size });
+    if ((metadata.mode & 0o004) === 0) {
+      unreadableAssets.push({ path: `/assets/${filePath}`, mode: fileMode(metadata) });
+    }
   }
   assets.sort((left, right) => left.path.localeCompare(right.path));
+  unreadableAssets.sort((left, right) => left.path.localeCompare(right.path));
+
+  const untraversableDirectories = [];
+  for (const directory of publicDirectories) {
+    const metadata = await stat(directory);
+    if ((metadata.mode & 0o001) === 0) {
+      const directoryPath = toPosix(relative(resolvedPublicDir, directory));
+      untraversableDirectories.push({
+        path: directoryPath ? `/assets/${directoryPath}/` : '/assets/',
+        mode: fileMode(metadata),
+      });
+    }
+  }
+  untraversableDirectories.sort((left, right) => left.path.localeCompare(right.path));
+
+  const unreadableBuildAssets = [];
+  for (const file of builtAssetFiles) {
+    const metadata = await stat(file);
+    if ((metadata.mode & 0o004) === 0) {
+      unreadableBuildAssets.push({
+        path: `/${toPosix(relative(resolvedDistDir, file))}`,
+        mode: fileMode(metadata),
+      });
+    }
+  }
+  unreadableBuildAssets.sort((left, right) => left.path.localeCompare(right.path));
+
+  const untraversableBuildDirectories = [];
+  for (const directory of builtAssetDirectories) {
+    const metadata = await stat(directory);
+    if ((metadata.mode & 0o001) === 0) {
+      untraversableBuildDirectories.push({
+        path: `/${toPosix(relative(resolvedDistDir, directory))}/`,
+        mode: fileMode(metadata),
+      });
+    }
+  }
+  untraversableBuildDirectories.sort((left, right) => left.path.localeCompare(right.path));
 
   const publicAssetPaths = new Set(assets.map((asset) => asset.path));
   const referencedAssetPaths = new Set([
@@ -180,6 +247,10 @@ export async function auditPublicAssets({
   const errors = [
     ...missingReferences.map((assetPath) => `local asset reference has no public file: ${assetPath}`),
     ...legacyArtifacts.map((asset) => `legacy Tilda executable must not ship: ${asset.path}`),
+    ...unreadableAssets.map((asset) => `public asset is not readable by the web-server user (${asset.mode}): ${asset.path}`),
+    ...untraversableDirectories.map((directory) => `public asset directory is not traversable by the web-server user (${directory.mode}): ${directory.path}`),
+    ...unreadableBuildAssets.map((asset) => `built asset is not readable by the web-server user (${asset.mode}): ${asset.path}`),
+    ...untraversableBuildDirectories.map((directory) => `built asset directory is not traversable by the web-server user (${directory.mode}): ${directory.path}`),
   ];
 
   const references = {};
@@ -204,6 +275,10 @@ export async function auditPublicAssets({
     missingReferences,
     unreferencedAssets,
     legacyArtifacts,
+    unreadableAssets,
+    untraversableDirectories,
+    unreadableBuildAssets,
+    untraversableBuildDirectories,
     references,
   };
 }
@@ -219,7 +294,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     console.log(
       `Asset audit passed: ${report.publicAssetCount} public assets, ${report.referencedAssetPaths.length} referenced, `
       + `${report.sourceOnlyAssets.length} source-only lazy/runtime, ${report.buildOnlyAssets.length} build-only, `
-      + `${report.unreferencedAssets.length} unreferenced report-only (${unreferencedBytes} bytes).`,
+      + `${report.unreferencedAssets.length} unreferenced report-only (${unreferencedBytes} bytes), `
+      + 'all shipped asset paths readable by the web-server user.',
     );
   }
 }
