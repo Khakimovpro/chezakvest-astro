@@ -6,6 +6,8 @@ SSH_KEY="${CHEZAKVEST_SSH_KEY:-${HOME}/.ssh/chezakvest_key}"
 REMOTE_ROOT="/var/www/chezakvest"
 REMOTE_RELEASES="${REMOTE_ROOT}/releases"
 REMOTE_CURRENT="${REMOTE_ROOT}/current"
+REMOTE_RELEASE_CONFIGS="/var/lib/chezakvest/release-configs"
+REMOTE_MANUAL_ROLLBACKS="/var/lib/chezakvest/manual-rollbacks"
 ORIGIN="http://82.146.60.212"
 NGINX_SOURCE="deploy/nginx/chezakvest-stage.conf"
 COMMON_SOURCE="deploy/nginx/chezakvest-common.conf"
@@ -26,16 +28,18 @@ OPERATION_TOKEN="$(date -u +'%Y%m%dT%H%M%SZ')-deploy-$$-${RANDOM}"
 DRY_RUN=0
 SKIP_GATE=0
 ROLLBACK=0
+ROLLBACK_TARGET_NAME=""
 ALLOW_DIRTY=0
 PRESERVE_REMOTE_OWNER=0
 
 usage() {
     cat <<'EOF'
-Использование: deploy/deploy.sh [--dry-run] [--skip-gate] [--rollback] [--allow-dirty]
+Использование: deploy/deploy.sh [--dry-run] [--skip-gate] [--rollback [--to <release>]] [--allow-dirty]
 
   --dry-run      показать план, ничего не менять и не запускать сборку
   --skip-gate    пропустить npm run ci и выполнить только npm run build
-  --rollback     атомарно вернуть предыдущий релиз и перезагрузить nginx
+  --rollback     атомарно вернуть следующий более старый принятый релиз и его nginx-конфигурацию
+  --to <release> выбрать конкретный принятый релиз для --rollback
   --allow-dirty  разрешить релиз из грязного рабочего дерева
 EOF
 }
@@ -49,20 +53,31 @@ die() {
     exit 1
 }
 
-for argument in "$@"; do
-    case "$argument" in
-        --dry-run) DRY_RUN=1 ;;
-        --skip-gate) SKIP_GATE=1 ;;
-        --rollback) ROLLBACK=1 ;;
-        --allow-dirty) ALLOW_DIRTY=1 ;;
+while (( $# )); do
+    case "$1" in
+        --dry-run) DRY_RUN=1; shift ;;
+        --skip-gate) SKIP_GATE=1; shift ;;
+        --rollback) ROLLBACK=1; shift ;;
+        --to)
+            (( $# >= 2 )) || die "для --to укажите имя релиза"
+            [[ -z "$ROLLBACK_TARGET_NAME" ]] || die "флаг --to указан повторно"
+            ROLLBACK_TARGET_NAME="$2"
+            shift 2
+            ;;
+        --allow-dirty) ALLOW_DIRTY=1; shift ;;
         -h|--help) usage; exit 0 ;;
-        *) die "неизвестный аргумент: ${argument}" ;;
+        *) die "неизвестный аргумент: $1" ;;
     esac
 done
 
 if (( ROLLBACK )) && (( SKIP_GATE || ALLOW_DIRTY )); then
     die "флаги --skip-gate и --allow-dirty не применимы вместе с --rollback"
 fi
+[[ -z "$ROLLBACK_TARGET_NAME" || "$ROLLBACK" -eq 1 ]] \
+    || die "флаг --to применим только вместе с --rollback"
+[[ -z "$ROLLBACK_TARGET_NAME" \
+    || "$ROLLBACK_TARGET_NAME" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ ]] \
+    || die "некорректное имя релиза для --to: ${ROLLBACK_TARGET_NAME}"
 
 REPOSITORY_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" \
     || die "команда должна запускаться из Git-репозитория"
@@ -248,10 +263,12 @@ REMOTE_SCRIPT
 }
 
 cleanup_remote_orphans() {
-    "${SSH[@]}" bash -s -- "$REMOTE_RELEASES" "$REMOTE_CURRENT" <<'REMOTE_SCRIPT'
+    "${SSH[@]}" bash -s -- \
+        "$REMOTE_RELEASES" "$REMOTE_CURRENT" "$REMOTE_RELEASE_CONFIGS" <<'REMOTE_SCRIPT'
 set -euo pipefail
 releases_dir="$1"
 current_link="$2"
+configs_root="${3:-}"
 active_target="$(readlink -f -- "$current_link" 2>/dev/null || true)"
 if [[ -n "$active_target" && ! -f "${active_target}/.deploy-verified" ]]; then
     printf 'Активный релиз не имеет признака приёмки: %s\n' "$active_target" >&2
@@ -266,8 +283,23 @@ while IFS= read -r candidate; do
     [[ "$release_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ ]] || continue
     if [[ "$candidate" != "$active_target" && ! -f "${candidate}/.deploy-verified" ]]; then
         rm -rf -- "$candidate"
+        [[ -z "$configs_root" ]] || rm -rf -- "${configs_root:?}/${release_name}"
     fi
 done < <(find "$releases_dir" -mindepth 1 -maxdepth 1 -type d -print)
+if [[ -n "$configs_root" && -d "$configs_root" ]]; then
+    while IFS= read -r pending_config; do
+        [[ "$pending_config" == "${configs_root}/"*.incoming.* \
+            || "$pending_config" == "${configs_root}/"*.previous.* ]] || exit 1
+        rm -rf -- "$pending_config"
+    done < <(find "$configs_root" -mindepth 1 -maxdepth 1 -type d \
+        \( -name '*.incoming.*' -o -name '*.previous.*' \) -print)
+    while IFS= read -r config_dir; do
+        release_name="${config_dir##*/}"
+        [[ "$release_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ ]] || continue
+        [[ -f "${releases_dir}/${release_name}/.deploy-verified" ]] \
+            || rm -rf -- "${configs_root:?}/${release_name}"
+    done < <(find "$configs_root" -mindepth 1 -maxdepth 1 -type d -print)
+fi
 REMOTE_SCRIPT
 }
 
@@ -285,20 +317,50 @@ fi
 REMOTE_SCRIPT
 }
 
-remote_previous_release() {
+remote_rollback_target() {
     local current_target="$1"
-    "${SSH[@]}" bash -s -- "$REMOTE_RELEASES" "$current_target" <<'REMOTE_SCRIPT'
+    local requested_name="$2"
+    "${SSH[@]}" bash -s -- "$REMOTE_RELEASES" "$current_target" "$requested_name" <<'REMOTE_SCRIPT'
 set -euo pipefail
 releases_dir="$1"
 current_target="$2"
+requested_name="${3:-}"
 
 [[ -d "$releases_dir" ]] || exit 0
+current_name="${current_target##*/}"
+[[ "$current_target" == "${releases_dir}/${current_name}" \
+    && "$current_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ \
+    && -f "${current_target}/version.json" \
+    && -f "${current_target}/.deploy-verified" ]] || {
+    printf 'Активный релиз не является принятым: %s\n' "$current_target" >&2
+    exit 1
+}
+
+if [[ -n "$requested_name" ]]; then
+    candidate="${releases_dir}/${requested_name}"
+    [[ "$candidate" != "$current_target" ]] || {
+        printf 'Релиз уже активен: %s\n' "$requested_name" >&2
+        exit 1
+    }
+    [[ -d "$candidate" && -f "${candidate}/version.json" \
+        && -f "${candidate}/.deploy-verified" ]] || {
+        printf 'Релиз не найден или не принят: %s\n' "$requested_name" >&2
+        exit 1
+    }
+    printf '%s\n' "$candidate"
+    exit 0
+fi
+
+seen_current=0
 while IFS= read -r release_name; do
     [[ "$release_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ ]] || continue
     candidate="${releases_dir}/${release_name}"
-    if [[ "$candidate" != "$current_target" \
-        && -f "${candidate}/version.json" \
-        && -f "${candidate}/.deploy-verified" ]]; then
+    [[ -f "${candidate}/version.json" && -f "${candidate}/.deploy-verified" ]] || continue
+    if [[ "$candidate" == "$current_target" ]]; then
+        seen_current=1
+        continue
+    fi
+    if (( seen_current )); then
         printf '%s\n' "$candidate"
         exit 0
     fi
@@ -326,36 +388,455 @@ assert_source_unchanged() {
     }
 }
 
-atomic_switch() {
-    local target="$1"
-    "${SSH[@]}" bash -s -- "$target" "$REMOTE_CURRENT" "$REMOTE_MUTATION_LOCK" <<'REMOTE_SCRIPT'
+ensure_active_release_config() {
+    local expected_active="$1"
+    "${SSH[@]}" bash -s -- \
+        "$expected_active" "$REMOTE_RELEASES" "$REMOTE_CURRENT" "$REMOTE_RELEASE_CONFIGS" \
+        "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" "$REMOTE_MUTATION_LOCK" <<'REMOTE_SCRIPT'
 set -euo pipefail
-target="$1"
-current_link="$2"
-mutation_lock="$3"
-[[ -d "$target" && -f "${target}/version.json" ]] || {
-    printf 'Целевой релиз неполон: %s\n' "$target" >&2
+expected_active="$1"
+releases_dir="$2"
+current_link="$3"
+configs_root="$4"
+shift 4
+targets=("$1" "$2" "$3")
+mutation_lock="$4"
+names=(site.conf common.conf redirects.conf)
+
+release_name="${expected_active##*/}"
+[[ "$expected_active" == "${releases_dir}/${release_name}" \
+    && "$release_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ \
+    && -f "${expected_active}/version.json" \
+    && -f "${expected_active}/.deploy-verified" ]] || {
+    printf 'Активный релиз нельзя связать с nginx-конфигурацией: %s\n' "$expected_active" >&2
     exit 1
 }
 exec 8>"$mutation_lock"
 flock -w 120 8
-original_target="$(readlink -f -- "$current_link")"
+[[ "$(readlink -f -- "$current_link")" == "$expected_active" ]] || {
+    printf 'Активный релиз изменился до фиксации nginx-конфигурации.\n' >&2
+    exit 1
+}
+
+config_dir="${configs_root}/${release_name}"
+if [[ -d "$config_dir" ]]; then
+    [[ -f "${config_dir}/state.tsv" ]] || exit 1
+    IFS=$'\t' read -r stored_name had_site had_common had_redirects had_enabled had_default \
+        < "${config_dir}/state.tsv"
+    [[ "$stored_name" == "$release_name" ]] || exit 1
+    flags=("$had_site" "$had_common" "$had_redirects")
+    for index in "${!targets[@]}"; do
+        [[ "${flags[$index]}" =~ ^[01]$ ]] || exit 1
+        (( flags[index] == 0 )) || [[ -f "${config_dir}/${names[$index]}" ]]
+    done
+    for flag in "$had_enabled" "$had_default"; do [[ "$flag" =~ ^[01]$ ]] || exit 1; done
+fi
+
+pending="${config_dir}.incoming.$$"
+previous="${config_dir}.previous.$$"
+trap 'status=$?; trap - EXIT; if [[ ! -e "$config_dir" && -d "$previous" ]]; then mv -T -- "$previous" "$config_dir" || true; fi; rm -rf -- "$pending" "$previous"; exit "$status"' EXIT
+while IFS= read -r orphan; do
+    [[ "$orphan" == "${config_dir}.incoming."* || "$orphan" == "${config_dir}.previous."* ]] || exit 1
+    rm -rf -- "$orphan"
+done < <(find "$configs_root" -mindepth 1 -maxdepth 1 -type d \
+    \( -name "${release_name}.incoming.*" -o -name "${release_name}.previous.*" \) -print)
+install -d -o root -g root -m 0700 "$configs_root" "$pending"
+flags=()
+for index in "${!targets[@]}"; do
+    if [[ -f "${targets[$index]}" ]]; then
+        flags+=(1)
+        install -o root -g root -m 0600 "${targets[$index]}" "${pending}/${names[$index]}"
+        cmp -s -- "${targets[$index]}" "${pending}/${names[$index]}"
+    else
+        flags+=(0)
+    fi
+done
+had_enabled=0; had_default=0
+[[ -L /etc/nginx/sites-enabled/chezakvest.conf ]] && had_enabled=1
+[[ -L /etc/nginx/sites-enabled/default ]] && had_default=1
+printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+    "$release_name" "${flags[0]}" "${flags[1]}" "${flags[2]}" "$had_enabled" "$had_default" \
+    > "${pending}/state.tsv"
+chmod 0600 "${pending}/state.tsv"
+
+if [[ -d "$config_dir" \
+    && -z "$(find "$config_dir" "$pending" -maxdepth 1 -type f -printf '%f\n' | sort | uniq -u)" ]]; then
+    snapshot_matches=1
+    while IFS= read -r snapshot_file; do
+        cmp -s -- "$snapshot_file" "${pending}/${snapshot_file##*/}" || snapshot_matches=0
+    done < <(find "$config_dir" -mindepth 1 -maxdepth 1 -type f -print)
+    if (( snapshot_matches )); then
+        rm -rf -- "$pending"
+        trap - EXIT
+        exit 0
+    fi
+fi
+
+if [[ -d "$config_dir" ]]; then
+    mv -T -- "$config_dir" "$previous"
+fi
+mv -T -- "$pending" "$config_dir"
+rm -rf -- "$previous"
+trap - EXIT
+REMOTE_SCRIPT
+}
+
+remote_release_config_ready() {
+    local target="$1"
+    "${SSH[@]}" bash -s -- \
+        "$target" "$REMOTE_RELEASES" "$REMOTE_RELEASE_CONFIGS" <<'REMOTE_SCRIPT'
+set -euo pipefail
+target="$1"
+releases_dir="$2"
+configs_root="$3"
+release_name="${target##*/}"
+config_dir="${configs_root}/${release_name}"
+[[ "$target" == "${releases_dir}/${release_name}" \
+    && "$release_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ \
+    && -f "${target}/version.json" \
+    && -f "${target}/.deploy-verified" \
+    && -f "${config_dir}/state.tsv" ]] || {
+    printf 'У принятого релиза нет сохранённой nginx-конфигурации: %s\n' "$release_name" >&2
+    exit 1
+}
+IFS=$'\t' read -r stored_name had_site had_common had_redirects had_enabled had_default \
+    < "${config_dir}/state.tsv"
+[[ "$stored_name" == "$release_name" ]] || exit 1
+names=(site.conf common.conf redirects.conf)
+flags=("$had_site" "$had_common" "$had_redirects")
+for index in "${!names[@]}"; do
+    [[ "${flags[$index]}" =~ ^[01]$ ]] || exit 1
+    (( flags[index] == 0 )) || [[ -f "${config_dir}/${names[$index]}" ]]
+done
+for flag in "$had_enabled" "$had_default"; do [[ "$flag" =~ ^[01]$ ]] || exit 1; done
+REMOTE_SCRIPT
+}
+
+atomic_restore_release() {
+    local target="$1"
+    local expected_active="$2"
+    "${SSH[@]}" bash -s -- \
+        "$target" "$expected_active" "$REMOTE_RELEASES" "$REMOTE_CURRENT" "$REMOTE_RELEASE_CONFIGS" \
+        "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" "$REMOTE_MUTATION_LOCK" \
+        "$REMOTE_MANUAL_ROLLBACKS" "$OPERATION_TOKEN" <<'REMOTE_SCRIPT'
+set -euo pipefail
+target="$1"
+expected_active="$2"
+releases_dir="$3"
+current_link="$4"
+configs_root="$5"
+shift 5
+targets=("$1" "$2" "$3")
+mutation_lock="$4"
+transactions_root="$5"
+operation_token="$6"
+names=(site.conf common.conf redirects.conf)
+
+target_name="${target##*/}"
+config_dir="${configs_root}/${target_name}"
+[[ "$target" == "${releases_dir}/${target_name}" \
+    && "$target_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ \
+    && -f "${target}/version.json" \
+    && -f "${target}/.deploy-verified" \
+    && -f "${config_dir}/state.tsv" ]] || {
+    printf 'Целевой релиз или его nginx-конфигурация неполны: %s\n' "$target_name" >&2
+    exit 1
+}
+IFS=$'\t' read -r stored_name had_site had_common had_redirects had_enabled had_default \
+    < "${config_dir}/state.tsv"
+[[ "$stored_name" == "$target_name" ]] || exit 1
+target_flags=("$had_site" "$had_common" "$had_redirects")
+for index in "${!targets[@]}"; do
+    [[ "${target_flags[$index]}" =~ ^[01]$ ]] || exit 1
+    (( target_flags[index] == 0 )) || [[ -f "${config_dir}/${names[$index]}" ]]
+done
+for flag in "$had_enabled" "$had_default"; do [[ "$flag" =~ ^[01]$ ]] || exit 1; done
+original_name="${expected_active##*/}"
+[[ "$expected_active" == "${releases_dir}/${original_name}" \
+    && "$original_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ \
+    && -f "${expected_active}/version.json" \
+    && -f "${expected_active}/.deploy-verified" \
+    && "$operation_token" =~ ^[A-Za-z0-9-]+$ ]]
+
+exec 8>"$mutation_lock"
+flock -w 120 8
+[[ "$(readlink -f -- "$current_link")" == "$expected_active" ]] || {
+    printf 'Активный релиз изменился до начала отката.\n' >&2
+    exit 1
+}
+
+transaction_dir="${transactions_root}/${operation_token}"
+pending_transaction="${transaction_dir}.incoming.$$"
+[[ ! -e "$transaction_dir" && ! -L "$transaction_dir" ]]
+trap 'rm -rf -- "$pending_transaction"' EXIT
+install -d -o root -g root -m 0700 "$transactions_root" "$pending_transaction"
+current_flags=()
+for index in "${!targets[@]}"; do
+    if [[ -f "${targets[$index]}" ]]; then
+        current_flags+=(1)
+        install -o root -g root -m 0600 \
+            "${targets[$index]}" "${pending_transaction}/${names[$index]}"
+        cmp -s -- "${targets[$index]}" "${pending_transaction}/${names[$index]}"
+    else
+        current_flags+=(0)
+    fi
+done
+current_enabled=0; current_default=0
+[[ -L /etc/nginx/sites-enabled/chezakvest.conf ]] && current_enabled=1
+[[ -L /etc/nginx/sites-enabled/default ]] && current_default=1
+printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+    "$operation_token" "prepared" "$expected_active" "$target" \
+    "${current_flags[0]}" "${current_flags[1]}" "${current_flags[2]}" \
+    "$current_enabled" "$current_default" > "${pending_transaction}/state.tsv"
+chmod 0600 "${pending_transaction}/state.tsv"
+mv -T -- "$pending_transaction" "$transaction_dir"
+trap - EXIT
+
+restore_file() {
+    local destination="$1" existed="$2" source="$3"
+    if (( existed )); then
+        install -o root -g root -m 0644 "$source" "${destination}.restore.$$"
+        cmp -s -- "$source" "${destination}.restore.$$"
+        mv -f -- "${destination}.restore.$$" "$destination"
+    else
+        rm -f -- "$destination"
+    fi
+}
+
+switch_release() {
+    local release="$1"
+    ln -sfn "$release" "${current_link}.restore"
+    mv -Tf -- "${current_link}.restore" "$current_link"
+}
+
 restore_original() {
-    status=$?
+    original_status=$?
     trap - EXIT HUP INT TERM
     set +e
-    ln -sfn "$original_target" "${current_link}.restore"
-    mv -Tf -- "${current_link}.restore" "$current_link"
-    if nginx -t; then systemctl reload nginx || true; fi
-    exit "$status"
+    restore_failed=0
+    rm -f /etc/nginx/sites-enabled/chezakvest.conf /etc/nginx/sites-enabled/default \
+        || restore_failed=1
+    for index in "${!targets[@]}"; do
+        restore_file "${targets[$index]}" "${current_flags[$index]}" \
+            "${transaction_dir}/${names[$index]}" || restore_failed=1
+    done
+    (( current_enabled == 0 )) \
+        || ln -sfn "${targets[0]}" /etc/nginx/sites-enabled/chezakvest.conf \
+        || restore_failed=1
+    (( current_default == 0 )) \
+        || ln -sfn /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default \
+        || restore_failed=1
+    switch_release "$expected_active" || restore_failed=1
+    if nginx -t; then
+        systemctl reload nginx || restore_failed=1
+    else
+        restore_failed=1
+    fi
+    if (( restore_failed == 0 )); then
+        rm -rf -- "$transaction_dir" || restore_failed=1
+    fi
+    if (( restore_failed )); then
+        printf 'КРИТИЧНО: компенсация rollback-транзакции не завершена; состояние сохранено в %s.\n' \
+            "$transaction_dir" >&2
+        exit 70
+    fi
+    (( original_status != 0 )) || original_status=1
+    exit "$original_status"
 }
 trap restore_original EXIT HUP INT TERM
-temporary_link="${current_link}.new"
-ln -sfn "$target" "$temporary_link"
-mv -Tf "$temporary_link" "$current_link"
+
+rm -f /etc/nginx/sites-enabled/chezakvest.conf /etc/nginx/sites-enabled/default
+for index in "${!targets[@]}"; do
+    restore_file "${targets[$index]}" "${target_flags[$index]}" \
+        "${config_dir}/${names[$index]}"
+done
+(( had_enabled == 0 )) || ln -sfn "${targets[0]}" /etc/nginx/sites-enabled/chezakvest.conf
+(( had_default == 0 )) \
+    || ln -sfn /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+switch_release "$target"
 nginx -t
 systemctl reload nginx
+sed 's/\tprepared\t/\tcommitted\t/' "${transaction_dir}/state.tsv" \
+    > "${transaction_dir}/state.tsv.new"
+chmod 0600 "${transaction_dir}/state.tsv.new"
+mv -f -- "${transaction_dir}/state.tsv.new" "${transaction_dir}/state.tsv"
 trap - EXIT HUP INT TERM
+REMOTE_SCRIPT
+}
+
+manual_rollback_transaction_status() {
+    local operation_token="$1"
+    local status
+    set +e
+    "${SSH[@]}" "test -f '${REMOTE_MANUAL_ROLLBACKS}/${operation_token}/state.tsv'"
+    status=$?
+    set -e
+    case "$status" in
+        0) printf 'PRESENT\n' ;;
+        1) printf 'ABSENT\n' ;;
+        *) return "$status" ;;
+    esac
+}
+
+cleanup_manual_rollback_orphans() {
+    "${SSH[@]}" bash -s -- "$REMOTE_MANUAL_ROLLBACKS" "$REMOTE_MUTATION_LOCK" <<'REMOTE_SCRIPT'
+set -euo pipefail
+transactions_root="$1"
+mutation_lock="$2"
+exec 8>"$mutation_lock"
+flock -w 120 8
+[[ -d "$transactions_root" ]] || exit 0
+while IFS= read -r orphan; do
+    [[ "$orphan" == "${transactions_root}/"*.incoming.* ]] || exit 1
+    rm -rf -- "$orphan"
+done < <(find "$transactions_root" -mindepth 1 -maxdepth 1 -type d -name '*.incoming.*' -print)
+REMOTE_SCRIPT
+}
+
+manual_rollback_is_committed() {
+    local operation_token="$1"
+    local expected_target="$2"
+    "${SSH[@]}" bash -s -- \
+        "$REMOTE_MANUAL_ROLLBACKS" "$operation_token" "$expected_target" \
+        "$REMOTE_CURRENT" <<'REMOTE_SCRIPT'
+set -euo pipefail
+transactions_root="$1"
+operation_token="$2"
+expected_target="$3"
+current_link="$4"
+state_file="${transactions_root}/${operation_token}/state.tsv"
+[[ -f "$state_file" ]]
+IFS=$'\t' read -r stored_token phase _ target _ < "$state_file"
+[[ "$stored_token" == "$operation_token" \
+    && "$phase" == "committed" \
+    && "$target" == "$expected_target" \
+    && "$(readlink -f -- "$current_link")" == "$expected_target" ]]
+nginx -t >/dev/null
+REMOTE_SCRIPT
+}
+
+restore_manual_rollback() {
+    local operation_token="$1"
+    local expected_target="${2:-}"
+    local owner_record="${3:-}"
+    "${SSH[@]}" bash -s -- \
+        "$REMOTE_MANUAL_ROLLBACKS" "$operation_token" "$expected_target" "$owner_record" \
+        "$REMOTE_RELEASES" "$REMOTE_CURRENT" \
+        "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" "$REMOTE_MUTATION_LOCK" <<'REMOTE_SCRIPT'
+set -euo pipefail
+transactions_root="$1"
+operation_token="$2"
+expected_target="$3"
+owner_record="$4"
+releases_dir="$5"
+current_link="$6"
+shift 6
+targets=("$1" "$2" "$3")
+mutation_lock="$4"
+names=(site.conf common.conf redirects.conf)
+transaction_dir="${transactions_root}/${operation_token}"
+state_file="${transaction_dir}/state.tsv"
+[[ -f "$state_file" ]]
+IFS=$'\t' read -r stored_token phase original_release target \
+    had_site had_common had_redirects had_enabled had_default < "$state_file"
+[[ "$stored_token" == "$operation_token" \
+    && ( "$phase" == "prepared" || "$phase" == "committed" ) \
+    && "$original_release" == "${releases_dir}/"* \
+    && "$target" == "${releases_dir}/"* \
+    && -f "${original_release}/.deploy-verified" \
+    && -f "${target}/.deploy-verified" ]]
+[[ -z "$expected_target" || "$target" == "$expected_target" ]]
+[[ -z "$owner_record" || "$(cat "$owner_record" 2>/dev/null)" == "$operation_token" ]]
+flags=("$had_site" "$had_common" "$had_redirects")
+for index in "${!targets[@]}"; do
+    [[ "${flags[$index]}" =~ ^[01]$ ]]
+    (( flags[index] == 0 )) || [[ -f "${transaction_dir}/${names[$index]}" ]]
+done
+for flag in "$had_enabled" "$had_default"; do [[ "$flag" =~ ^[01]$ ]]; done
+
+exec 8>"$mutation_lock"
+flock -w 120 8
+active_release="$(readlink -f -- "$current_link")"
+[[ "$active_release" == "$original_release" || "$active_release" == "$target" ]]
+
+restore_file() {
+    local destination="$1" existed="$2" source="$3"
+    if (( existed )); then
+        install -o root -g root -m 0644 "$source" "${destination}.restore.$$"
+        cmp -s -- "$source" "${destination}.restore.$$"
+        mv -f -- "${destination}.restore.$$" "$destination"
+    else
+        rm -f -- "$destination"
+    fi
+}
+
+rm -f /etc/nginx/sites-enabled/chezakvest.conf /etc/nginx/sites-enabled/default
+for index in "${!targets[@]}"; do
+    restore_file "${targets[$index]}" "${flags[$index]}" \
+        "${transaction_dir}/${names[$index]}"
+done
+(( had_enabled == 0 )) || ln -sfn "${targets[0]}" /etc/nginx/sites-enabled/chezakvest.conf
+(( had_default == 0 )) \
+    || ln -sfn /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+ln -sfn "$original_release" "${current_link}.restore"
+mv -Tf -- "${current_link}.restore" "$current_link"
+nginx -t
+systemctl reload nginx
+rm -rf -- "$transaction_dir"
+[[ -z "$owner_record" ]] || rm -f -- "$owner_record"
+printf '%s\n' "$original_release"
+REMOTE_SCRIPT
+}
+
+complete_manual_rollback() {
+    local operation_token="$1"
+    local expected_target="$2"
+    "${SSH[@]}" bash -s -- \
+        "$REMOTE_MANUAL_ROLLBACKS" "$operation_token" "$expected_target" \
+        "$REMOTE_CURRENT" "$REMOTE_RELEASE_CONFIGS" \
+        "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" "$REMOTE_MUTATION_LOCK" <<'REMOTE_SCRIPT'
+set -euo pipefail
+transactions_root="$1"
+operation_token="$2"
+expected_target="$3"
+current_link="$4"
+configs_root="$5"
+shift 5
+targets=("$1" "$2" "$3")
+mutation_lock="$4"
+names=(site.conf common.conf redirects.conf)
+transaction_dir="${transactions_root}/${operation_token}"
+state_file="${transaction_dir}/state.tsv"
+[[ -f "$state_file" ]]
+IFS=$'\t' read -r stored_token phase _ target _ < "$state_file"
+[[ "$stored_token" == "$operation_token" \
+    && "$phase" == "committed" \
+    && "$target" == "$expected_target" \
+    && "$(readlink -f -- "$current_link")" == "$expected_target" ]]
+target_name="${target##*/}"
+config_dir="${configs_root}/${target_name}"
+IFS=$'\t' read -r stored_name had_site had_common had_redirects had_enabled had_default \
+    < "${config_dir}/state.tsv"
+[[ "$stored_name" == "$target_name" ]]
+flags=("$had_site" "$had_common" "$had_redirects")
+for index in "${!targets[@]}"; do
+    [[ "${flags[$index]}" =~ ^[01]$ ]]
+    if (( flags[index] )); then
+        cmp -s -- "${targets[$index]}" "${config_dir}/${names[$index]}"
+    else
+        [[ ! -e "${targets[$index]}" ]]
+    fi
+done
+for flag in "$had_enabled" "$had_default"; do [[ "$flag" =~ ^[01]$ ]]; done
+actual_enabled=0; actual_default=0
+[[ -L /etc/nginx/sites-enabled/chezakvest.conf ]] && actual_enabled=1
+[[ -L /etc/nginx/sites-enabled/default ]] && actual_default=1
+[[ "$had_enabled" == "$actual_enabled" && "$had_default" == "$actual_default" ]]
+exec 8>"$mutation_lock"
+flock -w 120 8
+[[ "$(readlink -f -- "$current_link")" == "$expected_target" ]]
+nginx -t >/dev/null
+rm -rf -- "$transaction_dir"
 REMOTE_SCRIPT
 }
 
@@ -377,10 +858,12 @@ expected_commit_for_release() {
 smoke_site() {
     local expected_commit="$1"
     local expected_release="$2"
-    local temporary_dir headers body status actual_commit actual_release source target location remote_404_hash local_404_hash
+    local temporary_dir headers body redirects_contract redirects_sample status actual_commit actual_release source target location remote_404_hash local_404_hash
     temporary_dir="$(mktemp -d)"
     headers="${temporary_dir}/headers"
     body="${temporary_dir}/body"
+    redirects_contract="${temporary_dir}/redirects.conf"
+    redirects_sample="${temporary_dir}/redirects.tsv"
     trap 'rm -rf -- "$temporary_dir"' RETURN
 
     log "Смоук 1/6: главная страница и запрет индексации"
@@ -422,6 +905,28 @@ smoke_site() {
     }
 
     log "Смоук 3/6: пять legacy-редиректов"
+    "${SSH[@]}" "cat '${REDIRECTS_TARGET}'" > "$redirects_contract" || {
+        printf 'Смоук: не удалось прочитать активный nginx-конфиг редиректов.\n' >&2
+        return 1
+    }
+    if ! REDIRECTS_CONTRACT="$redirects_contract" node --input-type=module > "$redirects_sample" <<'NODE'
+import { readFileSync } from 'node:fs';
+
+const lines = readFileSync(process.env.REDIRECTS_CONTRACT, 'utf8').split('\n');
+let emitted = 0;
+for (const line of lines) {
+    const match = line.match(/^location = (\S+) \{ return 301 ([^$;]+)\$is_args\$args; \}$/);
+    if (!match) continue;
+    process.stdout.write(`${match[1]}\t${match[2]}\n`);
+    emitted += 1;
+    if (emitted === 5) break;
+}
+if (emitted !== 5) process.exit(1);
+NODE
+    then
+        printf 'Смоук: активный nginx-конфиг не содержит пять проверяемых legacy-редиректов.\n' >&2
+        return 1
+    fi
     while IFS=$'\t' read -r source target; do
         status="$(curl -sS -D "$headers" -o /dev/null -w '%{http_code}' "${ORIGIN}${source}")"
         [[ "$status" == "301" ]] || {
@@ -433,21 +938,7 @@ smoke_site() {
             printf 'Смоук: %s направляет в %s вместо %s.\n' "$source" "$location" "$target" >&2
             return 1
         }
-    done < <(node --input-type=module <<'NODE'
-import { readFileSync } from 'node:fs';
-
-const lines = readFileSync('docs/nginx-legacy-redirects.conf', 'utf8').split('\n');
-let emitted = 0;
-for (const line of lines) {
-    const match = line.match(/^location = (\S+) \{ return 301 ([^$;]+)\$is_args\$args; \}$/);
-    if (!match) continue;
-    process.stdout.write(`${match[1]}\t${match[2]}\n`);
-    emitted += 1;
-    if (emitted === 5) break;
-}
-if (emitted !== 5) process.exit(1);
-NODE
-    )
+    done < "$redirects_sample"
 
     log "Смоук 4/6: обязательные страницы"
     for target in /kvesty-v-rostove-na-donu/ /contacts/ /privacy/ /new-year/; do
@@ -487,22 +978,74 @@ NODE
 
 rollback_to() {
     local target="$1"
-    local original_target expected_commit rollback_failed
-    [[ -n "$target" ]] || die "предыдущий релиз не найден"
+    local original_target original_commit expected_commit current_after_failure restored_target transaction_status
+    [[ -n "$target" ]] || die "целевой релиз не найден"
     original_target="$(remote_current_target)"
     [[ -n "$original_target" ]] || die "активный релиз не найден"
+    ensure_active_release_config "$original_target" \
+        || die "не удалось сохранить nginx-конфигурацию активного релиза"
+    remote_release_config_ready "$target" \
+        || die "откат на релиз без сохранённой nginx-конфигурации запрещён"
+    original_commit="$(expected_commit_for_release "$original_target")"
     expected_commit="$(expected_commit_for_release "$target")"
-    log "Переключаю current на предыдущий релиз: $(basename "$target")"
-    rollback_failed=0
-    atomic_switch "$target" || rollback_failed=1
-    if (( ! rollback_failed )); then
-        smoke_site "$expected_commit" "$(basename "$target")" || rollback_failed=1
+    log "Единой транзакцией возвращаю релиз и nginx-конфигурацию: $(basename "$target")"
+    PRESERVE_REMOTE_OWNER=1
+    if ! atomic_restore_release "$target" "$original_target"; then
+        printf 'Ответ rollback-транзакции неуспешен; сверяю durable state на сервере.\n' >&2
+        if manual_rollback_is_committed "$OPERATION_TOKEN" "$target"; then
+            printf 'Сервер подтвердил завершённую rollback-транзакцию; продолжаю смоук.\n' >&2
+        elif ! transaction_status="$(manual_rollback_transaction_status "$OPERATION_TOKEN")"; then
+            PRESERVE_REMOTE_OWNER=1
+            die "не удалось достоверно проверить rollback-state после сбоя связи"
+        elif [[ "$transaction_status" == "PRESENT" ]]; then
+            PRESERVE_REMOTE_OWNER=1
+            die "rollback-транзакция не завершена; owner-token и recovery-state сохранены"
+        elif [[ "$transaction_status" != "ABSENT" ]]; then
+            PRESERVE_REMOTE_OWNER=1
+            die "сервер вернул неизвестный статус rollback-state"
+        else
+            current_after_failure="$(remote_current_target)" \
+                || { PRESERVE_REMOTE_OWNER=1; die "состояние сервера после сбоя rollback недоступно"; }
+            [[ "$current_after_failure" == "$original_target" ]] \
+                || { PRESERVE_REMOTE_OWNER=1; die "rollback-state исчез, но исходный релиз не восстановлен"; }
+            smoke_site "$original_commit" "$(basename "$original_target")" \
+                || { PRESERVE_REMOTE_OWNER=1; die "rollback отменён, но исходное состояние не прошло смоук"; }
+            PRESERVE_REMOTE_OWNER=0
+            die "серверная транзакция отката не выполнена; исходное состояние подтверждено"
+        fi
     fi
-    if (( rollback_failed )); then
-        printf 'Откат не прошёл проверку; возвращаю исходный current.\n' >&2
-        atomic_switch "$original_target"
+    if ! smoke_site "$expected_commit" "$(basename "$target")"; then
+        printf 'Откат не прошёл HTTP-смоук; возвращаю исходные релиз и nginx-конфигурацию.\n' >&2
+        if ! restored_target="$(restore_manual_rollback "$OPERATION_TOKEN" "$target")"; then
+            PRESERVE_REMOTE_OWNER=1
+            die "откат не прошёл проверку; recovery-state сохранён для восстановления исходного состояния"
+        fi
+        [[ "$restored_target" == "$original_target" ]] \
+            || { PRESERVE_REMOTE_OWNER=1; die "сервер восстановил неожиданный исходный релиз"; }
+        smoke_site "$original_commit" "$(basename "$original_target")" \
+            || { PRESERVE_REMOTE_OWNER=1; die "исходное состояние восстановлено, но его HTTP-смоук не прошёл"; }
+        PRESERVE_REMOTE_OWNER=0
         die "откат отменён, исходный релиз восстановлен"
     fi
+    if ! complete_manual_rollback "$OPERATION_TOKEN" "$target"; then
+        if ! transaction_status="$(manual_rollback_transaction_status "$OPERATION_TOKEN")"; then
+            PRESERVE_REMOTE_OWNER=1
+            die "не удалось достоверно проверить закрытие rollback-state"
+        fi
+        if [[ "$transaction_status" == "PRESENT" ]]; then
+            PRESERVE_REMOTE_OWNER=1
+            die "релиз прошёл смоук, но rollback-state не закрыт; повторный --rollback выполнит recovery"
+        fi
+        [[ "$transaction_status" == "ABSENT" ]] \
+            || { PRESERVE_REMOTE_OWNER=1; die "сервер вернул неизвестный статус rollback-state"; }
+        current_after_failure="$(remote_current_target)" \
+            || { PRESERVE_REMOTE_OWNER=1; die "rollback завершён, но итоговое состояние недоступно"; }
+        [[ "$current_after_failure" == "$target" ]] \
+            || { PRESERVE_REMOTE_OWNER=1; die "rollback-state закрыт, но целевой релиз не активен"; }
+        smoke_site "$expected_commit" "$(basename "$target")" \
+            || { PRESERVE_REMOTE_OWNER=1; die "rollback-state закрыт, но повторный смоук не прошёл"; }
+    fi
+    PRESERVE_REMOTE_OWNER=0
     log "Откат завершён успешно"
 }
 
@@ -523,11 +1066,13 @@ recover_interrupted_deploy() {
         "${REMOTE_OPERATION_OWNER}.abandoned" "$TAKEN_OVER_TOKEN" \
         "/var/lib/chezakvest/deploy-transactions" \
         "$REMOTE_CURRENT" "$REMOTE_RELEASES" "$REMOTE_MUTATION_LOCK" \
-        "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" <<'REMOTE_SCRIPT'
+        "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" \
+        "$REMOTE_RELEASE_CONFIGS" <<'REMOTE_SCRIPT'
 set -euo pipefail
 owner_record="$1"; expected_token="$2"; transaction_dir="$3"
 current_link="$4"; releases_dir="$5"; mutation_lock="$6"
 nginx_target="$7"; common_target="$8"; redirects_target="$9"
+release_configs_root="${10:-${releases_dir}/.release-configs}"
 targets=("$nginx_target" "$common_target" "$redirects_target")
 
 [[ "$(cat "$owner_record" 2>/dev/null)" == "$expected_token" ]]
@@ -636,6 +1181,7 @@ systemctl reload nginx
 trap - EXIT HUP INT TERM
 rm -f -- "$marker" "$owner_record"
 rm -rf -- "$new_release" || true
+rm -rf -- "${release_configs_root:?}/${new_release##*/}" || true
 rm -rf -- "$snapshot_dir"
 printf 'RECOVERED\t%s\n' "$previous_release"
 REMOTE_SCRIPT
@@ -677,12 +1223,13 @@ REMOTE_SCRIPT
 dry_run_recovery_status() {
     "${SSH[@]}" bash -s -- \
         "$REMOTE_DEPLOY_LOCK" "$REMOTE_MUTATION_LOCK" "$REMOTE_OPERATION_OWNER" \
-        "/var/lib/chezakvest/deploy-transactions" <<'REMOTE_SCRIPT'
+        "/var/lib/chezakvest/deploy-transactions" "$REMOTE_MANUAL_ROLLBACKS" <<'REMOTE_SCRIPT'
 set -euo pipefail
 deploy_lock="$1"
 mutation_lock="$2"
 owner_file="$3"
 transaction_dir="$4"
+manual_rollbacks="$5"
 exec 9>"$deploy_lock"
 flock -n 9 || { printf 'BUSY\n'; exit 0; }
 token=""
@@ -691,6 +1238,10 @@ token=""
 [[ -n "$token" ]] || { printf 'CLEAR\n'; exit 0; }
 exec 8>"$mutation_lock"
 flock -n 8 || { printf 'BUSY_MUTATION\t%s\n' "$token"; exit 0; }
+if [[ -f "${manual_rollbacks}/${token}/state.tsv" ]]; then
+    printf 'ROLLBACK_RECOVERY\t%s\n' "$token"
+    exit 0
+fi
 matches=0
 shopt -s nullglob
 for marker in "${transaction_dir}"/*.activated; do
@@ -712,7 +1263,7 @@ if (( ROLLBACK )); then
         DRY_RECOVERY_STATUS="$(dry_run_recovery_status)" \
             || die "не удалось проверить persistent owner для dry-run"
         case "$DRY_RECOVERY_STATUS" in
-            RECOVERY$'\t'*-deploy-*|OWNER_NO_STATE$'\t'*-deploy-*)
+            RECOVERY$'\t'*-deploy-*|ROLLBACK_RECOVERY$'\t'*-deploy-*|OWNER_NO_STATE$'\t'*-deploy-*)
                 log "Сухой запуск: изменений не будет"
                 printf 'Обнаружен persistent owner: %s\n' "${DRY_RECOVERY_STATUS#*$'\t'}"
                 printf 'План: под свободными operation- и mutation-lock выполнить takeover; '\
@@ -729,6 +1280,29 @@ if (( ROLLBACK )); then
         esac
     fi
     if (( TAKEOVER_OCCURRED )); then
+        if ! TAKEOVER_ROLLBACK_STATUS="$(manual_rollback_transaction_status "$TAKEN_OVER_TOKEN")"; then
+            restore_abandoned_deploy_guard || true
+            die "не удалось достоверно проверить manual rollback-state; owner-token сохранён"
+        fi
+        if [[ "$TAKEOVER_ROLLBACK_STATUS" == "PRESENT" ]]; then
+            log "Восстанавливаю незавершённую rollback-транзакцию ${TAKEN_OVER_TOKEN}"
+            if ! RECOVERED_TARGET="$(restore_manual_rollback \
+                "$TAKEN_OVER_TOKEN" "" "${REMOTE_OPERATION_OWNER}.abandoned")"; then
+                restore_abandoned_deploy_guard || true
+                die "не удалось восстановить исходные release/nginx; owner-token сохранён"
+            fi
+            RECOVERED_COMMIT="$(expected_commit_for_release "$RECOVERED_TARGET")"
+            smoke_site "$RECOVERED_COMMIT" "$(basename "$RECOVERED_TARGET")" \
+                || die "release/nginx восстановлены, но итоговый HTTP-смоук не прошёл"
+            cleanup_manual_rollback_orphans \
+                || printf 'ПРЕДУПРЕЖДЕНИЕ: recovery завершён, но временные rollback-снимки не очищены.\n' >&2
+            log "Незавершённая rollback-транзакция согласованно откачена"
+            exit 0
+        fi
+        [[ "$TAKEOVER_ROLLBACK_STATUS" == "ABSENT" ]] || {
+            restore_abandoned_deploy_guard || true
+            die "сервер вернул неизвестный статус manual rollback-state"
+        }
         log "Восстанавливаю незавершённую deploy-транзакцию ${TAKEN_OVER_TOKEN}"
         if ! RECOVERY_OUTPUT="$(recover_interrupted_deploy)"; then
             restore_abandoned_deploy_guard || true
@@ -756,20 +1330,30 @@ if (( ROLLBACK )); then
         esac
         prune_remote_nginx_backups \
             || printf 'ПРЕДУПРЕЖДЕНИЕ: recovery завершён, но история nginx backup не ограничена.\n' >&2
+        cleanup_manual_rollback_orphans \
+            || printf 'ПРЕДУПРЕЖДЕНИЕ: recovery завершён, но временные rollback-снимки не очищены.\n' >&2
         exit 0
     fi
     CURRENT_TARGET="$(remote_current_target)"
-    PREVIOUS_TARGET="$(remote_previous_release "$CURRENT_TARGET")"
     [[ -n "$CURRENT_TARGET" ]] || die "активный релиз не найден"
-    [[ -n "$PREVIOUS_TARGET" ]] || die "предыдущий релиз не найден"
+    if ! ROLLBACK_TARGET="$(remote_rollback_target "$CURRENT_TARGET" "$ROLLBACK_TARGET_NAME")"; then
+        die "не удалось выбрать принятый релиз для отката"
+    fi
+    if [[ -z "$ROLLBACK_TARGET" ]]; then
+        die "более старых принятых релизов нет; последовательный откат завершён"
+    fi
+    remote_release_config_ready "$ROLLBACK_TARGET" \
+        || die "откат на релиз без сохранённой nginx-конфигурации запрещён"
     if (( DRY_RUN )); then
         log "Сухой запуск: изменений не будет"
-        printf 'Текущий релиз: %s\nПредыдущий релиз: %s\n' \
-            "$(basename "$CURRENT_TARGET")" "$(basename "$PREVIOUS_TARGET")"
-        printf 'Будут выполнены: атомарное переключение current, nginx -t, reload nginx и HTTP-смоук.\n'
+        printf 'Текущий релиз: %s\nЦелевой релиз: %s\n' \
+            "$(basename "$CURRENT_TARGET")" "$(basename "$ROLLBACK_TARGET")"
+        printf 'Будут выполнены: единая транзакция возврата release/nginx, nginx -t, reload nginx и HTTP-смоук.\n'
         exit 0
     fi
-    rollback_to "$PREVIOUS_TARGET"
+    cleanup_manual_rollback_orphans \
+        || die "не удалось безопасно очистить временные rollback-снимки"
+    rollback_to "$ROLLBACK_TARGET"
     prune_remote_nginx_backups \
         || printf 'ПРЕДУПРЕЖДЕНИЕ: откат завершён, но история nginx backup не ограничена.\n' >&2
     exit 0
@@ -806,9 +1390,12 @@ if (( DRY_RUN )); then
         'Далее: version.json, установка rsync при необходимости, доставка с checksum-проверкой,' \
         'проверка места, очистка бесхозных каталогов, атомарное переключение current,' \
         'установка common/redirect nginx-конфигов и site-конфига только в stage-режиме,' \
-        'nginx -t, reload, HTTP-смоук и сохранение трёх последних релизов.'
+        'сохранение nginx-снимка, nginx -t, reload, HTTP-смоук и сохранение трёх последних релизов.'
     exit 0
 fi
+
+cleanup_manual_rollback_orphans \
+    || die "не удалось безопасно очистить временные rollback-снимки"
 
 command -v rsync >/dev/null || die "локально не найден rsync"
 command -v curl >/dev/null || die "локально не найден curl"
@@ -1002,6 +1589,10 @@ cleanup_before_activation() {
 trap cleanup_before_activation EXIT
 
 PREVIOUS_TARGET="$(remote_current_target)"
+if [[ -n "$PREVIOUS_TARGET" ]]; then
+    ensure_active_release_config "$PREVIOUS_TARGET" \
+        || die "не удалось связать активный релиз с его nginx-конфигурацией"
+fi
 NGINX_STATE="$("${SSH[@]}" bash -s -- "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" <<'REMOTE_SCRIPT'
 nginx_target="$1"
 common_target="$2"
@@ -1022,7 +1613,7 @@ finalize_failed_release() {
     "${SSH[@]}" bash -s -- \
         "$REMOTE_RELEASES" "$REMOTE_RELEASE" "$REMOTE_CURRENT" \
         "/var/lib/chezakvest/deploy-transactions/${RELEASE_NAME}.activated" \
-        "$OPERATION_TOKEN" "$REMOTE_MUTATION_LOCK" <<'REMOTE_SCRIPT'
+        "$OPERATION_TOKEN" "$REMOTE_MUTATION_LOCK" "$REMOTE_RELEASE_CONFIGS" <<'REMOTE_SCRIPT'
 set -euo pipefail
 releases_dir="$1"
 release_dir="$2"
@@ -1030,6 +1621,7 @@ current_link="$3"
 activation_marker="$4"
 operation_token="$5"
 mutation_lock="$6"
+release_configs_root="$7"
 release_name="${release_dir##*/}"
 [[ "$release_dir" == "${releases_dir}/${release_name}" ]]
 [[ "$release_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ ]]
@@ -1046,6 +1638,7 @@ if [[ -s "$activation_marker" ]]; then
     rm -f -- "$activation_marker"
 fi
 rm -rf -- "$release_dir"
+rm -rf -- "${release_configs_root:?}/${release_name}"
 REMOTE_SCRIPT
 }
 
@@ -1147,15 +1740,18 @@ apply_nginx_config() {
         "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" "$RELEASE_STAMP" \
         "$HAD_NGINX" "$HAD_COMMON" "$HAD_REDIRECTS" "$HAD_ENABLED" "$HAD_DEFAULT" \
         "$REMOTE_RELEASE" "$REMOTE_CURRENT" "$PREVIOUS_TARGET" "$RELEASE_NAME" \
-        "$OPERATION_TOKEN" "$REMOTE_MUTATION_LOCK" <<'REMOTE_SCRIPT'
+        "$OPERATION_TOKEN" "$REMOTE_MUTATION_LOCK" "$REMOTE_RELEASE_CONFIGS" <<'REMOTE_SCRIPT'
 set -euo pipefail
 source_dir="$1"; nginx_mode="$2"
 nginx_target="$3"; common_target="$4"; redirects_target="$5"; backup_suffix="$6"
 had_nginx="$7"; had_common="$8"; had_redirects="$9"; had_enabled="${10}"; had_default="${11}"
 release_dir="${12}"; current_link="${13}"; previous_target="${14}"; release_name="${15}"
 operation_token="${16}"; mutation_lock="${17}"
+release_configs_root="${18:-${release_dir%/*}/.release-configs}"
 transaction_dir="/var/lib/chezakvest/deploy-transactions"
 activation_marker="${transaction_dir}/${release_name}.activated"
+release_config="${release_configs_root}/${release_name}"
+pending_release_config="${release_config}.incoming.$$"
 
 [[ "$source_dir" == /tmp/chezakvest-deploy-* && -d "$source_dir" ]]
 [[ "$nginx_mode" == "stage" || "$nginx_mode" == "tls" ]]
@@ -1218,6 +1814,7 @@ on_exit() {
         restore_previous_config || rollback_failed=1
         (( rollback_failed != 0 )) || rm -f -- "$activation_marker"
     fi
+    rm -rf -- "$pending_release_config" "$release_config"
     rm -rf -- "$source_dir"
     exit "$status"
 }
@@ -1249,6 +1846,30 @@ mv -f -- "${common_target}.new" "$common_target"
 install -o root -g root -m 0644 "$source_dir/redirects.conf" "${redirects_target}.new"
 mv -f -- "${redirects_target}.new" "$redirects_target"
 nginx -t
+
+[[ ! -e "$release_config" && ! -L "$release_config" ]]
+install -d -o root -g root -m 0700 "$release_configs_root" "$pending_release_config"
+config_targets=("$nginx_target" "$common_target" "$redirects_target")
+config_names=(site.conf common.conf redirects.conf)
+config_flags=()
+for index in "${!config_targets[@]}"; do
+    if [[ -f "${config_targets[$index]}" ]]; then
+        config_flags+=(1)
+        install -o root -g root -m 0600 \
+            "${config_targets[$index]}" "${pending_release_config}/${config_names[$index]}"
+        cmp -s -- "${config_targets[$index]}" "${pending_release_config}/${config_names[$index]}"
+    else
+        config_flags+=(0)
+    fi
+done
+config_enabled=0; config_default=0
+[[ -L /etc/nginx/sites-enabled/chezakvest.conf ]] && config_enabled=1
+[[ -L /etc/nginx/sites-enabled/default ]] && config_default=1
+printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
+    "$release_name" "${config_flags[0]}" "${config_flags[1]}" "${config_flags[2]}" \
+    "$config_enabled" "$config_default" > "${pending_release_config}/state.tsv"
+chmod 0600 "${pending_release_config}/state.tsv"
+mv -T -- "$pending_release_config" "$release_config"
 
 ln -sfn "$release_dir" "${current_link}.new"
 mv -Tf -- "${current_link}.new" "$current_link"
@@ -1363,11 +1984,36 @@ if ! smoke_site "$FULL_COMMIT" "$RELEASE_NAME"; then
 fi
 
 assert_remote_lock
-if ! "${SSH[@]}" bash -s -- "$REMOTE_RELEASE" "$FULL_COMMIT" "$RELEASE_NAME" <<'REMOTE_SCRIPT'
+if ! "${SSH[@]}" bash -s -- \
+    "$REMOTE_RELEASE" "$FULL_COMMIT" "$RELEASE_NAME" "$REMOTE_RELEASE_CONFIGS" \
+    "$NGINX_TARGET" "$COMMON_TARGET" "$REDIRECTS_TARGET" <<'REMOTE_SCRIPT'
 set -euo pipefail
 release_dir="$1"
 commit="$2"
 release_name="$3"
+configs_root="$4"
+shift 4
+targets=("$1" "$2" "$3")
+names=(site.conf common.conf redirects.conf)
+config_dir="${configs_root}/${release_name}"
+[[ -f "${config_dir}/state.tsv" ]]
+IFS=$'\t' read -r stored_name had_site had_common had_redirects had_enabled had_default \
+    < "${config_dir}/state.tsv"
+[[ "$stored_name" == "$release_name" ]]
+flags=("$had_site" "$had_common" "$had_redirects")
+for index in "${!targets[@]}"; do
+    [[ "${flags[$index]}" =~ ^[01]$ ]]
+    if (( flags[index] )); then
+        [[ -f "${targets[$index]}" && -f "${config_dir}/${names[$index]}" ]]
+        cmp -s -- "${targets[$index]}" "${config_dir}/${names[$index]}"
+    else
+        [[ ! -e "${targets[$index]}" ]]
+    fi
+done
+actual_enabled=0; actual_default=0
+[[ -L /etc/nginx/sites-enabled/chezakvest.conf ]] && actual_enabled=1
+[[ -L /etc/nginx/sites-enabled/default ]] && actual_default=1
+[[ "$had_enabled" == "$actual_enabled" && "$had_default" == "$actual_default" ]]
 printf '%s\t%s\n' "$commit" "$release_name" > "${release_dir}/.deploy-verified.new"
 chmod 0444 "${release_dir}/.deploy-verified.new"
 mv -f -- "${release_dir}/.deploy-verified.new" "${release_dir}/.deploy-verified"
@@ -1393,11 +2039,13 @@ log "Оставляю на сервере три последних релиза
 assert_remote_lock
 "${SSH[@]}" bash -s -- \
     "$REMOTE_RELEASES" "$REMOTE_CURRENT" \
-    "/var/lib/chezakvest/deploy-transactions/${RELEASE_NAME}.activated" <<'REMOTE_SCRIPT'
+    "/var/lib/chezakvest/deploy-transactions/${RELEASE_NAME}.activated" \
+    "$REMOTE_RELEASE_CONFIGS" <<'REMOTE_SCRIPT'
 set -euo pipefail
 releases_dir="$1"
 current_link="$2"
 activation_marker="$3"
+configs_root="${4:-}"
 active_target="$(readlink -f -- "$current_link")"
 
 while IFS= read -r candidate; do
@@ -1405,6 +2053,7 @@ while IFS= read -r candidate; do
     [[ "$release_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ ]] || continue
     if [[ "$candidate" != "$active_target" && ! -f "${candidate}/.deploy-verified" ]]; then
         rm -rf -- "$candidate"
+        [[ -z "$configs_root" ]] || rm -rf -- "${configs_root:?}/${release_name}"
     fi
 done < <(find "$releases_dir" -mindepth 1 -maxdepth 1 -type d -print)
 
@@ -1428,7 +2077,17 @@ for release_name in "${accepted_releases[@]}"; do
         continue
     fi
     rm -rf -- "${releases_dir:?}/${release_name}"
+    [[ -z "$configs_root" ]] || rm -rf -- "${configs_root:?}/${release_name}"
 done
+
+if [[ -n "$configs_root" && -d "$configs_root" ]]; then
+    while IFS= read -r config_dir; do
+        release_name="${config_dir##*/}"
+        [[ "$release_name" =~ ^[0-9]{8}T[0-9]{6}Z-[0-9a-f]{8}$ ]] || continue
+        [[ -f "${releases_dir}/${release_name}/.deploy-verified" ]] \
+            || rm -rf -- "${configs_root:?}/${release_name}"
+    done < <(find "$configs_root" -mindepth 1 -maxdepth 1 -type d -print)
+fi
 
 rm -f -- "$activation_marker"
 REMOTE_SCRIPT
