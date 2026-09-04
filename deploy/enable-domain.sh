@@ -4,16 +4,16 @@ set -euo pipefail
 REMOTE_HOST="root@82.146.60.212"
 SERVER_IP="82.146.60.212"
 SSH_KEY="${CHEZAKVEST_SSH_KEY:-${HOME}/.ssh/chezakvest_key}"
-CANONICAL_HOST="xn--80aehcht5ci1b.xn--p1ai"
-# This is the only list of domain names used by the cutover.
-DOMAIN_CANDIDATES=(
-    "$CANONICAL_HOST"
-    "www.xn--80aehcht5ci1b.xn--p1ai"
-    "chezakvest.ru"
-    "www.chezakvest.ru"
-)
+PRODUCTION_CANONICAL_HOST="xn--80aehcht5ci1b.xn--p1ai"
+TEST_CANONICAL_HOST="chezakvest.com"
+STAGE=""
+STAGE_LABEL=""
+CANONICAL_HOST=""
+NGINX_TEMPLATE=""
+KEEP_NOINDEX=0
+DOMAIN_CANDIDATES=()
+REQUIRED_DOMAINS=()
 
-PROD_TEMPLATE="deploy/nginx/chezakvest-prod.conf"
 COMMON_SOURCE="deploy/nginx/chezakvest-common.conf"
 REMOTE_SITE_CONFIG="/etc/nginx/sites-available/chezakvest.conf"
 REMOTE_COMMON_CONFIG="/etc/nginx/snippets/chezakvest-common.conf"
@@ -31,14 +31,16 @@ TRANSACTION_ID=""
 CUTOVER_LOCK_FD=""
 CONFIRMED_DOMAINS=()
 ALTERNATIVE_DOMAINS=()
+MISSING_REQUIRED_DOMAINS=()
 
 usage() {
     cat <<'EOF'
-Использование: deploy/enable-domain.sh [--dry-run] [--only-cert | --rollback]
+Использование: deploy/enable-domain.sh --stage test|production [--dry-run] [--only-cert | --rollback]
 
-  --dry-run    проверить предпосылки и показать полный план без изменений
-  --only-cert  выпустить/обновить сертификат, не переключая конфигурацию nginx
-  --rollback   восстановить конфигурацию nginx, сохранённую перед переключением
+  --stage       явно выбрать тестовый домен или боевой домен
+  --dry-run     проверить предпосылки и показать полный план без изменений
+  --only-cert   выпустить/обновить сертификат, не переключая конфигурацию nginx
+  --rollback    восстановить конфигурацию nginx, сохранённую перед этим этапом
 
 Если задан CERTBOT_EMAIL, Certbot зарегистрирует его для уведомлений. Без переменной
 используется неинтерактивная регистрация без e-mail.
@@ -54,19 +56,62 @@ die() {
     exit 1
 }
 
-for argument in "$@"; do
-    case "$argument" in
-        --dry-run) DRY_RUN=1 ;;
-        --only-cert) ONLY_CERT=1 ;;
-        --rollback) ROLLBACK=1 ;;
+while (( $# > 0 )); do
+    case "$1" in
+        --stage)
+            (( $# >= 2 )) || die "после --stage укажите test или production"
+            [[ -z "$STAGE" ]] || die "--stage можно указать только один раз"
+            STAGE="$2"
+            shift 2
+            ;;
+        --stage=*)
+            [[ -z "$STAGE" ]] || die "--stage можно указать только один раз"
+            STAGE="${1#*=}"
+            shift
+            ;;
+        --dry-run) DRY_RUN=1; shift ;;
+        --only-cert) ONLY_CERT=1; shift ;;
+        --rollback) ROLLBACK=1; shift ;;
         -h|--help) usage; exit 0 ;;
-        *) die "неизвестный аргумент: ${argument}" ;;
+        *) die "неизвестный аргумент: $1" ;;
     esac
 done
 
 if (( ONLY_CERT && ROLLBACK )); then
     die "--only-cert и --rollback нельзя использовать вместе"
 fi
+
+case "$STAGE" in
+    test)
+        STAGE_LABEL="тестовый домен"
+        CANONICAL_HOST="$TEST_CANONICAL_HOST"
+        NGINX_TEMPLATE="deploy/nginx/chezakvest-test.conf"
+        KEEP_NOINDEX=1
+        DOMAIN_CANDIDATES=(
+            "$TEST_CANONICAL_HOST"
+            "www.${TEST_CANONICAL_HOST}"
+        )
+        # The test certificate and redirect contract require both names.
+        REQUIRED_DOMAINS=("${DOMAIN_CANDIDATES[@]}")
+        ;;
+    production)
+        STAGE_LABEL="боевой домен"
+        CANONICAL_HOST="$PRODUCTION_CANONICAL_HOST"
+        NGINX_TEMPLATE="deploy/nginx/chezakvest-prod.conf"
+        KEEP_NOINDEX=0
+        DOMAIN_CANDIDATES=(
+            "$PRODUCTION_CANONICAL_HOST"
+            "www.${PRODUCTION_CANONICAL_HOST}"
+            "$TEST_CANONICAL_HOST"
+            "www.${TEST_CANONICAL_HOST}"
+            "chezakvest.ru"
+            "www.chezakvest.ru"
+        )
+        REQUIRED_DOMAINS=("$PRODUCTION_CANONICAL_HOST")
+        ;;
+    "") die "этап обязателен: укажите --stage test или --stage production" ;;
+    *) die "неизвестный этап '${STAGE}': укажите test или production" ;;
+esac
 
 REPOSITORY_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" \
     || die "команда должна запускаться из Git-репозитория"
@@ -80,8 +125,8 @@ for command_name in ssh scp dig curl openssl sed grep awk sort head tail flock; 
 done
 
 if (( ! ROLLBACK )); then
-    [[ -f "$PROD_TEMPLATE" && -f "$COMMON_SOURCE" ]] \
-        || die "не найдены шаблон production nginx или общий конфиг"
+    [[ -f "$NGINX_TEMPLATE" && -f "$COMMON_SOURCE" ]] \
+        || die "не найдены шаблон nginx для этапа '${STAGE}' или общий конфиг"
 fi
 
 SSH=(ssh -i "$SSH_KEY" -o BatchMode=yes -o ConnectTimeout=15 "$REMOTE_HOST")
@@ -117,15 +162,24 @@ query_aaaa_records() {
         | sort -u
 }
 
+is_required_domain() {
+    local candidate="$1"
+    local required
+    for required in "${REQUIRED_DOMAINS[@]}"; do
+        [[ "$candidate" != "$required" ]] || return 0
+    done
+    return 1
+}
+
 inspect_dns() {
     local strict="$1"
     local domain a_records aaaa_records a_printable aaaa_printable
-    local canonical_ok=0
 
     CONFIRMED_DOMAINS=()
     ALTERNATIVE_DOMAINS=()
+    MISSING_REQUIRED_DOMAINS=()
 
-    log "Проверяю A-записи доменов"
+    log "Проверяю A-записи: ${STAGE_LABEL} (${STAGE})"
     for domain in "${DOMAIN_CANDIDATES[@]}"; do
         a_records="$(query_a_records "$domain")"
         aaaa_records="$(query_aaaa_records "$domain")"
@@ -137,27 +191,33 @@ inspect_dns() {
         if [[ "$a_records" == "$SERVER_IP" && -z "$aaaa_records" ]]; then
             printf '  ГОТОВО  %-42s A=%s, AAAA=нет\n' "$domain" "$SERVER_IP"
             CONFIRMED_DOMAINS+=("$domain")
-            if [[ "$domain" == "$CANONICAL_HOST" ]]; then
-                canonical_ok=1
-            else
+            if [[ "$domain" != "$CANONICAL_HOST" ]]; then
                 ALTERNATIVE_DOMAINS+=("$domain")
             fi
-        elif [[ "$domain" == "$CANONICAL_HOST" ]]; then
+        elif is_required_domain "$domain"; then
             printf '  НЕ ГОТОВО  %-40s A=%s, AAAA=%s\n' \
                 "$domain" "$a_printable" "$aaaa_printable"
+            MISSING_REQUIRED_DOMAINS+=("$domain")
         else
             printf '  ПРОПУСК  %-42s A=%s, AAAA=%s\n' \
                 "$domain" "$a_printable" "$aaaa_printable"
         fi
     done
 
-    if (( strict && ! canonical_ok )); then
-        printf '\nВ Beget создайте/замените A-записи @ и www для чезаквест.рф на %s.\n' \
-            "$SERVER_IP" >&2
-        printf 'Дополнительные chezakvest.ru и www.chezakvest.ru переводите только если они нужны.\n' >&2
+    if (( ${#MISSING_REQUIRED_DOMAINS[@]} > 0 )); then
+        printf '\nЭтап «%s» пока НЕ ГОТОВ: обязательные имена не указывают только на %s: %s.\n' \
+            "$STAGE_LABEL" "$SERVER_IP" "${MISSING_REQUIRED_DOMAINS[*]}" >&2
+        if [[ "$STAGE" == "test" ]]; then
+            printf 'В REG.RU замените A-записи @ и www зоны chezakvest.com на %s.\n' \
+                "$SERVER_IP" >&2
+        else
+            printf 'В Beget замените A-запись @ зоны чезаквест.рф на %s.\n' \
+                "$SERVER_IP" >&2
+            printf 'Дополнительные www, chezakvest.com и chezakvest.ru переводите только если они нужны.\n' >&2
+        fi
         printf 'Старую AAAA-запись веб-хоста удалите: на новом сервере IPv6 не настроен.\n' >&2
         printf 'MX, TXT, SPF, DKIM и DMARC не меняйте. Подождите TTL и повторите команду.\n' >&2
-        return 1
+        (( ! strict )) || return 1
     fi
 }
 
@@ -176,7 +236,7 @@ supports_http2_directive() {
 }
 
 print_dry_run() {
-    local nginx_version timer_enabled timer_active
+    local nginx_version timer_enabled timer_active rollback_stage
     inspect_dns 0
     nginx_version="$(remote_nginx_version)" \
         || die "не удалось определить версию nginx на сервере"
@@ -184,6 +244,9 @@ print_dry_run() {
     timer_active="$("${SSH[@]}" 'systemctl is-active certbot.timer 2>&1 || true')"
 
     log "Сухой запуск: изменений не будет"
+    printf 'Этап: %s (%s)\n' "$STAGE_LABEL" "$STAGE"
+    printf 'Канонический адрес: https://%s\n' "$CANONICAL_HOST"
+    printf 'Обязательные имена сертификата: %s\n' "${REQUIRED_DOMAINS[*]}"
     printf 'Сервер: %s (%s)\n' "$REMOTE_HOST" "$SERVER_IP"
     printf 'nginx: %s; certbot.timer: %s/%s\n' "$nginx_version" "$timer_enabled" "$timer_active"
     if supports_http2_directive "$nginx_version"; then
@@ -195,9 +258,16 @@ print_dry_run() {
 
     if (( ROLLBACK )); then
         if "${SSH[@]}" "test -s '$REMOTE_ROLLBACK_STATE'"; then
-            printf '%s\n' \
-                'План: восстановить сохранённые site/common-конфиги, выполнить nginx -t,' \
-                'reload nginx и проверить HTTP-ответ сервера.'
+            rollback_stage="$("${SSH[@]}" \
+                "awk -F '\\t' 'NR == 1 && \$1 == \"#\" { print \$3 }' '$REMOTE_ROLLBACK_STATE'")"
+            if [[ "$rollback_stage" == "$STAGE" ]]; then
+                printf '%s\n' \
+                    'План: восстановить сохранённые site/common-конфиги, выполнить nginx -t,' \
+                    'reload nginx и проверить HTTP-ответ сервера.'
+            else
+                printf 'Сохранённое состояние относится к этапу %s, а выбран этап %s; откат будет остановлен.\n' \
+                    "${rollback_stage:-неизвестно}" "$STAGE"
+            fi
         else
             printf 'Сохранённого состояния для отката пока нет: %s\n' "$REMOTE_ROLLBACK_STATE"
         fi
@@ -206,19 +276,30 @@ print_dry_run() {
 
     if (( ONLY_CERT )); then
         printf '%s\n' \
-            'План: потребовать A-запись основного домена, выбрать доступные альтернативы,' \
+            'План: потребовать все обязательные A-записи, выбрать доступные альтернативы,' \
             'проверить ACME webroot, запустить Certbot и настроить timer/deploy-hook.'
         return 0
     fi
 
-    printf '%s\n' \
-        'План: потребовать A-запись основного домена и автоматически выбрать альтернативы;' \
-        'сохранить предыдущие site/common-конфиги рядом с суффиксом .bak-<UTC-время>;' \
-        'включить временную HTTP-конфигурацию с noindex и проверить ACME webroot;' \
-        'выпустить сертификат, включить автопродление и HTTPS без HSTS;' \
-        'проверить HTTP 200, цепочку сертификата и срок действия;' \
-        'включить HSTS, снять X-Robots-Tag и выполнить строгий npm run verify:live;' \
-        'при любой ошибке после начала транзакции восстановить предыдущий nginx.'
+    if [[ "$STAGE" == "test" ]]; then
+        printf '%s\n' \
+            'План: потребовать A-записи chezakvest.com и www.chezakvest.com;' \
+            'сохранить предыдущие site/common-конфиги рядом с суффиксом .bak-<UTC-время>;' \
+            'включить HTTP bootstrap с noindex, закрытым robots.txt и недоступным sitemap.xml;' \
+            'проверить ACME webroot и выпустить сертификат на оба имени;' \
+            'включить HTTPS без HSTS, сохранив X-Robots-Tag: noindex, nofollow;' \
+            'проверить HTTPS, сертификат, www-редирект и запрет индексации;' \
+            'при любой ошибке после начала транзакции восстановить предыдущий nginx.'
+    else
+        printf '%s\n' \
+            'План: потребовать A-запись боевого домена и автоматически выбрать альтернативы;' \
+            'сохранить предыдущие site/common-конфиги рядом с суффиксом .bak-<UTC-время>;' \
+            'включить временную HTTP-конфигурацию с noindex и проверить ACME webroot;' \
+            'выпустить сертификат, включить автопродление и HTTPS без HSTS;' \
+            'проверить HTTP 200, цепочку сертификата и срок действия;' \
+            'включить HSTS, снять X-Robots-Tag и выполнить строгий npm run verify:live;' \
+            'при любой ошибке после начала транзакции восстановить предыдущий nginx.'
+    fi
 }
 
 if (( DRY_RUN )); then
@@ -228,17 +309,25 @@ fi
 
 restore_remote_config() {
     local expected_transaction_id="${1:-}"
-    "${SSH[@]}" bash -s -- "$REMOTE_ROLLBACK_STATE" "$expected_transaction_id" <<'REMOTE_SCRIPT'
+    "${SSH[@]}" bash -s -- \
+        "$REMOTE_ROLLBACK_STATE" "$expected_transaction_id" "$STAGE" <<'REMOTE_SCRIPT'
 set -euo pipefail
 state_file="$1"
 expected_transaction_id="$2"
+expected_stage="$3"
 [[ -s "$state_file" ]] || {
     printf 'Состояние для отката не найдено: %s\n' "$state_file" >&2
     exit 1
 }
 
+IFS=$'\t' read -r marker actual_transaction_id actual_stage < "$state_file"
+[[ "$marker" == "#" && "$actual_stage" == "$expected_stage" ]] || {
+    printf 'Rollback-state относится к этапу %s, выбран этап %s; откат остановлен.\n' \
+        "${actual_stage:-неизвестно}" "$expected_stage" >&2
+    exit 1
+}
+
 if [[ -n "$expected_transaction_id" ]]; then
-    IFS=$'\t' read -r marker actual_transaction_id ignored < "$state_file"
     [[ "$marker" == "#" && "$actual_transaction_id" == "$expected_transaction_id" ]] || {
         printf 'Rollback-state принадлежит другой транзакции; автоматический откат остановлен.\n' >&2
         exit 1
@@ -286,11 +375,11 @@ if (( ROLLBACK )); then
         || die "nginx восстановлен, но HTTP-проверка сервера не прошла"
     [[ "$status" =~ ^[23][0-9][0-9]$ ]] \
         || die "nginx восстановлен, но сервер вернул HTTP ${status}"
-    log "Откат завершён; для возврата на Tilda восстановите прежние A-записи в Beget/REG.RU"
+    log "Откат этапа '${STAGE}' завершён; восстановите его прежние A-записи из сохранённого экспорта"
     exit 0
 fi
 
-inspect_dns 1 || die "основной домен ещё не указывает только на ${SERVER_IP}"
+inspect_dns 1 || die "обязательные домены этапа '${STAGE}' ещё не указывают только на ${SERVER_IP}"
 
 SERVER_NAMES="${CONFIRMED_DOMAINS[*]}"
 ALTERNATIVE_NAMES="${ALTERNATIVE_DOMAINS[*]:-}"
@@ -308,7 +397,7 @@ fi
 LOCAL_TMP="$(mktemp -d)"
 TRANSACTION_ID="$(date -u +'%Y%m%dT%H%M%SZ')-$$-${RANDOM}"
 
-render_prod_config() {
+render_domain_config() {
     local robots_header="$1"
     local hsts_header="$2"
     local output="$3"
@@ -322,7 +411,7 @@ render_prod_config() {
         -e "s|__HTTP2_DIRECTIVE__|${HTTP2_DIRECTIVE}|g" \
         -e "s|__ROBOTS_HEADER__|${robots_header}|g" \
         -e "s|__HSTS_HEADER__|${hsts_header}|g" \
-        "$PROD_TEMPLATE" > "$output"
+        "$NGINX_TEMPLATE" > "$output"
 
     if grep -Eq '__[A-Z0-9_]+__' "$output"; then
         printf 'После рендера nginx остались незаполненные маркеры.\n' >&2
@@ -331,7 +420,8 @@ render_prod_config() {
 }
 
 render_bootstrap_config() {
-    cat > "$LOCAL_TMP/bootstrap.conf" <<EOF
+    {
+        cat <<EOF
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -340,15 +430,35 @@ server {
     set \$chezakvest_robots_header "noindex, nofollow";
     set \$chezakvest_hsts_header "";
     include /etc/nginx/snippets/chezakvest-common.conf;
+EOF
+        if [[ "$STAGE" == "test" ]]; then
+            cat <<'EOF'
+
+    location = /robots.txt {
+        default_type text/plain;
+        return 200 "User-agent: *\nDisallow: /\n";
+    }
+
+    location = /sitemap.xml {
+        return 404;
+    }
+EOF
+        fi
+        cat <<'EOF'
 }
 EOF
+    } > "$LOCAL_TMP/bootstrap.conf"
 }
 
 render_bootstrap_config
-render_prod_config "noindex, nofollow" "" \
+render_domain_config "noindex, nofollow" "" \
     "$LOCAL_TMP/tls-pre-hsts.conf"
-render_prod_config "" "max-age=31536000" \
-    "$LOCAL_TMP/tls-final.conf"
+if [[ "$STAGE" == "test" ]]; then
+    cp -- "$LOCAL_TMP/tls-pre-hsts.conf" "$LOCAL_TMP/tls-final.conf"
+else
+    render_domain_config "" "max-age=31536000" \
+        "$LOCAL_TMP/tls-final.conf"
+fi
 cp -- "$COMMON_SOURCE" "$LOCAL_TMP/common.conf"
 
 REMOTE_TMP="$("${SSH[@]}" 'mktemp -d /tmp/chezakvest-domain.XXXXXX')" \
@@ -367,7 +477,7 @@ REMOTE_TMP="$("${SSH[@]}" 'mktemp -d /tmp/chezakvest-domain.XXXXXX')" \
 begin_transaction() {
     "${SSH[@]}" bash -s -- \
         "$REMOTE_TMP" "$REMOTE_SITE_CONFIG" "$REMOTE_COMMON_CONFIG" "$REMOTE_ROLLBACK_STATE" \
-        "$TRANSACTION_ID" \
+        "$TRANSACTION_ID" "$STAGE" \
         <<'REMOTE_SCRIPT'
 set -euo pipefail
 source_dir="$1"
@@ -375,11 +485,12 @@ site_target="$2"
 common_target="$3"
 state_file="$4"
 transaction_id="$5"
+stage="$6"
 stamp="$(date -u +'%Y%m%dT%H%M%SZ')"
 pending_state="${source_dir}/rollback.tsv"
 
 mkdir -p -- "$(dirname "$state_file")" /var/www/acme/.well-known/acme-challenge
-printf '#\t%s\t-\n' "$transaction_id" > "$pending_state"
+printf '#\t%s\t%s\n' "$transaction_id" "$stage" > "$pending_state"
 
 for target in "$site_target" "$common_target"; do
     if [[ -e "$target" || -L "$target" ]]; then
@@ -441,13 +552,14 @@ REMOTE_SCRIPT
 }
 
 remote_transaction_state_status() {
-    "${SSH[@]}" bash -s -- "$REMOTE_ROLLBACK_STATE" "$TRANSACTION_ID" <<'REMOTE_SCRIPT'
+    "${SSH[@]}" bash -s -- "$REMOTE_ROLLBACK_STATE" "$TRANSACTION_ID" "$STAGE" <<'REMOTE_SCRIPT'
 set -euo pipefail
 state_file="$1"
 expected_id="$2"
+expected_stage="$3"
 [[ -s "$state_file" ]] || exit 1
-IFS=$'\t' read -r marker actual_id ignored < "$state_file"
-[[ "$marker" == "#" && "$actual_id" == "$expected_id" ]]
+IFS=$'\t' read -r marker actual_id actual_stage < "$state_file"
+[[ "$marker" == "#" && "$actual_id" == "$expected_id" && "$actual_stage" == "$expected_stage" ]]
 REMOTE_SCRIPT
 }
 
@@ -664,6 +776,60 @@ verify_final_headers() {
     fi
 }
 
+verify_test_policy() {
+    local headers body robots status canonical sitemap_headers
+    headers="$LOCAL_TMP/test-final-headers"
+    body="$LOCAL_TMP/test-final-body"
+    robots="$LOCAL_TMP/test-robots"
+    sitemap_headers="$LOCAL_TMP/test-sitemap-headers"
+
+    status="$(curl --noproxy '*' -sS -D "$headers" -o "$body" \
+        --connect-timeout 15 --max-time 60 -w '%{http_code}' \
+        "https://${CANONICAL_HOST}/")" || return 1
+    [[ "$status" == "200" ]] || return 1
+    tr -d '\r' < "$headers" \
+        | grep -Eiq '^X-Robots-Tag:[[:space:]]*noindex,[[:space:]]*nofollow$' \
+        || {
+            printf 'На тестовом домене отсутствует X-Robots-Tag: noindex, nofollow.\n' >&2
+            return 1
+        }
+    if tr -d '\r' < "$headers" | grep -Eiq '^Strict-Transport-Security:'; then
+        printf 'На тестовом домене появился запрещённый HSTS.\n' >&2
+        return 1
+    fi
+
+    canonical="$(grep -o -m1 -E '<link rel="canonical" href="[^"]+"' "$body" \
+        | sed -nE 's/^.*href="([^"]+)"$/\1/p')"
+    [[ "$canonical" == "https://${PRODUCTION_CANONICAL_HOST}/" ]] || {
+        printf 'Canonical тестовой главной: %s; ожидался боевой https://%s/.\n' \
+            "${canonical:-не найден}" "$PRODUCTION_CANONICAL_HOST" >&2
+        return 1
+    }
+
+    status="$(curl --noproxy '*' -sS -D "$headers" -o "$robots" \
+        --connect-timeout 15 --max-time 60 -w '%{http_code}' \
+        "https://${CANONICAL_HOST}/robots.txt")" || return 1
+    [[ "$status" == "200" ]] || return 1
+    grep -Eiq '^User-agent:[[:space:]]*\*$' "$robots" \
+        && grep -Eiq '^Disallow:[[:space:]]*/$' "$robots" \
+        && ! grep -Eiq '^(Allow|Sitemap):' "$robots" \
+        || {
+            printf 'robots.txt тестового домена не закрывает обход целиком.\n' >&2
+            return 1
+        }
+
+    status="$(curl --noproxy '*' -sS -D "$sitemap_headers" -o /dev/null \
+        --connect-timeout 15 --max-time 60 -w '%{http_code}' \
+        "https://${CANONICAL_HOST}/sitemap.xml")" || return 1
+    [[ "$status" == "404" ]] || {
+        printf 'sitemap.xml тестового домена вернул %s вместо 404.\n' "$status" >&2
+        return 1
+    }
+
+    printf 'Тестовая политика: noindex/nofollow, HSTS отсутствует, robots закрыт, sitemap=404, canonical=%s.\n' \
+        "$canonical"
+}
+
 verify_redirect_matrix() {
     local domain scheme headers status location
     local -a schemes
@@ -712,12 +878,12 @@ if ! begin_transaction; then
     if [[ "$state_status" -eq 0 ]]; then
         printf 'SSH завершился неоднозначно после публикации bootstrap; выполняю подтверждённый откат.\n' >&2
         restore_remote_config "$TRANSACTION_ID" \
-            || die "не удалось откатить неоднозначный bootstrap; выполните --rollback после восстановления SSH"
+            || die "не удалось откатить неоднозначный bootstrap; после восстановления SSH выполните --stage ${STAGE} --rollback"
         die "bootstrap был включён, но из-за неоднозначного SSH-ответа автоматически откачен"
     elif [[ "$state_status" -eq 1 ]]; then
         die "bootstrap-конфиг не включён; удалённая транзакция восстановила предыдущий nginx"
     else
-        die "SSH недоступен и результат bootstrap неизвестен; после восстановления связи запустите --rollback"
+        die "SSH недоступен и результат bootstrap неизвестен; после восстановления связи запустите --stage ${STAGE} --rollback"
     fi
 fi
 TRANSACTION_STARTED=1
@@ -740,20 +906,29 @@ install_site_config "tls-pre-hsts.conf" \
 log "Проверяю HTTPS, доверенную цепочку и срок сертификата"
 verify_https || rollback_after_failure "HTTPS не прошёл живую проверку"
 
-log "HTTPS доказан: включаю HSTS и снимаю X-Robots-Tag"
-install_site_config "tls-final.conf" \
-    || rollback_after_failure "финальный конфиг не прошёл nginx -t или reload"
-verify_final_headers \
-    || rollback_after_failure "HSTS/noindex не соответствуют финальному состоянию"
-verify_redirect_matrix \
-    || rollback_after_failure "матрица HTTP/HTTPS/альтернативных редиректов не прошла"
+if (( KEEP_NOINDEX )); then
+    log "Проверяю постоянный noindex, отсутствие HSTS и закрытие robots/sitemap"
+    verify_test_policy \
+        || rollback_after_failure "защита тестового домена от индексации не прошла проверку"
+    verify_redirect_matrix \
+        || rollback_after_failure "матрица HTTP/HTTPS/альтернативных редиректов не прошла"
+else
+    log "HTTPS доказан: включаю HSTS и снимаю X-Robots-Tag"
+    install_site_config "tls-final.conf" \
+        || rollback_after_failure "финальный конфиг не прошёл nginx -t или reload"
+    verify_final_headers \
+        || rollback_after_failure "HSTS/noindex не соответствуют финальному состоянию"
+    verify_redirect_matrix \
+        || rollback_after_failure "матрица HTTP/HTTPS/альтернативных редиректов не прошла"
 
-log "Запускаю строгий живой смоук"
-SITE_ORIGIN="https://${CANONICAL_HOST}" REQUIRE_SERVER_REDIRECTS=1 npm run verify:live \
-    || rollback_after_failure "строгий npm run verify:live завершился ошибкой"
+    log "Запускаю строгий живой смоук"
+    SITE_ORIGIN="https://${CANONICAL_HOST}" REQUIRE_SERVER_REDIRECTS=1 npm run verify:live \
+        || rollback_after_failure "строгий npm run verify:live завершился ошибкой"
+fi
 
 trap - ERR INT TERM HUP
 log "Переключение домена завершено успешно"
+printf 'Этап: %s (%s)\n' "$STAGE_LABEL" "$STAGE"
 printf 'Канонический адрес: https://%s\n' "$CANONICAL_HOST"
 printf 'Сертификат включает: %s\n' "$SERVER_NAMES"
-printf 'Откат nginx: deploy/enable-domain.sh --rollback\n'
+printf 'Откат nginx: deploy/enable-domain.sh --stage %s --rollback\n' "$STAGE"
