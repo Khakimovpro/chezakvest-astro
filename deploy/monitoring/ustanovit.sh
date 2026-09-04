@@ -56,7 +56,7 @@ source_dir="$1"
     exit 1
 }
 
-for command_name in apt-config curl flock logrotate python3 systemctl systemd-analyze; do
+for command_name in apt-config apt-get curl flock logrotate python3 systemctl systemd-analyze; do
     command -v "$command_name" >/dev/null || {
         printf 'Не найдена обязательная команда: %s\n' "$command_name" >&2
         exit 1
@@ -101,7 +101,9 @@ install -o root -g root -m 0644 \
     "${source_dir}/52chezakvest-unattended-upgrades" \
     /etc/apt/apt.conf.d/52chezakvest-unattended-upgrades
 [[ "$(apt-config shell enabled APT::Periodic::Unattended-Upgrade | sed -n "s/^enabled='\(.*\)'$/\1/p")" == "1" ]]
+[[ "$(apt-config shell interval APT::Periodic::AutocleanInterval | sed -n "s/^interval='\(.*\)'$/\1/p")" == "7" ]]
 [[ "$(apt-config shell reboot Unattended-Upgrade::Automatic-Reboot | sed -n "s/^reboot='\(.*\)'$/\1/p")" == "false" ]]
+apt-get clean
 
 systemd-analyze verify \
     /etc/systemd/system/chezakvest-watchdog.service \

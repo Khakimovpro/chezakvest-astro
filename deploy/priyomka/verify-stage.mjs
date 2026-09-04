@@ -7,6 +7,7 @@ import { dirname, extname, join, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import http from 'node:http';
 import https from 'node:https';
+import { createInterface } from 'node:readline';
 import { fileURLToPath } from 'node:url';
 
 import {
@@ -24,6 +25,8 @@ const RELEASE_SITEMAP_PATH = join(SCRIPT_DIR, 'release-sitemap.tsv');
 const ORIGIN = (process.env.SITE_ORIGIN ?? 'http://82.146.60.212').replace(/\/$/, '');
 const SSH_KEY = process.env.CHEZAKVEST_SSH_KEY ?? join(homedir(), '.ssh', 'chezakvest_key');
 const REMOTE_CURRENT = '/var/www/chezakvest/current';
+const REMOTE_DEPLOY_LOCK = '/run/lock/chezakvest-deploy.lock';
+const REMOTE_OPERATION_OWNER = '/var/lib/chezakvest/operation-owner';
 const QUERY = '?utm_source=test';
 const SECURITY_HEADERS = {
   'x-content-type-options': 'nosniff',
@@ -33,6 +36,10 @@ const SECURITY_HEADERS = {
 
 let originUrl;
 let sshTarget;
+let remoteLockProcess;
+let remoteLockLines;
+let remoteLockClose;
+let remoteLockStderr = '';
 
 function round(value, digits = 3) {
   const factor = 10 ** digits;
@@ -115,9 +122,119 @@ function sshArgs() {
     '-i', SSH_KEY,
     '-o', 'BatchMode=yes',
     '-o', 'ConnectTimeout=10',
+    '-o', 'ServerAliveInterval=15',
+    '-o', 'ServerAliveCountMax=4',
     sshTarget,
   ];
 }
+
+async function waitForRemoteLockLine(action, timeoutMs = 20_000) {
+  let timeout;
+  try {
+    return await Promise.race([
+      remoteLockLines.next().then(({ value, done }) => {
+        if (done) throw new Error(`remote deploy lock closed while ${action}`);
+        return value;
+      }),
+      remoteLockClose.then(({ code, signal }) => {
+        throw new Error(
+          `remote deploy lock exited while ${action}: code=${code ?? '<none>'} `
+          + `signal=${signal ?? '<none>'}${remoteLockStderr.trim() ? `: ${remoteLockStderr.trim()}` : ''}`,
+        );
+      }),
+      new Promise((resolvePromise, reject) => {
+        timeout = setTimeout(() => reject(new Error(`timed out while ${action}`)), timeoutMs);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function acquireRemoteLock() {
+  const child = spawn('ssh', [
+    ...sshArgs(),
+    `exec 9>${REMOTE_DEPLOY_LOCK}; flock -n 9 || { printf 'BUSY\\n'; exit 75; }; `
+    + `[ ! -e ${REMOTE_OPERATION_OWNER} ] || { printf 'STALE\\n'; exit 76; }; `
+    + `printf 'LOCKED\\n'; while IFS= read -r command; do case "$command" in `
+    + `PING) printf 'ALIVE\\n' ;; RELEASE) exit 0 ;; *) exit 64 ;; esac; done; exit 74`,
+  ], { cwd: PROJECT_ROOT, stdio: ['pipe', 'pipe', 'pipe'] });
+  remoteLockProcess = child;
+  remoteLockLines = createInterface({ input: child.stdout, crlfDelay: Infinity })[Symbol.asyncIterator]();
+  remoteLockClose = new Promise((resolvePromise) => {
+    child.once('close', (code, signal) => resolvePromise({ code, signal }));
+  });
+  child.stderr.on('data', (chunk) => { remoteLockStderr += chunk.toString('utf8'); });
+  child.once('error', (error) => { remoteLockStderr += `${error.message}\n`; });
+
+  const response = await waitForRemoteLockLine('acquiring remote deploy lock');
+  if (response !== 'LOCKED') {
+    child.stdin.end();
+    throw new Error('another deploy, cutover, or acceptance holds the remote lock');
+  }
+  return child;
+}
+
+async function assertRemoteLock() {
+  if (!remoteLockProcess || remoteLockProcess.exitCode !== null || remoteLockProcess.signalCode !== null) {
+    throw new Error('remote deploy lock is no longer held');
+  }
+  await new Promise((resolvePromise, reject) => {
+    remoteLockProcess.stdin.write('PING\n', (error) => {
+      if (error) reject(error);
+      else resolvePromise();
+    });
+  });
+  const response = await waitForRemoteLockLine('confirming remote deploy lock');
+  if (response !== 'ALIVE') throw new Error('remote deploy lock returned an invalid health response');
+}
+
+async function releaseRemoteLock() {
+  if (!remoteLockProcess) return Promise.resolve();
+  const child = remoteLockProcess;
+  const close = remoteLockClose;
+  if (child.exitCode === null && child.signalCode === null) child.stdin.end('RELEASE\n');
+  await Promise.race([
+    close,
+    new Promise((resolvePromise) => setTimeout(() => {
+      child.kill('SIGTERM');
+      resolvePromise();
+    }, 5_000)),
+  ]);
+  remoteLockProcess = undefined;
+  remoteLockLines = undefined;
+  remoteLockClose = undefined;
+  remoteLockStderr = '';
+}
+
+async function readActiveRelease() {
+  const output = await runChecked('ssh', [
+    ...sshArgs(),
+    `set -eu
+active=$(readlink -f -- ${REMOTE_CURRENT})
+case "$active" in /var/www/chezakvest/releases/*) ;; *) exit 1 ;; esac
+test -f "$active/.deploy-verified"
+printf '%s\\n' "$active"
+cat "$active/version.json"`,
+  ]);
+  const firstNewline = output.indexOf('\n');
+  if (firstNewline < 0) throw new Error('active release preflight returned incomplete metadata');
+  const path = output.slice(0, firstNewline);
+  return {
+    path,
+    name: path.slice(path.lastIndexOf('/') + 1),
+    version: JSON.parse(output.slice(firstNewline + 1)),
+  };
+}
+
+function activeReleaseMatchesBaseline(activeRelease, releaseBaseline) {
+  return releaseBaseline.release === activeRelease.name
+    && activeRelease.version.commit === releaseBaseline.commit
+    && activeRelease.version.shortCommit === releaseBaseline.shortCommit
+    && activeRelease.version.release === activeRelease.name;
+}
+
+export { activeReleaseMatchesBaseline };
 
 function responseHeader(response, name) {
   const value = response.headers[name.toLowerCase()];
@@ -313,8 +430,17 @@ async function main() {
     throw new Error(`SITE_ORIGIN must be an absolute HTTP(S) origin without a path: ${ORIGIN}`);
   }
   sshTarget = process.env.CHEZAKVEST_SSH_TARGET ?? `root@${originUrl.hostname}`;
+  await acquireRemoteLock();
   const gitHead = (await runChecked('git', ['rev-parse', 'HEAD'])).trim();
   const releaseBaseline = JSON.parse(await readFile(RELEASE_BASELINE_PATH, 'utf8'));
+  const initialActiveRelease = await readActiveRelease();
+  if (!activeReleaseMatchesBaseline(initialActiveRelease, releaseBaseline)) {
+    throw new Error(
+      `acceptance baseline ${releaseBaseline.shortCommit} is not the active release `
+      + `${initialActiveRelease.name || '<unknown>'} `
+      + `(${initialActiveRelease.version.shortCommit || '<unknown>'}); capture a new baseline first`,
+    );
+  }
   const localEntries = await readReleaseManifest();
   if (localEntries.length !== releaseBaseline.files || sumManifest(localEntries) !== releaseBaseline.bytes) {
     errors.push('release baseline metadata does not match release-manifest.tsv');
@@ -577,7 +703,10 @@ async function main() {
     if (version.shortCommit !== releaseBaseline.shortCommit) {
       versionIssues.push(`shortCommit ${version.shortCommit} != accepted release shortCommit ${releaseBaseline.shortCommit}`);
     }
-    if (!version.release || !version.builtAt || Number.isNaN(Date.parse(version.builtAt))) versionIssues.push('release/builtAt metadata is incomplete');
+    if (version.release !== releaseBaseline.release) {
+      versionIssues.push(`release ${version.release} != accepted release ${releaseBaseline.release}`);
+    }
+    if (!version.builtAt || Number.isNaN(Date.parse(version.builtAt))) versionIssues.push('release/builtAt metadata is incomplete');
   }
   if (!responseHeader(versionResponse, 'content-type').toLowerCase().startsWith('application/json')) {
     versionIssues.push(`Content-Type ${responseHeader(versionResponse, 'content-type') || '<missing>'}`);
@@ -611,8 +740,14 @@ async function main() {
       if (response.status !== 200) errors.push(`timing dev ${path} run ${run}: status ${response.status}`);
     }
   }
+  const encodedTimingPaths = timingPaths.map((path) => Buffer.from(path, 'utf8').toString('base64url'));
   const remoteTimingScript = `set -eu
-for path do
+for encoded_path do
+  path=$(python3 -c 'import base64, sys
+value = base64.urlsafe_b64decode(sys.argv[1] + "==").decode("utf-8")
+if not value.startswith("/") or "\\n" in value or "\\r" in value:
+    raise SystemExit(64)
+print(value, end="")' "$encoded_path")
   run=1
   while [ "$run" -le 5 ]; do
     metrics=$(curl -sS --max-time 30 -o /dev/null -w '%{http_code}\\t%{size_download}\\t%{time_starttransfer}\\t%{time_total}' "http://127.0.0.1\${path}")
@@ -623,7 +758,7 @@ done
 `;
   const remoteTimingResult = await runProcess('ssh', [
     ...sshArgs(),
-    'sh', '-s', '--', ...timingPaths,
+    'sh', '-s', '--', ...encodedTimingPaths,
   ], { input: remoteTimingScript, timeoutMs: 180_000 });
   if (remoteTimingResult.code !== 0) {
     throw new Error(`remote timing failed: ${(remoteTimingResult.stderr || remoteTimingResult.stdout).trim()}`);
@@ -681,6 +816,15 @@ done
   }
   const smokePages = Number(allowedSmokeOutput.match(/passed: (\d+) sitemap page/)?.[1] ?? 0);
   console.log(`  default guard exit: ${defaultGuard.code}; allowed HTTP exit: ${allowedSmoke.code}; sitemap pages: ${smokePages}`);
+
+  await assertRemoteLock();
+  const finalActiveRelease = await readActiveRelease();
+  if (!activeReleaseMatchesBaseline(finalActiveRelease, releaseBaseline)) {
+    errors.push(
+      `active release changed during acceptance: expected ${releaseBaseline.release}, `
+      + `got ${finalActiveRelease.name || '<unknown>'}`,
+    );
+  }
 
   const summary = {
     generatedAt: new Date().toISOString(),
@@ -742,6 +886,7 @@ done
     errors,
   };
   await writeFile(SUMMARY_PATH, `${JSON.stringify(summary, null, 2)}\n`, 'utf8');
+  await assertRemoteLock();
 
   if (errors.length > 0) {
     console.error(`Stage acceptance FAILED with ${errors.length} issue(s):`);
@@ -752,16 +897,20 @@ done
   console.log(`Stage acceptance PASSED: ${sitemapRows.length} pages, ${redirectEntries.length} redirects, ${localEntries.length} files, ${timingRows.length} timing measurements.`);
 }
 
-try {
-  await main();
-} catch (error) {
-  const message = error instanceof Error ? error.message : String(error);
-  await writeFile(SUMMARY_PATH, `${JSON.stringify({
-    generatedAt: new Date().toISOString(),
-    origin: ORIGIN,
-    verdict: 'FAIL',
-    fatalError: message,
-  }, null, 2)}\n`, 'utf8');
-  console.error(`Stage acceptance FAILED: ${message}`);
-  process.exitCode = 1;
+if (resolve(process.argv[1] ?? '') === fileURLToPath(import.meta.url)) {
+  try {
+    await main();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    await writeFile(SUMMARY_PATH, `${JSON.stringify({
+      generatedAt: new Date().toISOString(),
+      origin: ORIGIN,
+      verdict: 'FAIL',
+      fatalError: message,
+    }, null, 2)}\n`, 'utf8');
+    console.error(`Stage acceptance FAILED: ${message}`);
+    process.exitCode = 1;
+  } finally {
+    await releaseRemoteLock();
+  }
 }
