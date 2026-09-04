@@ -717,8 +717,8 @@ REMOTE_SCRIPT
 
 restore_manual_rollback() {
     local operation_token="$1"
-    local expected_target="${2:-}"
-    local owner_record="${3:-}"
+    local expected_target="${2:-__NONE__}"
+    local owner_record="${3:-__NONE__}"
     "${SSH[@]}" bash -s -- \
         "$REMOTE_MANUAL_ROLLBACKS" "$operation_token" "$expected_target" "$owner_record" \
         "$REMOTE_RELEASES" "$REMOTE_CURRENT" \
@@ -728,6 +728,8 @@ transactions_root="$1"
 operation_token="$2"
 expected_target="$3"
 owner_record="$4"
+[[ "$expected_target" != "__NONE__" ]] || expected_target=""
+[[ "$owner_record" != "__NONE__" ]] || owner_record=""
 releases_dir="$5"
 current_link="$6"
 shift 6
