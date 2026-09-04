@@ -1234,7 +1234,12 @@ def build_reviews_block(soup: BeautifulSoup) -> Tag:
     for review in data["reviews"]:
         service = services.get(str(review.get("service")), {})
         source_name = str(service.get("name") or "Отзыв гостя")
-        review_tags = [str(value) for value in review.get("tags") or []]
+        review_tags = [
+            str(value.get("noun") or value.get("content") or "").removeprefix("#")
+            if isinstance(value, dict) else str(value)
+            for value in review.get("tags") or []
+        ]
+        review_tags = list(dict.fromkeys(value for value in review_tags if value))
         item = soup.new_tag("li", attrs={
             "class": ["source-reviews__item"],
             "data-service": str(review.get("service")),
@@ -1251,7 +1256,7 @@ def build_reviews_block(soup: BeautifulSoup) -> Tag:
         date.string = human_review_date(str(review.get("date_create", "")))
         origin = soup.new_tag("span", attrs={"class": ["review-card__source"]})
         origin.append(NavigableString("на "))
-        url = str(review.get("url") or "")
+        url = str(review.get("url") or review.get("uri") or "")
         if url.startswith("https://"):
             link = soup.new_tag("a", attrs={"href": url, "target": "_blank", "rel": "noopener nofollow"})
         else:

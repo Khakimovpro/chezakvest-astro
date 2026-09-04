@@ -36,7 +36,7 @@ test('ships all nine enriched venue chips and keeps the map lazy', async () => {
   ]);
 
   assert.equal(venues.chips.length, 9);
-  assert.deepEqual(venues.chips.map((chip) => chip.groups.flatMap((group) => group.items).length), [2, 1, 3, 3, 1, 2, 14, 18, 6]);
+  assert.deepEqual(venues.chips.map((chip) => chip.groups.flatMap((group) => group.items).length), [2, 1, 3, 3, 1, 2, 15, 18, 6]);
   assert.ok(venues.chips.every((chip) => Number.isFinite(chip.lat) && Number.isFinite(chip.lon) && chip.groups.length));
   assert.match(chips, /aria-describedby/);
   assert.match(chips, /role="tooltip"/);

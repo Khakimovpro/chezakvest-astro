@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-08-12T00:26:45.778Z",
+  "generated_at": "2026-09-04T01:25:10.000Z",
   "origin": "https://xn--80aehcht5ci1b.xn--p1ai",
   "sources": {
-    "sitemap_urls": 58,
+    "sitemap_urls": 59,
     "robots_urls": 112,
     "hidden_csv_rows": 102,
     "legacy_map_rows": 103,
-    "clone_routes": 67,
-    "crawled_urls": 180
+    "clone_routes": 68,
+    "crawled_urls": 181
   },
   "clone_route_paths": [
     "/",
@@ -19,6 +19,7 @@
     "/contacts/",
     "/den-rozhdeniya-na-vr-arene/",
     "/den-rozhdeniya-uznik-azkabana/",
+    "/fnaf/",
     "/garri-potter-i-kubok-ognya/",
     "/guardeskypereulog61/",
     "/hostel-podval-pytok/",
@@ -620,6 +621,23 @@
         "robots"
       ],
       "clone_path": "/fantom-kvesttam/"
+    },
+    {
+      "url": "https://xn--80aehcht5ci1b.xn--p1ai/fnaf",
+      "http_orig": 200,
+      "location": "",
+      "last_modified": "Fri, 28 Aug 2026 17:25:03 GMT",
+      "content_type": "text/html; charset=UTF-8",
+      "fetch_error": "",
+      "title": "Квест в стиле 5 ночей с Фредди в Ростове-на-Дону",
+      "description": "5 ночей с Фредди - квест в стиле популярной игры в Ростове-на-Дону от компании Чё за Квест. Работаем без выходных с 10:00 до 23:00. Записывайтесь на игру на сайте.",
+      "h1": "5 ночей с Фредди",
+      "textHash": "e4370a56467e7a5bafc136d04cd911a1a919e4f6577b74fff08336e12d3cf655",
+      "sources": [
+        "crawl",
+        "sitemap"
+      ],
+      "clone_path": "/fnaf/"
     },
     {
       "url": "https://xn--80aehcht5ci1b.xn--p1ai/garri-hunter",

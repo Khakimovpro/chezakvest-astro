@@ -13,7 +13,7 @@ test('keeps the full verified navigation data and only real destinations', () =>
   const partyLinks = site.megamenu.party.cols.flatMap((column) => column.links ?? []);
   const venueLinks = site.megamenu.contacts.cols.flatMap((column) => column.links ?? []);
 
-  assert.equal(catalogLinks.length, 36);
+  assert.equal(catalogLinks.length, 37);
   assert.equal(partyLinks.length, 8);
   assert.equal(venueLinks.length, 9);
   assert.equal(site.megamenu.party.cols.at(-1).href, '/new-year');
@@ -22,7 +22,8 @@ test('keeps the full verified navigation data and only real destinations', () =>
 
 // В оригинале (work/raw/pages/home--39800a5ba5.html, запись T344 rec1097897446, то же самое
 // в pryatki_portal--a4ef62f757.html, indiana--ae793e2f47.html и header--46deec6aa8.html)
-// заголовки колонок каталога — сами по себе ссылки, и панель отдаёт 38 <a>: 35 пунктов списков
+// заголовки колонок каталога — сами по себе ссылки. Текущий боевой источник добавил FNAF,
+// поэтому панель отдаёт 39 <a>: 36 пунктов списков
 // плюс 3 кликабельных заголовка. Колонка «ПРЯТКИ В ТЕМНОТЕ» заголовком-ссылкой НЕ является.
 test('makes the catalog column titles clickable exactly where the original does', () => {
   const titles = site.megamenu.catalog.cols.map((column) => [column.title, column.href ?? null]);
@@ -35,12 +36,12 @@ test('makes the catalog column titles clickable exactly where the original does'
     ['VR-ИГРЫ', 'https://xn--80ajazgehl5i.xn--p1ai/kids'],
   ]);
 
-  // 39 = 38 ссылок оригинальной панели + «Прятки kids». Этот пункт живёт только в мобильном
+  // 40 = 39 ссылок текущей боевой панели + «Прятки kids». Этот пункт живёт только в мобильном
   // меню оригинала (тот же файл, блок t450, список ПРЯТКИ В ТЕМНОТЕ), а данные у десктопа
   // и мобайла общие, поэтому он остаётся в колонке и здесь. Составы намеренно не выравниваем.
   const titleLinks = site.megamenu.catalog.cols.filter((column) => column.href);
   const listLinks = site.megamenu.catalog.cols.flatMap((column) => column.links ?? []);
-  assert.equal(titleLinks.length + listLinks.length, 39);
+  assert.equal(titleLinks.length + listLinks.length, 40);
   assert.ok(listLinks.some((link) => link.href === '/pryatki_kids'));
 });
 

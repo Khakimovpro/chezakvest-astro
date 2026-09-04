@@ -4,7 +4,7 @@ import test from 'node:test';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
-test('keeps lead delivery and analytics inert until an owner configures them', async () => {
+test('keeps lead delivery inert and initializes only owner-confirmed analytics', async () => {
   const [site, leadForm, analytics, layout] = await Promise.all([
     read('src/data/site.json').then(JSON.parse),
     read('src/scripts/lead-form.js'),
@@ -13,15 +13,14 @@ test('keeps lead delivery and analytics inert until an owner configures them', a
   ]);
 
   assert.equal(site.leads.recipient, '');
-  assert.equal(site.analytics.metrikaId, '');
+  assert.equal(site.analytics.metrikaId, '48864086');
   assert.match(leadForm, /if \(!endpoint\) return false/);
   assert.match(leadForm, /lead:accepted/);
   assert.match(leadForm, /createSubmissionGuard/);
   assert.doesNotMatch(leadForm, /anchor\.href\s*=\s*link/);
   assert.match(analytics, /\^\\d\{4,20\}\$/);
-  assert.match(analytics, /lead_accepted/);
-  assert.match(analytics, /phone_click/);
-  assert.match(analytics, /whatsapp_click/);
+  assert.doesNotMatch(analytics, /reachGoal/);
+  assert.doesNotMatch(analytics, /ecommerce\s*:/);
   assert.doesNotMatch(analytics, /trackLinks\s*:/);
   assert.match(layout, /<Analytics\s*\/>/);
 });

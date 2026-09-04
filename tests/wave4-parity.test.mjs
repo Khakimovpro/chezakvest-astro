@@ -56,9 +56,9 @@ test('converts campaign URLs into indexable holiday pages and moves New Year nav
 
 test('keeps venue maps click-lazy and completes the Magnitogorskaya game list', async () => {
   const magnit = await json('src/data/pages/magnitogorskaya1.json');
-  assert.equal(magnit.games.items.length, 14);
-  assert.deepEqual(magnit.games.items.slice(-8).map((item) => item.t), [
-    'Роблокс. Радужные друзья', 'Роблокс. Дорс', 'Бегущий в лабиринте',
+  assert.equal(magnit.games.items.length, 15);
+  assert.deepEqual(magnit.games.items.slice(-9).map((item) => item.t), [
+    '5 ночей с Фредди', 'Роблокс. Радужные друзья', 'Роблокс. Дорс', 'Бегущий в лабиринте',
     'Игра в Кальмара', 'Гарри Поттер и Кубок огня', 'Амонг Ас',
     'Уэнсдей. Потерянная душа', 'Майнкрафт',
   ]);

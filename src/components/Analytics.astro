@@ -1,7 +1,7 @@
 ---
-// Deliberately inert until the owner supplies one numeric Yandex Metrika id in
-// site.json. That keeps the initial render local and makes activation a one-line
-// configuration change instead of a template edit.
+// The owner-confirmed counter id lives in site.json so every layout shares one
+// source of truth. Keep initialization free of unconfirmed conversion and
+// commerce settings; those need separate, explicit analytics requirements.
 import site from '../data/site.json';
 
 const rawId = String(site.analytics?.metrikaId || '').trim();
@@ -16,8 +16,6 @@ const metrikaId = /^\d{4,20}$/.test(rawId) ? rawId : '';
       window.ym.l = Date.now();
       window.ym(metrikaId, 'init', {
         clickmap: true,
-        // WhatsApp draft links can contain a submitted name and phone in their query string.
-        // Explicit PII-free goals below are enough; automatic outbound-link collection is unsafe.
         accurateTrackBounce: true,
       });
 
@@ -25,16 +23,6 @@ const metrikaId = /^\d{4,20}$/.test(rawId) ? rawId : '';
       script.async = true;
       script.src = `https://mc.yandex.ru/metrika/tag.js`;
       document.head.append(script);
-
-      const reachGoal = (name) => window.ym?.(metrikaId, 'reachGoal', name);
-      document.addEventListener('lead:accepted', () => reachGoal('lead_accepted'));
-      document.addEventListener('click', (event) => {
-        const link = event.target.closest?.('a[href]');
-        if (!link) return;
-        const href = link.getAttribute('href') || '';
-        if (/^tel:/i.test(href)) reachGoal('phone_click');
-        if (/^https:\/\/wa\.me\//i.test(href)) reachGoal('whatsapp_click');
-      });
     }());
   </script>
 )}

@@ -11,6 +11,7 @@ const LEGACY_QUEST_SLUG = 'wednesday_ukradennaya_vesch';
 export const EXPECTED_VENUE_SLUGS = {
   among_us: '40letpobedy216',
   beguschij_v_labirinte: '40letpobedy216',
+  fnaf: 'magnitogorskaya1',
   'garri-potter-i-kubok-ognya': '40letpobedy216',
   igra_v_kalmara: '40letpobedy216',
   minecraft: '40letpobedy216',
@@ -67,9 +68,9 @@ export async function auditCatalogData({ pagesDirectory = PAGES_DIRECTORY } = {}
   const venues = new Set(pages.filter((page) => page.type === 'venue').map((page) => page.slug));
   const errors = [];
 
-  if (quests.length !== 41) errors.push(`expected 41 quest records, found ${quests.length}`);
-  if (Object.keys(EXPECTED_VENUE_SLUGS).length !== 41) {
-    errors.push('expected venue mapping must contain exactly 41 quest records');
+  if (quests.length !== 42) errors.push(`expected 42 quest records, found ${quests.length}`);
+  if (Object.keys(EXPECTED_VENUE_SLUGS).length !== 42) {
+    errors.push('expected venue mapping must contain exactly 42 quest records');
   }
 
   for (const quest of quests) {
@@ -93,8 +94,8 @@ export async function auditCatalogData({ pagesDirectory = PAGES_DIRECTORY } = {}
   }
 
   const canonicalCatalog = quests.filter((quest) => quest.slug !== LEGACY_QUEST_SLUG);
-  if (canonicalCatalog.length !== 40) {
-    errors.push(`expected 40 canonical catalogue records, found ${canonicalCatalog.length}`);
+  if (canonicalCatalog.length !== 41) {
+    errors.push(`expected 41 canonical catalogue records, found ${canonicalCatalog.length}`);
   }
 
   return {

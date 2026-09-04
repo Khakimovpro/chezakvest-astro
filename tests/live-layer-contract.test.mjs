@@ -41,11 +41,18 @@ const descendants = (node, predicate, found = []) => {
 };
 
 test('страницы со снимками получают кнопку мессенджеров и локальные надстройки', async () => {
-  const component = await read('src/components/SourceSnapshotBody.astro');
+  const [component, scheduleStyles] = await Promise.all([
+    read('src/components/SourceSnapshotBody.astro'),
+    read('src/styles/source-schedule.css'),
+  ]);
   assert.match(component, /<MessengerFab \/>/u, 'плавающие кнопки мессенджеров');
   assert.match(component, /initCardHover\(\)/u, 'наведение на карточку квеста');
   assert.match(component, /initSourceWidgets\(\)/u, 'локальные виджеты в снимке');
   assert.match(component, /initSourceLiveLayer/u, 'живой слой каруселей и SBS-анимаций');
+
+  const braceDepth = [...scheduleStyles.replace(/\/\*[\s\S]*?\*\//gu, '')]
+    .reduce((depth, char) => depth + (char === '{' ? 1 : char === '}' ? -1 : 0), 0);
+  assert.equal(braceDepth, 0, 'schedule stylesheet closes every media query before shared snapshot rules');
 });
 
 test('Zero Block получает доступные контролы галереи и восстановленные семейства шрифтов', async () => {
@@ -80,7 +87,7 @@ test('Zero Block получает доступные контролы галер
   }
   const textLabels = snapshotPages.flatMap((page) => [...page.html.matchAll(/<div class="t-input-group[^"]*\bt-input-group_tx\b[^"]*"[^>]*>[\s\S]*?<div class="t-text" style="([^"]*)">/gu)]
     .map((label) => ({ name: page.name, style: label[1] })));
-  assert.equal(textLabels.length, 43, 'all source text labels remain materialized');
+  assert.equal(textLabels.length, 44, 'all source text labels remain materialized');
   for (const label of textLabels) {
     assert.match(label.style, /font-family:[^;]+/u, `${label.name}: text label retains its authored input family`);
   }
@@ -273,6 +280,7 @@ test('блок отзывов даёт сетку, фильтры и стрел�
     assert.match(page.html, /data-source-reviews-arrow="prev"/u, `${page.name}: нет стрелки назад`);
     assert.match(page.html, /data-source-reviews-arrow="next"/u, `${page.name}: нет стрелки вперёд`);
     assert.match(page.html, /data-source-reviews-dots/u, `${page.name}: нет точек листания`);
+    assert.doesNotMatch(page.html, /data-tags="\{/u, `${page.name}: объект тега попал в HTML вместо его названия`);
     const cards = (page.html.match(/class="review-card"/gu) ?? []).length;
     assert.equal(cards, reviews.reviews.length, `${page.name}: карточек ${cards}, а в данных ${reviews.reviews.length}`);
   }

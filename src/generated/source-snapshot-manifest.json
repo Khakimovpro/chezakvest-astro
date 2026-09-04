@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T11:20:28Z",
+  "generatedAt": "2026-09-04T01:43:25Z",
   "runtime": [],
   "routes": {
     "/": {
@@ -333,6 +333,43 @@
         "959",
         "976",
         "977",
+        "1196"
+      ]
+    },
+    "/fnaf/": {
+      "route": "/fnaf/",
+      "snapshot": "fnaf.html",
+      "source": "work/raw/pages/fnaf--b094986aac.html",
+      "styles": [
+        "d329e63da9147b9d.css",
+        "ca594fbc2583b716.css",
+        "e4f93e54e1fe0219.css",
+        "0004f3d40931ea96.css",
+        "6bbcb1304e1fa40b.css",
+        "fa470f65bb7f659a.css",
+        "45983ef52afa8342.css",
+        "80d709d246c13985.css",
+        "3fd4b7595b3f43f4.css",
+        "e4e72356dfc69a1c.css",
+        "3b8c2eccae7419a6.css",
+        "02bce144f45f1899.css",
+        "75c5820094658c95.css",
+        "9d4f6ac2c3fb051a.css"
+      ],
+      "pageScript": "",
+      "recordTypes": [
+        "33",
+        "113",
+        "121",
+        "126",
+        "128",
+        "131",
+        "194",
+        "215",
+        "363",
+        "396",
+        "702",
+        "758",
         "1196"
       ]
     },
@@ -1047,7 +1084,7 @@
     "/magnitogorskaya1/": {
       "route": "/magnitogorskaya1/",
       "snapshot": "magnitogorskaya1.html",
-      "source": "work/raw/pages/magnitogorskaya1--eebe7f4946.html",
+      "source": "astro-clone/migration/parity/source-overrides/magnitogorskaya1.html",
       "styles": [
         "d329e63da9147b9d.css",
         "f80511b59847052c.css",

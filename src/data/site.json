@@ -48,7 +48,7 @@
   "recipient": ""
  },
  "analytics": {
-  "metrikaId": ""
+  "metrikaId": "48864086"
  },
  "megamenu": {
   "catalog": {
@@ -79,6 +79,7 @@
       { "t": "Гарри Поттер. Кубок огня", "href": "/garri-potter-i-kubok-ognya" },
       { "t": "Майнкрафт", "href": "/minecraft" },
       { "t": "Роблокс. Радужные друзья", "href": "/roblox" },
+      { "t": "5 ночей с Фредди", "href": "/fnaf" },
       { "t": "Роблокс. Дорс", "href": "/roblox-dors" },
       { "t": "Прятки kids", "href": "/pryatki_kids" },
       { "t": "Прятки в темноте", "href": "/pryatki_v_temnote" },
@@ -660,6 +661,19 @@
    "href": "/roblox",
    "photo": "/assets/optim.tildacdn.com/tild6538-6634-4866-a663-653938636437/-/cover/720x720/center/center/-/format/webp/image-8-2.jpg.webp",
    "overlay": "/assets/optim.tildacdn.com/tild3263-6436-4134-a466-383565363962/-/cover/385x386/center/center/-/format/webp/_-2.png.webp",
+   "baked": false,
+   "addrLines": [
+    "Магнитогорская, 1"
+   ]
+  },
+  {
+   "i": 35,
+   "cat": "Квест-шоу на площадке 200м²",
+   "title": "5 ночей с Фредди",
+   "addr": "Магнитогорская, 1",
+   "href": "/fnaf",
+   "photo": "/assets/fnaf/card.webp",
+   "overlay": null,
    "baked": false,
    "addrLines": [
     "Магнитогорская, 1"

@@ -144,6 +144,11 @@ test('homepage catalog preserves the live card sequence, grouping, and source ad
   for (const href of ['/ono', '/tekhasskaya-reznya-benzopiloj', '/zvonok']) {
     assert.equal(site.cards.find((item) => item.href === href)?.cat, 'Прятки в лабиринте 200м²');
   }
+  const fnaf = site.cards.find((item) => item.href === '/fnaf');
+  assert.equal(fnaf?.title, '5 ночей с Фредди');
+  assert.equal(fnaf?.cat, 'Квест-шоу на площадке 200м²');
+  assert.deepEqual(fnaf?.addrLines, ['Магнитогорская, 1']);
+  assert.equal(fnaf?.photo, '/assets/fnaf/card.webp');
   assert.doesNotMatch(home, /liveHomeOrder/u);
   assert.match(home, /address: card\.addr/u);
   assert.match(card, /venue\.addressLines/u);
