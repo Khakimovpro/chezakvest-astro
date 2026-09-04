@@ -1,8 +1,25 @@
 {
-  "generatedAt": "2026-09-04T04:46:00.565Z",
+  "generatedAt": "2026-09-04T04:56:37.409Z",
   "origin": "http://82.146.60.212",
-  "repositoryHead": "f6f21a608eac0754763858192e48537278af80ac",
-  "expectedDeployedCommit": "f6f21a608eac0754763858192e48537278af80ac",
+  "repositoryHead": "3dc999d6d219348698f38df9dad65fd1e9b994dd",
+  "baselineRelease": {
+    "release": "20260904T044336Z-f6f21a60",
+    "commit": "f6f21a608eac0754763858192e48537278af80ac",
+    "shortCommit": "f6f21a60",
+    "contentFingerprint": "e3e55635c3dcc4cf509404d1c1dcc367b5d7fb5c3e73b2f70f222b17a6229fe2"
+  },
+  "activeRelease": {
+    "release": "20260904T044734Z-3dc999d6",
+    "commit": "3dc999d6d219348698f38df9dad65fd1e9b994dd",
+    "shortCommit": "3dc999d6",
+    "contentFingerprint": "e3e55635c3dcc4cf509404d1c1dcc367b5d7fb5c3e73b2f70f222b17a6229fe2",
+    "metadataMatchesBaseline": false,
+    "metadataDifferences": [
+      "release baseline=20260904T044336Z-f6f21a60 active=20260904T044734Z-3dc999d6",
+      "commit baseline=f6f21a608eac0754763858192e48537278af80ac active=3dc999d6d219348698f38df9dad65fd1e9b994dd",
+      "shortCommit baseline=f6f21a60 active=3dc999d6"
+    ]
+  },
   "verdict": "PASS",
   "checks": {
     "manifest": {
@@ -94,11 +111,11 @@
     "version": {
       "valid": true,
       "data": {
-        "commit": "f6f21a608eac0754763858192e48537278af80ac",
-        "shortCommit": "f6f21a60",
+        "commit": "3dc999d6d219348698f38df9dad65fd1e9b994dd",
+        "shortCommit": "3dc999d6",
         "branch": "master",
-        "builtAt": "2026-09-04T04:43:36Z",
-        "release": "20260904T044336Z-f6f21a60",
+        "builtAt": "2026-09-04T04:47:34Z",
+        "release": "20260904T044734Z-3dc999d6",
         "node": "v22.22.1"
       }
     },
@@ -107,60 +124,60 @@
         "source": "dev-server",
         "path": "/",
         "measurements": 5,
-        "avg_ttfb_ms": 27.124,
-        "max_ttfb_ms": 27.613,
-        "avg_total_ms": 254.649,
-        "max_total_ms": 316.564,
+        "avg_ttfb_ms": 20.735,
+        "max_ttfb_ms": 21.02,
+        "avg_total_ms": 238.832,
+        "max_total_ms": 302.987,
         "result": "PASS"
       },
       {
         "source": "dev-server",
         "path": "/prazdniki-pod-kluch/",
         "measurements": 5,
-        "avg_ttfb_ms": 27.014,
-        "max_ttfb_ms": 28.718,
-        "avg_total_ms": 384.916,
-        "max_total_ms": 421.015,
+        "avg_ttfb_ms": 20.737,
+        "max_ttfb_ms": 20.869,
+        "avg_total_ms": 332.79,
+        "max_total_ms": 385.025,
         "result": "PASS"
       },
       {
         "source": "dev-server",
         "path": "/roblox-land/",
         "measurements": 5,
-        "avg_ttfb_ms": 26.861,
-        "max_ttfb_ms": 27.044,
-        "avg_total_ms": 212.125,
-        "max_total_ms": 213.625,
+        "avg_ttfb_ms": 20.765,
+        "max_ttfb_ms": 20.946,
+        "avg_total_ms": 176.097,
+        "max_total_ms": 183.294,
         "result": "PASS"
       },
       {
         "source": "moscow-server-loopback",
         "path": "/",
         "measurements": 5,
-        "avg_ttfb_ms": 0.854,
-        "max_ttfb_ms": 1.099,
-        "avg_total_ms": 1.939,
-        "max_total_ms": 2.068,
+        "avg_ttfb_ms": 0.708,
+        "max_ttfb_ms": 0.796,
+        "avg_total_ms": 1.645,
+        "max_total_ms": 1.781,
         "result": "PASS"
       },
       {
         "source": "moscow-server-loopback",
         "path": "/prazdniki-pod-kluch/",
         "measurements": 5,
-        "avg_ttfb_ms": 0.674,
-        "max_ttfb_ms": 0.887,
-        "avg_total_ms": 2.152,
-        "max_total_ms": 2.292,
+        "avg_ttfb_ms": 0.66,
+        "max_ttfb_ms": 0.776,
+        "avg_total_ms": 2.132,
+        "max_total_ms": 2.487,
         "result": "PASS"
       },
       {
         "source": "moscow-server-loopback",
         "path": "/roblox-land/",
         "measurements": 5,
-        "avg_ttfb_ms": 0.66,
-        "max_ttfb_ms": 0.717,
-        "avg_total_ms": 1.725,
-        "max_total_ms": 1.781,
+        "avg_ttfb_ms": 0.648,
+        "max_ttfb_ms": 0.733,
+        "avg_total_ms": 1.697,
+        "max_total_ms": 1.835,
         "result": "PASS"
       }
     ],

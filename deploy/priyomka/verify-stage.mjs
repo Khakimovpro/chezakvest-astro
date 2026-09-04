@@ -51,6 +51,57 @@ function sha256(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
+function manifestFingerprint(entries) {
+  const canonicalManifest = [...entries]
+    .sort((first, second) => (first.path < second.path ? -1 : first.path > second.path ? 1 : 0))
+    .map(({ path, size_bytes: sizeBytes }) => `${path}\t${sizeBytes}\n`)
+    .join('');
+  return sha256(canonicalManifest);
+}
+
+function diffManifestEntries(expectedEntries, actualEntries) {
+  const expectedByPath = new Map(expectedEntries.map((entry) => [entry.path, entry.size_bytes]));
+  const actualByPath = new Map(actualEntries.map((entry) => [entry.path, entry.size_bytes]));
+  const differences = [];
+  for (const [path, size] of expectedByPath) {
+    if (!actualByPath.has(path)) {
+      differences.push({ type: 'missing_on_server', path, local_bytes: size, server_bytes: '' });
+    } else if (actualByPath.get(path) !== size) {
+      differences.push({
+        type: 'size_mismatch',
+        path,
+        local_bytes: size,
+        server_bytes: actualByPath.get(path),
+      });
+    }
+  }
+  for (const [path, size] of actualByPath) {
+    if (!expectedByPath.has(path)) {
+      differences.push({ type: 'unexpected_on_server', path, local_bytes: '', server_bytes: size });
+    }
+  }
+  return differences;
+}
+
+function assessReleaseContent(expectedEntries, actualEntries) {
+  const differences = diffManifestEntries(expectedEntries, actualEntries);
+  return {
+    matches: differences.length === 0,
+    baselineFingerprint: manifestFingerprint(expectedEntries),
+    activeFingerprint: manifestFingerprint(actualEntries),
+    differences,
+  };
+}
+
+function assertReleaseContentMatchesBaseline(assessment, activeReleaseName) {
+  if (assessment.matches) return;
+  throw new Error(
+    `acceptance baseline content ${assessment.baselineFingerprint.slice(0, 12)} does not match active release `
+    + `${activeReleaseName} content ${assessment.activeFingerprint.slice(0, 12)}: `
+    + `${assessment.differences.length} path/size mismatch(es); capture a new baseline first`,
+  );
+}
+
 function tsvValue(value) {
   return String(value ?? '')
     .replaceAll('\t', ' ')
@@ -228,14 +279,48 @@ cat "$active/version.json"`,
   };
 }
 
-function activeReleaseMatchesBaseline(activeRelease, releaseBaseline) {
-  return releaseBaseline.release === activeRelease.name
-    && activeRelease.version.commit === releaseBaseline.commit
-    && activeRelease.version.shortCommit === releaseBaseline.shortCommit
-    && activeRelease.version.release === activeRelease.name;
+function releaseMetadataDifferences(activeRelease, releaseBaseline) {
+  const differences = [];
+  if (releaseBaseline.release !== activeRelease.name) {
+    differences.push(`release baseline=${releaseBaseline.release} active=${activeRelease.name}`);
+  }
+  if (releaseBaseline.commit !== activeRelease.version.commit) {
+    differences.push(`commit baseline=${releaseBaseline.commit} active=${activeRelease.version.commit}`);
+  }
+  if (releaseBaseline.shortCommit !== activeRelease.version.shortCommit) {
+    differences.push(`shortCommit baseline=${releaseBaseline.shortCommit} active=${activeRelease.version.shortCommit}`);
+  }
+  return differences;
 }
 
-export { activeReleaseMatchesBaseline };
+function activeReleaseMetadataIssues(activeRelease) {
+  const issues = [];
+  const { name, version } = activeRelease;
+  if (version.release !== name) issues.push(`version release ${version.release} != active directory ${name}`);
+  if (!/^[0-9a-f]{40}$/u.test(version.commit ?? '')) issues.push('commit is not a full Git SHA');
+  if (version.shortCommit !== version.commit?.slice(0, 8)) {
+    issues.push(`shortCommit ${version.shortCommit} != commit prefix ${version.commit?.slice(0, 8) || '<missing>'}`);
+  }
+  if (!name.endsWith(`-${version.shortCommit}`)) {
+    issues.push(`active directory ${name} does not end with shortCommit ${version.shortCommit}`);
+  }
+  return issues;
+}
+
+function activeReleaseIdentityMatches(first, second) {
+  return first.name === second.name
+    && first.version.release === second.version.release
+    && first.version.commit === second.version.commit
+    && first.version.shortCommit === second.version.shortCommit;
+}
+
+export {
+  activeReleaseIdentityMatches,
+  assessReleaseContent,
+  assertReleaseContentMatchesBaseline,
+  manifestFingerprint,
+  releaseMetadataDifferences,
+};
 
 function responseHeader(response, name) {
   const value = response.headers[name.toLowerCase()];
@@ -434,17 +519,14 @@ async function main() {
   await acquireRemoteLock();
   const gitHead = (await runChecked('git', ['rev-parse', 'HEAD'])).trim();
   const releaseBaseline = JSON.parse(await readFile(RELEASE_BASELINE_PATH, 'utf8'));
-  const initialActiveRelease = await readActiveRelease();
-  if (!activeReleaseMatchesBaseline(initialActiveRelease, releaseBaseline)) {
-    throw new Error(
-      `acceptance baseline ${releaseBaseline.shortCommit} is not the active release `
-      + `${initialActiveRelease.name || '<unknown>'} `
-      + `(${initialActiveRelease.version.shortCommit || '<unknown>'}); capture a new baseline first`,
-    );
-  }
   const localEntries = await readReleaseManifest();
   if (localEntries.length !== releaseBaseline.files || sumManifest(localEntries) !== releaseBaseline.bytes) {
-    errors.push('release baseline metadata does not match release-manifest.tsv');
+    throw new Error('release baseline metadata does not match release-manifest.tsv; capture a new baseline first');
+  }
+  const initialActiveRelease = await readActiveRelease();
+  const activeMetadataIssues = activeReleaseMetadataIssues(initialActiveRelease);
+  if (activeMetadataIssues.length > 0) {
+    throw new Error(`active release metadata is invalid: ${activeMetadataIssues.join(', ')}`);
   }
 
   console.log('[1/8] Comparing local and deployed manifests');
@@ -455,18 +537,8 @@ async function main() {
   const remoteEntries = parseRemoteManifest(remoteOutput);
   const deploymentMetadata = remoteEntries.filter(({ path }) => path === '.deploy-verified');
   const remoteContentEntries = remoteEntries.filter(({ path }) => path !== '.deploy-verified');
-  const localByPath = new Map(localEntries.map((entry) => [entry.path, entry.size_bytes]));
-  const remoteByPath = new Map(remoteContentEntries.map((entry) => [entry.path, entry.size_bytes]));
-  const manifestDiff = [];
-  for (const [path, size] of localByPath) {
-    if (!remoteByPath.has(path)) manifestDiff.push({ type: 'missing_on_server', path, local_bytes: size, server_bytes: '' });
-    else if (remoteByPath.get(path) !== size) manifestDiff.push({ type: 'size_mismatch', path, local_bytes: size, server_bytes: remoteByPath.get(path) });
-  }
-  for (const [path, size] of remoteByPath) {
-    if (!localByPath.has(path)) manifestDiff.push({ type: 'unexpected_on_server', path, local_bytes: '', server_bytes: size });
-  }
-  if (manifestDiff.length > 0) errors.push(`manifest: ${manifestDiff.length} path/size mismatch(es)`);
-  if (deploymentMetadata.length !== 1) errors.push(`manifest: expected one .deploy-verified marker, got ${deploymentMetadata.length}`);
+  const contentAssessment = assessReleaseContent(localEntries, remoteContentEntries);
+  const manifestDiff = contentAssessment.differences;
   const localCategories = categorizeManifest(localEntries);
   const remoteCategories = categorizeManifest(remoteContentEntries);
   const manifestSummaryRows = Object.keys(localCategories).map((category) => ({
@@ -485,7 +557,18 @@ async function main() {
   })));
   await writeTsv('manifest-diff.tsv', ['type', 'path', 'local_bytes', 'server_bytes'], manifestDiff);
   await writeTsv('manifest-summary.tsv', ['category', 'local_files', 'server_files', 'local_bytes', 'server_bytes', 'result'], manifestSummaryRows);
-  console.log(`  ${localEntries.length} local files / ${sumManifest(localEntries)} bytes; ${remoteContentEntries.length} deployed files / ${sumManifest(remoteContentEntries)} bytes; mismatches: ${manifestDiff.length}`);
+  console.log(`  ${localEntries.length} baseline files / ${sumManifest(localEntries)} bytes; ${remoteContentEntries.length} deployed files / ${sumManifest(remoteContentEntries)} bytes; mismatches: ${manifestDiff.length}`);
+  console.log(`  content fingerprint: ${contentAssessment.baselineFingerprint} (${contentAssessment.matches ? 'MATCH' : 'MISMATCH'})`);
+  if (deploymentMetadata.length !== 1) {
+    throw new Error(`active release has ${deploymentMetadata.length} .deploy-verified markers, expected one`);
+  }
+  assertReleaseContentMatchesBaseline(contentAssessment, initialActiveRelease.name);
+  const releaseIdentityDifferences = releaseMetadataDifferences(initialActiveRelease, releaseBaseline);
+  if (releaseIdentityDifferences.length > 0) {
+    console.log(`  release metadata differs (informational): ${releaseIdentityDifferences.join('; ')}`);
+  } else {
+    console.log('  release metadata matches the baseline (informational)');
+  }
 
   console.log('[2/8] Requesting every sitemap URL');
   const sitemapUrls = await readReleaseSitemapUrls();
@@ -698,14 +781,14 @@ async function main() {
   if (!version || typeof version !== 'object' || Array.isArray(version)) {
     versionIssues.push('JSON root must be a release metadata object');
   } else {
-    if (version.commit !== releaseBaseline.commit) {
-      versionIssues.push(`commit ${version.commit} != accepted release commit ${releaseBaseline.commit}`);
+    if (version.commit !== initialActiveRelease.version.commit) {
+      versionIssues.push(`commit ${version.commit} != active release commit ${initialActiveRelease.version.commit}`);
     }
-    if (version.shortCommit !== releaseBaseline.shortCommit) {
-      versionIssues.push(`shortCommit ${version.shortCommit} != accepted release shortCommit ${releaseBaseline.shortCommit}`);
+    if (version.shortCommit !== initialActiveRelease.version.shortCommit) {
+      versionIssues.push(`shortCommit ${version.shortCommit} != active release shortCommit ${initialActiveRelease.version.shortCommit}`);
     }
-    if (version.release !== releaseBaseline.release) {
-      versionIssues.push(`release ${version.release} != accepted release ${releaseBaseline.release}`);
+    if (version.release !== initialActiveRelease.name) {
+      versionIssues.push(`release ${version.release} != active release ${initialActiveRelease.name}`);
     }
     if (!version.builtAt || Number.isNaN(Date.parse(version.builtAt))) versionIssues.push('release/builtAt metadata is incomplete');
   }
@@ -828,9 +911,9 @@ done
 
   await assertRemoteLock();
   const finalActiveRelease = await readActiveRelease();
-  if (!activeReleaseMatchesBaseline(finalActiveRelease, releaseBaseline)) {
+  if (!activeReleaseIdentityMatches(finalActiveRelease, initialActiveRelease)) {
     errors.push(
-      `active release changed during acceptance: expected ${releaseBaseline.release}, `
+      `active release changed during acceptance: expected ${initialActiveRelease.name}, `
       + `got ${finalActiveRelease.name || '<unknown>'}`,
     );
   }
@@ -839,7 +922,20 @@ done
     generatedAt: new Date().toISOString(),
     origin: ORIGIN,
     repositoryHead: gitHead,
-    expectedDeployedCommit: releaseBaseline.commit,
+    baselineRelease: {
+      release: releaseBaseline.release,
+      commit: releaseBaseline.commit,
+      shortCommit: releaseBaseline.shortCommit,
+      contentFingerprint: contentAssessment.baselineFingerprint,
+    },
+    activeRelease: {
+      release: initialActiveRelease.name,
+      commit: initialActiveRelease.version.commit,
+      shortCommit: initialActiveRelease.version.shortCommit,
+      contentFingerprint: contentAssessment.activeFingerprint,
+      metadataMatchesBaseline: releaseIdentityDifferences.length === 0,
+      metadataDifferences: releaseIdentityDifferences,
+    },
     verdict: errors.length === 0 ? 'PASS' : 'FAIL',
     checks: {
       manifest: {

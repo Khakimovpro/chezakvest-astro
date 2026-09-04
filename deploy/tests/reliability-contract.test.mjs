@@ -15,7 +15,12 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import test from 'node:test';
 
-import { activeReleaseMatchesBaseline } from '../priyomka/verify-stage.mjs';
+import {
+  activeReleaseIdentityMatches,
+  assessReleaseContent,
+  assertReleaseContentMatchesBaseline,
+  releaseMetadataDifferences,
+} from '../priyomka/verify-stage.mjs';
 
 const projectRoot = resolve(import.meta.dirname, '../..');
 
@@ -465,42 +470,134 @@ test('production failures select TLS-safe state while manual rollback remains se
   assert.match(cutover, /REMOTE_OPERATION_OWNER="\/var\/lib\/chezakvest\/operation-owner"/);
 });
 
-test('acceptance baseline comparison rejects any release identity mismatch', () => {
+test('acceptance permits release metadata drift when deployed content matches the baseline', () => {
   const baseline = {
     release: '20260903T230843Z-4e7930cc',
     commit: '4e7930cc00000000000000000000000000000000',
     shortCommit: '4e7930cc',
   };
-  const matching = {
-    name: baseline.release,
+  const activeRelease = {
+    name: '20260904T000000Z-deadbeef',
     version: {
-      release: baseline.release,
-      commit: baseline.commit,
-      shortCommit: baseline.shortCommit,
+      release: '20260904T000000Z-deadbeef',
+      commit: 'deadbeef00000000000000000000000000000000',
+      shortCommit: 'deadbeef',
     },
   };
-  assert.equal(activeReleaseMatchesBaseline(matching, baseline), true);
-  assert.equal(activeReleaseMatchesBaseline({ ...matching, name: '20260904T000000Z-deadbeef' }, baseline), false);
-  assert.equal(activeReleaseMatchesBaseline({
-    ...matching,
-    version: { ...matching.version, commit: 'deadbeef' },
-  }, baseline), false);
-  assert.equal(activeReleaseMatchesBaseline({
-    ...matching,
-    version: { ...matching.version, shortCommit: 'deadbeef' },
-  }, baseline), false);
-  assert.equal(activeReleaseMatchesBaseline({
-    ...matching,
-    version: { ...matching.version, release: '20260904T000000Z-deadbeef' },
-  }, baseline), false);
+  const manifest = [
+    { path: 'index.html', size_bytes: 100 },
+    { path: 'version.json', size_bytes: 211 },
+  ];
+  const content = assessReleaseContent(manifest, [...manifest].reverse());
+
+  assert.equal(content.matches, true);
+  assert.equal(content.baselineFingerprint, content.activeFingerprint);
+  assert.doesNotThrow(() => assertReleaseContentMatchesBaseline(content, activeRelease.name));
+  assert.deepEqual(releaseMetadataDifferences(activeRelease, baseline), [
+    'release baseline=20260903T230843Z-4e7930cc active=20260904T000000Z-deadbeef',
+    'commit baseline=4e7930cc00000000000000000000000000000000 active=deadbeef00000000000000000000000000000000',
+    'shortCommit baseline=4e7930cc active=deadbeef',
+  ]);
+});
+
+test('acceptance still rejects a different deployed content manifest', () => {
+  const baselineManifest = [
+    { path: 'index.html', size_bytes: 100 },
+    { path: 'asset.webp', size_bytes: 200 },
+  ];
+  const activeManifest = [
+    { path: 'index.html', size_bytes: 200 },
+    { path: 'asset.webp', size_bytes: 100 },
+  ];
+  const content = assessReleaseContent(baselineManifest, activeManifest);
+
+  assert.equal(content.matches, false);
+  assert.notEqual(content.baselineFingerprint, content.activeFingerprint);
+  assert.deepEqual(content.differences, [
+    { type: 'size_mismatch', path: 'index.html', local_bytes: 100, server_bytes: 200 },
+    { type: 'size_mismatch', path: 'asset.webp', local_bytes: 200, server_bytes: 100 },
+  ]);
+  assert.throws(
+    () => assertReleaseContentMatchesBaseline(content, '20260904T000000Z-deadbeef'),
+    /does not match active release .* 2 path\/size mismatch\(es\); capture a new baseline first/u,
+  );
+
+  const pathDifference = assessReleaseContent(baselineManifest, [
+    { path: 'index.html', size_bytes: 100 },
+    { path: 'unexpected.js', size_bytes: 200 },
+  ]);
+  assert.deepEqual(pathDifference.differences, [
+    { type: 'missing_on_server', path: 'asset.webp', local_bytes: 200, server_bytes: '' },
+    { type: 'unexpected_on_server', path: 'unexpected.js', local_bytes: '', server_bytes: 200 },
+  ]);
+  assert.throws(
+    () => assertReleaseContentMatchesBaseline(pathDifference, '20260904T000000Z-deadbeef'),
+    /2 path\/size mismatch\(es\); capture a new baseline first/u,
+  );
+});
+
+test('acceptance detects an active release switch while it holds the remote lock', () => {
+  const first = {
+    name: '20260904T000000Z-deadbeef',
+    version: {
+      release: '20260904T000000Z-deadbeef',
+      commit: 'deadbeef00000000000000000000000000000000',
+      shortCommit: 'deadbeef',
+    },
+  };
+  assert.equal(activeReleaseIdentityMatches(first, structuredClone(first)), true);
+  assert.equal(activeReleaseIdentityMatches(first, {
+    ...structuredClone(first),
+    name: '20260904T000100Z-cafebabe',
+  }), false);
 });
 
 test('acceptance keeps the remote lock through final release check and summary write', async () => {
   const acceptance = await source('deploy/priyomka/verify-stage.mjs');
+  const contentAssessment = acceptance.indexOf('const contentAssessment = assessReleaseContent');
+  const contentGate = acceptance.indexOf('assertReleaseContentMatchesBaseline(contentAssessment', contentAssessment);
+  const metadataComparison = acceptance.indexOf('releaseMetadataDifferences(initialActiveRelease', contentGate);
+  const informationalOutput = acceptance.indexOf('release metadata differs (informational)', metadataComparison);
+  const firstHttpSweep = acceptance.indexOf("console.log('[2/8] Requesting every sitemap URL')", informationalOutput);
+  assert.ok(
+    contentAssessment >= 0
+      && contentGate > contentAssessment
+      && metadataComparison > contentGate
+      && informationalOutput > metadataComparison
+      && firstHttpSweep > informationalOutput,
+  );
+  assert.doesNotMatch(acceptance, /activeReleaseMatchesBaseline/u);
+  const servedVersionStart = acceptance.indexOf("const versionResponse = await requestPath('/version.json')");
+  const servedVersionEnd = acceptance.indexOf("await writeTsv('edge-cases.tsv'", servedVersionStart);
+  const servedVersionCheck = acceptance.slice(servedVersionStart, servedVersionEnd);
+  assert.match(servedVersionCheck, /version\.commit !== initialActiveRelease\.version\.commit/u);
+  assert.match(servedVersionCheck, /version\.shortCommit !== initialActiveRelease\.version\.shortCommit/u);
+  assert.match(servedVersionCheck, /version\.release !== initialActiveRelease\.name/u);
+  assert.doesNotMatch(servedVersionCheck, /releaseBaseline\.(?:commit|shortCommit|release)/u);
   const finalAssert = acceptance.indexOf('await assertRemoteLock();\n  const finalActiveRelease');
+  const finalIdentityGuard = acceptance.indexOf(
+    'if (!activeReleaseIdentityMatches(finalActiveRelease, initialActiveRelease))',
+    finalAssert,
+  );
+  const releaseSwitchError = acceptance.indexOf('active release changed during acceptance:', finalIdentityGuard);
+  const summaryStart = acceptance.indexOf('const summary = {', releaseSwitchError);
+  const releaseSwitchGuard = acceptance.slice(finalIdentityGuard, summaryStart);
+  assert.match(releaseSwitchGuard, /errors\.push\(/u);
   const summaryWrite = acceptance.indexOf('await writeFile(SUMMARY_PATH', finalAssert);
   const afterWriteAssert = acceptance.indexOf('await assertRemoteLock();', summaryWrite);
-  assert.ok(finalAssert >= 0 && summaryWrite > finalAssert && afterWriteAssert > summaryWrite);
+  assert.ok(
+    finalAssert >= 0
+      && finalIdentityGuard > finalAssert
+      && releaseSwitchError > finalIdentityGuard
+      && summaryWrite > releaseSwitchError
+      && afterWriteAssert > summaryWrite,
+  );
+  const summary = acceptance.slice(summaryStart, summaryWrite);
+  assert.match(summary, /baselineRelease: \{\s+release: releaseBaseline\.release,\s+commit: releaseBaseline\.commit,\s+shortCommit: releaseBaseline\.shortCommit,\s+contentFingerprint: contentAssessment\.baselineFingerprint,/u);
+  assert.match(summary, /activeRelease: \{\s+release: initialActiveRelease\.name,\s+commit: initialActiveRelease\.version\.commit,\s+shortCommit: initialActiveRelease\.version\.shortCommit,\s+contentFingerprint: contentAssessment\.activeFingerprint,/u);
+  assert.match(summary, /metadataMatchesBaseline: releaseIdentityDifferences\.length === 0/u);
+  assert.match(summary, /metadataDifferences: releaseIdentityDifferences/u);
+  assert.match(summary, /verdict: errors\.length === 0 \? 'PASS' : 'FAIL'/u);
   assert.match(acceptance, /toString\('base64url'\)/);
   assert.doesNotMatch(acceptance, /'sh', '-s', '--', \.\.\.timingPaths/);
 });

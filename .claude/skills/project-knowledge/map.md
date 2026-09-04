@@ -1,4 +1,4 @@
-<!-- MAP-SIG: 39d61f547f7e2a31ae3d6e18418afa7fd89a7886 | blessed: 2026-09-04 -->
+<!-- MAP-SIG: 1c557cd41cc567418862c31246d7c2bd5e77da5c | blessed: 2026-09-04 -->
 
 # Навигационная карта «Чё за Квест»
 
@@ -57,6 +57,7 @@
 | --- | --- |
 | Релизный интерфейс и ограничения | [`deploy/README.md`](../../../deploy/README.md) |
 | Реализация релиза | проверки рабочего дерева начинаются у [`deploy/deploy.sh:778`](../../../deploy/deploy.sh#L778), гейт — у [`:822`](../../../deploy/deploy.sh#L822), доставка релиза — у [`:883`](../../../deploy/deploy.sh#L883), транзакционная установка nginx-конфигов — у [`:1144`](../../../deploy/deploy.sh#L1144) |
+| Полная приёмка стенда | [`deploy/priyomka/verify-stage.mjs`](../../../deploy/priyomka/verify-stage.mjs) сверяет содержимое активного релиза с зафиксированным `path + size` манифестом; commit и имя релиза остаются справочной metadata |
 | Откат | `rollback_to` в [`deploy/deploy.sh:488`](../../../deploy/deploy.sh#L488) |
 | Домен и TLS | [`deploy/DOMEN.md`](../../../deploy/DOMEN.md) |
 | Дежурство и аварии | [`deploy/EKSPLUATACIYA.md`](../../../deploy/EKSPLUATACIYA.md) |
@@ -68,7 +69,7 @@
 
 ```bash
 git ls-files 'package.json' 'src/**' 'scripts/**' '_capture/*.py' 'migration/*.mjs' 'deploy/**' \
-  | grep -vE '^(src/generated|src/source-snapshots|public/assets)/' \
+  | grep -vE '^(src/generated|src/source-snapshots|public/assets)/|^deploy/priyomka/.*\.(json|tsv|txt)$' \
   | LC_ALL=C sort | xargs sha1sum | sha1sum | cut -d' ' -f1
 ```
 

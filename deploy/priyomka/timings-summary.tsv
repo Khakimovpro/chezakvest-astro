@@ -1,7 +1,7 @@
 source	path	measurements	avg_ttfb_ms	max_ttfb_ms	avg_total_ms	max_total_ms	result
-dev-server	/	5	27.124	27.613	254.649	316.564	PASS
-dev-server	/prazdniki-pod-kluch/	5	27.014	28.718	384.916	421.015	PASS
-dev-server	/roblox-land/	5	26.861	27.044	212.125	213.625	PASS
-moscow-server-loopback	/	5	0.854	1.099	1.939	2.068	PASS
-moscow-server-loopback	/prazdniki-pod-kluch/	5	0.674	0.887	2.152	2.292	PASS
-moscow-server-loopback	/roblox-land/	5	0.66	0.717	1.725	1.781	PASS
+dev-server	/	5	20.735	21.02	238.832	302.987	PASS
+dev-server	/prazdniki-pod-kluch/	5	20.737	20.869	332.79	385.025	PASS
+dev-server	/roblox-land/	5	20.765	20.946	176.097	183.294	PASS
+moscow-server-loopback	/	5	0.708	0.796	1.645	1.781	PASS
+moscow-server-loopback	/prazdniki-pod-kluch/	5	0.66	0.776	2.132	2.487	PASS
+moscow-server-loopback	/roblox-land/	5	0.648	0.733	1.697	1.835	PASS
