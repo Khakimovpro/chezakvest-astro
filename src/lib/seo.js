@@ -283,21 +283,44 @@ export const isValidIso8601DateTime = (value) => {
     && calendarDate.getUTCDate() === day;
 };
 
+export const sourceVideoIds = (visibleSource = '') => [...new Set(
+  [...String(visibleSource).matchAll(/\bdata-source-video-id=["']([a-f0-9]{32})["']/giu)]
+    .map((match) => match[1].toLowerCase()),
+)];
+
+// A snapshot replaces the native layout body, so its deferred Rutube player is
+// the only video eligible for markup. Native pages keep using the local video
+// that their layout renders. The stored snapshot metadata is accepted only
+// when it names the exact player present in the selected body.
+export const visibleVideoFor = ({ video, visibleSource = '' } = {}) => {
+  if (!visibleSource) return video?.poster && video?.src ? video : null;
+  const ids = sourceVideoIds(visibleSource);
+  if (ids.length !== 1 || video?.snapshot?.id?.toLowerCase() !== ids[0]) return null;
+  return video.snapshot;
+};
+
 // Google requires a trustworthy first-publication date for VideoObject. A page
 // opts in only with a verified ISO 8601 value next to its visible video data;
 // missing or malformed dates deliberately keep the video out of JSON-LD.
-export const videoObjectJsonLd = ({ video = {}, path = '/', pageName = '' } = {}) => {
-  if (!video.poster || !video.src || !video.caption || !isValidIso8601DateTime(video.uploadDate)) return null;
+export const videoObjectJsonLd = ({ video, path = '/', pageName = '' } = {}) => {
+  video ||= {};
+  const name = video.name || (video.caption && `${video.title || video.caption || 'Видео'} — ${pageName}`);
+  const description = video.description || video.caption;
+  const thumbnailUrl = absoluteAssetUrl(video.thumbnailUrl || video.poster);
+  const contentUrl = video.src && absoluteAssetUrl(video.src);
+  if (!name || !description || !thumbnailUrl || (!video.embedUrl && !contentUrl)
+    || !isValidIso8601DateTime(video.uploadDate)) return null;
 
   return {
     '@context': 'https://schema.org',
     '@type': 'VideoObject',
     '@id': absoluteUrl(`${path}#video`),
-    name: `${video.title || video.caption || 'Видео'} — ${pageName}`,
-    description: video.caption,
-    thumbnailUrl: absoluteAssetUrl(video.poster),
+    name,
+    description,
+    thumbnailUrl,
     uploadDate: video.uploadDate,
-    contentUrl: absoluteAssetUrl(video.src),
+    contentUrl: contentUrl || undefined,
+    embedUrl: video.embedUrl || undefined,
     url: absoluteUrl(`${path}#video`),
     duration: video.duration || undefined,
   };

@@ -32,6 +32,19 @@
    "1600": "/assets/q/c6212ad08e.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "7160e919e383376f0319e0ede42fcbc0",
+   "name": "Квест \"Пираты\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/7160e919e383376f0319e0ede42fcbc0.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2026-03-07/34/51/345189ca2bb9a8553079375f5629e0e0.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/7160e919e383376f0319e0ede42fcbc0",
+   "uploadDate": "2026-03-07T13:10:37+03:00",
+   "uploadDateSource": "https://rutube.ru/video/7160e919e383376f0319e0ede42fcbc0/",
+   "duration": "PT112.64S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

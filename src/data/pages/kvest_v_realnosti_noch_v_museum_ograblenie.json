@@ -32,6 +32,19 @@
    "1600": "/assets/q/7d972e47c9.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "136b4c42cf6ef34ffa0093af9fec55cc",
+   "name": "Квест \"Ночь в музее. Ограбление\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/136b4c42cf6ef34ffa0093af9fec55cc.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-10-02/8c/1c/8c1c9bf3bffda3ae48f2ef26cbc8ef08.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/136b4c42cf6ef34ffa0093af9fec55cc",
+   "uploadDate": "2026-01-22T20:31:38+03:00",
+   "uploadDateSource": "https://rutube.ru/video/136b4c42cf6ef34ffa0093af9fec55cc/",
+   "duration": "PT64.934S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

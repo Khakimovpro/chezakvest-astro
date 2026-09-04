@@ -97,7 +97,18 @@
   "poster": "/assets/q/80d439303c.webp",
   "src": "/assets/video/among-us.mp4",
   "uploadDate": "2026-04-21T10:49:32+03:00",
-  "uploadDateSource": "https://rutube.ru/video/ad111d70f0f6401e104de9da9fa20e3e/"
+  "uploadDateSource": "https://rutube.ru/video/ad111d70f0f6401e104de9da9fa20e3e/",
+  "snapshot": {
+   "id": "c2c4656e59b75d07cfb4068d8a1535b1",
+   "name": "Квест \"Амонг Ас\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/c2c4656e59b75d07cfb4068d8a1535b1.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-09-17/60/d5/60d5129508b5631b70fafa33c7a9da2a.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/c2c4656e59b75d07cfb4068d8a1535b1",
+   "uploadDate": "2026-01-22T20:32:30+03:00",
+   "uploadDateSource": "https://rutube.ru/video/c2c4656e59b75d07cfb4068d8a1535b1/",
+   "duration": "PT42.283S"
+  }
  },
  "related": {
   "title": "Другие игры в лабиринте от «Чё за Квест?»",

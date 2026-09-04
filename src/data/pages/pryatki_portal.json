@@ -32,6 +32,19 @@
    "1600": "/assets/q/17543bb600.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "7f65d61328a410d046daad4b6c48d84c",
+   "name": "Квест \"Прятки. Портал в другое измерение\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/7f65d61328a410d046daad4b6c48d84c.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-09-19/fd/b6/fdb6b12324e27f1d2598979842de17ef.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/7f65d61328a410d046daad4b6c48d84c",
+   "uploadDate": "2026-01-22T20:32:10+03:00",
+   "uploadDateSource": "https://rutube.ru/video/7f65d61328a410d046daad4b6c48d84c/",
+   "duration": "PT35.34S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

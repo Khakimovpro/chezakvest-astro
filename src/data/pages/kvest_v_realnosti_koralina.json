@@ -32,6 +32,19 @@
    "1600": "/assets/q/869b04fbdb.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "f56d566660e94a2888bf7d16b3f9f278",
+   "name": "Квест Коралина в Стране Кошмаров от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/f56d566660e94a2888bf7d16b3f9f278.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-10-06/38/86/3886477080920296aef1fa1f6cd5c275.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/f56d566660e94a2888bf7d16b3f9f278",
+   "uploadDate": "2026-01-22T20:29:59+03:00",
+   "uploadDateSource": "https://rutube.ru/video/f56d566660e94a2888bf7d16b3f9f278/",
+   "duration": "PT79.086S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

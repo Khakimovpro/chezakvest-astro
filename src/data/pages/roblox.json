@@ -32,6 +32,19 @@
    "1600": "/assets/q/ccb3695169.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "952765793929dd865b868a36ec37c3c7",
+   "name": "Квест \"Роблокс. Радужные друзья\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/952765793929dd865b868a36ec37c3c7.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-09-14/53/a1/53a118ab612efde42556e0ab49c4c54b.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/952765793929dd865b868a36ec37c3c7",
+   "uploadDate": "2026-01-22T20:33:15+03:00",
+   "uploadDateSource": "https://rutube.ru/video/952765793929dd865b868a36ec37c3c7/",
+   "duration": "PT40.146S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

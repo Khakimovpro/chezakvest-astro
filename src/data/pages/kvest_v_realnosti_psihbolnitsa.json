@@ -109,7 +109,18 @@
   "poster": "/assets/q/25027ab56f.webp",
   "src": "/assets/video/psihbolnitsa.mp4",
   "uploadDate": "2026-05-04T15:12:00+03:00",
-  "uploadDateSource": "https://rutube.ru/video/6e02cad09c6b4225b0fcef4384940eb2/"
+  "uploadDateSource": "https://rutube.ru/video/6e02cad09c6b4225b0fcef4384940eb2/",
+  "snapshot": {
+   "id": "b3141fdc8390c1392b366d4b782ff4b7",
+   "name": "Квест Психбольница от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/b3141fdc8390c1392b366d4b782ff4b7.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-10-02/96/38/9638cdc9164b6e92cc4fdc56f7dbcdb8.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/b3141fdc8390c1392b366d4b782ff4b7",
+   "uploadDate": "2026-01-22T20:31:22+03:00",
+   "uploadDateSource": "https://rutube.ru/video/b3141fdc8390c1392b366d4b782ff4b7/",
+   "duration": "PT60.267S"
+  }
  },
  "related": {
   "title": "Другие страшные квесты от «Чё за Квест?»",

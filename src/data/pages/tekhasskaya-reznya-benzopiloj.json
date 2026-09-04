@@ -172,7 +172,18 @@
   "poster": "/assets/q/45ce2a8736.webp",
   "src": "/assets/video/ono-zvonok-reznya.mp4",
   "uploadDate": "2026-04-21T10:56:09+03:00",
-  "uploadDateSource": "https://rutube.ru/video/77eea8e448e9a38d262c78d55567ed82/"
+  "uploadDateSource": "https://rutube.ru/video/77eea8e448e9a38d262c78d55567ed82/",
+  "snapshot": {
+   "id": "576799a1ecf87e4967c73ac168ec1f28",
+   "name": "Квест Техасская резня бензопилой от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/576799a1ecf87e4967c73ac168ec1f28.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-10-05/2f/67/2f67002c96c5a652ea8ccfe3b9571278.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/576799a1ecf87e4967c73ac168ec1f28",
+   "uploadDate": "2026-01-22T20:31:09+03:00",
+   "uploadDateSource": "https://rutube.ru/video/576799a1ecf87e4967c73ac168ec1f28/",
+   "duration": "PT41.307S"
+  }
  },
  "scenarios": {
   "title": "Выберите один из популярных сценариев для вашего праздника",

@@ -32,6 +32,19 @@
    "1600": "/assets/q/8a5eecd29d.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "25247657f74a0861e3d66c887bc570d4",
+   "name": "Квест \"Прятки kids\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/25247657f74a0861e3d66c887bc570d4.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-09-19/0c/fb/0cfb7163b331dfed9df6667f24e1ca32.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/25247657f74a0861e3d66c887bc570d4",
+   "uploadDate": "2026-01-22T20:32:03+03:00",
+   "uploadDateSource": "https://rutube.ru/video/25247657f74a0861e3d66c887bc570d4/",
+   "duration": "PT46.234S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

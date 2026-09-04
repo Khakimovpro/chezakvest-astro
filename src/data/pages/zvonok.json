@@ -228,7 +228,18 @@
   "poster": "/assets/q/026ab5c33d.webp",
   "src": "/assets/video/ono-zvonok-reznya.mp4",
   "uploadDate": "2026-04-21T10:56:09+03:00",
-  "uploadDateSource": "https://rutube.ru/video/77eea8e448e9a38d262c78d55567ed82/"
+  "uploadDateSource": "https://rutube.ru/video/77eea8e448e9a38d262c78d55567ed82/",
+  "snapshot": {
+   "id": "4372607d50f5de28143601221ce32e21",
+   "name": "Квест Звонок от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/4372607d50f5de28143601221ce32e21.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-10-05/62/8d/628db5a4c8a5305fbd5987f3adc25db9.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/4372607d50f5de28143601221ce32e21",
+   "uploadDate": "2026-01-22T20:28:36+03:00",
+   "uploadDateSource": "https://rutube.ru/video/4372607d50f5de28143601221ce32e21/",
+   "duration": "PT40.667S"
+  }
  },
  "scenarios": {
   "title": "Выберите один из популярных сценариев для вашего праздника",

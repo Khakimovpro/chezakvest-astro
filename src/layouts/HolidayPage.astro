@@ -33,7 +33,6 @@ import {
   breadcrumbJsonLd,
   holidayServiceJsonLd,
   visibleHolidayFaqJsonLd,
-  visibleHolidayVideoJsonLd,
   withCollectionBreadcrumbs,
 } from '../lib/seo.js';
 import { canonicalizeCardItems } from '../lib/card-items.js';
@@ -79,12 +78,12 @@ const canonicalCardItems = (items = []) => canonicalizeCardItems(items, pagesByS
 
 const faq = sourceVypusknoj ? null : sections.find((s) => s.kind === 'faq');
 const reviewSection = sections.find((s) => s.kind === 'reviews');
+const nativeVideo = sections.find((s) => s.kind === 'video');
 
 const jsonld = [
   holidayServiceJsonLd({ page, site }),
   breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
   visibleHolidayFaqJsonLd(page, faq),
-  visibleHolidayVideoJsonLd(page),
 ].filter(Boolean);
 
 const heroSrcset = hero.bgset
@@ -171,6 +170,7 @@ const bodyClass = [
   ogImage={hero.bg}
   ogType="article"
   jsonld={jsonld}
+  video={nativeVideo}
   preloadImage={preload}
   bodyClass={bodyClass}
 >

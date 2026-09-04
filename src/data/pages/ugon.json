@@ -32,6 +32,19 @@
    "1600": "/assets/q/c2245d4825.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "1e815546dadd964ec1c3adf744c11cb0",
+   "name": "Квест \"Фантастический угон\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/1e815546dadd964ec1c3adf744c11cb0.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2026-03-07/d6/b8/d6b8dfb65ffc3edc9d7514ca3cfc5aa9.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/1e815546dadd964ec1c3adf744c11cb0",
+   "uploadDate": "2026-03-17T05:50:18+03:00",
+   "uploadDateSource": "https://rutube.ru/video/1e815546dadd964ec1c3adf744c11cb0/",
+   "duration": "PT60.12S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

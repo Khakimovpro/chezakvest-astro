@@ -32,6 +32,19 @@
    "1600": "/assets/q/aa88f8ca34.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "7d57783b95681114149b68e7cf23280e",
+   "name": "Квест \"Уэнсдей. Украденная Вещь\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/7d57783b95681114149b68e7cf23280e.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-09-17/d1/69/d1694199decfaf77dc1e16766db09386.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/7d57783b95681114149b68e7cf23280e",
+   "uploadDate": "2026-01-22T20:32:18+03:00",
+   "uploadDateSource": "https://rutube.ru/video/7d57783b95681114149b68e7cf23280e/",
+   "duration": "PT68S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

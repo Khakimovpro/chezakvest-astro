@@ -32,6 +32,19 @@
    "1600": "/assets/q/da6a813157.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "9042f4c94e1b4dc75dd87fc79d420beb",
+   "name": "Квест \"Бегущий в лабиринте\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/9042f4c94e1b4dc75dd87fc79d420beb.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-09-17/bd/42/bd42183357260079886cbf32f78a5f14.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/9042f4c94e1b4dc75dd87fc79d420beb",
+   "uploadDate": "2026-01-22T20:33:01+03:00",
+   "uploadDateSource": "https://rutube.ru/video/9042f4c94e1b4dc75dd87fc79d420beb/",
+   "duration": "PT52.067S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

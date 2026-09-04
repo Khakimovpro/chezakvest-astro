@@ -32,6 +32,19 @@
    "1600": "/assets/q/7f1a4a0b91.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "359bf78c4a45a34dd30af35f7229604b",
+   "name": "Квест Дом призраков от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/359bf78c4a45a34dd30af35f7229604b.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-10-06/0d/56/0d5641d061851c0a6ec7454f03636d9a.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/359bf78c4a45a34dd30af35f7229604b",
+   "uploadDate": "2026-01-22T20:29:52+03:00",
+   "uploadDateSource": "https://rutube.ru/video/359bf78c4a45a34dd30af35f7229604b/",
+   "duration": "PT73.885S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

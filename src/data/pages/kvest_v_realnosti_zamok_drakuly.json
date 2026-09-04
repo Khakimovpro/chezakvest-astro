@@ -32,6 +32,19 @@
    "1600": "/assets/q/254959e80f.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "a45f2fee9beefc170244ffbab50814c1",
+   "name": "Квест Замок Графа Дракулы от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/a45f2fee9beefc170244ffbab50814c1.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-10-06/c4/de/c4decda1a259ab2253e8c3bc80bc3e14.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/a45f2fee9beefc170244ffbab50814c1",
+   "uploadDate": "2026-01-22T20:29:40+03:00",
+   "uploadDateSource": "https://rutube.ru/video/a45f2fee9beefc170244ffbab50814c1/",
+   "duration": "PT24.914S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

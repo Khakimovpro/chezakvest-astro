@@ -32,6 +32,19 @@
    "1600": "/assets/q/d9e558a291.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "a85b156ec0dc4f1a4cb52584c7568f4f",
+   "name": "Квест \"Хижина Чудес\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/a85b156ec0dc4f1a4cb52584c7568f4f.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2026-03-07/2b/8d/2b8d2548b0350c010c983bd4370851a1.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/a85b156ec0dc4f1a4cb52584c7568f4f",
+   "uploadDate": "2026-03-07T13:15:34+03:00",
+   "uploadDateSource": "https://rutube.ru/video/a85b156ec0dc4f1a4cb52584c7568f4f/",
+   "duration": "PT80.406S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

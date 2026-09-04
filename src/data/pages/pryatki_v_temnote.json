@@ -32,6 +32,19 @@
    "1600": "/assets/q/5e881f14ae.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "eb717113bb313e2dce1aa3c42a2fbbf1",
+   "name": "Квест \"Прятки в темноте\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/eb717113bb313e2dce1aa3c42a2fbbf1.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-09-19/a5/d5/a5d568058ae801aa3f42113580107a72.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/eb717113bb313e2dce1aa3c42a2fbbf1",
+   "uploadDate": "2026-01-22T20:31:56+03:00",
+   "uploadDateSource": "https://rutube.ru/video/eb717113bb313e2dce1aa3c42a2fbbf1/",
+   "duration": "PT39.067S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

@@ -32,6 +32,19 @@
    "1600": "/assets/q/761e33a998.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "9434f5b19a2359eaa7446a34a96a4b81",
+   "name": "Квест \"Майнкрафт\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/9434f5b19a2359eaa7446a34a96a4b81.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-09-17/86/3c/863cac6add7950cf7cc5e35abacbebac.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/9434f5b19a2359eaa7446a34a96a4b81",
+   "uploadDate": "2026-01-22T20:32:39+03:00",
+   "uploadDateSource": "https://rutube.ru/video/9434f5b19a2359eaa7446a34a96a4b81/",
+   "duration": "PT49.179S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

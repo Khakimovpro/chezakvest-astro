@@ -221,7 +221,18 @@
   "poster": "/assets/q/065ebd7e6c.webp",
   "src": "/assets/video/ono-zvonok-reznya.mp4",
   "uploadDate": "2026-04-21T10:56:09+03:00",
-  "uploadDateSource": "https://rutube.ru/video/77eea8e448e9a38d262c78d55567ed82/"
+  "uploadDateSource": "https://rutube.ru/video/77eea8e448e9a38d262c78d55567ed82/",
+  "snapshot": {
+   "id": "f2461e284083e7b8c28c0f97ba0f4c03",
+   "name": "Квест \"Оно\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/f2461e284083e7b8c28c0f97ba0f4c03.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-10-05/a3/1f/a31f1cfa3fb7eca397dcd02bf44dddc5.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/f2461e284083e7b8c28c0f97ba0f4c03",
+   "uploadDate": "2026-01-22T20:30:09+03:00",
+   "uploadDateSource": "https://rutube.ru/video/f2461e284083e7b8c28c0f97ba0f4c03/",
+   "duration": "PT48.067S"
+  }
  },
   "sourceParity": {
     "video": "t347",

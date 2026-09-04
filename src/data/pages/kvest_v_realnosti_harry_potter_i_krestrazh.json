@@ -32,6 +32,19 @@
    "1600": "/assets/q/1e958119ed.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "3651e713b9efc51ebb4c12cebd85b6a3",
+   "name": "Квест Гарри Поттер и Последний Крестраж от «Чё За Квест?»",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/3651e713b9efc51ebb4c12cebd85b6a3.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-10-02/0d/9d/0d9d05e9ba01357bc04f7bad3318e810.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/3651e713b9efc51ebb4c12cebd85b6a3",
+   "uploadDate": "2026-01-22T20:31:31+03:00",
+   "uploadDateSource": "https://rutube.ru/video/3651e713b9efc51ebb4c12cebd85b6a3/",
+   "duration": "PT48.434S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

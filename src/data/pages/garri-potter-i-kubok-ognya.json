@@ -32,6 +32,19 @@
    "1600": "/assets/q/c9eeb7134d.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "42340095221d021fac1eb5328ba0735b",
+   "name": "Квест \"Гарри Поттер и Кубок огня\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/42340095221d021fac1eb5328ba0735b.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-09-17/43/5f/435fe03b98fdf22e12b6f8e4af85ced6.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/42340095221d021fac1eb5328ba0735b",
+   "uploadDate": "2026-01-22T20:32:49+03:00",
+   "uploadDateSource": "https://rutube.ru/video/42340095221d021fac1eb5328ba0735b/",
+   "duration": "PT35.34S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

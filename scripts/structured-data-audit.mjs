@@ -9,14 +9,15 @@ import {
   holidayServiceJsonLd,
   isValidIso8601DateTime,
   questServiceJsonLd,
+  sourceVideoIds,
   venueBusinessJsonLd,
   videoObjectJsonLd,
+  visibleVideoFor,
   visibleHolidayFaqJsonLd,
-  visibleHolidayVideoJsonLd,
   websiteJsonLd,
   withCollectionBreadcrumbs,
 } from '../src/lib/seo.js';
-import { canonicalUrl, ORIGIN } from '../src/lib/urls.js';
+import { absoluteAssetUrl, canonicalUrl, ORIGIN } from '../src/lib/urls.js';
 
 const PROJECT_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PAGES_DIRECTORY = join(PROJECT_ROOT, 'src', 'data', 'pages');
@@ -41,10 +42,11 @@ const HIDDEN_CUSTOM_ARTBOARDS = new Set([
   'kids-artboard',
 ]);
 const SOURCE_CONTRACTS = [
-  ['src/layouts/Layout.astro', [/globalJsonLd\(\{ site, path, title: schemaName, image: verifiedPageImage, visibleSource: sourceSnapshot\?\.html \|\| '', jsonld \}\)/gu, /sourceSnapshot\.html\.includes\(pageImage\)/gu, /renderedJsonLd\.map/gu]],
-  ['src/layouts/QuestPage.astro', [/questServiceJsonLd\(\{ page, venue, venueVisible: serviceVenueVisible, site \}\)/gu, /videoObjectJsonLd\(\{/gu]],
+  ['scripts/structured-data-audit.mjs', [/record\.bodyVideos = bodyVideoEvidence\(html\)/gu, /record\.rendered = true/gu, /if \(rendered\) await loadRenderedSchemas\(records, errors\)/gu, /validateVideoBody\(\{\s*path: record\.path,/gu, /const errors = \[\];\s*validateVideoGuardContract\(errors\);/gu]],
+  ['src/layouts/Layout.astro', [/globalJsonLd\(\{ site, path, title: schemaName, image: verifiedPageImage, visibleSource: sourceSnapshot\?\.html \|\| '', jsonld: pageJsonLd \}\)/gu, /visibleVideoFor\(\{ video, visibleSource: sourceSnapshot\?\.html \|\| '' \}\)/gu, /videoObjectJsonLd\(\{ video: visibleVideo, path, pageName: schemaName \}\)/gu, /sourceSnapshot\.html\.includes\(pageImage\)/gu, /renderedJsonLd\.map/gu]],
+  ['src/layouts/QuestPage.astro', [/questServiceJsonLd\(\{ page, venue, venueVisible: serviceVenueVisible, site \}\)/gu, /video=\{page\.video\}/gu]],
   ['src/layouts/VenuePage.astro', [/venueBusinessJsonLd\(\{ page, venue, site \}\)/gu]],
-  ['src/layouts/HolidayPage.astro', [/holidayServiceJsonLd\(\{ page, site \}\)/gu, /visibleHolidayFaqJsonLd\(page, faq\)/gu, /visibleHolidayVideoJsonLd\(page\)/gu]],
+  ['src/layouts/HolidayPage.astro', [/holidayServiceJsonLd\(\{ page, site \}\)/gu, /visibleHolidayFaqJsonLd\(page, faq\)/gu, /video=\{nativeVideo\}/gu]],
   ['src/layouts/InfoPage.astro', [/breadcrumbs\.length > 0 && breadcrumbJsonLd\(breadcrumbs, path\)/gu]],
   ['src/layouts/CategoryPage.astro', [/collectionPageJsonLd\(\{\s*path,/gu]],
   ['src/pages/index.astro', [/const jsonld = \[websiteJsonLd\(\)\]/gu, /ogImage=\{s\.hero\.bg\}/gu]],
@@ -62,7 +64,7 @@ const REQUIRED_PROPERTIES = {
   CollectionPage: ['@id', 'name', 'url', 'isPartOf', 'mainEntity'],
   BreadcrumbList: ['itemListElement'],
   FAQPage: ['@id', 'mainEntity'],
-  VideoObject: ['@id', 'name', 'description', 'thumbnailUrl', 'uploadDate', 'contentUrl', 'url'],
+  VideoObject: ['@id', 'name', 'description', 'thumbnailUrl', 'uploadDate', 'url'],
 };
 const ALLOWED_PROPERTIES = {
   Organization: ['@context', '@type', '@id', 'name', 'url', 'logo', 'telephone', 'email', 'sameAs', 'contactPoint'],
@@ -74,7 +76,7 @@ const ALLOWED_PROPERTIES = {
   CollectionPage: ['@context', '@type', '@id', 'name', 'url', 'isPartOf', 'mainEntity'],
   BreadcrumbList: ['@context', '@type', 'itemListElement'],
   FAQPage: ['@context', '@type', '@id', 'mainEntity'],
-  VideoObject: ['@context', '@type', '@id', 'name', 'description', 'thumbnailUrl', 'uploadDate', 'contentUrl', 'url', 'duration'],
+  VideoObject: ['@context', '@type', '@id', 'name', 'description', 'thumbnailUrl', 'uploadDate', 'contentUrl', 'embedUrl', 'url', 'duration'],
   ContactPoint: ['@type', 'telephone', 'contactType', 'availableLanguage'],
   City: ['@type', 'name'],
   PeopleAudience: ['@type', 'suggestedMinAge'],
@@ -172,12 +174,6 @@ function pageSpecificSchemas(page, pages, venueBySlug, site) {
     return [
       questServiceJsonLd({ page, venue, venueVisible: questVenueIsRendered(page, venueBySlug), site }),
       breadcrumbSchema(page, path),
-      videoObjectJsonLd({
-        video: page.video,
-        path,
-        pageName: page.seo?.h1,
-        description: page.seo?.description,
-      }),
     ].filter(Boolean);
   }
   if (page.type === 'venue') {
@@ -191,7 +187,6 @@ function pageSpecificSchemas(page, pages, venueBySlug, site) {
       holidayServiceJsonLd({ page, site }),
       breadcrumbSchema(page, path),
       visibleHolidayFaqJsonLd(page),
-      visibleHolidayVideoJsonLd(page),
     ].filter(Boolean);
   }
   if (page.type === 'category') {
@@ -223,15 +218,98 @@ function visibleFaqItems(page) {
   return (page.sections || []).find((section) => section.kind === 'faq')?.items || [];
 }
 
-function visiblePlayableVideo(page) {
-  if (page.type === 'quest') return page.video?.poster && page.video?.src ? page.video : null;
-  if (page.type === 'holiday') {
-    const hero = (page.sections || []).find((section) => section.kind === 'hero') || {};
-    if (HIDDEN_CUSTOM_ARTBOARDS.has(hero.composition)) return null;
-    const video = (page.sections || []).find((section) => section.kind === 'video');
-    return video?.poster && video?.src ? video : null;
-  }
+function configuredVideoFor(page = {}) {
+  if (page.type === 'quest') return page.video;
+  if (page.type === 'holiday') return (page.sections || []).find((section) => section.kind === 'video');
   return null;
+}
+
+function decodeHtmlAttribute(value = '') {
+  return String(value)
+    .replace(/&amp;/giu, '&')
+    .replace(/&quot;/giu, '"')
+    .replace(/&#39;|&apos;/giu, "'");
+}
+
+function htmlAttributes(tag = '') {
+  return Object.fromEntries([...String(tag).matchAll(/\b([\w:-]+)\s*=\s*(["'])(.*?)\2/gsu)].map((match) => (
+    [match[1].toLowerCase(), decodeHtmlAttribute(match[3])]
+  )));
+}
+
+function decodedMediaUrl(value = '') {
+  if (!value) return '';
+  try {
+    return decodeURIComponent(value).replace(/^__SITE_BASE__/u, '');
+  } catch {
+    return '';
+  }
+}
+
+function bodyVideoEvidence(html = '') {
+  const body = String(html).match(/<body\b[^>]*>([\s\S]*?)<\/body>/iu)?.[1] || String(html);
+  const evidence = [];
+
+  for (const match of body.matchAll(/<[^>]+\bdata-source-video-kind=["'](?:rutube|video|iframe)["'][^>]*>/giu)) {
+    const attributes = htmlAttributes(match[0]);
+    if (!String(attributes.class || '').split(/\s+/u).includes('source-video-stage')) continue;
+    const kind = attributes['data-source-video-kind'];
+    const markerEnd = body.indexOf('</div>', match.index);
+    const stage = markerEnd === -1 ? match[0] : body.slice(match.index, markerEnd);
+    if (!/\bdata-source-video-play(?:\s*=|\s|>)/iu.test(stage)) continue;
+    const thumbnailAttributes = htmlAttributes(stage.match(/<img\b[^>]*>/iu)?.[0]);
+    const thumbnail = thumbnailAttributes['data-source-lazy-img'] || thumbnailAttributes.src || '';
+    if (kind === 'rutube') {
+      const declaredId = String(attributes['data-source-video-id'] || '').match(/^[a-f0-9]{32}/iu)?.[0]?.toLowerCase() || '';
+      const playableId = String(attributes['data-rutubeid'] || declaredId).match(/^[a-f0-9]{32}/iu)?.[0]?.toLowerCase() || '';
+      evidence.push({
+        kind,
+        id: playableId,
+        declaredId,
+        thumbnailUrl: thumbnail ? absoluteAssetUrl(thumbnail.replace(/^__SITE_BASE__/u, '')) : '',
+      });
+      continue;
+    }
+    const mediaUrl = decodedMediaUrl(attributes['data-source-video-url']);
+    evidence.push({
+      kind,
+      ...(kind === 'video' ? { contentUrl: mediaUrl ? absoluteAssetUrl(mediaUrl) : '' } : { embedUrl: mediaUrl }),
+      thumbnailUrl: thumbnail ? absoluteAssetUrl(thumbnail.replace(/^__SITE_BASE__/u, '')) : '',
+    });
+  }
+
+  for (const match of body.matchAll(/<[^>]+\bdata-video=["']([^"']+)["'][^>]*>/giu)) {
+    const attributes = htmlAttributes(match[0]);
+    if (!String(attributes.class || '').split(/\s+/u).includes('qvideo__frame')) continue;
+    const frameEnd = body.indexOf('</figure>', match.index);
+    const frame = frameEnd === -1 ? match[0] : body.slice(match.index, frameEnd);
+    if (!/\bclass=["'][^"']*\bqvideo__play\b/iu.test(frame)) continue;
+    const posterAttributes = htmlAttributes(frame.match(/<img\b[^>]*\bclass=["'][^"']*\bqvideo__poster\b[^"']*["'][^>]*>/iu)?.[0]);
+    const thumbnail = posterAttributes.src || '';
+    evidence.push({
+      kind: 'native',
+      contentUrl: absoluteAssetUrl(attributes['data-video']),
+      thumbnailUrl: thumbnail ? absoluteAssetUrl(decodeHtmlAttribute(thumbnail)) : '',
+    });
+  }
+
+  for (const match of body.matchAll(/<div\b[^>]*\bclass=["'][^"']*\bvideo-box\b[^"']*["'][^>]*>[\s\S]*?<video\b[^>]*\bclass=["'][^"']*\bcustom-video\b[^"']*["'][^>]*>([\s\S]*?)<\/video>[\s\S]*?<button\b[^>]*\bclass=["'][^"']*\bvideo-play-btn\b[^"']*["'][^>]*>/giu)) {
+    const videoAttributes = htmlAttributes(match[0].match(/<video\b[^>]*>/iu)?.[0]);
+    const sourceAttributes = htmlAttributes(match[1].match(/<source\b[^>]*>/iu)?.[0]);
+    const mediaUrl = videoAttributes.src || sourceAttributes.src || '';
+    if (!mediaUrl) continue;
+    evidence.push({
+      kind: 'native',
+      contentUrl: absoluteAssetUrl(mediaUrl.replace(/^__SITE_BASE__/u, '')),
+      thumbnailUrl: videoAttributes.poster ? absoluteAssetUrl(videoAttributes.poster.replace(/^__SITE_BASE__/u, '')) : '',
+    });
+  }
+
+  return evidence;
+}
+
+function rutubeIdFromUrl(value = '') {
+  return String(value).match(/rutube\.ru\/(?:play\/embed|video)\/([a-f0-9]{32})/iu)?.[1]?.toLowerCase() || '';
 }
 
 function visibleHolidayPrice(page) {
@@ -269,6 +347,8 @@ async function loadRenderedSchemas(records, errors) {
     const canonical = html.match(/<link\b[^>]*\brel=["']canonical["'][^>]*\bhref=["']([^"']+)["'][^>]*>/iu)?.[1]
       || html.match(/<link\b[^>]*\bhref=["']([^"']+)["'][^>]*\brel=["']canonical["'][^>]*>/iu)?.[1];
     if (canonical !== canonicalUrl(record.path)) errors.push(`${record.path}: rendered canonical is missing or incorrect`);
+    record.bodyVideos = bodyVideoEvidence(html);
+    record.rendered = true;
 
     const schemas = [];
     for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/giu)) {
@@ -327,13 +407,19 @@ async function loadAuditPages() {
     const serviceLocationVisible = questVenueIsRendered(page, venueBySlug) && (!sourceHtml
       || Boolean(venue?.address && primaryContent.includes(venue.address) && venueLinkedFromPrimaryContent));
     const schemaName = page.seo?.h1;
+    const configuredVideo = configuredVideoFor(page);
+    const video = visibleVideoFor({ video: configuredVideo, visibleSource: sourceHtml || '' });
+    const pageJsonLd = [
+      ...pageSpecificSchemas(page, pages, venueBySlug, site),
+      videoObjectJsonLd({ video, path, pageName: schemaName }),
+    ].filter(Boolean);
     const schemas = globalJsonLd({
       site,
       path,
       title: schemaName,
       image,
       visibleSource: sourceHtml || '',
-      jsonld: pageSpecificSchemas(page, pages, venueBySlug, site),
+      jsonld: pageJsonLd,
     });
     return {
       path,
@@ -346,6 +432,9 @@ async function loadAuditPages() {
       title: page.seo?.title,
       description: page.seo?.description,
       schemaName,
+      hasSnapshot: Boolean(sourceHtml),
+      bodyVideos: sourceHtml ? bodyVideoEvidence(sourceHtml) : [],
+      video,
       visibleText: normaliseVisibleText(sourceHtml),
       visibleBreadcrumbs: withCollectionBreadcrumbs(page.breadcrumbs || []),
       visibleItems: page.type === 'category' ? (page.games?.items || []).map((item) => ({
@@ -378,6 +467,8 @@ async function loadAuditPages() {
       name: page.hero?.h1 || page.seo?.h1 || page.slug,
       url: `/${page.slug}`,
     })),
+    hasSnapshot: Boolean(snapshotHtml.get(`${catalogPath}/`)),
+    bodyVideos: bodyVideoEvidence(snapshotHtml.get(`${catalogPath}/`) || ''),
     schemas: globalJsonLd({
       site,
       path: catalogPath,
@@ -410,6 +501,8 @@ async function loadAuditPages() {
     schemaName: [site.hero?.h1line1, site.hero?.h1line2].filter(Boolean).join(' '),
     visibleText: normaliseVisibleText(snapshotHtml.get('/')),
     visibleBreadcrumbs: [],
+    hasSnapshot: Boolean(snapshotHtml.get('/')),
+    bodyVideos: bodyVideoEvidence(snapshotHtml.get('/') || ''),
     schemas: globalJsonLd({
       site,
       path: '/',
@@ -493,6 +586,9 @@ function validateGenericSchema(schema, label, errors) {
       && !isValidIso8601DateTime(value.uploadDate)) {
       errors.push(`${label}: VideoObject uploadDate must be a valid ISO 8601 date-time with timezone at ${valuePath}`);
     }
+    if (valueTypes.includes('VideoObject') && !value.contentUrl && !value.embedUrl) {
+      errors.push(`${label}: VideoObject must provide contentUrl or embedUrl at ${valuePath}`);
+    }
     if (value['@type'] === 'ListItem') {
       for (const property of ['position', 'name']) {
         if (!(property in value)) errors.push(`${label}: nested ListItem is missing ${property} at ${valuePath}`);
@@ -566,6 +662,123 @@ function validateFaq(schema, page, path, label, errors) {
     if (question['@type'] !== 'Question') errors.push(`${label}: FAQ question ${index + 1} is missing @type Question`);
     if (question.acceptedAnswer?.['@type'] !== 'Answer') errors.push(`${label}: FAQ answer ${index + 1} is missing @type Answer`);
   });
+}
+
+function validateVideoBody({ path, configuredVideo, videoSchemas = [], bodyVideos = [], bodyIsAuthoritative }, errors) {
+  const snapshotId = configuredVideo?.snapshot?.id?.toLowerCase() || '';
+
+  for (const bodyVideo of bodyVideos.filter((item) => item.kind === 'rutube')) {
+    if (!bodyVideo.declaredId || bodyVideo.declaredId !== bodyVideo.id) {
+      errors.push(`${path}: source video id differs from the playable Rutube id`);
+    }
+  }
+
+  if (bodyIsAuthoritative && snapshotId
+    && !bodyVideos.some((item) => item.kind === 'rutube' && item.declaredId === snapshotId)) {
+    errors.push(`${path}: stored snapshot video id differs from the rendered body video`);
+  }
+
+  if (videoSchemas.length === 0 || !bodyIsAuthoritative) return;
+  if (bodyVideos.length === 0) {
+    errors.push(`${path}: VideoObject has no playable video in the rendered body`);
+    return;
+  }
+
+  for (const videoSchema of videoSchemas) {
+    const schemaRutubeId = rutubeIdFromUrl(videoSchema.embedUrl || videoSchema.contentUrl);
+    const matchedVideo = bodyVideos.find((item) => {
+      if (item.kind === 'rutube') return Boolean(schemaRutubeId && schemaRutubeId === item.id);
+      if (item.kind === 'iframe') return Boolean(videoSchema.embedUrl && videoSchema.embedUrl === item.embedUrl);
+      return Boolean(videoSchema.contentUrl && !videoSchema.embedUrl && videoSchema.contentUrl === item.contentUrl);
+    });
+    if (!matchedVideo) {
+      errors.push(`${path}: VideoObject media differs from the rendered body video`);
+      continue;
+    }
+
+    if (matchedVideo.kind === 'rutube' && !matchedVideo.thumbnailUrl) {
+      errors.push(`${path}: rendered body video has no visible thumbnail`);
+    } else if (matchedVideo.thumbnailUrl && videoSchema.thumbnailUrl !== matchedVideo.thumbnailUrl) {
+      errors.push(`${path}: VideoObject thumbnail differs from the rendered body video`);
+    }
+  }
+}
+
+function validateVideoGuardContract(errors) {
+  const declaredId = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+  const playableId = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+  const rutubeBody = `<body><div class="source-video-stage" data-source-video-kind="rutube" data-source-video-id="${declaredId}" data-rutubeid="${playableId}?p=signed"><img src="__SITE_BASE__/assets/rutube/${declaredId}.jpg"><button data-source-video-play></button></div></body>`;
+  const schemaBase = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    '@id': `${canonicalUrl('/__video-guard__')}#video`,
+    name: 'Video guard fixture',
+    description: 'Synthetic mismatch fixture',
+    uploadDate: '2026-01-01T00:00:00+03:00',
+    url: `${canonicalUrl('/__video-guard__')}#video`,
+  };
+  const rutubeErrors = [];
+  validateRecord({
+    path: '/__video-guard-rutube__',
+    kind: 'quest',
+    page: { type: 'quest', video: { snapshot: { id: declaredId } } },
+    schemaName: 'Video guard fixture',
+    schemas: [{
+      ...schemaBase,
+      embedUrl: `https://rutube.ru/play/embed/${declaredId}`,
+      thumbnailUrl: absoluteAssetUrl(`/assets/rutube/${declaredId}.jpg`),
+    }],
+    hasSnapshot: true,
+    bodyVideos: bodyVideoEvidence(rutubeBody),
+  }, {}, new Map(), rutubeErrors);
+  if (!rutubeErrors.some((error) => error.includes('source video id differs from the playable Rutube id'))
+    || !rutubeErrors.some((error) => error.includes('VideoObject media differs from the rendered body video'))) {
+    errors.push('video guard contract failed: rendered Rutube body/schema substitution was not rejected');
+  }
+
+  const nativeBody = '<body><figure class="qvideo__frame" data-video="/assets/video/visible.mp4"><img class="qvideo__poster" src="/assets/poster/visible.webp"><button class="qvideo__play"></button></figure></body>';
+  const nativeErrors = [];
+  validateRecord({
+    path: '/__video-guard-native__',
+    kind: 'quest',
+    page: { type: 'quest', video: { src: '/assets/video/visible.mp4' } },
+    schemaName: 'Video guard fixture',
+    schemas: [{
+      ...schemaBase,
+      contentUrl: absoluteAssetUrl('/assets/video/other.mp4'),
+      thumbnailUrl: absoluteAssetUrl('/assets/poster/visible.webp'),
+    }],
+    rendered: true,
+    bodyVideos: bodyVideoEvidence(nativeBody),
+  }, {}, new Map(), nativeErrors);
+  if (!nativeErrors.some((error) => error.includes('VideoObject media differs from the rendered body video'))) {
+    errors.push('video guard contract failed: rendered native body/schema substitution was not rejected');
+  }
+
+  const duplicateErrors = [];
+  validateRecord({
+    path: '/__video-guard-duplicate__',
+    kind: 'info',
+    page: { type: 'info' },
+    schemaName: 'Video guard fixture',
+    schemas: [
+      { ...schemaBase, '@id': `${canonicalUrl('/__video-guard__')}#video-1`, embedUrl: `https://rutube.ru/play/embed/${playableId}`, thumbnailUrl: absoluteAssetUrl(`/assets/rutube/${declaredId}.jpg`) },
+      { ...schemaBase, '@id': `${canonicalUrl('/__video-guard__')}#video-2`, embedUrl: `https://rutube.ru/play/embed/${declaredId}`, thumbnailUrl: absoluteAssetUrl(`/assets/rutube/${declaredId}.jpg`) },
+    ],
+    rendered: true,
+    bodyVideos: bodyVideoEvidence(rutubeBody),
+  }, {}, new Map(), duplicateErrors);
+  if (!duplicateErrors.some((error) => error.includes('multiple VideoObject schemas are not supported'))
+    || !duplicateErrors.some((error) => error.includes('VideoObject media differs from the rendered body video'))) {
+    errors.push('video guard contract failed: an extra unmatched VideoObject was not rejected');
+  }
+
+  const deferredLocalBody = '<body><div class="source-video-stage" data-source-video-kind="video" data-source-video-url="%2Fassets%2Fvideo%2Fdeferred.mp4"><button data-source-video-play></button></div><div class="video-box"><video class="custom-video"><source src="__SITE_BASE__/assets/video/custom.mp4"></video><button class="video-play-btn"></button></div></body>';
+  const deferredLocalVideos = bodyVideoEvidence(deferredLocalBody);
+  if (!deferredLocalVideos.some((item) => item.kind === 'video' && item.contentUrl === absoluteAssetUrl('/assets/video/deferred.mp4'))
+    || !deferredLocalVideos.some((item) => item.kind === 'native' && item.contentUrl === absoluteAssetUrl('/assets/video/custom.mp4'))) {
+    errors.push('video guard contract failed: playable local snapshot videos were not extracted');
+  }
 }
 
 function validateRecord(record, site, venueBySlug, errors) {
@@ -779,21 +992,36 @@ function validateRecord(record, site, venueBySlug, errors) {
   }
   if (record.kind === 'home' && !types.has('WebSite')) errors.push('/: home page is missing WebSite');
 
-  const video = visiblePlayableVideo(record.page || {});
-  const hasValidUploadDate = isValidIso8601DateTime(video?.uploadDate);
-  if (video?.uploadDate && !hasValidUploadDate) errors.push(`${record.path}: video uploadDate must be a valid ISO 8601 date-time with timezone`);
-  if (hasValidUploadDate && !video?.caption) errors.push(`${record.path}: video uploadDate exists but a visible caption is missing`);
-  if (hasValidUploadDate && video?.caption && !types.has('VideoObject')) errors.push(`${record.path}: eligible visible video is missing VideoObject`);
-  if (types.has('VideoObject') && (!hasValidUploadDate || !video?.caption)) errors.push(`${record.path}: VideoObject has no verified visible source data`);
-  if (hasValidUploadDate && video?.caption) {
-    const videoSchema = parsedSchemas.find((schema) => hasType(schema, 'VideoObject'));
-    const expectedVideo = videoObjectJsonLd({
-      video,
-      path: record.path,
-      pageName: record.page?.seo?.h1,
-    });
-    if (JSON.stringify(videoSchema) !== JSON.stringify(expectedVideo)) errors.push(`${record.path}: VideoObject differs from verified visible video data`);
+  const configuredVideo = configuredVideoFor(record.page || {});
+  const video = record.video;
+  const videoSchemas = parsedSchemas.filter((schema) => hasType(schema, 'VideoObject'));
+  const expectedVideo = videoObjectJsonLd({
+    video,
+    path: record.path,
+    pageName: record.page?.seo?.h1,
+  });
+  const bodyVideos = record.bodyVideos || [];
+  const bodyIsAuthoritative = record.hasSnapshot || record.rendered;
+
+  if (video?.uploadDate && !isValidIso8601DateTime(video.uploadDate)) {
+    errors.push(`${record.path}: video uploadDate must be a valid ISO 8601 date-time with timezone`);
   }
+  if (video?.id && (!video.thumbnailSource || !video.uploadDateSource)) {
+    errors.push(`${record.path}: snapshot video metadata is missing its verified Rutube sources`);
+  }
+  if (expectedVideo && videoSchemas.length === 0) errors.push(`${record.path}: eligible visible video is missing VideoObject`);
+  if (!expectedVideo && videoSchemas.length > 0) errors.push(`${record.path}: VideoObject has no verified visible source data`);
+  if (videoSchemas.length > 1) errors.push(`${record.path}: multiple VideoObject schemas are not supported`);
+  if (expectedVideo && (videoSchemas.length !== 1 || JSON.stringify(videoSchemas[0]) !== JSON.stringify(expectedVideo))) {
+    errors.push(`${record.path}: VideoObject differs from verified visible video data`);
+  }
+  validateVideoBody({
+    path: record.path,
+    configuredVideo,
+    videoSchemas,
+    bodyVideos,
+    bodyIsAuthoritative,
+  }, errors);
 
   return { ...record, canonical, schemas: parsedSchemas, types: [...types] };
 }
@@ -801,6 +1029,7 @@ function validateRecord(record, site, venueBySlug, errors) {
 export async function auditStructuredData({ rendered = false } = {}) {
   const { records, site, venueBySlug } = await loadAuditPages();
   const errors = [];
+  validateVideoGuardContract(errors);
   await validateSourceWiring(errors);
   if (rendered) await loadRenderedSchemas(records, errors);
   if (records.length < 64) errors.push(`expected at least the 64 audited indexable pages, found ${records.length}`);
@@ -810,8 +1039,9 @@ export async function auditStructuredData({ rendered = false } = {}) {
     for (const type of record.types) typeCounts[type] = (typeCounts[type] || 0) + 1;
   }
   const skippedVideos = auditedRecords.filter((record) => {
-    const video = visiblePlayableVideo(record.page || {});
-    return video && !video.uploadDate;
+    const nativeVideo = !record.hasSnapshot && configuredVideoFor(record.page || {});
+    const playableVideo = record.bodyVideos?.length > 0 || (nativeVideo?.poster && nativeVideo?.src);
+    return playableVideo && !record.types.includes('VideoObject');
   }).map((record) => record.path);
 
   return { errors, records: auditedRecords, skippedVideos, typeCounts, rendered };

@@ -3,7 +3,7 @@ import '../styles/fonts.css';
 import '../styles/global.css';
 import site from '../data/site.json';
 import { canonicalUrl, ORIGIN } from '../lib/urls.js';
-import { globalJsonLd } from '../lib/seo.js';
+import { globalJsonLd, videoObjectJsonLd, visibleVideoFor } from '../lib/seo.js';
 import Lightbox from '../components/Lightbox.astro';
 import Analytics from '../components/Analytics.astro';
 import SourceSnapshotBody from '../components/SourceSnapshotBody.astro';
@@ -27,6 +27,7 @@ const {
   // default remains the safer `noindex, follow` used by local fallbacks.
   robots = noindex ? 'noindex, follow' : '',
   jsonld = [],                // массив объектов Schema.org — по одному <script> на каждый
+  video = null,               // нативный ролик и, при наличии, метаданные snapshot-плеера
   bodyClass = '',
   // LCP-картинка страницы: {href, srcset, sizes}. По умолчанию — фон героя главной.
   preloadImage = {
@@ -42,9 +43,14 @@ const sourceSnapshot = sourceSnapshotFor(path);
 const verifiedPageImage = pageImage && (!sourceSnapshot || sourceSnapshot.html.includes(pageImage))
   ? pageImage
   : '';
+const visibleVideo = visibleVideoFor({ video, visibleSource: sourceSnapshot?.html || '' });
+const pageJsonLd = [
+  ...jsonld,
+  videoObjectJsonLd({ video: visibleVideo, path, pageName: schemaName }),
+].filter(Boolean);
 const renderedJsonLd = noindex
-  ? jsonld
-  : globalJsonLd({ site, path, title: schemaName, image: verifiedPageImage, visibleSource: sourceSnapshot?.html || '', jsonld });
+  ? pageJsonLd
+  : globalJsonLd({ site, path, title: schemaName, image: verifiedPageImage, visibleSource: sourceSnapshot?.html || '', jsonld: pageJsonLd });
 // Keep archived source snapshots independent from route-specific legacy theme
 // classes, which otherwise leak backgrounds and sizing into the source DOM.
 const renderedBodyClass = sourceSnapshot ? 'source-snapshot-page' : bodyClass;

@@ -14,7 +14,7 @@ import ZoomImg from '../components/ZoomImg.astro';
 import OnoVenueHall from '../components/OnoVenueHall.astro';
 import ZapadSourceArtboard from '../components/ZapadSourceArtboard.astro';
 import site from '../data/site.json';
-import { breadcrumbJsonLd, questServiceJsonLd, videoObjectJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { breadcrumbJsonLd, questServiceJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
 import { canonicalizeCardItems } from '../lib/card-items.js';
 import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
@@ -118,12 +118,6 @@ const difficultyKeys = Number.isInteger(page.difficulty)
 const jsonld = [
   questServiceJsonLd({ page, venue, venueVisible: serviceVenueVisible, site }),
   breadcrumbs.length > 0 && breadcrumbJsonLd(breadcrumbs, path),
-  videoObjectJsonLd({
-    video: page.video,
-    path,
-    pageName: seo.h1,
-    description: seo.description,
-  }),
 ].filter(Boolean);
 
 const heroSrcset = hero.bgset
@@ -159,6 +153,7 @@ const preload = hero.bg
   ogImage={hero.bg}
   ogType="article"
   jsonld={jsonld}
+  video={page.video}
   preloadImage={preload}
   bodyClass={questBodyClass}
 >

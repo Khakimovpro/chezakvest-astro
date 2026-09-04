@@ -32,6 +32,19 @@
    "1600": "/assets/q/0a62087ac4.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "df4cf5b70836a2b5b0fb3ca9acf863a7",
+   "name": "Квест Роблокс. Дорс от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/df4cf5b70836a2b5b0fb3ca9acf863a7.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-12-02/84/12/841208d04f04a03648d214608f251f73.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/df4cf5b70836a2b5b0fb3ca9acf863a7",
+   "uploadDate": "2026-01-22T20:30:35+03:00",
+   "uploadDateSource": "https://rutube.ru/video/df4cf5b70836a2b5b0fb3ca9acf863a7/",
+   "duration": "PT52.867S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

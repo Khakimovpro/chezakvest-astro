@@ -33,6 +33,19 @@
    "1600": "/assets/q/727ce155c2.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "44a74c56d67be5a88471869fdc0fae10",
+   "name": "Квест Ограбление банка.Бумажный дом от «Чё За Квест?»",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/44a74c56d67be5a88471869fdc0fae10.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-10-01/ed/a1/eda10a15f32e3951a56d6d12a7566050.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/44a74c56d67be5a88471869fdc0fae10",
+   "uploadDate": "2026-01-22T20:31:49+03:00",
+   "uploadDateSource": "https://rutube.ru/video/44a74c56d67be5a88471869fdc0fae10/",
+   "duration": "PT38.847S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",

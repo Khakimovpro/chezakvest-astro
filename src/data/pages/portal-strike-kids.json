@@ -32,6 +32,19 @@
    "1600": "/assets/q/5587b4bf9b.webp"
   }
  },
+ "video": {
+  "snapshot": {
+   "id": "2faa07428c951fd191a4806d0fee90b7",
+   "name": "VR-игра \"PORTAL STRIKE KIDS\" от \"Чё за Квест?\"",
+   "description": "Больше развлечений на нашем сайте:\nhttps://чезаквест.рф",
+   "thumbnailUrl": "/assets/rutube/2faa07428c951fd191a4806d0fee90b7.jpg",
+   "thumbnailSource": "https://pic.rtbcdn.ru/video/2025-10-10/8c/9a/8c9a98d09fa5f9c99392a8f2ba54f30f.jpg",
+   "embedUrl": "https://rutube.ru/play/embed/2faa07428c951fd191a4806d0fee90b7",
+   "uploadDate": "2026-01-22T20:30:48+03:00",
+   "uploadDateSource": "https://rutube.ru/video/2faa07428c951fd191a4806d0fee90b7/",
+   "duration": "PT63S"
+  }
+ },
  "breadcrumbs": [
   {
    "t": "Главная",
