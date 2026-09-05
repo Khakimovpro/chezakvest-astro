@@ -13,7 +13,10 @@ export function normalizeBase(base = '') {
 // Внутренний маршрут получает слеш на конце. Файлы (/assets/x.webp), якоря и
 // параметры остаются как есть.
 export function withTrailingSlash(path = '') {
-  const [rawPath = '', rest = ''] = String(path).split(/(?=[?#])/, 2);
+  const value = String(path);
+  const cut = value.search(/[?#]/);
+  const rawPath = cut === -1 ? value : value.slice(0, cut);
+  const rest = cut === -1 ? '' : value.slice(cut);
   if (!rawPath || !INTERNAL_PATH.test(rawPath)) return path;
   if (/\.[a-z0-9]{2,5}$/i.test(rawPath)) return path;
   if (rawPath.endsWith('/')) return `${rawPath}${rest}`;
@@ -62,19 +65,17 @@ export function applyBaseToHtml(html = '', base = '') {
   });
 }
 
-export function prepareArticleHtml(html = '', base = '') {
-  const withIds = addHeadingIds(html);
-  return { html: applyBaseToHtml(withIds, base), headings: collectHeadings(withIds) };
+// Ленты фотографий прокручиваются вбок, но браузер сам не делает контейнер
+// фокусируемым: с клавиатуры видна только первая картинка. Раздаём фокус и имя.
+export function makeGalleriesFocusable(html = '') {
+  return String(html).replace(/<div\s+style="([^"]*overflow-x\s*:\s*auto[^"]*)"/gi,
+    (match, style) => `<div style="${style}" tabindex="0" role="group" aria-label="Фотографии, прокручиваются вбок"`);
 }
 
-// Приблизительное время чтения — на случай, если в статье его не указали.
-export function readingTime(html = '') {
-  const words = String(html).replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
-  const minutes = Math.max(1, Math.round(words / 180));
-  const tail = minutes % 10 === 1 && minutes % 100 !== 11 ? 'минута'
-    : [2, 3, 4].includes(minutes % 10) && ![12, 13, 14].includes(minutes % 100) ? 'минуты'
-      : 'минут';
-  return `${minutes} ${tail}`;
+export function prepareArticleHtml(html = '', base = '') {
+  const withIds = addHeadingIds(html);
+  const withGalleries = makeGalleriesFocusable(withIds);
+  return { html: applyBaseToHtml(withGalleries, base), headings: collectHeadings(withIds) };
 }
 
 export function formatDateRu(value = '') {

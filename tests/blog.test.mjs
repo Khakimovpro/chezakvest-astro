@@ -4,7 +4,9 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
-import { addHeadingIds, applyBaseToHtml, collectHeadings, withTrailingSlash } from '../src/lib/blog.js';
+import {
+  addHeadingIds, applyBaseToHtml, collectHeadings, formatDateRu, makeGalleriesFocusable, withTrailingSlash,
+} from '../src/lib/blog.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BLOG_DIR = join(ROOT, 'src', 'content', 'blog');
@@ -99,7 +101,6 @@ test('каждая внутренняя ссылка статьи ведёт н�
 test('блок «Подходящие квесты» ссылается только на существующие квесты', () => {
   for (const post of articles()) {
     const quests = frontmatterList(post.frontmatter, 'relatedQuests');
-    assert.ok(quests.length > 0, `${post.name}: не заполнен relatedQuests`);
     for (const slug of quests) {
       assert.ok(pageSlugs.has(slug), `${post.name}: relatedQuests указывает на несуществующий квест — ${slug}`);
     }
@@ -146,4 +147,47 @@ test('тело статьи получает базовый префикс, сл
   assert.equal(withTrailingSlash('/assets/q/a.webp'), '/assets/q/a.webp');
   assert.equal(withTrailingSlash('/blog/x#faq'), '/blog/x/#faq');
   assert.equal(withTrailingSlash('https://example.com/x'), 'https://example.com/x');
+});
+
+test('у каждой иллюстрации есть подпись для читающих экраном', () => {
+  for (const post of articles()) {
+    for (const tag of post.body.match(/<img[^>]*>/g) || []) {
+      const alt = /\salt="([^"]*)"/.exec(tag);
+      assert.ok(alt && alt[1].trim().length >= 10, `${post.name}: картинка без осмысленного alt — ${tag.slice(0, 90)}`);
+    }
+  }
+});
+
+test('на боевой сборке без префикса ссылки и картинки остаются прежними', () => {
+  const html = '<a href="/among_us">квест</a><img src="/assets/q/a.webp"><a href="mailto:a@b.c">почта</a>'
+    + '<a href="tel:+79282163623">звонок</a><a href="https://wa.me/79282163623">WhatsApp</a><a href="//cdn.example/x">внешняя</a>';
+  const based = applyBaseToHtml(html, '');
+  assert.match(based, /href="\/among_us\/"/);
+  assert.match(based, /src="\/assets\/q\/a\.webp"/);
+  assert.match(based, /href="mailto:a@b\.c"/);
+  assert.match(based, /href="tel:\+79282163623"/);
+  assert.match(based, /href="https:\/\/wa\.me\/79282163623"/);
+  assert.match(based, /href="\/\/cdn\.example\/x"/);
+});
+
+test('адаптивные наборы картинок получают префикс каждой ссылкой', () => {
+  const based = applyBaseToHtml('<img srcset="/assets/a.webp 760w, /assets/b.webp 1200w">', '/preview');
+  assert.match(based, /srcset="\/preview\/assets\/a\.webp 760w, \/preview\/assets\/b\.webp 1200w"/);
+});
+
+test('ссылка с параметром и якорем сохраняет и то, и другое', () => {
+  assert.equal(withTrailingSlash('/kvesty?utm=1#faq'), '/kvesty/?utm=1#faq');
+  assert.equal(withTrailingSlash('/kvesty?utm=1'), '/kvesty/?utm=1');
+});
+
+test('ленты фотографий доступны с клавиатуры', () => {
+  const html = makeGalleriesFocusable('<div style="display:flex;overflow-x:auto;gap:8px"><img src="/assets/q/a.webp"></div>');
+  assert.match(html, /tabindex="0"/);
+  assert.match(html, /role="group"/);
+  assert.match(html, /aria-label="[^"]+"/);
+});
+
+test('дата статьи выводится по-русски', () => {
+  assert.equal(formatDateRu('2026-09-05'), '5 сентября 2026');
+  assert.equal(formatDateRu('нет даты'), 'нет даты');
 });

@@ -50,6 +50,9 @@
 .blog-card{display:block;background:var(--white);border-radius:var(--radius-card);overflow:hidden;
   transition:transform .2s ease,box-shadow .2s ease}
 .blog-card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.12)}
+/* Авторский display перебивает браузерное [hidden]{display:none}, а фильтр витрины прячет
+   карточки именно этим атрибутом. Без правила ниже поиск и теги ничего не скрывают. */
+.blog-card[hidden]{display:none}
 .blog-card__img{aspect-ratio:16/10;width:100%;object-fit:cover}
 .blog-card__body{padding:16px 18px 18px}
 .blog-card__tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}

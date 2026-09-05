@@ -130,7 +130,7 @@ const jsonld = [
 
         <section class="post-cta">
           <p class="post-cta__t">Выбрать квест в Ростове-на-Дону</p>
-          <p class="post-cta__s">42 квеста и программы на девяти площадках. Стоимость называем при бронировании.</p>
+          <p class="post-cta__s">41 квест и праздничные программы на девяти площадках. Стоимость называем при бронировании.</p>
           <div class="post-cta__row">
             <a class="btn-orange" href={link('/kvesty-v-rostove-na-donu')}>Смотреть каталог</a>
             <a class="btn-orange" href={site.header.phoneHref}>{site.header.phone}</a>
@@ -147,7 +147,7 @@ const jsonld = [
             <p class="post-author__n">{data.author}</p>
             <p class="post-author__d">
               Основатель сети квестов «Чё за Квест» в Ростове-на-Дону: девять площадок,
-              42 квеста и программы, больше 4800 проведённых праздников.
+              41 квест и праздничные программы, больше 4800 проведённых праздников.
               <a href={link('/avtor-yuriy-meleshkin')}> Об авторе</a>
             </p>
           </div>
@@ -155,7 +155,7 @@ const jsonld = [
 
         {moreArticles.length > 0 && (
           <section class="post-more">
-            <h2 class="post-more__t">Читайте также</h2>
+            <h2 class="post-more__t">Другие статьи блога</h2>
             <div class="blog-grid">
               {moreArticles.map((item) => (
                 <a class="blog-card" href={link(`/blog/${item.id}`)}>

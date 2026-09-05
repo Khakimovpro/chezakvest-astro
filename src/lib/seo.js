@@ -400,9 +400,14 @@ export const blogPostingJsonLd = ({
   datePublished,
   dateModified: dateModified || datePublished,
   inLanguage: 'ru',
-  author: author ? { '@id': blogAuthorId() } : undefined,
+  author: author ? {
+    '@type': 'Person',
+    '@id': blogAuthorId(),
+    name: author,
+    url: absoluteUrl('/avtor-yuriy-meleshkin/'),
+  } : undefined,
   publisher: { '@id': organisationId() },
-  mainEntityOfPage: { '@type': 'WebPage', '@id': absoluteUrl(path) },
+  mainEntityOfPage: { '@id': `${absoluteUrl(path)}#webpage` },
   keywords: keywords || undefined,
   articleSection: 'Квесты и развлечения в Ростове-на-Дону',
   speakable: {

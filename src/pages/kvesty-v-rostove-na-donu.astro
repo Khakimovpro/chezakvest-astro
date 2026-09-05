@@ -78,8 +78,7 @@ const breadcrumbs = [
 // поисковик и посетитель могут попасть в блог (остальные маршруты отдаются снимками Tilda).
 const articles = (await getCollection('blog'))
   .filter((post) => post.data.noindex !== true)
-  .sort((a, b) => new Date(b.data.date) - new Date(a.data.date))
-  .slice(0, 3);
+  .sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
 
 const jsonld = [
   collectionPageJsonLd({
@@ -142,7 +141,7 @@ const jsonld = [
       <section class="catalog-blog">
         <div class="container">
           <h2 class="section-title">Читайте в блоге</h2>
-          <p class="catalog-page__intro">Гиды по Ростову, разборы форматов праздника и ответы на вопросы новичков.</p>
+          <p class="catalog-page__intro">Гиды по Ростову, разборы форматов праздника и ответы на вопросы новичков — все статьи блога.</p>
           <div class="blog-grid">
             {articles.map((post) => (
               <a class="blog-card" href={siteHref(base, `/blog/${post.id}`)}>

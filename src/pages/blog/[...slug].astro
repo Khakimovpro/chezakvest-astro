@@ -1,11 +1,13 @@
 ---
 // Маршрут статьи: /blog/<slug>/. Данные для макета собираются здесь.
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
 import { prepareArticleHtml } from '../../lib/blog.js';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  // Статья с noindex не публикуется вовсе: production-contract запрещает индексируемому
+  // маршруту нести noindex, а перелинковка не должна вести на спрятанное.
+  const posts = (await getCollection('blog')).filter((post) => post.data.noindex !== true);
   const byDate = [...posts].sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
 
   // Карточки квестов для блока «Подходящие квесты» — из тех же JSON, что и сами страницы.
@@ -47,7 +49,6 @@ const { entry, quests, moreArticles, prev, next } = Astro.props;
 
 // Тело статьи нужно строкой: markdown ничего не знает про SITE_BASE и про
 // правило trailing slash, а гейт проверяет и то, и другое.
-const rendered = await render(entry);
 const rawHtml = entry.rendered?.html ?? '';
 if (!rawHtml) {
   throw new Error(`Пустое тело статьи /blog/${entry.id}/ — нечего показывать на странице`);

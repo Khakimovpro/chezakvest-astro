@@ -21,12 +21,25 @@ const tagCounts = {};
 posts.forEach((post) => post.data.tags.forEach((tag) => {
   tagCounts[tag] = (tagCounts[tag] || 0) + 1;
 }));
-const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 14);
+// Тег, который стоит у всех статей, ничего не фильтрует — в панель он не попадает.
+const tags = Object.entries(tagCounts)
+  .filter(([, count]) => count < posts.length)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 14);
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '');
 const link = (h) => siteHref(base, h);
 const path = '/blog/';
+
+// Счётчик виден до выполнения скриптов, поэтому склонение считается на сервере.
+const plural = (count) => {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return 'статья';
+  if ([2, 3, 4].includes(mod10) && ![12, 13, 14].includes(mod100)) return 'статьи';
+  return 'статей';
+};
 
 const breadcrumbs = [
   { t: 'Главная', href: '/' },
@@ -50,8 +63,8 @@ const jsonld = [
 ].filter(Boolean);
 ---
 <Layout
-  title="Блог о досуге в Ростове-на-Дону | Чё за Квест"
-  description="Куда сходить в Ростове-на-Дону: гиды по свиданиям, выходным, детским праздникам и квестам. Пишет основатель сети «Чё за Квест» Юрий Мелешкин."
+  title="Блог сети «Чё за Квест» — гиды по Ростову"
+  description="Гиды по досугу в Ростове-на-Дону от основателя сети квестов: свидания, выходные, детские праздники, рейтинги квестов и советы новичкам."
   schemaName="Блог «Чё за Квест»"
   keywords="куда сходить в ростове, куда сходить в ростове на дону, развлечения ростов, квесты ростов, блог о досуге ростов"
   path={path}
@@ -65,8 +78,8 @@ const jsonld = [
 
     <div class="blog-wrap">
       <div class="blog-head">
-        <h1>Куда сходить в Ростове-на-Дону</h1>
-        <span class="blog-count" data-blog-count>{posts.length} статей</span>
+        <h1>Блог сети «Чё за Квест»: гиды по Ростову-на-Дону</h1>
+        <span class="blog-count" data-blog-count>{posts.length} {plural(posts.length)}</span>
       </div>
 
       <div class="blog-intro">
@@ -115,9 +128,9 @@ const jsonld = [
                  width="640" height="400" loading="lazy" />
             <div class="blog-card__body">
               <div class="blog-card__tags">
-                {post.data.tags.slice(0, 2).map((tag) => (<span class="blog-card__tag">{tag}</span>))}
+                {post.data.tags.filter((tag) => !['ростов', 'ростов-на-дону', 'квесты'].includes(tag.toLowerCase())).slice(0, 2).map((tag) => (<span class="blog-card__tag">{tag}</span>))}
               </div>
-              <p class="blog-card__t">{post.data.title}</p>
+              <h2 class="blog-card__t">{post.data.title}</h2>
               <p class="blog-card__d">{post.data.description}</p>
               <div class="blog-card__meta">
                 <time datetime={post.data.date}>{formatDateRu(post.data.date)}</time>
