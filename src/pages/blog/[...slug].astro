@@ -1,0 +1,66 @@
+---
+// Маршрут статьи: /blog/<slug>/. Данные для макета собираются здесь.
+import { getCollection, render } from 'astro:content';
+import BlogPost from '../../layouts/BlogPost.astro';
+import { prepareArticleHtml } from '../../lib/blog.js';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const byDate = [...posts].sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
+
+  // Карточки квестов для блока «Подходящие квесты» — из тех же JSON, что и сами страницы.
+  const files = import.meta.glob('../../data/pages/*.json', { eager: true });
+  const pages = Object.entries(files).map(([path, mod]) => {
+    const page = mod.default ?? mod;
+    return { ...page, slug: page.slug || path.split('/').pop().replace('.json', '') };
+  });
+  const questBySlug = Object.fromEntries(pages.map((page) => [page.slug, {
+    slug: page.slug,
+    name: page.seo?.h1 || page.hero?.h1 || page.slug,
+    img: page.hero?.bg || '',
+    pills: page.hero?.pills || [],
+  }]));
+
+  return byDate.map((entry, index) => {
+    const currentTags = new Set(entry.data.tags);
+    const moreArticles = byDate
+      .filter((item) => item.id !== entry.id)
+      .map((item) => ({ item, weight: item.data.tags.filter((tag) => currentTags.has(tag)).length }))
+      .sort((a, b) => b.weight - a.weight || new Date(b.item.data.date) - new Date(a.item.data.date))
+      .slice(0, 3)
+      .map(({ item }) => item);
+
+    return {
+      params: { slug: entry.id },
+      props: {
+        entry,
+        quests: (entry.data.relatedQuests || []).map((slug) => questBySlug[slug]).filter(Boolean),
+        moreArticles,
+        prev: byDate[index + 1] || null,
+        next: byDate[index - 1] || null,
+      },
+    };
+  });
+}
+
+const { entry, quests, moreArticles, prev, next } = Astro.props;
+
+// Тело статьи нужно строкой: markdown ничего не знает про SITE_BASE и про
+// правило trailing slash, а гейт проверяет и то, и другое.
+const rendered = await render(entry);
+const rawHtml = entry.rendered?.html ?? '';
+if (!rawHtml) {
+  throw new Error(`Пустое тело статьи /blog/${entry.id}/ — нечего показывать на странице`);
+}
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const { html, headings } = prepareArticleHtml(rawHtml, base);
+---
+<BlogPost
+  entry={entry}
+  body={html}
+  headings={headings}
+  quests={quests}
+  moreArticles={moreArticles}
+  prev={prev}
+  next={next}
+/>

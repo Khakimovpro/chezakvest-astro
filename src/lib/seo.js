@@ -370,3 +370,43 @@ export const isCurrentRoute = (href, currentPath) => {
     return false;
   }
 };
+
+// ===== Блог =====
+// Даты статей блога — настоящие даты публикации и правки, поэтому datePublished
+// и dateModified здесь разрешены. Для остальных страниц сайта их по-прежнему нет:
+// дата миграции или изменения файла публикацией контента не является.
+const blogAuthorId = () => absoluteUrl('/avtor-yuriy-meleshkin/#person');
+
+export const blogAuthorJsonLd = ({ site = {} } = {}) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': blogAuthorId(),
+  name: 'Юрий Мелешкин',
+  url: absoluteUrl('/avtor-yuriy-meleshkin/'),
+  jobTitle: 'Основатель сети квестов «Чё за Квест»',
+  worksFor: { '@id': organisationId() },
+  telephone: site.header?.phone || undefined,
+});
+
+export const blogPostingJsonLd = ({
+  path = '/', title, description = '', image = '', datePublished, dateModified, keywords = '', author = '',
+} = {}) => ({
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  '@id': absoluteUrl(`${path}#article`),
+  headline: title,
+  description,
+  image: absoluteAssetUrl(image) || undefined,
+  datePublished,
+  dateModified: dateModified || datePublished,
+  inLanguage: 'ru',
+  author: author ? { '@id': blogAuthorId() } : undefined,
+  publisher: { '@id': organisationId() },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': absoluteUrl(path) },
+  keywords: keywords || undefined,
+  articleSection: 'Квесты и развлечения в Ростове-на-Дону',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.post h1', '.post-body p:first-of-type'],
+  },
+});

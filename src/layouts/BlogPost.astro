@@ -1,0 +1,207 @@
+---
+// Страница статьи блога. Данные готовит src/pages/blog/[...slug].astro,
+// здесь только вёрстка и разметка. Тело статьи приходит уже обработанным
+// (база подставлена, заголовкам розданы id) — см. src/lib/blog.js.
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import site from '../data/site.json';
+import { blogPostingJsonLd, breadcrumbJsonLd, faqPageJsonLd } from '../lib/seo.js';
+import { siteHref } from '../lib/urls.js';
+import { formatDateRu } from '../lib/blog.js';
+import '../styles/page.css';
+import '../styles/blog.css';
+
+const {
+  entry,
+  body = '',
+  headings = [],
+  quests = [],
+  moreArticles = [],
+  prev = null,
+  next = null,
+} = Astro.props;
+
+const data = entry.data;
+const path = `/blog/${entry.id}/`;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => (p ? base + p : '');
+const link = (h) => siteHref(base, h);
+
+const breadcrumbs = [
+  { t: 'Главная', href: '/' },
+  { t: 'Блог', href: '/blog' },
+  { t: data.title, href: null },
+];
+
+const faqItems = (data.faq || []).map((item) => ({ q: item.question, a: item.answer }));
+
+const jsonld = [
+  breadcrumbJsonLd(breadcrumbs, path),
+  blogPostingJsonLd({
+    path,
+    title: data.title,
+    description: data.description,
+    image: data.image,
+    datePublished: data.date,
+    dateModified: data.dateModified,
+    keywords: data.keywords || data.tags.join(', '),
+    author: data.author,
+  }),
+  faqPageJsonLd(faqItems, path),
+].filter(Boolean);
+---
+<Layout
+  title={data.title}
+  description={data.description}
+  schemaName={data.title}
+  keywords={data.keywords || data.tags.join(', ')}
+  path={path}
+  ogType="article"
+  ogImage={data.image}
+  noindex={data.noindex === true}
+  jsonld={jsonld}
+  preloadImage={{ href: asset(data.image), srcset: `${asset(data.image)} 1200w`, sizes: '(max-width:900px) 100vw, 860px' }}
+>
+  <Header />
+  <div class="blog-progress" data-blog-progress aria-hidden="true"></div>
+
+  <main>
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="blog-wrap">
+      <article class="post">
+        <h1>{data.title}</h1>
+
+        <div class="post__meta">
+          <span>Автор: <a href={link('/avtor-yuriy-meleshkin')}>{data.author}</a></span>
+          <time datetime={data.date}>{formatDateRu(data.date)}</time>
+          <span>{data.readTime}</span>
+          {data.dateModified && data.dateModified !== data.date && (
+            <span>обновлено {formatDateRu(data.dateModified)}</span>
+          )}
+        </div>
+
+        <img class="post__cover" src={asset(data.image)} alt={data.imageAlt}
+             width="1200" height="630" fetchpriority="high" />
+
+        {headings.length >= 3 && (
+          <nav class="post-toc" aria-label="Содержание статьи">
+            <p class="post-toc__t">Содержание</p>
+            <ol>
+              {headings.map((h) => (<li><a href={`#${h.id}`}>{h.text}</a></li>))}
+            </ol>
+          </nav>
+        )}
+
+        <div class="post-body" set:html={body}></div>
+
+        {quests.length > 0 && (
+          <section class="rel">
+            <h2 class="rel__t">Подходящие квесты в Ростове</h2>
+            <div class="rel__grid">
+              {quests.map((quest) => (
+                <a class="rel__card" href={link('/' + quest.slug)}>
+                  {quest.img && <img class="rel__img" src={asset(quest.img)} alt={quest.name} width="320" height="240" loading="lazy" />}
+                  <div class="rel__body">
+                    <p class="rel__name">{quest.name}</p>
+                    <div class="rel__pills">
+                      {quest.pills.map((pill) => (<span class="rel__pill">{pill}</span>))}
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {faqItems.length > 0 && (
+          <section class="post-faq">
+            <h2 class="post-faq__t">Частые вопросы</h2>
+            {faqItems.map((item) => (
+              <details>
+                <summary>{item.q}</summary>
+                <p class="post-faq__a">{item.a}</p>
+              </details>
+            ))}
+          </section>
+        )}
+
+        <section class="post-cta">
+          <p class="post-cta__t">Выбрать квест в Ростове-на-Дону</p>
+          <p class="post-cta__s">42 квеста и программы на девяти площадках. Стоимость называем при бронировании.</p>
+          <div class="post-cta__row">
+            <a class="btn-orange" href={link('/kvesty-v-rostove-na-donu')}>Смотреть каталог</a>
+            <a class="btn-orange" href={site.header.phoneHref}>{site.header.phone}</a>
+          </div>
+        </section>
+
+        <div class="post-tags">
+          {data.tags.map((tag) => (<a href={link('/blog')}>#{tag}</a>))}
+        </div>
+
+        <section class="post-author">
+          <div class="post-author__badge" aria-hidden="true">ЮМ</div>
+          <div>
+            <p class="post-author__n">{data.author}</p>
+            <p class="post-author__d">
+              Основатель сети квестов «Чё за Квест» в Ростове-на-Дону: девять площадок,
+              42 квеста и программы, больше 4800 проведённых праздников.
+              <a href={link('/avtor-yuriy-meleshkin')}> Об авторе</a>
+            </p>
+          </div>
+        </section>
+
+        {moreArticles.length > 0 && (
+          <section class="post-more">
+            <h2 class="post-more__t">Читайте также</h2>
+            <div class="blog-grid">
+              {moreArticles.map((item) => (
+                <a class="blog-card" href={link(`/blog/${item.id}`)}>
+                  <img class="blog-card__img" src={asset(item.data.image)} alt={item.data.imageAlt}
+                       width="640" height="400" loading="lazy" />
+                  <div class="blog-card__body">
+                    <p class="blog-card__t">{item.data.title}</p>
+                    <p class="blog-card__d">{item.data.description}</p>
+                    <div class="blog-card__meta">
+                      <time datetime={item.data.date}>{formatDateRu(item.data.date)}</time>
+                      <span>{item.data.readTime}</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {(prev || next) && (
+          <nav class="post-nav" aria-label="Другие статьи">
+            {prev ? (
+              <a href={link(`/blog/${prev.id}`)}>
+                <span class="post-nav__l">Предыдущая статья</span>
+                <span class="post-nav__t">{prev.data.title}</span>
+              </a>
+            ) : <span></span>}
+            {next && (
+              <a class="post-nav__next" href={link(`/blog/${next.id}`)}>
+                <span class="post-nav__l">Следующая статья</span>
+                <span class="post-nav__t">{next.data.title}</span>
+              </a>
+            )}
+          </nav>
+        )}
+
+        <a class="post-back" href={link('/blog')}>Все статьи блога</a>
+      </article>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import '../scripts/main.js';
+  import { initReadingProgress } from '../scripts/blog.js';
+  initReadingProgress();
+</script>

@@ -1,4 +1,5 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -6,8 +7,10 @@ import Breadcrumbs from '../components/Breadcrumbs.astro';
 import CallbackForm from '../components/CallbackForm.astro';
 import QuestCard from '../components/QuestCard.astro';
 import { breadcrumbJsonLd, collectionPageJsonLd } from '../lib/seo.js';
+import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/catalog.css';
+import '../styles/blog.css';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const path = '/kvesty-v-rostove-na-donu';
@@ -71,6 +74,13 @@ const breadcrumbs = [
   { t: 'Главная', href: '/' },
   { t: 'Все квесты', href: null },
 ];
+// Свежие статьи блога: каталог — единственная нативная страница сайта, с которой
+// поисковик и посетитель могут попасть в блог (остальные маршруты отдаются снимками Tilda).
+const articles = (await getCollection('blog'))
+  .filter((post) => post.data.noindex !== true)
+  .sort((a, b) => new Date(b.data.date) - new Date(a.data.date))
+  .slice(0, 3);
+
 const jsonld = [
   collectionPageJsonLd({
     path,
@@ -127,6 +137,29 @@ const jsonld = [
         <p class="catalog-page__empty" data-catalog-empty hidden>По этому фильтру пока нет игр. Попробуйте другую тему.</p>
       </div>
     </section>
+
+    {articles.length > 0 && (
+      <section class="catalog-blog">
+        <div class="container">
+          <h2 class="section-title">Читайте в блоге</h2>
+          <p class="catalog-page__intro">Гиды по Ростову, разборы форматов праздника и ответы на вопросы новичков.</p>
+          <div class="blog-grid">
+            {articles.map((post) => (
+              <a class="blog-card" href={siteHref(base, `/blog/${post.id}`)}>
+                <img class="blog-card__img" src={base + post.data.image} alt={post.data.imageAlt}
+                     width="640" height="400" loading="lazy" />
+                <div class="blog-card__body">
+                  <p class="blog-card__t">{post.data.title}</p>
+                  <p class="blog-card__d">{post.data.description}</p>
+                  <div class="blog-card__meta"><span>{post.data.readTime}</span></div>
+                </div>
+              </a>
+            ))}
+          </div>
+          <a class="post-back" href={siteHref(base, '/blog')}>Все статьи блога</a>
+        </div>
+      </section>
+    )}
   </main>
 
   <CallbackForm id="catalog-callback" sectionId="catalog-callback" />

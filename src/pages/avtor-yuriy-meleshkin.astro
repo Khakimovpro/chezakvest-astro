@@ -1,0 +1,109 @@
+---
+// Страница автора блога. Нужна разметке BlogPosting: author.url должен вести
+// на страницу человека, а не в пустоту. Факты — только из данных сайта:
+// реквизиты в футере, число площадок и статистика в src/data/site.json.
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import site from '../data/site.json';
+import { blogAuthorJsonLd, breadcrumbJsonLd } from '../lib/seo.js';
+import { siteHref } from '../lib/urls.js';
+import { formatDateRu } from '../lib/blog.js';
+import '../styles/page.css';
+import '../styles/blog.css';
+
+const posts = (await getCollection('blog'))
+  .filter((post) => post.data.noindex !== true)
+  .sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => (p ? base + p : '');
+const link = (h) => siteHref(base, h);
+const path = '/avtor-yuriy-meleshkin/';
+
+const breadcrumbs = [
+  { t: 'Главная', href: '/' },
+  { t: 'Блог', href: '/blog' },
+  { t: 'Юрий Мелешкин', href: null },
+];
+
+const jsonld = [
+  breadcrumbJsonLd(breadcrumbs, path),
+  blogAuthorJsonLd({ site }),
+].filter(Boolean);
+---
+<Layout
+  title="Юрий Мелешкин — автор блога «Чё за Квест» в Ростове"
+  description="Юрий Мелешкин — основатель сети квестов «Чё за Квест» в Ростове-на-Дону. Девять площадок, 42 квеста и программы, больше 4800 проведённых праздников."
+  schemaName="Юрий Мелешкин"
+  keywords="юрий мелешкин, чё за квест ростов, основатель сети квестов ростов, автор блога о досуге ростов"
+  path={path}
+  jsonld={jsonld}
+  preloadImage={null}
+>
+  <Header />
+
+  <main>
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="blog-wrap">
+      <article class="post">
+        <h1>Юрий Мелешкин</h1>
+        <p class="blog-lead">Основатель сети квестов «Чё за Квест» в Ростове-на-Дону</p>
+
+        <div class="post-body">
+          <p>
+            Юрий отвечает за сеть «Чё за Квест»: девять площадок в Ростове-на-Дону,
+            42 квеста и праздничные программы, больше 4800 проведённых праздников и
+            больше 4000 отзывов гостей.
+          </p>
+          <p>
+            В блоге он разбирает то, о чём гости спрашивают на бронировании чаще всего:
+            какой квест выдержит новичок, чем занять класс на выпускном, как устроить
+            детский день рождения без нервов у родителей и куда пойти вечером, когда
+            привычные места надоели. Статьи опираются на практику площадок, а не на
+            подборки из интернета.
+          </p>
+          <p>
+            Задать вопрос и забронировать игру можно по телефону
+            <a href={site.header.phoneHref}>{site.header.phone}</a> или в
+            <a href={site.header.wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>.
+            Все квесты и программы собраны в <a href={link('/kvesty-v-rostove-na-donu')}>каталоге</a>.
+          </p>
+        </div>
+
+        {posts.length > 0 && (
+          <section class="post-more">
+            <h2 class="post-more__t">Статьи автора</h2>
+            <div class="blog-grid">
+              {posts.map((post) => (
+                <a class="blog-card" href={link(`/blog/${post.id}`)}>
+                  <img class="blog-card__img" src={asset(post.data.image)} alt={post.data.imageAlt}
+                       width="640" height="400" loading="lazy" />
+                  <div class="blog-card__body">
+                    <p class="blog-card__t">{post.data.title}</p>
+                    <p class="blog-card__d">{post.data.description}</p>
+                    <div class="blog-card__meta">
+                      <time datetime={post.data.date}>{formatDateRu(post.data.date)}</time>
+                      <span>{post.data.readTime}</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <a class="post-back" href={link('/blog')}>Все статьи блога</a>
+      </article>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import '../scripts/main.js';
+</script>

@@ -1,4 +1,5 @@
 // Карта сайта: собирается из тех же данных, что и страницы, — руками ничего не поддерживаем.
+import { getCollection } from 'astro:content';
 import { canonicalUrl } from '../lib/urls.js';
 import {
   LEGACY_SITEMAP_SLUGS,
@@ -15,6 +16,12 @@ export async function GET() {
       source: dataPathFromGlobPath(path),
     };
   }).filter((page) => !LEGACY_SITEMAP_SLUGS.has(page.slug));
+
+  // Статьи блога живут в контент-коллекции, а не в data/pages, поэтому собираются отдельно.
+  const articles = (await getCollection('blog'))
+    .filter((post) => post.data.noindex !== true)
+    .sort((a, b) => a.id.localeCompare(b.id, 'ru'));
+  const articleSources = articles.map((post) => `src/content/blog/${post.id}.md`);
 
   const urls = [
     {
@@ -34,6 +41,20 @@ export async function GET() {
       loc: canonicalUrl(`/${slug}`),
       priority: '0.8',
       lastmod: lastModifiedForSources([source]),
+    })),
+    ...(articles.length > 0 ? [{
+      loc: canonicalUrl('/blog'),
+      priority: '0.9',
+      lastmod: lastModifiedForSources(['src/pages/blog/index.astro', ...articleSources]),
+    }, {
+      loc: canonicalUrl('/avtor-yuriy-meleshkin'),
+      priority: '0.5',
+      lastmod: lastModifiedForSources(['src/pages/avtor-yuriy-meleshkin.astro', ...articleSources]),
+    }] : []),
+    ...articles.map((post) => ({
+      loc: canonicalUrl(`/blog/${post.id}`),
+      priority: '0.8',
+      lastmod: lastModifiedForSources([`src/content/blog/${post.id}.md`]),
     })),
   ];
 

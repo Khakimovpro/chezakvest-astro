@@ -1,4 +1,4 @@
-<!-- MAP-SIG: 1c557cd41cc567418862c31246d7c2bd5e77da5c | blessed: 2026-09-04 -->
+<!-- MAP-SIG: e9b6c9cbda6a8f14f370bb321966a55af7df718b | blessed: 2026-09-05 -->
 
 # Навигационная карта «Чё за Квест»
 
@@ -15,7 +15,10 @@
 | Как маршрут находится в манифесте | `sourceSnapshotFor` в [`src/lib/source-snapshots.js:14`](../../../src/lib/source-snapshots.js#L14) |
 | Где живёт runtime снимка | [`src/components/SourceSnapshotBody.astro:18`](../../../src/components/SourceSnapshotBody.astro#L18): подготовка HTML; [`:68`](../../../src/components/SourceSnapshotBody.astro#L68): подключение поведения; [`:139`](../../../src/components/SourceSnapshotBody.astro#L139): восстановление Tilda-геометрии; стили начинаются у [`:967`](../../../src/components/SourceSnapshotBody.astro#L967) |
 | Как строится автокаталог квестов | выбор `type: quest` в [`src/pages/kvesty-v-rostove-na-donu.astro:52`](../../../src/pages/kvesty-v-rostove-na-donu.astro#L52) |
-| Как строится sitemap | обработчик в [`src/pages/sitemap.xml.js:9`](../../../src/pages/sitemap.xml.js#L9) |
+| Как строится sitemap | обработчик в [`src/pages/sitemap.xml.js:10`](../../../src/pages/sitemap.xml.js#L10); статьи блога добавляются отдельным блоком, потому что живут в контент-коллекции, а не в `data/pages` |
+| Как статья блога становится маршрутом | `getStaticPaths` в [`src/pages/blog/[...slug].astro:7`](../../../src/pages/blog/%5B...slug%5D.astro#L7): сбор карточек квестов, подбор «Читайте также» по совпадению тегов, prev/next по дате |
+| Почему тело статьи проходит обработку | [`src/lib/blog.js:48`](../../../src/lib/blog.js#L48) `applyBaseToHtml` добавляет `SITE_BASE` и слеши, [`:25`](../../../src/lib/blog.js#L25) раздаёт заголовкам якоря `razdel-N` — без этого падает `production-contract` |
+| Витрина блога и фильтры | [`src/pages/blog/index.astro`](../../../src/pages/blog/index.astro), клиентская часть — [`src/scripts/blog.js:25`](../../../src/scripts/blog.js#L25) |
 
 ## Макеты и Schema.org
 
@@ -39,6 +42,8 @@
 | Отзывы | [`src/data/reviews.json`](../../../src/data/reviews.json); загрузчик и защиту от пустого ответа смотри в [`scripts/update-reviews.mjs:43`](../../../scripts/update-reviews.mjs#L43) |
 | Квизы | [`src/data/quizzes.json`](../../../src/data/quizzes.json), клиентское подключение — [`src/scripts/source-extras.js`](../../../src/scripts/source-extras.js) |
 
+| Статьи блога | `src/content/blog/*.md`; схема и лимиты метатегов — [`src/content.config.mjs`](../../../src/content.config.mjs); редакционные правила — [`docs/blog-redakcionnyy-brif.md`](../../../docs/blog-redakcionnyy-brif.md) |
+
 ## Генераторы и проверки
 
 | Что | Точка входа |
@@ -49,6 +54,8 @@
 | SEO данных | [`scripts/seo-data-audit.mjs`](../../../scripts/seo-data-audit.mjs) |
 | Schema.org | [`scripts/structured-data-audit.mjs`](../../../scripts/structured-data-audit.mjs) |
 | Production HTML | [`scripts/production-contract.mjs`](../../../scripts/production-contract.mjs) |
+| Статьи блога | [`tests/blog.test.mjs`](../../../tests/blog.test.mjs): ссылки, картинки, метатеги, запрет неподтверждённых цен и часов работы |
+| Обложки блога | [`scripts/blog-covers.mjs`](../../../scripts/blog-covers.mjs): кадр квеста + типографика бренда → `public/assets/blog/<slug>.webp` |
 | Все команды | `scripts` в [`package.json`](../../../package.json) |
 
 ## Релиз и эксплуатация

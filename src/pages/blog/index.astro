@@ -1,0 +1,142 @@
+---
+// Витрина блога: /blog/. Поиск и фильтр по тегам работают на клиенте,
+// сама страница остаётся статической и читаемой без JS.
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import site from '../../data/site.json';
+import { breadcrumbJsonLd, collectionPageJsonLd } from '../../lib/seo.js';
+import { siteHref } from '../../lib/urls.js';
+import { formatDateRu } from '../../lib/blog.js';
+import '../../styles/page.css';
+import '../../styles/blog.css';
+
+const posts = (await getCollection('blog'))
+  .filter((post) => post.data.noindex !== true)
+  .sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
+
+const tagCounts = {};
+posts.forEach((post) => post.data.tags.forEach((tag) => {
+  tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+}));
+const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 14);
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const asset = (p) => (p ? base + p : '');
+const link = (h) => siteHref(base, h);
+const path = '/blog/';
+
+const breadcrumbs = [
+  { t: 'Главная', href: '/' },
+  { t: 'Блог', href: null },
+];
+
+const clusters = [
+  { href: '/blog/kuda-shodit-v-rostove-na-donu', t: 'Куда сходить в Ростове', s: 'Большой гид по городу: вечер, выходные, компания, семья' },
+  { href: '/blog/strashnye-kvesty-v-rostove', t: 'Страшные квесты', s: 'Честный рейтинг хоррор-квестов по уровню жути' },
+  { href: '/blog/gde-otmetit-den-rozhdeniya-rebenka-v-rostove', t: 'Праздники и дни рождения', s: 'Детский праздник, взрослый день рождения, выпускной' },
+  { href: '/blog/kak-ne-boyatsya-kvestov', t: 'Новичкам о квестах', s: 'Как выбрать первый квест и что делать, если страшно' },
+];
+
+const jsonld = [
+  breadcrumbJsonLd(breadcrumbs, path),
+  collectionPageJsonLd({
+    path,
+    name: 'Блог «Чё за Квест» — куда сходить в Ростове-на-Дону',
+    items: posts.slice(0, 10).map((post) => ({ name: post.data.title, url: `/blog/${post.id}/` })),
+  }),
+].filter(Boolean);
+---
+<Layout
+  title="Блог о досуге в Ростове-на-Дону | Чё за Квест"
+  description="Куда сходить в Ростове-на-Дону: гиды по свиданиям, выходным, детским праздникам и квестам. Пишет основатель сети «Чё за Квест» Юрий Мелешкин."
+  schemaName="Блог «Чё за Квест»"
+  keywords="куда сходить в ростове, куда сходить в ростове на дону, развлечения ростов, квесты ростов, блог о досуге ростов"
+  path={path}
+  jsonld={jsonld}
+  preloadImage={null}
+>
+  <Header />
+
+  <main>
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="blog-wrap">
+      <div class="blog-head">
+        <h1>Куда сходить в Ростове-на-Дону</h1>
+        <span class="blog-count" data-blog-count>{posts.length} статей</span>
+      </div>
+
+      <div class="blog-intro">
+        <p>
+          Это блог сети квестов «Чё за Квест». Мы работаем в Ростове-на-Дону на девяти
+          площадках, провели больше 4800 праздников и каждый день слышим один и тот же
+          вопрос: куда пойти сегодня вечером, что подарить ребёнку на день рождения,
+          где отметить выпускной класса.
+        </p>
+        <p>
+          Здесь собраны развёрнутые ответы: гиды по городу, разборы форматов праздника,
+          рейтинги квестов по уровню страха и инструкции для тех, кто идёт на квест
+          впервые. Про свои квесты пишем честно и рядом с другими вариантами города —
+          выбирать вам. Забронировать игру можно по телефону
+          <a href={site.header.phoneHref}>{site.header.phone}</a>.
+        </p>
+      </div>
+
+      <div class="blog-clusters">
+        {clusters.map((cluster) => (
+          <a class="blog-cluster" href={link(cluster.href)}>
+            <p class="blog-cluster__t">{cluster.t}</p>
+            <p class="blog-cluster__s">{cluster.s}</p>
+          </a>
+        ))}
+      </div>
+
+      <div class="blog-tools">
+        <input class="blog-search" type="search" data-blog-search
+               placeholder="Найти статью" aria-label="Поиск по статьям блога" />
+      </div>
+
+      <div class="blog-tags">
+        {tags.map(([tag, count]) => (
+          <button class="blog-tag" type="button" data-blog-tag={tag} aria-pressed="false">{tag} · {count}</button>
+        ))}
+      </div>
+
+      <div class="blog-grid" data-blog-grid>
+        {posts.map((post) => (
+          <a class="blog-card" data-blog-card href={link(`/blog/${post.id}`)}
+             data-title={post.data.title.toLowerCase()}
+             data-description={post.data.description.toLowerCase()}
+             data-tags={post.data.tags.join('|')}>
+            <img class="blog-card__img" src={asset(post.data.image)} alt={post.data.imageAlt}
+                 width="640" height="400" loading="lazy" />
+            <div class="blog-card__body">
+              <div class="blog-card__tags">
+                {post.data.tags.slice(0, 2).map((tag) => (<span class="blog-card__tag">{tag}</span>))}
+              </div>
+              <p class="blog-card__t">{post.data.title}</p>
+              <p class="blog-card__d">{post.data.description}</p>
+              <div class="blog-card__meta">
+                <time datetime={post.data.date}>{formatDateRu(post.data.date)}</time>
+                <span>{post.data.readTime}</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <p class="blog-empty" data-blog-empty hidden>По этому запросу статей не нашлось. Сбросьте фильтр или поищите иначе.</p>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  import '../../scripts/main.js';
+  import { initBlogFilters } from '../../scripts/blog.js';
+  initBlogFilters();
+</script>
