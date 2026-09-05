@@ -72,11 +72,15 @@ test('renders source reviews from the local snapshot with one aggregate count', 
     read('src/styles/page.css'),
   ]);
 
-  // Данные обновлены 20.08.2026 из виджета MyReviews оригинала: те же правила
-  // отбора, что стоят в его настройках — площадки Яндекс/2Gis/Google и оценки 4–5.
-  assert.equal(reviews.counts.summary, 4466);
-  assert.equal(reviews.ratings.summaryWeight, 4.97);
-  assert.equal(reviews.reviews.length, 73);
+  // Данные приходят из виджета MyReviews оригинала теми же правилами отбора, что
+  // стоят в его настройках — площадки Яндекс/2Gis/Google и оценки 4–5. Точные
+  // числа меняются при каждом штатном запуске scripts/update-reviews.mjs, поэтому
+  // тест держит границы, а не снимок конкретного дня: иначе свежие отзывы роняют
+  // гейт (05.09.2026 счётчик вырос 4466 → 4483).
+  assert.ok(reviews.counts.summary >= 4400, `счётчик отзывов на картах упал до ${reviews.counts.summary}`);
+  assert.ok(reviews.ratings.summaryWeight >= 4.5 && reviews.ratings.summaryWeight <= 5,
+    `средняя оценка вышла из диапазона: ${reviews.ratings.summaryWeight}`);
+  assert.ok(reviews.reviews.length >= 60, `отзывов в файле осталось ${reviews.reviews.length}`);
   assert.deepEqual(reviews.servicesOrder, ['1', '3', '2']);
   assert.deepEqual(reviews.tags, ['квест', 'опыт', 'атмосфера', 'место', 'актеры', 'персонал', 'дети']);
   assert.ok(reviews.reviews.every((review) => review.rating >= 4));

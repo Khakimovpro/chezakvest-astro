@@ -2,7 +2,7 @@
   "name": "Чё за Квест",
   "address": "Ростов-на-Дону",
   "counts": {
-    "summary": 4466
+    "summary": 4483
   },
   "ratings": {
     "summaryWeight": 4.97
@@ -26,8 +26,8 @@
     "1": {
       "name": "Яндекс",
       "rating": "5.0",
-      "count": 3275,
-      "url": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews"
+      "count": 3291,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/3387024908/reviews"
     },
     "2": {
       "name": "Google",
@@ -39,13 +39,13 @@
       "name": "2Gis",
       "rating": "4.9",
       "count": 828,
-      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews"
+      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933606/tab/reviews"
     },
     "4": {
       "name": "Zoon",
       "rating": "3.6",
       "count": 1,
-      "url": "https://zoon.ru/rostov/entertainment/chyo_za_kvest_v_gvardejskom_pereulke_61/reviews/"
+      "url": "https://zoon.ru/rostov/quest/kompaniya_chyo_za_kvest_na_prospekte_mira_27/reviews/"
     },
     "6": {
       "name": "Myreviews",
@@ -56,11 +56,505 @@
     "15": {
       "name": "Яндекс.Бизнес",
       "rating": "5.0",
-      "count": 164,
+      "count": 165,
       "url": "https://yandex.ru/profile/3387024908"
     }
   },
   "reviews": [
+    {
+      "username": "Оксана Карелова",
+      "message": "Отличное место! Праздновали день рождение дочки на 9 лет, а также ходили на ДР к друзьям на разные квесты.\nДети всегда в восторге, очень нравятся сценарии квестов. Так же игра в Мафию, секретную коробоку и другие мини-игры отлично дополняют праздник.\nМинус - небольшое помещение для перекуса, там только дети помещаются. Взрослые сидят отдельно.",
+      "rating": 5,
+      "date_create": "03.09.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews?reviews[publicId]=fmc67u74f6y7u8vfengwgmwnf8&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
+      "tags": [
+        {
+          "id": 43192227,
+          "review_id": 12473390,
+          "type": 2,
+          "content": "#маленькое_помещение",
+          "adj": "маленькое",
+          "noun": "помещение",
+          "manual": false
+        },
+        {
+          "id": 43192226,
+          "review_id": 12473390,
+          "type": 1,
+          "content": "#комплементарные_игры",
+          "adj": "комплементарные",
+          "noun": "игры",
+          "manual": false
+        },
+        {
+          "id": 43192225,
+          "review_id": 12473390,
+          "type": 1,
+          "content": "#захватывающие_квесты",
+          "adj": "захватывающие",
+          "noun": "квесты",
+          "manual": false
+        },
+        {
+          "id": 43192224,
+          "review_id": 12473390,
+          "type": 1,
+          "content": "#интересные_сценарии",
+          "adj": "интересные",
+          "noun": "сценарии",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Алексей",
+      "message": "Все отлично",
+      "rating": 5,
+      "date_create": "02.09.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews?reviews[publicId]=v8eundm6c59y6ncm6jwa5hnx48&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
+      "images": null,
+      "tags": [],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Антонина Тимко",
+      "message": "Ходили вчера семьёй (31.08) на квест \"Патология\" + средний уровень.\nАктёры умнички, атмосферно, погружение полное в процесс. Первые 2 минуты - хотелось бежать. Так жутко... А потом взяли себя в руки и дошли до конца. Вообщем, отошла лично Я только к утру следующего дня. Я даже не помню как проглотила пирожное в кафе после.\nВообщем, ребята знают что делают!!! Браво!",
+      "rating": 5,
+      "date_create": "01.09.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/3387024908/reviews?reviews[publicId]=qcd73p0f8y4q5je1x3mv5y9wt8&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/3387024908/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ просп. Мира, 27",
+      "images": null,
+      "tags": [
+        {
+          "id": 42986554,
+          "review_id": 12454369,
+          "type": 1,
+          "content": "#полное_погружение",
+          "adj": "полное",
+          "noun": "погружение",
+          "manual": false
+        },
+        {
+          "id": 42986553,
+          "review_id": 12454369,
+          "type": 1,
+          "content": "#атмосферная_атмосфера",
+          "adj": "атмосферная",
+          "noun": "атмосфера",
+          "manual": false
+        },
+        {
+          "id": 42986552,
+          "review_id": 12454369,
+          "type": 1,
+          "content": "#умные_актёры",
+          "adj": "умные",
+          "noun": "актёры",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Анна Жужнева",
+      "message": "Детям очень понравилось, спасибо за проведенное время. Рекомендуем посетить квест патологию.",
+      "rating": 5,
+      "date_create": "30.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=v0x4nhvjhm4jybg5gebvzf7phr&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
+      "tags": [
+        {
+          "id": 42812890,
+          "review_id": 12412460,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": {
+        "id": 2654354,
+        "review_id": 12412460,
+        "status": 4,
+        "date_create": "30.08.2026 18:25:18 MSK",
+        "message": "Анна, спасибо за тёплые слова! Очень рады, что детям понравилось и время прошло ярко — ради таких эмоций и работаем. Отдельное спасибо за рекомендацию квеста «Патология». Будем рады видеть Вас снова и подсказать, какой сюжет подойдёт вашей компании в следующий раз.\n\nС уважением, команда \"Чё за Квест?\"",
+        "type": 1
+      }
+    },
+    {
+      "username": "Полина Макеева",
+      "message": "Было всё очень страшно и реалистично, очень понравилось прям поругались все",
+      "rating": 5,
+      "date_create": "30.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=43rp5ccqj26a6c94yfqzf6hr1r&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
+      "tags": [],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": {
+        "id": 2654353,
+        "review_id": 12412459,
+        "status": 4,
+        "date_create": "30.08.2026 18:25:02 MSK",
+        "message": "Полина, спасибо за такие тёплые слова! Здорово, что для вас всё было и страшно, и правдоподобно — значит атмосфера сработала. Сильные эмоции иногда приводят к спорам в команде — это нормально: адреналин берёт своё. Если захотите, подскажем сценарий с другим уровнем напряжения и дадим пару советов по ролям, чтобы всем было комфортнее. До встречи на новых квестах!\n\nС уважением, команда \"Чё за Квест?\"",
+        "type": 1
+      }
+    },
+    {
+      "username": "Ринат",
+      "message": "Обалденный, очень интересный и захватывающий квест побег из шоушенка! Дети в восторге! Рекомендую)",
+      "rating": 5,
+      "date_create": "29.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=02wmbc5dza3bjbyh0ngckk6bpw&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/otkroy_dver/1358929224/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "images": null,
+      "tags": [
+        {
+          "id": 42777843,
+          "review_id": 12407889,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": "",
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Анна К.",
+      "message": "Отлично провели время! Обязательно придём ещё!",
+      "rating": 5,
+      "date_create": "29.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews?reviews[publicId]=af196cn5w3yw2dt43ydkgkwbrr&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
+      "images": null,
+      "tags": [],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Анна И.",
+      "message": "Дети 10 лет играли с огромным удовольствием, на одной игре не остановились, попросились сразу второй квест пройти. Очень динамично, захватываютще, нам понравилось",
+      "rating": 5,
+      "date_create": "28.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=600ep7w63cnfqmprgnwue1tbh0&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/otkroy_dver/1358929224/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "images": null,
+      "tags": [
+        {
+          "id": 42737200,
+          "review_id": 12401096,
+          "type": 1,
+          "content": "#захватывающий_квест",
+          "adj": "захватывающий",
+          "noun": "квест",
+          "manual": false
+        },
+        {
+          "id": 42737199,
+          "review_id": 12401096,
+          "type": 1,
+          "content": "#динамичная_игра",
+          "adj": "динамичная",
+          "noun": "игра",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Гоша Кочергин",
+      "message": "Было весело и круто",
+      "rating": 5,
+      "date_create": "27.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=py5dt3u3w85begbdtee17urr74&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
+      "tags": [],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Илья Нет",
+      "message": "Хороший квест ,страшный ,интересный",
+      "rating": 5,
+      "date_create": "27.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=ubmc0ruhnbkc7canwyz468mfqm&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
+      "tags": [
+        {
+          "id": 42689315,
+          "review_id": 12394305,
+          "type": 1,
+          "content": "#интересный_квест",
+          "adj": "интересный",
+          "noun": "квест",
+          "manual": false
+        },
+        {
+          "id": 42689314,
+          "review_id": 12394305,
+          "type": 1,
+          "content": "#страшный_квест",
+          "adj": "страшный",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Арутюн Цатуров",
+      "message": "Четкий квест.",
+      "rating": 5,
+      "date_create": "27.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=161x017fnue9c3w23nb438u4aw&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
+      "tags": [
+        {
+          "id": 42689311,
+          "review_id": 12394304,
+          "type": 1,
+          "content": "#четкий_квест",
+          "adj": "четкий",
+          "noun": "квест",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Приходько Иван Александрович",
+      "message": "Все супер. Головоломки интересные.",
+      "rating": 5,
+      "date_create": "25.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=2eq5p6hcrxxx0mxq60hmgpze48&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
+      "images": null,
+      "tags": [
+        {
+          "id": 42587914,
+          "review_id": 12379575,
+          "type": 1,
+          "content": "#интересные_головоломки",
+          "adj": "интересные",
+          "noun": "головоломки",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Юлия Сергеевна",
+      "message": "Все понравилось, день рождение прошло на отлично",
+      "rating": 5,
+      "date_create": "25.08.2026",
+      "service": 1,
+      "url": "",
+      "uri": "https://yandex.ru/maps/org/otkroy_dver/1358929224/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "images": null,
+      "tags": [],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Kmaria230811",
+      "message": "Супер место🤩",
+      "rating": 5,
+      "date_create": "23.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=wr4nwdzyam1m9ndf0uv32q9tfc&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/otkroy_dver/1358929224/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "images": null,
+      "tags": [],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Алиса Ефременко",
+      "message": "Квест «Побег из Шоушенка» — это настоящий must-visit для любителей атмосферных приключений. Это не просто набор головоломок в декорациях, а полноценное погружение в мир одноимённого фильма .\n\nАтмосфера и антураж — 10 из 10. С первых минут ты забываешь, что находишься в центре города, и полностью переносишься в мрачную тюрьму. Тюремные камеры, реалистичные детали — всё продумано до мелочей. Если вы фанат фильма, будете в восторге, но даже без знания сюжета игра захватывает с головой . Отдельно отмечу нестрашную, но очень напряжённую атмосферу, которая держит в тонусе всю игру .\n\nГеймплей и загадки. Квест предлагает интересные и нестандартные задачи. Головоломки логичные, но не слишком простые — мозг поработать заставит . Приятно, что игра динамичная: в начале команду могут разделить, и вам придётся активно взаимодействовать, чтобы помочь друг другу выбраться . Задания задействуют всех участников, так что скучать не придётся никому .\n\nВпечатления от прохождения. Один час пролетает незаметно. Сюжет держит в напряжении, а кульминация — сам момент побега — реализована просто блестяще, напоминает мини-аттракцион . Остаётся лёгкое послевкусие и желание вернуться, чтобы проверить свои силы снова.\n\nВердикт: Отличный квест для компании друзей или семьи (подходит для подростков от 12 лет) . Атмосферно, увлекательно и очень эмоционально. Рекомендую к посещению!",
+      "rating": 5,
+      "date_create": "22.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=2hmtrgcz6yu5833y85rajm5h6r&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/otkroy_dver/1358929224/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
+      "images": null,
+      "tags": [
+        {
+          "id": 42452323,
+          "review_id": 12359873,
+          "type": 1,
+          "content": "#захватывающая_кульминация",
+          "adj": "захватывающая",
+          "noun": "кульминация",
+          "manual": false
+        },
+        {
+          "id": 42452322,
+          "review_id": 12359873,
+          "type": 1,
+          "content": "#увлекательный_сюжет",
+          "adj": "увлекательный",
+          "noun": "сюжет",
+          "manual": false
+        },
+        {
+          "id": 42452321,
+          "review_id": 12359873,
+          "type": 1,
+          "content": "#логичные_загадки",
+          "adj": "логичные",
+          "noun": "загадки",
+          "manual": false
+        },
+        {
+          "id": 42452320,
+          "review_id": 12359873,
+          "type": 1,
+          "content": "#динамичный_геймплей",
+          "adj": "динамичный",
+          "noun": "геймплей",
+          "manual": false
+        },
+        {
+          "id": 42452319,
+          "review_id": 12359873,
+          "type": 1,
+          "content": "#реалистичный_антураж",
+          "adj": "реалистичный",
+          "noun": "антураж",
+          "manual": false
+        },
+        {
+          "id": 42452318,
+          "review_id": 12359873,
+          "type": 1,
+          "content": "#напряжённая_атмосфера",
+          "adj": "напряжённая",
+          "noun": "атмосфера",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": null
+    },
+    {
+      "username": "Даша Самсонова",
+      "message": "Актеры класс, хоррор страшный,но если бы я была одна, то я бы не прошла, а так очень классно, мяк мяу",
+      "rating": 5,
+      "date_create": "20.08.2026",
+      "service": 1,
+      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=054bkyw3b25dhvceacfvw1w5j8&utm_source=review",
+      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
+      "pinned": false,
+      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
+      "images": null,
+      "tags": [
+        {
+          "id": 42344515,
+          "review_id": 12343960,
+          "type": 2,
+          "content": "#страшный_хоррор",
+          "adj": "страшный",
+          "noun": "хоррор",
+          "manual": false
+        },
+        {
+          "id": 42344514,
+          "review_id": 12343960,
+          "type": 1,
+          "content": "#крутые_актеры",
+          "adj": "крутые",
+          "noun": "актеры",
+          "manual": false
+        }
+      ],
+      "url_avatar": null,
+      "avatar": null,
+      "reviewAnswer": {
+        "id": 2617528,
+        "review_id": 12343960,
+        "status": 3,
+        "date_create": "21.08.2026 12:45:30 MSK",
+        "message": "Спасибо за такой классный отзыв! 😄 Судя по всему, хоррор действительно заставил понервничать — хорошо, что рядом была команда, с которой не так страшно идти вперёд! 😈 Очень рады, что вы отдельно отметили игру наших актёров.\n\nДля следующей проверки смелости рекомендуем «Шизофрению. Тени правды», «Психбольницу» или «Звонок». Только в этот раз тоже обязательно берите с собой команду! 😄 Мяк-мяу 🐾\n\nС уважением, команда «Чё За Квест»",
+        "type": 1
+      }
+    },
     {
       "username": "Вероника Турковская",
       "message": "Все понравилось))в некоторых моментах было страшненько) цена кусается,а так было здорово) весь день потом вспоминали)",
@@ -85,7 +579,14 @@
       ],
       "url_avatar": null,
       "avatar": null,
-      "reviewAnswer": null
+      "reviewAnswer": {
+        "id": 2617556,
+        "review_id": 12328346,
+        "status": 3,
+        "date_create": "21.08.2026 13:02:24 MSK",
+        "message": "Спасибо за ваш отзыв",
+        "type": 1
+      }
     },
     {
       "username": "Юлиана",
@@ -198,7 +699,14 @@
       ],
       "url_avatar": null,
       "avatar": null,
-      "reviewAnswer": null
+      "reviewAnswer": {
+        "id": 2617555,
+        "review_id": 12304877,
+        "status": 3,
+        "date_create": "21.08.2026 13:02:13 MSK",
+        "message": "Спасибо за такие тёплые слова! 💛 Очень рады, что вам понравились квесты, атмосфера и организация, а отдых подарил именно те незабываемые эмоции, за которыми к нам приходят!\n\nРаз планируете вернуться, рекомендуем попробовать что-нибудь совсем другое: «Дом призраков» — за мистикой, «Ограбление банка. Бумажный дом» — за загадками, «Бегущий в лабиринте» — за движением или «Шизофрению. Тени правды» — за хорошей порцией адреналина. 🔥\n\nС уважением, команда «Чё За Квест»",
+        "type": 1
+      }
     },
     {
       "username": "Елизавета Г.",
@@ -224,7 +732,14 @@
       ],
       "url_avatar": null,
       "avatar": null,
-      "reviewAnswer": null
+      "reviewAnswer": {
+        "id": 2617554,
+        "review_id": 12288480,
+        "status": 3,
+        "date_create": "21.08.2026 13:02:05 MSK",
+        "message": "Спасибо большое! 🤠 Очень рады, что «Индиана Джонс» понравился, а дети остались в полном восторге. Значит, приключение удалось! 🔥\n\nВ следующий раз рекомендуем отправиться на «Пиратов Карибского моря», попробовать «Гарри Поттер и Последний Крестраж», «Коралину в Стране Кошмаров» или «Бегущий в лабиринте» — впереди ещё много новых историй!\n\nС уважением, команда «Чё За Квест»",
+        "type": 1
+      }
     },
     {
       "username": "Екатерина Рассказова",
@@ -259,7 +774,14 @@
       ],
       "url_avatar": null,
       "avatar": null,
-      "reviewAnswer": null
+      "reviewAnswer": {
+        "id": 2617550,
+        "review_id": 12288479,
+        "status": 3,
+        "date_create": "21.08.2026 13:01:13 MSK",
+        "message": "Спасибо за ваш отзыв",
+        "type": 1
+      }
     },
     {
       "username": "Виталий Голяк",
@@ -303,7 +825,14 @@
       ],
       "url_avatar": null,
       "avatar": null,
-      "reviewAnswer": null
+      "reviewAnswer": {
+        "id": 2617551,
+        "review_id": 12288478,
+        "status": 3,
+        "date_create": "21.08.2026 13:01:29 MSK",
+        "message": "Спасибо огромное за такие слова! ❤️ Сравнение наших актёров с артистами «главного театра Ростова» обязательно им передадим — уверены, ребятам будет невероятно приятно! 😊 А для нас самое главное, что дети получили такой восторг и праздник действительно запомнился.\n\nДля следующего приключения рекомендуем «Пираты Карибского моря», «Гарри Поттер и Последний Крестраж», «Коралину в Стране Кошмаров» или «Бегущий в лабиринте».\n\nС уважением, команда «Чё За Квест»",
+        "type": 1
+      }
     },
     {
       "username": "Дмитрий Овсиенко",
@@ -356,527 +885,12 @@
       ],
       "url_avatar": null,
       "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "Светлана Голяк",
-      "message": "Побывали с детьми на квесте Пираты Карибского моря. Все очень довольны. Понравилась организация, артисты, декорации. Было очееь интересно и весело! Рекомендую этот квест. Приходите , не пожалеете",
-      "rating": 5,
-      "date_create": "16.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=8dn00gmr3vpkf343ubt3aq9kuw&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
-      "images": null,
-      "tags": [
-        {
-          "id": 41984586,
-          "review_id": 12288476,
-          "type": 1,
-          "content": "#красочные_декорации",
-          "adj": "красочные",
-          "noun": "декорации",
-          "manual": false
-        },
-        {
-          "id": 41984585,
-          "review_id": 12288476,
-          "type": 1,
-          "content": "#зажигательные_артисты",
-          "adj": "зажигательные",
-          "noun": "артисты",
-          "manual": false
-        },
-        {
-          "id": 41984584,
-          "review_id": 12288476,
-          "type": 1,
-          "content": "#хорошая_организация",
-          "adj": "хорошая",
-          "noun": "организация",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "Влад Еганов",
-      "message": "Были недавно у вас на квесте,остались под бурными впечатлениями,повеселились от души",
-      "rating": 5,
-      "date_create": "16.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=9xm4f91jgu0m9u215thkqgwnqm&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
-      "images": null,
-      "tags": [
-        {
-          "id": 41984583,
-          "review_id": 12288475,
-          "type": 1,
-          "content": "#веселый_квест",
-          "adj": "веселый",
-          "noun": "квест",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "Иван Спиридонов",
-      "message": "Идеальное место чтобы пощекотать нервишки, актеры играют на высшем уровне .",
-      "rating": 5,
-      "date_create": "16.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=jexg86a5nd9axpp5xr4wa9vxxg&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
-      "images": null,
-      "tags": [
-        {
-          "id": 41984582,
-          "review_id": 12288474,
-          "type": 1,
-          "content": "#профессиональные_актеры",
-          "adj": "профессиональные",
-          "noun": "актеры",
-          "manual": false
-        },
-        {
-          "id": 41984581,
-          "review_id": 12288474,
-          "type": 1,
-          "content": "#стильное_место",
-          "adj": "стильное",
-          "noun": "место",
-          "manual": false
-        }
-      ],
-      "url_avatar": "",
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "Екатерина Многосмыслова",
-      "message": "Были с детьми на квест - \"Гарри Потер\", остались очень довольны! Увлекательно, для детей интересно, а взрослые возвращаются назад в детство. Рекомендую!",
-      "rating": 5,
-      "date_create": "16.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews?reviews[publicId]=zd9tnhv5nm2c8w7g5uuutxqmag&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
-      "images": null,
-      "tags": [
-        {
-          "id": 41975109,
-          "review_id": 12285740,
-          "type": 1,
-          "content": "#увлекательный_квест",
-          "adj": "увлекательный",
-          "noun": "квест",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "Александра Янчук",
-      "message": "Очень понравилось,в моментах было страшно это +вайб",
-      "rating": 5,
-      "date_create": "16.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews?reviews[publicId]=51tnpqhvcrn48qdcnpg97dd7g4&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
-      "images": null,
-      "tags": [
-        {
-          "id": 41975036,
-          "review_id": 12285716,
-          "type": 1,
-          "content": "#страшный_вайб",
-          "adj": "страшный",
-          "noun": "вайб",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "Головашко Ольга",
-      "message": "Было весело, очень понравилось",
-      "rating": 5,
-      "date_create": "16.08.2026",
-      "service": 1,
-      "url": "",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
-      "images": null,
-      "tags": [],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "loli4forever",
-      "message": "были там компанией не один раз, отличное место, актеры лучшие, особенно Иван, отлично встретили, объяснили и провели квест на высшем уровне",
-      "rating": 5,
-      "date_create": "16.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=6m4ygx4mxyejke1cr4wr4rfujg&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
-      "images": null,
-      "tags": [
-        {
-          "id": 30972295,
-          "review_id": 10644061,
-          "type": 1,
-          "content": "#высокий_антураж",
-          "adj": "высокий",
-          "noun": "антураж",
-          "manual": false
-        },
-        {
-          "id": 30972294,
-          "review_id": 10644061,
-          "type": 1,
-          "content": "#отличные_актеры",
-          "adj": "отличные",
-          "noun": "актеры",
-          "manual": false
-        },
-        {
-          "id": 30972293,
-          "review_id": 10644061,
-          "type": 1,
-          "content": "#отличное_место",
-          "adj": "отличное",
-          "noun": "место",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
       "reviewAnswer": {
-        "id": 1366769,
-        "review_id": 10644061,
+        "id": 2617549,
+        "review_id": 12288477,
         "status": 3,
-        "date_create": "19.03.2026 07:52:41 MSK",
-        "message": "Спасибо! 😈 Очень приятно, что вы оценили антураж и актёрскую игру на Гвардейском, 61.\r\nЖдём вас снова — рекомендуем «Психбольница», «Шизофрения» или «Техасская резня бензопилой».\r\nС уважением, команда «Чё За Квест»",
-        "type": 1
-      }
-    },
-    {
-      "username": "Алёна Суркова",
-      "message": "Классный квест , интересные задания , все понравилось 😻",
-      "rating": 5,
-      "date_create": "15.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews?reviews[publicId]=mtxg31hw3mvz86jw2dc3ywf2ug&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/217460994884/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Красноармейская 103",
-      "images": null,
-      "tags": [
-        {
-          "id": 41962898,
-          "review_id": 12283265,
-          "type": 1,
-          "content": "#интересные_задания",
-          "adj": "интересные",
-          "noun": "задания",
-          "manual": false
-        },
-        {
-          "id": 41962897,
-          "review_id": 12283265,
-          "type": 1,
-          "content": "#классный_квест",
-          "adj": "классный",
-          "noun": "квест",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "антон п.",
-      "message": "Супер! Очень понравилось! Дети в восторге 🔥",
-      "rating": 5,
-      "date_create": "15.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_za_kvest/1358929224/reviews?reviews[publicId]=kpdbmj4cfj2m8aj0x40z5c3414&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/otkroy_dver/1358929224/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
-      "images": null,
-      "tags": [
-        {
-          "id": 41961840,
-          "review_id": 12283241,
-          "type": 1,
-          "content": "#отзывчивый_сервис",
-          "adj": "отзывчивый",
-          "noun": "сервис",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "Марина Зверева",
-      "message": "были на психбольнице, очень понравилось",
-      "rating": 5,
-      "date_create": "15.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=rzrnxe1xgrh9na2u67gkk1wang&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
-      "images": null,
-      "tags": [
-        {
-          "id": 41953243,
-          "review_id": 12281300,
-          "type": 1,
-          "content": "#уютная_психбольница",
-          "adj": "уютная",
-          "noun": "психбольница",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "Сергей Блоков",
-      "message": "Были на психбольнице, очень испугались, актёры реально крутые, очень атмосферно и здорово!!",
-      "rating": 5,
-      "date_create": "15.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=xuyyymwvmnumbwmdr4g1gk941w&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
-      "images": null,
-      "tags": [
-        {
-          "id": 41953239,
-          "review_id": 12281299,
-          "type": 1,
-          "content": "#атмосферная_атмосфера",
-          "adj": "атмосферная",
-          "noun": "атмосфера",
-          "manual": false
-        },
-        {
-          "id": 41953238,
-          "review_id": 12281299,
-          "type": 1,
-          "content": "#крутые_актёры",
-          "adj": "крутые",
-          "noun": "актёры",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "Ilya",
-      "message": "Были сегодня на квесте шизофрения нам понравилось!",
-      "rating": 5,
-      "date_create": "15.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_za_kvest/3387024908/reviews?reviews[publicId]=Ilya.alok&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/3387024908/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ просп. Мира, 27",
-      "images": null,
-      "tags": [
-        {
-          "id": 41953119,
-          "review_id": 12281274,
-          "type": 1,
-          "content": "#интересный_квест",
-          "adj": "интересный",
-          "noun": "квест",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "Ольга Б.",
-      "message": "очень понравилось",
-      "rating": 5,
-      "date_create": "15.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=dvmj660a3955ptd24chfypkjrr&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
-      "images": null,
-      "tags": [],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": {
-        "id": 2553913,
-        "review_id": 12281124,
-        "status": 4,
-        "date_create": "15.08.2026 20:13:06 MSK",
-        "message": "Ольга, спасибо, что поделились впечатлением! Очень рады, что квест на Нансена, 107/1 пришёлся вам по душе — мы стараемся, чтобы каждая загадка и атмосфера дарили эмоции. Будем рады видеть вас снова: подскажем сценарий под ваш темп и уровень, чтобы впечатлений было ещё больше.\n\nС уважением, команда \"Чё за Квест?\"",
-        "type": 1
-      }
-    },
-    {
-      "username": "Юлия шурова",
-      "message": "Уже не первый раз были на квестах в этой организации.Дети всегда в восторге.Последний раз старшая дочь ходила на квест Психбольница.Были прям под впечатлением.Все очень реалистичное,особенно впечатляет игра актеров,они создают невероятный накал страстей.Страшно было даже мне,хотя я ждала снаружи и в квесте не участвовала)",
-      "rating": 5,
-      "date_create": "15.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/190176239325/reviews?reviews[publicId]=c8hzdb9r9f4u066hwpxbar9ey4&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/190176239325/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
-      "images": null,
-      "tags": [
-        {
-          "id": 41946966,
-          "review_id": 12279885,
-          "type": 1,
-          "content": "#выразительная_игра_актеров",
-          "adj": "выразительная",
-          "noun": "игра_актеров",
-          "manual": false
-        },
-        {
-          "id": 41946965,
-          "review_id": 12279885,
-          "type": 1,
-          "content": "#реалистичный_квест",
-          "adj": "реалистичный",
-          "noun": "квест",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "Марина М.",
-      "message": "Были на квесте Гарри Потёр. Детям очень понравилось. В восторге",
-      "rating": 5,
-      "date_create": "15.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews?reviews[publicId]=8bxhpb7f4w1dewb6p83w5q09w4&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/45653779581/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
-      "images": null,
-      "tags": [
-        {
-          "id": 41946611,
-          "review_id": 12279799,
-          "type": 1,
-          "content": "#увлекательный_квест",
-          "adj": "увлекательный",
-          "noun": "квест",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": null
-    },
-    {
-      "username": "кирка",
-      "message": "актеры были в образе до конца ! даже в форс мажорах! супер",
-      "rating": 5,
-      "date_create": "14.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=cxhcd57gz01gkzqb36zwgtpc4w&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
-      "images": null,
-      "tags": [
-        {
-          "id": 41935728,
-          "review_id": 12277708,
-          "type": 1,
-          "content": "#профессиональные_актеры",
-          "adj": "профессиональные",
-          "noun": "актеры",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": {
-        "id": 2552475,
-        "review_id": 12277708,
-        "status": 4,
-        "date_create": "15.08.2026 01:44:22 MSK",
-        "message": "Спасибо за такой тёплый отклик! Здорово, что актёры удерживали образ до самого финала — даже в форс‑мажорных ситуациях: именно ради этого мы отрабатываем взаимодействие и импровизацию, чтобы история для гостей оставалась цельной и увлекательной. Будем рады видеть Вас снова на новых сценариях!\n\nС уважением, команда \"Чё за Квест?\"",
-        "type": 1
-      }
-    },
-    {
-      "username": "Полина Лукашова",
-      "message": "Очень страшный квест, эмоции супер, все сделано отлично и продумано",
-      "rating": 5,
-      "date_create": "14.08.2026",
-      "service": 1,
-      "url": "https://yandex.ru/maps/org/chyo_3a_kvest/64678500549/reviews?reviews[publicId]=r6rhf1gjfu7qa2k707f39h0a6c&utm_source=review",
-      "uri": "https://yandex.ru/maps/org/chyo_za_kvest/64678500549/reviews",
-      "pinned": false,
-      "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
-      "images": null,
-      "tags": [
-        {
-          "id": 41935700,
-          "review_id": 12277707,
-          "type": 1,
-          "content": "#страшный_квест",
-          "adj": "страшный",
-          "noun": "квест",
-          "manual": false
-        }
-      ],
-      "url_avatar": null,
-      "avatar": null,
-      "reviewAnswer": {
-        "id": 2552470,
-        "review_id": 12277707,
-        "status": 4,
-        "date_create": "15.08.2026 01:43:57 MSK",
-        "message": "Полина, спасибо за такой тёплый отзыв! Здорово, что квест оказался по‑настоящему страшным, а детали и логика — на высоком уровне. Мы тщательно выстраиваем атмосферу, свет, звук и тайминги, чтобы эмоции были яркими, а прохождение — безопасным и увлекательным. Будем рады видеть Вас снова на наших сценариях по адресу Нансена, 107/1.\n\nС уважением, команда \"Чё за Квест?\"",
+        "date_create": "21.08.2026 13:00:56 MSK",
+        "message": "Спасибо за ваш отзыв",
         "type": 1
       }
     },
@@ -886,7 +900,7 @@
       "rating": 5,
       "date_create": "12.08.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=267899238",
+      "url": "https://2gis.ru/reviews/70000001045468917/review/267899238",
       "uri": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
@@ -912,7 +926,7 @@
       "rating": 5,
       "date_create": "05.08.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=265091655",
+      "url": "https://2gis.ru/reviews/70000001050266946/review/265091655",
       "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
@@ -1017,7 +1031,7 @@
       "rating": 5,
       "date_create": "18.07.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=259371270",
+      "url": "https://2gis.ru/reviews/70000001050266946/review/259371270",
       "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
@@ -1103,7 +1117,7 @@
       "rating": 5,
       "date_create": "07.06.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=248285435",
+      "url": "https://2gis.ru/reviews/70000001045468917/review/248285435",
       "uri": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
@@ -1138,7 +1152,7 @@
       "rating": 5,
       "date_create": "06.06.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=248034484",
+      "url": "https://2gis.ru/reviews/70000001050266946/review/248034484",
       "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
@@ -1164,7 +1178,7 @@
       "rating": 5,
       "date_create": "06.06.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=248059481",
+      "url": "https://2gis.ru/reviews/70000001099933663/review/248059481",
       "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
@@ -1199,7 +1213,7 @@
       "rating": 5,
       "date_create": "01.06.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=246731618",
+      "url": "https://2gis.ru/reviews/70000001099933663/review/246731618",
       "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
@@ -1234,7 +1248,7 @@
       "rating": 5,
       "date_create": "01.06.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=246570710",
+      "url": "https://2gis.ru/reviews/70000001050266946/review/246570710",
       "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
@@ -1250,7 +1264,7 @@
       "rating": 5,
       "date_create": "30.05.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=246170706",
+      "url": "https://2gis.ru/reviews/70000001045468917/review/246170706",
       "uri": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
@@ -1285,7 +1299,7 @@
       "rating": 5,
       "date_create": "25.05.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=244776218",
+      "url": "https://2gis.ru/reviews/70000001050266946/review/244776218",
       "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
@@ -1381,7 +1395,7 @@
       "rating": 5,
       "date_create": "11.05.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=241877494",
+      "url": "https://2gis.ru/reviews/70000001099933663/review/241877494",
       "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
@@ -1442,7 +1456,7 @@
       "rating": 5,
       "date_create": "09.05.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=241483300",
+      "url": "https://2gis.ru/reviews/70000001050266946/review/241483300",
       "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
@@ -1486,7 +1500,7 @@
       "rating": 5,
       "date_create": "03.05.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=240162311",
+      "url": "https://2gis.ru/reviews/70000001099933663/review/240162311",
       "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
@@ -1504,7 +1518,14 @@
       ],
       "url_avatar": "",
       "avatar": null,
-      "reviewAnswer": null
+      "reviewAnswer": {
+        "id": 2656594,
+        "review_id": 11474481,
+        "status": 4,
+        "date_create": "31.08.2026 12:52:40 MSK",
+        "message": "Дарина, спасибо, что заглянули к нам на Нансена 107/1! Здорово, что страшный квест действительно оказался страшным — именно ради атмосферы, эффектов и напряжения мы так тщательно всё настраиваем. Если захочется ещё адреналина или, наоборот, что‑то поспокойнее, напишите нам — подскажем подходящий сценарий и ответим на любые вопросы. Будем рады новой встрече!\n\nС уважением, команда \"Чё за Квест?\"",
+        "type": 1
+      }
     },
     {
       "username": "Андрей Балашов",
@@ -1512,7 +1533,7 @@
       "rating": 5,
       "date_create": "01.05.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=239693390",
+      "url": "https://2gis.ru/reviews/70000001045468917/review/239693390",
       "uri": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",
@@ -1563,7 +1584,7 @@
       "rating": 5,
       "date_create": "21.04.2026",
       "service": 3,
-      "url": "",
+      "url": "https://2gis.ru/reviews/70000001007338983/review/237527931",
       "uri": "https://2gis.ru/rostov-on-don/search/%D0%A7%D0%81%20%D0%97%D0%90%20%D0%9A%D0%92%D0%95%D0%A1%D0%A2%20%D0%9D%D0%B0%D0%B3%D0%B8%D0%B1%D0%B8%D0%BD%D0%B0%2014%D0%B0%20%D0%B3%20%D0%A0%D0%BE%D1%81%D1%82%D0%BE%D0%B2-%D0%BD%D0%B0-%D0%94%D0%BE%D0%BD%D1%83%2C%20%D0%BF%D1%80-%D0%BA%D1%82%20%D0%9C%D0%B8%D1%85%D0%B0%D0%B8%D0%BB%D0%B0%20%D0%9D%D0%B0%D0%B3%D0%B8%D0%B1%D0%B8%D0%BD%D0%B0%2C%20%D0%B7%D0%B4%2014%D0%B0/firm/70000001007338983/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нагибина 14а",
@@ -1878,7 +1899,7 @@
       "rating": 5,
       "date_create": "23.03.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=230950058",
+      "url": "https://2gis.ru/reviews/70000001050266946/review/230950058",
       "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
@@ -1972,7 +1993,7 @@
       "rating": 5,
       "date_create": "08.03.2026",
       "service": 3,
-      "url": "https://2gis.ru/spb/firm/70000001020491108/tab/reviews?reviewId=227746293",
+      "url": "https://2gis.ru/reviews/70000001020491108/review/227746293",
       "uri": "https://2gis.ru/spb/firm/70000001020491108/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Социалистическая 186",
@@ -1988,7 +2009,7 @@
       "rating": 5,
       "date_create": "07.03.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=227597091",
+      "url": "https://2gis.ru/reviews/70000001099933663/review/227597091",
       "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
@@ -2032,7 +2053,7 @@
       "rating": 5,
       "date_create": "23.02.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=221505615",
+      "url": "https://2gis.ru/reviews/70000001050266946/review/221505615",
       "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
@@ -2083,7 +2104,7 @@
       "rating": 5,
       "date_create": "22.02.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews?reviewId=221277226",
+      "url": "https://2gis.ru/reviews/70000001050266946/review/221277226",
       "uri": "https://2gis.ru/rostov/firm/70000001050266946/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Соколова 23",
@@ -2118,7 +2139,7 @@
       "rating": 5,
       "date_create": "22.02.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews?reviewId=221215352",
+      "url": "https://2gis.ru/reviews/70000001099933663/review/221215352",
       "uri": "https://2gis.ru/rostov-on-don/firm/70000001099933663/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Нансена107/1",
@@ -2320,7 +2341,7 @@
       "rating": 5,
       "date_create": "14.02.2026",
       "service": 3,
-      "url": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews?reviewId=219348395",
+      "url": "https://2gis.ru/reviews/70000001045468917/review/219348395",
       "uri": "https://2gis.ru/rostov/firm/70000001045468917/tab/reviews",
       "pinned": false,
       "firmName": "ЧЁ ЗА КВЕСТ Гвардейский пер. 61",

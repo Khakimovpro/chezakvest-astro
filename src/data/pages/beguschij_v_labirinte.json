@@ -110,6 +110,11 @@
   "subtitle": "У нас есть из чего выбрать",
   "items": [
    {
+    "t": "5 ночей с Фредди",
+    "href": "/fnaf",
+    "img": "/assets/fnaf/related-card.webp"
+   },
+   {
     "t": "Гарри Поттер и Кубок огня",
     "href": "/garri-potter-i-kubok-ognya",
     "img": "/assets/q/23fd611f3e.webp"

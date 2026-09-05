@@ -322,7 +322,11 @@ def local_url(url: str) -> str:
     host = parsed.netloc.lower().removeprefix("www.")
     path = unquote(parsed.path).lstrip("/")
     if host in ALLOWED_REMOTE_HOSTS and path:
-        return f"{BASE_TOKEN}/assets/{host}/{path}"
+        # На диск файл ложится с настоящим именем (у части видео в нём пробел и
+        # кириллица), а в разметку адрес обязан уходить закодированным: иначе
+        # ссылка обрывается на первом пробеле и проверка ассетов ищет файл
+        # «Радужные» вместо «Радужные друзья.mp4».
+        return f"{BASE_TOKEN}/assets/{host}/{quote(path, safe='/-._~')}"
     if parsed.netloc.lower().removeprefix("www.") == urlparse(SOURCE_ORIGIN).netloc:
         return f"{BASE_TOKEN}{canonical_route(parsed.path)}"
     return url
@@ -2176,6 +2180,12 @@ def prepare_snapshot(
     # inside #allrecords would re-apply page-global rules after isolation.
     for unsafe in root.select("script, noscript, iframe, object, embed, link"):
         unsafe.decompose()
+    # Расписание сеансов рисует скрипт системы бронирования уже в браузере. В
+    # снятой браузером копии оно застывает на дате съёмки, и посетитель принял бы
+    # вчерашние времена за сегодняшние. В каноническом исходнике страницы этого
+    # блока нет вовсе, поэтому убираем и его, и остатки индикатора загрузки.
+    for live in root.select(".quest_calendar, #data-table, #getDataBtn, .lds-dual-ring, .overlay"):
+        live.decompose()
     # Tilda оставляет в разметке комментарий «Form export deps» со списком своих
     # скриптов. Подключить их нельзя (санитайзер режет исполняемое), но выкачка
     # видит в комментарии ссылки и вендорит 800 КБ мёртвых файлов — их запрещает
