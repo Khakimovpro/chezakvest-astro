@@ -50,7 +50,7 @@ body:not(.source-snapshot-page) .product-hero__image, body:not(.source-snapshot-
 body:not(.source-snapshot-page) .product-hero__image { height: 100%; }
 body:not(.source-snapshot-page) .product-hero__image { object-fit: cover; object-position: center; }
 body:not(.source-snapshot-page) .product-hero__shade { background: linear-gradient(90deg, rgb(0 0 0 / 78%), rgb(0 0 0 / 34%) 65%, rgb(0 0 0 / 10%)); }
-body:not(.source-snapshot-page) .product-hero__content { position: relative; z-index: 1; padding-top: var(--product-space-96); color: #fff; }
+body:not(.source-snapshot-page) .product-hero__content { position: relative; z-index: 1; padding-top: var(--product-space-96); padding-bottom: var(--product-space-32); color: #fff; }
 body:not(.source-snapshot-page) .product-hero h1 { max-width: 700px; margin: 0; font: 800 var(--product-type-h1)/var(--product-leading-hero) Montserrat, sans-serif; }
 body:not(.source-snapshot-page) .product-facts { display: flex; flex-wrap: wrap; gap: var(--product-space-8); max-width: 650px; margin: var(--product-space-24) 0 var(--product-space-12); padding: 0; list-style: none; }
 body:not(.source-snapshot-page) .product-facts li { padding: var(--product-space-8) var(--product-space-12); border: 1px solid rgb(255 255 255 / 45%); border-radius: 99px; background: rgb(0 0 0 / 28%); font-weight: 700; }
