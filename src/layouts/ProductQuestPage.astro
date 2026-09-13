@@ -65,5 +65,10 @@ const heroSrcset = Object.entries(page.hero?.bgset || {}).map(([width, image]) =
   </main>
   <Footer />
   <MobileCtaBar phoneHref={site.header.phoneHref} />
-  <script>import '../scripts/product-gallery.js';</script>
+  <script>
+    import '../scripts/product-gallery.js';
+    import { initMapEmbed } from '../scripts/map-embed.js';
+
+    initMapEmbed();
+  </script>
 </Layout>
