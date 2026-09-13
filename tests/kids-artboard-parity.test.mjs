@@ -33,12 +33,12 @@ test('Kids landing uses the native product contract and keeps every required con
   });
   assert.ok(page.sections.some((section) => section.kind === 'party-form' && section.id === 'quiz'));
   assert.ok(page.sections.some((section) => section.kind === 'party-form' && section.id === 'prazdnik'));
-  assert.equal(page.sections.find((section) => section.kind === 'video').videoSlug, 'kids-party-1');
+  assert.deepEqual(page.sections.find((section) => section.kind === 'video').videoSlugs, ['kids-party-1', 'kids-party-2']);
   assert.equal(page.sections.find((section) => section.kind === 'players').photos.length, 11);
-  assert.equal(page.sections.find((section) => section.kind === 'safety').items.length, 4);
+  assert.equal(page.sections.find((section) => section.kind === 'safety').items.length, 5);
   assert.equal(page.sections.find((section) => section.kind === 'map').map.embedUrl.startsWith('https://'), true);
   assert.equal(page.sections.find((section) => section.kind === 'map').map.img.startsWith('/assets/'), true);
-  assert.equal(page.sections.find((section) => section.kind === 'faq').items.length, 8);
+  assert.equal(page.sections.find((section) => section.kind === 'faq').items.length, 12);
 });
 
 test('Native holiday renderer keeps the visual order, Start quiz fallback, and empty-block guards', async () => {
@@ -53,10 +53,10 @@ test('Native holiday renderer keeps the visual order, Start quiz fallback, and e
     read('src/components/product/MobileCtaBar.astro'),
   ]);
   const visualOrder = [
-    '<ProductHolidayHero', '<ProductIncluded', '<ProductStats', '<ProductPackages',
-    '<ProductTimeline', '<ProductVideo', '<ProductPlayers', '<ProductSafety',
+    '<ProductHolidayHero', '<ProductPlayers', '<ProductVideo', '<ProductIncluded',
+    '<ProductStats', '<ProductPackages', '<ProductTimeline', '<ProductSafety',
     '<ProductReviews', '<CardsRow', "nativeByKind('lead-cta')", '<PartyForm id="kquiz"',
-    "kind === 'tiles'", "nativeByKind('steps')", '<ProductHalls', '<ProductMap',
+    'nativeTiles.map', 'nativeSteps?.items?.length', '<ProductHalls', '<ProductMap',
     '<ProductFaq', 'sectionId="prazdnik"',
   ];
   const nativeBlock = layout.slice(layout.indexOf('{nativeHoliday'), layout.indexOf('{!nativeHoliday'));

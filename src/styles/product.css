@@ -35,6 +35,7 @@
 .product-video .hls-video { width: min(100%, 480px); justify-self: end; }
 .product-video--multiple { grid-template-columns: 1fr; }
 .product-video--multiple .product-video__media { grid-template-columns: repeat(2, minmax(0, 1fr)); justify-items: center; }
+.product-video--multiple .hls-video { max-height: 80vh; }
 .product-kicker { margin: 0 0 8px; color: var(--orange-2); font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
 .product-story, .product-fit, .product-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px; }
 .product-story p { font-size: 17px; line-height: 1.6; }
