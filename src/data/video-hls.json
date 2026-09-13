@@ -1,0 +1,37 @@
+{
+  "base": "https://storage.yandexcloud.net/che-za-kvest-videos/hls",
+  "videos": {
+    "igra_v_kalmara-trailer": {
+      "title": "Квест «Игра в Кальмара» — трейлер",
+      "kind": "trailer",
+      "source": { "file": "/assets/video/kalmar.mp4", "rutubeId": "b7c18d4bd380160f7b68c2488ab69792" },
+      "quest": "igra_v_kalmara",
+      "durationSec": 45,
+      "width": 720,
+      "height": 1280,
+      "poster": "/assets/video-posters/igra_v_kalmara-trailer.webp",
+      "uploadDate": "2026-05-04T15:00:47+03:00",
+      "uploadDateSource": "src/data/pages/igra_v_kalmara.json:video.uploadDate"
+    },
+    "kids-party-1": {
+      "title": "Праздник для детей в «Чё за Квест»",
+      "kind": "party",
+      "source": { "file": "/assets/video/kubok.mp4" },
+      "page": "kids",
+      "durationSec": 124,
+      "width": 720,
+      "height": 1280,
+      "poster": "/assets/video-posters/kids-party-1.webp"
+    },
+    "kids-party-2": {
+      "title": "Праздник «Радужные друзья» в «Чё за Квест»",
+      "kind": "party",
+      "source": { "file": "/assets/chezakvest.ru/for-Tilda/video-hosting/Радужные друзья.mp4" },
+      "page": "kids",
+      "durationSec": 71,
+      "width": 1080,
+      "height": 1920,
+      "poster": "/assets/video-posters/kids-party-2.webp"
+    }
+  }
+}

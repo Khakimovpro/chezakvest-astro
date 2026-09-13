@@ -1,0 +1,37 @@
+---
+import registry from '../data/video-hls.json';
+
+const { slug, title, poster, class: className = '' } = Astro.props;
+const video = registry.videos[slug];
+if (!video) throw new Error(`Unknown HLS video: ${slug}`);
+const base = import.meta.env.BASE_URL.replace(/\/$/u, '');
+const posterUrl = poster || `${base}${video.poster}`;
+const duration = `${Math.floor(video.durationSec / 60)}:${String(video.durationSec % 60).padStart(2, '0')}`;
+const ratio = `${video.width} / ${video.height}`;
+const rutubeUrl = video.source.rutubeId ? `https://rutube.ru/video/${video.source.rutubeId}/` : '';
+---
+
+<figure class:list={['hls-video', className]} data-hls-video style={`--hls-ratio:${ratio}`}>
+  <video controls playsinline preload="none" poster={posterUrl} data-hls-src={`${registry.base}/${slug}/master.m3u8`} data-rutube-url={rutubeUrl || undefined} aria-label={title || video.title}></video>
+  <button class="hls-video__play" type="button" aria-label={`Смотреть: ${title || video.title}`}>
+    <span aria-hidden="true">▶</span>
+  </button>
+  <span class="hls-video__duration" aria-label={`Длительность ${duration}`}>{duration}</span>
+  <p class="hls-video__error" hidden data-hls-error>Не удалось загрузить видео. <a href={rutubeUrl} hidden={!rutubeUrl} target="_blank" rel="noopener">Смотреть на Rutube</a></p>
+</figure>
+
+<script>
+  import '../scripts/hls-video.js';
+</script>
+
+<style>
+  .hls-video { position:relative; margin:0; aspect-ratio:var(--hls-ratio); max-width:100%; overflow:hidden; border-radius:20px; background:#333; }
+  .hls-video video { display:block; width:100%; height:100%; object-fit:contain; background:#333; }
+  .hls-video__play { position:absolute; z-index:1; inset:50% auto auto 50%; width:64px; height:64px; border:0; border-radius:50%; transform:translate(-50%,-50%); color:#fff; background:#ff6b00; box-shadow:0 4px 20px #0008; font-size:24px; cursor:pointer; }
+  .hls-video__play:focus-visible { outline:3px solid #fff; outline-offset:3px; }
+  .hls-video__duration { position:absolute; right:12px; bottom:12px; padding:5px 8px; border-radius:8px; color:#fff; background:#000b; font:700 14px/1 Montserrat,sans-serif; }
+  .hls-video__error { position:absolute; inset:auto 12px 12px; margin:0; padding:10px; border-radius:10px; color:#fff; background:#333e; font:600 14px/1.35 Nunito,sans-serif; }
+  .hls-video__error a { color:#ff8a00; }
+  .hls-video[data-ready] .hls-video__play { display:none; }
+  @media (min-width:768px) { .hls-video[style*="720 / 1280"], .hls-video[style*="1080 / 1920"] { max-width:480px; } }
+</style>
