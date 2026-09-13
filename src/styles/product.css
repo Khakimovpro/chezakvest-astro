@@ -98,15 +98,17 @@ body:not(.source-snapshot-page) .product-reviews__summary { margin: 0 0 var(--pr
 body:not(.source-snapshot-page) .product-reviews__services { display: flex; flex-wrap: wrap; gap: var(--product-space-8) var(--product-space-16); padding: 0; list-style: none; }
 body:not(.source-snapshot-page) .product-reviews__services a { color: inherit; }
 body:not(.source-snapshot-page) .product-reviews__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--product-space-16); margin-top: var(--product-space-24); }
-body:not(.source-snapshot-page) .product-review { padding: var(--product-space-16); border-radius: 16px; background: #fff; box-shadow: 0 3px 14px rgb(0 0 0 / 7%); }
-body:not(.source-snapshot-page) .product-review > div { color: var(--orange); }
+body:not(.source-snapshot-page) .product-review { display: flex; flex-direction: column; padding: var(--product-space-16); border-radius: 16px; background: #fff; box-shadow: 0 3px 14px rgb(0 0 0 / 7%); }
+body:not(.source-snapshot-page) .product-review > div { margin-bottom: var(--product-space-12); color: var(--orange); }
 body:not(.source-snapshot-page) .product-review time { float: right; color: #777; font-size: var(--product-type-13); }
-body:not(.source-snapshot-page) .product-review p { min-height: 120px; white-space: pre-line; line-height: var(--product-leading-copy); }
-body:not(.source-snapshot-page) .product-review footer { display: grid; gap: var(--product-space-4); font-size: var(--product-type-13); }
+body:not(.source-snapshot-page) .product-review p { margin: 0; white-space: pre-line; line-height: var(--product-leading-copy); }
+body:not(.source-snapshot-page) .product-review footer { margin-top: auto; padding-top: var(--product-space-16); display: grid; gap: var(--product-space-4); font-size: var(--product-type-13); }
 body:not(.source-snapshot-page) .product-review footer span { color: #666; }
 body:not(.source-snapshot-page) .product-review--hidden { display: none; }
 body:not(.source-snapshot-page) .product-more { display: block; margin: var(--product-space-16) auto; padding: var(--product-space-12) var(--product-space-16); border: 1px solid var(--orange); border-radius: 8px; background: #fff; color: var(--orange-text); font-weight: 800; cursor: pointer; }
-body:not(.source-snapshot-page) .product-reviews__all { display: block; width: max-content; margin: 0 auto; color: var(--orange-text); font-weight: 800; }
+body:not(.source-snapshot-page) .product-reviews__actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--product-space-16); margin-top: var(--product-space-24); }
+body:not(.source-snapshot-page) .product-reviews__actions .product-more { margin: 0; min-height: 44px; }
+body:not(.source-snapshot-page) .product-reviews__all { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding-inline: var(--product-space-16); color: var(--orange-text); font-weight: 800; }
 body:not(.source-snapshot-page) .product-safety { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--product-space-16); padding: 0; list-style: none; }
 body:not(.source-snapshot-page) .product-safety--four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 body:not(.source-snapshot-page) .product-safety li { display: grid; grid-template-columns: 34px 1fr; gap: var(--product-space-12); align-items: start; padding: var(--product-space-16); border: 1px solid rgb(255 255 255 / 25%); border-radius: 16px; }
@@ -201,7 +203,6 @@ body:not(.source-snapshot-page) .product-rail__item { flex-basis: 88%; }
 body:not(.source-snapshot-page) .product-video, body:not(.source-snapshot-page) .product-story, body:not(.source-snapshot-page) .product-fit, body:not(.source-snapshot-page) .product-map { grid-template-columns: 1fr; gap: var(--product-space-24); }
 
 body:not(.source-snapshot-page) .product-reviews__grid { grid-template-columns: 1fr; }
-body:not(.source-snapshot-page) .product-review p { min-height: auto; }
 body:not(.source-snapshot-page) .product-safety { grid-template-columns: 1fr; }
 body:not(.source-snapshot-page) .product-mobile-cta { position: fixed; z-index: 800; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: 1fr 1.25fr; padding: var(--product-space-8); gap: var(--product-space-8); transform: translateY(110%); transition: transform .2s ease; background: #fff; box-shadow: 0 -4px 18px rgb(0 0 0 / 16%); }
 body:not(.source-snapshot-page) .product-mobile-cta--visible:not(.product-mobile-cta--booking) { transform: translateY(0); }
