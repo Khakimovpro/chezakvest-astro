@@ -22,7 +22,7 @@ const mime = {
 };
 
 async function buildAndServe(t) {
-  await run('npm', ['run', 'build'], { cwd: root });
+  await run('flock', ['/tmp/chezakvest-astro-test-build.lock', 'npm', 'run', 'build'], { cwd: root });
   const server = createServer(async (request, response) => {
     const pathname = decodeURIComponent(new URL(request.url || '/', 'http://site.test').pathname);
     const relative = pathname.endsWith('/') ? `${pathname}index.html` : pathname;
@@ -47,7 +47,7 @@ async function buildAndServe(t) {
   return `http://127.0.0.1:${address.port}`;
 }
 
-test('the real source booking dialog validates before opening exactly one WhatsApp draft', { timeout: 45_000 }, async (t) => {
+test('the real source booking dialog validates before opening exactly one WhatsApp draft', { timeout: 120_000 }, async (t) => {
   const base = await buildAndServe(t);
   const browser = await chromium.launch({ args: ['--no-sandbox', '--disable-gpu'] });
   t.after(async () => browser.close());

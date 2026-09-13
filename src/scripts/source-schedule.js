@@ -110,6 +110,7 @@ async function loadSchedule(slot) {
   const url = `${SCHEDULE_ORIGIN}/calendar.php?quest=${encodeURIComponent(quest)}`;
   slot.setAttribute('aria-busy', 'true');
   slot.textContent = 'Загружаем расписание…';
+  slot.dispatchEvent(new CustomEvent('source-schedule-status', { detail: { status: 'loading' } }));
   try {
     await ensureJQuery();
     const response = await fetch(url, {

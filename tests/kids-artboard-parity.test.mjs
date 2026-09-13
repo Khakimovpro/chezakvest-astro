@@ -35,10 +35,11 @@ test('Kids landing uses the native product contract and keeps every required con
   assert.ok(page.sections.some((section) => section.kind === 'party-form' && section.id === 'prazdnik'));
   assert.deepEqual(page.sections.find((section) => section.kind === 'video').videoSlugs, ['kids-party-1', 'kids-party-2']);
   assert.equal(page.sections.find((section) => section.kind === 'players').photos.length, 11);
-  assert.equal(page.sections.find((section) => section.kind === 'safety').items.length, 5);
+  assert.equal(page.sections.find((section) => section.kind === 'safety').items.length, 4);
   assert.equal(page.sections.find((section) => section.kind === 'map').map.embedUrl.startsWith('https://'), true);
   assert.equal(page.sections.find((section) => section.kind === 'map').map.img.startsWith('/assets/'), true);
   assert.equal(page.sections.find((section) => section.kind === 'faq').items.length, 12);
+  assert.match(page.sections.find((section) => section.kind === 'faq').items.at(-2).q, /что надеть ребёнку/u);
 });
 
 test('Native holiday renderer keeps the visual order, Start quiz fallback, and empty-block guards', async () => {
@@ -79,10 +80,10 @@ test('Native holiday renderer keeps the visual order, Start quiz fallback, and e
   assert.match(mobileCta, /bookingId = 'booking'/u);
 });
 
-test('Kids renders its native body and conversion paths in an isolated static build', { timeout: 45_000 }, async (t) => {
+test('Kids renders its native body and conversion paths in an isolated static build', { timeout: 120_000 }, async (t) => {
   const outputDir = await mkdtemp(join(tmpdir(), 'cheza-kids-render-'));
   t.after(() => rm(outputDir, { recursive: true, force: true }));
-  await run('node_modules/.bin/astro', ['build', '--outDir', outputDir], { cwd: rootPath });
+  await run('flock', ['/tmp/chezakvest-astro-test-build.lock', 'node_modules/.bin/astro', 'build', '--outDir', outputDir], { cwd: rootPath });
   const [page, html] = await Promise.all([
     JSON.parse(await read('src/data/pages/kids.json')),
     readFile(join(outputDir, 'kids', 'index.html'), 'utf8'),
