@@ -1,4 +1,4 @@
 ---
 const { data } = Astro.props;
 ---
-{data && <section class="product-section product-section--white" id="faq"><div class="container product-faq"><h2 class="section-title">Частые вопросы</h2>{data.map((item) => <details><summary>{item.q}</summary><p>{item.a}</p></details>)}</div></section>}
+{data?.length > 0 && <section class="product-section product-section--white" id="faq"><div class="container product-faq"><h2 class="section-title">Частые вопросы</h2>{data.map((item) => <details><summary>{item.q}</summary><p>{item.a}</p></details>)}</div></section>}

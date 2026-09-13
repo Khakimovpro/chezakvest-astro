@@ -34,17 +34,18 @@ const countAll = async (pattern) => {
   return total;
 };
 
-// Замер 17.08.2026 на коммите 77af508.
+// Замер 13.09.2026 после перевода /igra_v_kalmara/ и /kids/ в нативный слой.
+// Считаем только маршруты, которые по-прежнему рендерят снимок.
 const FROZEN = {
-  forms: 306,
-  popups: 229,
+  forms: 292,
+  popups: 220,
   // 20.08.2026: три кнопки «Подобрать квест» на /kids/, /new-year/ и
   // /den-rozhdeniya-uznik-azkabana/ вели на общую форму вместо подбора программы.
   // Теперь там свой пошаговый подбор со своей заявкой, поэтому ссылок на три меньше.
-  bookingLinks: 619,
-  dateMarkers: 601,
-  phoneWraps: 320,
-  contactChoice: 204,
+  bookingLinks: 564,
+  dateMarkers: 569,
+  phoneWraps: 309,
+  contactChoice: 183,
 };
 
 test('формы в снимках не поредели', async () => {

@@ -258,6 +258,10 @@ const hiddenCustomArtboards = new Set([
 
 export const visibleHolidayFaqJsonLd = (page = {}, faqSection) => {
   const path = `/${page.slug}`;
+  if (page.render === 'native') {
+    const nativeFaq = (page.sections || []).find((section) => section.kind === 'faq');
+    return faqPageJsonLd(nativeFaq?.items || [], path);
+  }
   const hero = (page.sections || []).find((section) => section.kind === 'hero') || {};
   if (hero.composition === 'newyear-artboard') {
     return faqPageJsonLd(page.sourceParity?.faq || [], path);

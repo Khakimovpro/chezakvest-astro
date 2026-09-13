@@ -301,7 +301,7 @@ test('поле телефона везде приходит с блоком ст
 });
 
 test('снимки не тянут медиа за пределами первого экрана', async () => {
-  const heavy = ['prazdniki-pod-kluch.html', 'kids.html', 'home.html'];
+  const heavy = ['prazdniki-pod-kluch.html', 'home.html'];
   for (const name of heavy) {
     const html = await readFile(new URL(name, snapshotDir), 'utf8');
     const lazy = (html.match(/loading="lazy"/gu) ?? []).length;
@@ -330,8 +330,6 @@ test('нижние изображения получают источник то
   for (const image of deferred) {
     assert.equal(attr(image, 'src'), undefined, 'parsed HTML не содержит источник нижней картинки');
   }
-  const kids = await readFile(new URL('kids.html', snapshotDir), 'utf8');
-  assert.match(kids, /id="rec844797119"/u, 'контрольная T829-сетка присутствует в исходном снимке');
 });
 
 test('на страницах один телефон — тот, что в site.json', async () => {

@@ -1,4 +1,4 @@
-<!-- MAP-SIG: 3c5895a003085199ed70185b37a44eef8fe218f3 | blessed: 2026-09-05 -->
+<!-- MAP-SIG: e4ebee0a069abfd796fc71dc781a9049432b9374 | blessed: 2026-09-13 -->
 
 # Навигационная карта «Чё за Квест»
 
@@ -29,7 +29,7 @@
 | Площадка | [`src/layouts/VenuePage.astro:23`](../../../src/layouts/VenuePage.astro#L23) — данные и адрес; [`:41`](../../../src/layouts/VenuePage.astro#L41) — `EntertainmentBusiness` |
 | Категория | [`src/layouts/CategoryPage.astro:23`](../../../src/layouts/CategoryPage.astro#L23) — данные; [`:59`](../../../src/layouts/CategoryPage.astro#L59) — `CollectionPage` |
 | Инфостраница | [`src/layouts/InfoPage.astro:14`](../../../src/layouts/InfoPage.astro#L14) — данные; [`:32`](../../../src/layouts/InfoPage.astro#L32) — breadcrumbs |
-| Праздник/акция | [`src/layouts/HolidayPage.astro:44`](../../../src/layouts/HolidayPage.astro#L44) — выбор hero/composition; [`:83`](../../../src/layouts/HolidayPage.astro#L83) — разметка; диспетчер обычных `sections` начинается у [`:283`](../../../src/layouts/HolidayPage.astro#L283) |
+| Праздник/акция | [`src/layouts/HolidayPage.astro:59`](../../../src/layouts/HolidayPage.astro#L59) — флаг нативного рендера; [`:206`](../../../src/layouts/HolidayPage.astro#L206) — продуктовый диспетчер нативных `sections`; legacy-композиции остаются ниже у [`:228`](../../../src/layouts/HolidayPage.astro#L228) |
 | Единые правила разметки | фабрики в [`src/lib/seo.js`](../../../src/lib/seo.js), человекочитаемый контракт — [`docs/SEO-RAZMETKA.md`](../../../docs/SEO-RAZMETKA.md) |
 
 ## Данные

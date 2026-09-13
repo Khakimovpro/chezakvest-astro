@@ -28,7 +28,21 @@ import AzkabanArtboard from '../components/AzkabanArtboard.astro';
 import KidsArtboard from '../components/KidsArtboard.astro';
 import Reviews from '../components/Reviews.astro';
 import VenuesSection from '../components/VenuesSection.astro';
+import ProductHolidayHero from '../components/product/ProductHolidayHero.astro';
+import ProductIncluded from '../components/product/ProductIncluded.astro';
+import ProductPackages from '../components/product/ProductPackages.astro';
+import ProductTimeline from '../components/product/ProductTimeline.astro';
+import ProductStats from '../components/product/ProductStats.astro';
+import ProductVideo from '../components/product/ProductVideo.astro';
+import ProductPlayers from '../components/product/ProductPlayers.astro';
+import ProductSafety from '../components/product/ProductSafety.astro';
+import ProductReviews from '../components/product/ProductReviews.astro';
+import ProductHalls from '../components/product/ProductHalls.astro';
+import ProductMap from '../components/product/ProductMap.astro';
+import ProductFaq from '../components/product/ProductFaq.astro';
+import MobileCtaBar from '../components/product/MobileCtaBar.astro';
 import site from '../data/site.json';
+import reviewsData from '../data/reviews.json';
 import {
   breadcrumbJsonLd,
   holidayServiceJsonLd,
@@ -40,8 +54,10 @@ import { siteHref } from '../lib/urls.js';
 import '../styles/page.css';
 import '../styles/quest.css';
 import '../styles/holiday.css';
+import '../styles/product.css';
 
 const { page, index = [], venues = [] } = Astro.props;
+const nativeHoliday = page.render === 'native';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const asset = (p) => (p ? base + p : '');
 const link = (h) => siteHref(base, h);
@@ -79,6 +95,17 @@ const canonicalCardItems = (items = []) => canonicalizeCardItems(items, pagesByS
 const faq = sourceVypusknoj ? null : sections.find((s) => s.kind === 'faq');
 const reviewSection = sections.find((s) => s.kind === 'reviews');
 const nativeVideo = sections.find((s) => s.kind === 'video');
+const nativeByKind = (kind) => sections.find((section) => section.kind === kind);
+const nativeReviewsSection = nativeByKind('reviews');
+const nativeReviews = (nativeReviewsSection?.reviewIndexes || [])
+  .map((reviewIndex) => reviewsData.reviews[reviewIndex]).filter(Boolean);
+const nativeReviewsModel = nativeReviews.length ? {
+  data: reviewsData,
+  items: nativeReviews,
+  title: nativeReviewsSection.title,
+} : null;
+const nativePartyForm = sections.find((section) => section.kind === 'party-form' && section.id === 'prazdnik');
+const nativeQuizForm = sections.find((section) => section.kind === 'party-form' && section.id === 'quiz');
 
 const jsonld = [
   holidayServiceJsonLd({ page, site }),
@@ -173,10 +200,32 @@ const bodyClass = [
   video={nativeVideo}
   preloadImage={preload}
   bodyClass={bodyClass}
+  page={page}
 >
   {renderSharedHeader && <Header />}
 
   <main>
+    {nativeHoliday && <div class="product-page product-holiday-page">
+      <ProductHolidayHero data={hero} phoneHref={site.header.phoneHref} wa={site.header.wa} base={base} />
+      <ProductIncluded data={nativeByKind('included')} />
+      <ProductStats data={nativeByKind('stats')} />
+      <ProductPackages data={nativeByKind('packages')} />
+      <ProductTimeline data={nativeByKind('timeline')} />
+      <ProductVideo data={nativeVideo?.videoSlug ? { title: nativeVideo.title, slug: nativeVideo.videoSlug } : null} />
+      <ProductPlayers data={nativeByKind('players')?.photos?.length ? { title: nativeByKind('players').title, items: nativeByKind('players').photos.map((src, index) => ({ src, alt: `Фото праздника ${index + 1}` })) } : null} base={base} />
+      <ProductSafety data={nativeByKind('safety')} />
+      <ProductReviews data={nativeReviewsModel} />
+      {nativeByKind('cards')?.items?.length > 0 && <CardsRow title={nativeByKind('cards').title} subtitle={nativeByKind('cards').subtitle} items={canonicalCardItems(nativeByKind('cards').items)} id={nativeByKind('cards').id || 'scenarii'} variant={nativeByKind('cards').variant || 'square'} uptitle={nativeByKind('cards').uptitle || ''} />}
+      {nativeByKind('lead-cta')?.cta && <section class="product-section product-section--gray product-quiz"><div class="container"><h2 class="section-title">{nativeByKind('lead-cta').title}</h2>{nativeByKind('lead-cta').subtitle && <p class="section-sub">{nativeByKind('lead-cta').subtitle}</p>}<a class="btn-orange" href={nativeByKind('lead-cta').href || '#quiz'} data-quiz={quizId}>{nativeByKind('lead-cta').cta}</a></div></section>}
+      {nativeQuizForm && <PartyForm id="kquiz" sectionId="quiz" title={nativeQuizForm.title} subtitle={nativeQuizForm.subtitle} cta={nativeQuizForm.cta} variant={nativeQuizForm.variant} />}
+      {sections.filter((section) => section.kind === 'tiles' && section.items?.length > 0).map((s) => <section class="product-section product-section--white"><div class="container"><h2 class="section-title">{s.title}</h2>{s.subtitle && <p class="section-sub">{s.subtitle}</p>}<ul class="product-tiles">{s.items.map((item) => <li><img src={asset(item.img)} alt={item.t} width="326" height="326" loading="lazy" decoding="async" /><h3>{item.t}</h3></li>)}</ul></div></section>)}
+      {nativeByKind('steps')?.items?.length > 0 && <section class="product-section product-section--gray"><div class="container"><h2 class="section-title">{nativeByKind('steps').title}</h2>{nativeByKind('steps').subtitle && <p class="section-sub">{nativeByKind('steps').subtitle}</p>}<ol class="product-timeline">{nativeByKind('steps').items.map((item, index) => <li><b>{index + 1}</b><div><h3>{item.t}</h3>{item.sub && <p>{item.sub}</p>}</div></li>)}</ol></div></section>}
+      <ProductHalls data={nativeByKind('halls')} base={base} />
+      <ProductMap data={nativeByKind('map')} base={base} />
+      <ProductFaq data={nativeByKind('faq')?.items} />
+      {nativePartyForm && <PartyForm id="pkids" sectionId="prazdnik" title={nativePartyForm.title} subtitle={nativePartyForm.subtitle} cta={nativePartyForm.cta} variant={nativePartyForm.variant} />}
+    </div>}
+    {!nativeHoliday && <>
     <!-- ============ ГЕРОЙ ============ -->
     {/* One source uses a complete local Tilda artboard, including its video rail
         and package PNGs; it intentionally opts out of the shared card hero. */}
@@ -736,6 +785,7 @@ const bodyClass = [
          visible record sequence without duplicating either block. -->
     {!sourceVypusknoj && !sourceMaxi && !sourceMinecraft && !sourceNewYear && !sourceAmongUs && !sourceRoblox && !sourceVrBirthday && !sourceKalmarLanding && !sourceAzkaban && !sourceKids && listedVenues.length > 0 && <VenuesSection id={`venues-${page.slug}`} base={base}
       title="Наши площадки" subtitle={venuesSubtitle} />}
+    </>}
   </main>
 
   {sourceVypusknoj && <div class="vypusknoj-artboard__booking"><PartyForm id="vypusknoj" sectionId="prazdnik"
@@ -750,10 +800,15 @@ const bodyClass = [
     title="Рассчитать стоимость праздника" subtitle="Оставьте контакты — подберём программу праздника в стиле Roblox." cta="Отправить заявку" /></div>}
   {sourceKalmarLanding && <div class="kalmar-landing-artboard__booking"><PartyForm id="kalmar" sectionId="prazdnik"
     title="Рассчитать стоимость праздника" subtitle="Оставьте контакты — подберём программу и свободную дату." cta="Отправить заявку" /></div>}
-  {!sourceVypusknoj && !sourceMaxi && !sourceMinecraft && !sourceNewYear && !sourceAmongUs && !sourceRoblox && !sourceVrBirthday && !sourceKalmarLanding && !sourceAzkaban && !sourceKids && <Footer />}
+  {nativeHoliday && <><Footer /><MobileCtaBar phoneHref={site.header.phoneHref} bookingId="prazdnik" /></>}
+  {!nativeHoliday && !sourceVypusknoj && !sourceMaxi && !sourceMinecraft && !sourceNewYear && !sourceAmongUs && !sourceRoblox && !sourceVrBirthday && !sourceKalmarLanding && !sourceAzkaban && !sourceKids && <Footer />}
 </Layout>
 
 <script>
   import '../scripts/main.js';
   import '../scripts/rows.js';
+  import '../scripts/product-gallery.js';
+  import { initMapEmbed } from '../scripts/map-embed.js';
+
+  initMapEmbed();
 </script>

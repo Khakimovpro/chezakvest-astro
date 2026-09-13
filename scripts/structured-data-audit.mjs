@@ -214,7 +214,10 @@ function pageSpecificSchemas(page, pages, venueBySlug, site) {
 }
 
 function visibleFaqItems(page) {
-  if (page.render === 'native') return (page.product?.faq || []).map(({ q, a }) => ({ q, a }));
+  if (page.render === 'native') {
+    if (page.type === 'holiday') return (page.sections || []).find((section) => section.kind === 'faq')?.items || [];
+    return (page.product?.faq || []).map(({ q, a }) => ({ q, a }));
+  }
   const hero = (page.sections || []).find((section) => section.kind === 'hero') || {};
   if (hero.composition === 'newyear-artboard') return page.sourceParity?.faq || [];
   if (HIDDEN_CUSTOM_ARTBOARDS.has(hero.composition)) return [];

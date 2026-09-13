@@ -1,8 +1,8 @@
 ---
-const { phoneHref } = Astro.props;
+const { phoneHref, bookingId = 'booking' } = Astro.props;
 ---
-<nav class="product-mobile-cta" data-product-mobile-cta aria-label="Быстрые действия"><a href={phoneHref}>Позвонить</a><a href="#booking">Забронировать</a></nav>
+<nav class="product-mobile-cta" data-product-mobile-cta aria-label="Быстрые действия"><a href={phoneHref}>Позвонить</a><a href={`#${bookingId}`}>Забронировать</a></nav>
 <script>
-  const bar = document.querySelector('[data-product-mobile-cta]'); const booking = document.getElementById('booking');
-  if (bar && booking) { const observer = new IntersectionObserver(([entry]) => bar.classList.toggle('product-mobile-cta--booking', entry.isIntersecting), { threshold: .15 }); observer.observe(booking); addEventListener('scroll', () => bar.classList.toggle('product-mobile-cta--visible', scrollY > 350), { passive: true }); }
+  const bar = document.querySelector('[data-product-mobile-cta]'); const booking = document.querySelector('[data-product-mobile-cta] a:last-child')?.getAttribute('href')?.slice(1); const bookingSection = booking && document.getElementById(booking);
+  if (bar && bookingSection) { const observer = new IntersectionObserver(([entry]) => bar.classList.toggle('product-mobile-cta--booking', entry.isIntersecting), { threshold: .15 }); observer.observe(bookingSection); addEventListener('scroll', () => bar.classList.toggle('product-mobile-cta--visible', scrollY > 350), { passive: true }); }
 </script>
