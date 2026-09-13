@@ -9,7 +9,7 @@ mkdir -p "$(dirname "$OUT")"
 DURATION="$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$INPUT")"
 MID="$(awk -v duration="$DURATION" 'BEGIN { printf "%.3f", duration / 2 }')"
 for quality in 78 70 62 54 46 38; do
-  ffmpeg -hide_banner -loglevel error -y -ss "$MID" -i "$INPUT" -frames:v 1 -vf 'thumbnail,scale=1280:-2:force_original_aspect_ratio=decrease' -q:v "$quality" "$OUT"
+  ffmpeg -nostdin -hide_banner -loglevel error -y -ss "$MID" -i "$INPUT" -frames:v 1 -vf 'thumbnail,scale=1280:-2:force_original_aspect_ratio=decrease' -q:v "$quality" "$OUT"
   [[ $(stat -c%s "$OUT") -le 81920 ]] && break
 done
 [[ $(stat -c%s "$OUT") -le 81920 ]] || { echo "poster exceeds 80 KiB" >&2; exit 1; }

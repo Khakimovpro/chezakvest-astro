@@ -16,7 +16,8 @@ NODE
 )"
 
 if [[ "$SOURCE" == /assets/* ]]; then
-  cp "$ROOT/public$SOURCE" "$RAW"
+  SOURCE_PATH="$(node -p 'decodeURIComponent(process.argv[1])' "$SOURCE")"
+  cp "$ROOT/public$SOURCE_PATH" "$RAW"
 else
   # The Moscow SOCKS tunnel uses port 18080 as defined for stream A.
   yt-dlp --proxy socks5://127.0.0.1:18080 -f 'bv*[height<=1080]+ba/b' \

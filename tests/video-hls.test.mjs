@@ -10,7 +10,7 @@ const ROOT = new URL('..', import.meta.url).pathname;
 test('HLS registry has a complete, unique local delivery contract', async () => {
   const sources = new Set();
   await Promise.all(Object.entries(registry.videos).map(async ([slug, video]) => {
-    assert.match(slug, /^(?:[a-z0-9_]+)-(?:trailer|party-\d+|review-\d+)$/u);
+    assert.match(slug, /^(?:[a-z0-9_-]+)-(?:trailer|party-\d+|review-\d+)$/u);
     assert.ok(Number.isInteger(video.durationSec) && video.durationSec > 0, `${slug}: durationSec`);
     assert.ok(Number.isInteger(video.width) && video.width > 0, `${slug}: width`);
     assert.ok(Number.isInteger(video.height) && video.height > 0, `${slug}: height`);

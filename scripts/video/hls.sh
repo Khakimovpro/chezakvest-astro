@@ -16,8 +16,8 @@ if (( HEIGHT > WIDTH )); then HIGH_W=720; HIGH_H=1280; LOW_W=480; LOW_H=854; SHO
 encode() {
   local name="$1" target_w="$2" target_h="$3" crf="$4" audio="$5"
   mkdir -p "$OUT/$name"
-  ffmpeg -hide_banner -loglevel error -y -i "$INPUT" \
-    -vf "scale=${target_w}:${target_h}:force_original_aspect_ratio=decrease:force_divisible_by=2" \
+  ffmpeg -nostdin -hide_banner -loglevel error -y -i "$INPUT" \
+    -vf "scale='min(iw,${target_w})':'min(ih,${target_h})':force_original_aspect_ratio=decrease:force_divisible_by=2" \
     -c:v libx264 -preset fast -crf "$crf" -c:a aac -b:a "$audio" -ar 44100 \
     -hls_time 6 -hls_list_size 0 -hls_segment_filename "$OUT/$name/seg-%04d.ts" \
     -f hls "$OUT/$name/playlist.m3u8"
