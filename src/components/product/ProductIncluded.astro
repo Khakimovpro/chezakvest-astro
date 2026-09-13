@@ -1,0 +1,5 @@
+---
+const { data } = Astro.props;
+---
+
+{data?.items?.length > 0 && <section class="product-section product-section--white" id={data.id || undefined}><div class="container"><h2 class="section-title">{data.title}</h2>{data.subtitle && <p class="section-sub">{data.subtitle}</p>}<ul class="product-included">{data.items.map((item) => <li><strong>{item.t || item}</strong>{item.sub && <span>{item.sub}</span>}</li>)}</ul></div></section>}

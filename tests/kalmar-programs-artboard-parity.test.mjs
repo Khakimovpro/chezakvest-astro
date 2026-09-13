@@ -34,8 +34,8 @@ test('Igra v Kalmara retains the complete captured artboard data behind its sour
 
   assert.equal(hero.composition, 'kalmar-landing-artboard');
   assert.equal(hero.hideSharedHeader, false, 'Layout replaces the complete slot for snapshot routes');
-  assert.equal(manifest.routes['/igra_v_kalmara/'].snapshot, 'igra_v_kalmara.html');
-  assert.match(manifest.routes['/igra_v_kalmara/'].source, /work\/raw\/pages\/igra_v_kalmara/u);
+  assert.equal(manifest.routes['/igra-v-kalmara-lend/'].snapshot, 'igra-v-kalmara-lend.html');
+  assert.match(manifest.routes['/igra-v-kalmara-lend/'].source, /work\/raw\/pages\/igra-v-kalmara-lend/u);
   assert.equal(source.kind, 'kalmar-landing-artboard');
   assertHeights(source.records.hero, 856, 770);
   assertHeights(source.records.features, 850, 1020);

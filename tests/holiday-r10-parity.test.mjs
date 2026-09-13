@@ -68,7 +68,8 @@ test('uses source-specific booking copy and removes unsupported generic sections
   assert.equal(podKluch.showCallback, false);
   assert.equal(azkaban.showCallback, false);
   assert.equal(kids.sections.some((section) => section.title === 'Чё за праздник'), false);
-  assert.equal(kids.sections.some((section) => section.kind === 'faq'), false);
+  assert.equal(kids.render, 'native');
+  assert.equal(kids.sections.some((section) => section.kind === 'faq'), true);
   assert.equal(maxi.sections.some((section) => section.kind === 'party-form'), false);
   assert.equal(maxi.sections.some((section) => section.kind === 'faq'), false);
   assert.equal(maxi.sections[0].buttons[0].href, '#callback', 'the Marquiz hero fallback lands on the remaining local callback form');

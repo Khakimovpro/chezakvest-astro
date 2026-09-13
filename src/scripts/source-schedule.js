@@ -110,6 +110,7 @@ async function loadSchedule(slot) {
   const url = `${SCHEDULE_ORIGIN}/calendar.php?quest=${encodeURIComponent(quest)}`;
   slot.setAttribute('aria-busy', 'true');
   slot.textContent = 'Загружаем расписание…';
+  slot.dispatchEvent(new CustomEvent('source-schedule-status', { detail: { status: 'loading' } }));
   try {
     await ensureJQuery();
     const response = await fetch(url, {
@@ -124,10 +125,12 @@ async function loadSchedule(slot) {
     slot.textContent = '';
     slot.append(...parsed.body.childNodes);
     await runScripts(slot);
+    slot.dispatchEvent(new CustomEvent('source-schedule-status', { detail: { status: 'loaded' } }));
   } catch (error) {
     // Подпись «Расписание не загрузилось…» с кнопкой предварительной брони
     // стоит в снимке следующим блоком, поэтому слот просто освобождаем.
     slot.textContent = '';
+    slot.dispatchEvent(new CustomEvent('source-schedule-status', { detail: { status: 'error' } }));
     console.warn('Расписание не загрузилось:', error);
   } finally {
     slot.removeAttribute('aria-busy');

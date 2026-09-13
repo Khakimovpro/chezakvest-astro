@@ -1,0 +1,7 @@
+---
+import ZoomImg from '../ZoomImg.astro';
+const { data, base = '', group = 'product-gallery' } = Astro.props;
+const asset = (path) => `${base}${path}`;
+const grid = data?.layout === 'grid';
+---
+{data?.items?.length > 0 && <section class="product-section product-section--white"><div class="container"><h2 class="section-title">{data.title}</h2>{grid ? <><div class="product-photo-grid" data-product-photo-grid>{data.items.map((item, index) => <ZoomImg src={asset(item.src || item)} group={group} alt={item.alt || 'Фото квеста'} width="800" height="560" imageClass="product-photo-grid__image" buttonClass={`product-photo-grid__item${index > 5 ? ' product-photo-grid__item--hidden' : ''}`} loading={index > 2 ? 'lazy' : 'eager'} decoding="async" />)}</div>{data.items.length > 6 && <button class="product-more" type="button" data-product-gallery-more>Показать все фото ({data.items.length})</button>}</> : <div class="product-rail" data-product-rail><button class="product-rail__arrow" type="button" data-product-previous aria-label="Предыдущая фотография">‹</button><div class="product-rail__track">{data.items.map((item, index) => <ZoomImg src={asset(item.src || item)} group={group} alt={item.alt || 'Фото квеста'} width="800" height="560" imageClass="product-rail__image" buttonClass="product-rail__item" loading={index ? 'lazy' : 'eager'} decoding="async" />)}</div><button class="product-rail__arrow" type="button" data-product-next aria-label="Следующая фотография">›</button></div>}</div></section>}

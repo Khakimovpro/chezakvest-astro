@@ -1,71 +1,104 @@
 import assert from 'node:assert/strict';
-import { access, readFile } from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import test from 'node:test';
+import { promisify } from 'node:util';
 
 const root = new URL('..', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
-const localAssets = (value, paths = new Set()) => {
-  if (Array.isArray(value)) {
-    value.forEach((item) => localAssets(item, paths));
-    return paths;
-  }
-  if (value && typeof value === 'object') {
-    Object.values(value).forEach((item) => localAssets(item, paths));
-    return paths;
-  }
-  if (typeof value === 'string' && value.startsWith('/assets/')) paths.add(value);
-  return paths;
-};
-
-test('Kids landing opts into its measured source composition', async () => {
+const run = promisify(execFile);
+const rootPath = new URL('../', import.meta.url).pathname;
+test('Kids landing uses the native product contract and keeps every required conversion path', async () => {
   const page = JSON.parse(await read('src/data/pages/kids.json'));
   const hero = page.sections.find((section) => section.kind === 'hero');
-  const source = page.sourceParity;
-  const order = [
-    'header', 'hero', 'breadcrumbs', 'breadcrumbGap', 'breadcrumbTail', 'scenarios', 'dividerAfterScenarios',
-    'statsHeading', 'stats', 'dividerAfterStats', 'packagesHeading', 'packageTabs', 'packages', 'dividerAfterPackages',
-    'showsHeading', 'shows', 'dividerAfterShows', 'quizHeading', 'quiz', 'dividerAfterQuiz', 'hallsHeading', 'halls',
-    'dividerAfterHalls', 'bookingHeading', 'booking', 'dividerAfterBooking', 'additionsHeading', 'additions', 'masterclasses',
-    'dividerAfterMasterclasses', 'reviewsHeading', 'dividerAfterReviews', 'invitationHeading', 'invitation',
-    'dividerAfterInvitation', 'galleryHeading', 'gallery', 'dividerAfterGallery', 'venuesHeading', 'venues', 'footerSpacer',
-    'footer', 'copyright',
-  ];
-
-  assert.equal(hero.composition, 'kids-artboard');
-  assert.equal(hero.hideSharedHeader, true);
-  assert.equal(source.kind, 'kids-artboard');
-  assert.equal(order.reduce((total, key) => total + source.records[key].desktop, 0), 13846);
-  assert.equal(order.reduce((total, key) => total + source.records[key].mobile, 0), 13264);
-  const start = (dimension, until) => order.slice(0, order.indexOf(until))
-    .reduce((total, key) => total + source.records[key][dimension], 0);
-  assert.equal(start('desktop', 'reviewsHeading'), 7847);
-  assert.equal(start('desktop', 'invitation'), 8127);
-  assert.equal(start('desktop', 'venuesHeading'), 12982);
-  assert.equal(start('mobile', 'reviewsHeading'), 8240);
-  assert.equal(start('mobile', 'invitation'), 8750);
-  assert.equal(start('mobile', 'venuesHeading'), 11400);
-  assert.deepEqual(source.venues.map((item) => item.title), [
-    'Гвардейский пер., 61', 'ул. Социалистическая, 186', 'ул. Красноармейская, 103', 'пр-т Соколова, 23',
-    'пр-т Мира, д. 27', 'ул. Нансена, 107/1', 'ул. Магнитогорская, 1', 'ул. 40-летия Победы, 216', 'пр-т Нагибина, 14а',
-  ]);
-  await Promise.all(source.localAssets.map((path) => access(new URL(`public${path}`, root))));
-  await Promise.all([...localAssets(page.sections)].map((path) => access(new URL(`public${path}`, root))));
+  const kinds = page.sections.map((section) => section.kind);
+  assert.equal(page.render, 'native');
+  assert.equal(hero.composition, undefined);
+  assert.deepEqual(hero.pills, ['1,5–3 часа', 'Праздник под ключ', '9 площадок']);
+  for (const kind of ['included', 'stats', 'lead-cta', 'packages', 'timeline', 'video', 'players', 'safety', 'reviews', 'cards', 'map', 'faq']) {
+    assert.ok(kinds.includes(kind), `native kids has ${kind}`);
+  }
+  assert.ok(kinds.indexOf('included') < kinds.indexOf('stats'));
+  assert.ok(kinds.indexOf('stats') < kinds.indexOf('packages'));
+  assert.ok(kinds.indexOf('map') < kinds.indexOf('faq'));
+  const leadCta = page.sections.find((section) => section.kind === 'lead-cta');
+  assert.deepEqual(leadCta, {
+    kind: 'lead-cta',
+    title: 'Подберите праздник за пару минут',
+    subtitle: 'Ответьте на несколько вопросов — менеджер предложит формат и рассчитает стоимость.',
+    cta: 'Старт',
+    href: '#quiz',
+  });
+  assert.ok(page.sections.some((section) => section.kind === 'party-form' && section.id === 'quiz'));
+  assert.ok(page.sections.some((section) => section.kind === 'party-form' && section.id === 'prazdnik'));
+  assert.deepEqual(page.sections.find((section) => section.kind === 'video').videoSlugs, ['kids-party-1', 'kids-party-2']);
+  assert.equal(page.sections.find((section) => section.kind === 'players').photos.length, 11);
+  assert.equal(page.sections.find((section) => section.kind === 'safety').items.length, 4);
+  assert.equal(page.sections.find((section) => section.kind === 'map').map.embedUrl.startsWith('https://'), true);
+  assert.equal(page.sections.find((section) => section.kind === 'map').map.img.startsWith('/assets/'), true);
+  assert.equal(page.sections.find((section) => section.kind === 'faq').items.length, 12);
+  assert.match(page.sections.find((section) => section.kind === 'faq').items.at(-2).q, /что надеть ребёнку/u);
 });
 
-test('Kids branch is isolated and contains source review, invitation and venue records', async () => {
-  const [layout, component] = await Promise.all([
+test('Native holiday renderer keeps the visual order, Start quiz fallback, and empty-block guards', async () => {
+  const [layout, hero, faq, safety, gallery, reviews, map, mobileCta] = await Promise.all([
     read('src/layouts/HolidayPage.astro'),
-    read('src/components/KidsArtboard.astro'),
+    read('src/components/product/ProductHolidayHero.astro'),
+    read('src/components/product/ProductFaq.astro'),
+    read('src/components/product/ProductSafety.astro'),
+    read('src/components/product/ProductGallery.astro'),
+    read('src/components/product/ProductReviews.astro'),
+    read('src/components/product/ProductMap.astro'),
+    read('src/components/product/MobileCtaBar.astro'),
   ]);
+  const visualOrder = [
+    '<ProductHolidayHero', '<ProductPlayers', '<ProductVideo', '<ProductIncluded',
+    '<ProductStats', '<ProductPackages', '<ProductTimeline', '<ProductSafety',
+    '<ProductReviews', '<CardsRow', "nativeByKind('lead-cta')", '<PartyForm id="kquiz"',
+    'nativeTiles.map', 'nativeSteps?.items?.length', '<ProductHalls', '<ProductMap',
+    '<ProductFaq', 'sectionId="prazdnik"',
+  ];
+  const nativeBlock = layout.slice(layout.indexOf('{nativeHoliday'), layout.indexOf('{!nativeHoliday'));
+  for (let index = 1; index < visualOrder.length; index += 1) {
+    assert.ok(nativeBlock.indexOf(visualOrder[index - 1]) < nativeBlock.indexOf(visualOrder[index]), `${visualOrder[index - 1]} is before ${visualOrder[index]}`);
+  }
+  assert.match(layout, /data-quiz=\{quizId\}/u);
+  assert.match(layout, /sectionId="quiz"/u);
+  assert.match(layout, /<MobileCtaBar phoneHref=\{site\.header\.phoneHref\} bookingId="prazdnik"/u);
+  assert.match(hero, /<h1/u);
+  assert.match(hero, /href="#prazdnik"/u);
+  assert.match(hero, /href=\{phoneHref\}/u);
+  assert.match(hero, /href=\{wa\}/u);
+  assert.match(faq, /data\?\.length > 0/u);
+  assert.match(faq, /<details>/u);
+  assert.match(safety, /data\?\.items\?\.length > 0/u);
+  assert.match(gallery, /data\?\.items\?\.length > 0/u);
+  assert.match(reviews, /data\?\.items\?\.length > 0/u);
+  assert.match(map, /data\?\.map\?\.embedUrl && data\.map\?\.img/u);
+  assert.match(mobileCta, /bookingId = 'booking'/u);
+});
 
-  assert.match(layout, /sourceKids\s*=\s*hero\.composition\s*===\s*'kids-artboard'/u);
-  assert.match(layout, /<KidsArtboard source=\{page\.sourceParity\} page=\{page\} asset=\{asset\} href=\{heroLink\}/u);
-  assert.match(component, /data-source-artboard="kids"/u);
-  assert.match(component, /data-parity-record="rec844797129"/u);
-  assert.match(component, /data-parity-record="rec844797134"/u);
-  assert.match(component, /data-parity-record="rec1100733931"/u);
-  assert.match(component, /data-lead-form/u);
-  assert.match(component, /data-lead-kind="party"/u);
-  assert.match(component, /id="prazdnik"/u);
-  assert.doesNotMatch(component, /https?:\/\/(?:static|optim|thb)\.tildacdn\.com/u);
+test('Kids renders its native body and conversion paths in an isolated static build', { timeout: 120_000 }, async (t) => {
+  const outputDir = await mkdtemp(join(tmpdir(), 'cheza-kids-render-'));
+  t.after(() => rm(outputDir, { recursive: true, force: true }));
+  await run('flock', ['/tmp/chezakvest-astro-test-build.lock', 'node_modules/.bin/astro', 'build', '--outDir', outputDir], { cwd: rootPath });
+  const [page, html] = await Promise.all([
+    JSON.parse(await read('src/data/pages/kids.json')),
+    readFile(join(outputDir, 'kids', 'index.html'), 'utf8'),
+  ]);
+  const faq = page.sections.find((section) => section.kind === 'faq').items;
+  assert.doesNotMatch(html, /class="source-snapshot-shell/u);
+  assert.match(html, /data-lead-kind="party"/u);
+  assert.match(html, /id="quiz"/u);
+  assert.match(html, /id="prazdnik"/u);
+  assert.match(html, /data-quiz=/u);
+  assert.match(html, /href="tel:/u);
+  assert.match(html, /wa\.me/u);
+  assert.match(html, /data-product-mobile-cta[\s\S]*href="#prazdnik"/u);
+  assert.match(html, /product-map__embed/u);
+  assert.equal((html.match(/<h1(?:\s|>)/gu) || []).length, 1);
+  assert.equal((html.match(/<details>/gu) || []).length, faq.length);
+  for (const item of faq) assert.match(html, new RegExp(item.q, 'u'));
 });

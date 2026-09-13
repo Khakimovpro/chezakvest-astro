@@ -2,6 +2,7 @@
 // Единый роут внутренних страниц: слаг = имя файла в src/data/pages/.
 // Тип страницы берётся из поля "type": quest, venue, category, info, holiday.
 import QuestPage from '../layouts/QuestPage.astro';
+import ProductQuestPage from '../layouts/ProductQuestPage.astro';
 import VenuePage from '../layouts/VenuePage.astro';
 import CategoryPage from '../layouts/CategoryPage.astro';
 import InfoPage from '../layouts/InfoPage.astro';
@@ -49,7 +50,9 @@ export async function getStaticPaths() {
 
 const { page, index, venues } = Astro.props;
 ---
-{page.type === 'quest' && <QuestPage page={page} index={index} venues={venues} />}
+{page.type === 'quest' && (page.render === 'native'
+  ? <ProductQuestPage page={page} index={index} venues={venues} />
+  : <QuestPage page={page} index={index} venues={venues} />)}
 {page.type === 'venue' && <VenuePage page={page} index={index} venues={venues} />}
 {page.type === 'category' && <CategoryPage page={page} index={index} venues={venues} />}
 {page.type === 'info' && <InfoPage page={page} venues={venues} />}

@@ -1,0 +1,61 @@
+{
+  "base": "https://storage.yandexcloud.net/che-za-kvest-videos/hls",
+  "videos": {
+    "igra_v_kalmara-trailer": {
+      "title": "Квест «Игра в Кальмара» — трейлер",
+      "kind": "trailer",
+      "source": { "file": "/assets/video/kalmar.mp4", "rutubeId": "b7c18d4bd380160f7b68c2488ab69792" },
+      "quest": "igra_v_kalmara",
+      "durationSec": 45,
+      "width": 720,
+      "height": 1280,
+      "poster": "/assets/video-posters/igra_v_kalmara-trailer.webp",
+      "uploadDate": "2026-05-04T15:00:47+03:00",
+      "uploadDateSource": "src/data/pages/igra_v_kalmara.json:video.uploadDate"
+    },
+    "kids-party-1": {
+      "title": "Праздник для детей в «Чё за Квест»",
+      "kind": "party",
+      "source": { "file": "/assets/video/kubok.mp4" },
+      "page": "kids",
+      "durationSec": 124,
+      "width": 720,
+      "height": 1280,
+      "poster": "/assets/video-posters/kids-party-1.webp"
+    },
+    "kids-party-2": {
+      "title": "Праздник «Радужные друзья» в «Чё за Квест»",
+      "kind": "party",
+      "source": { "file": "/assets/chezakvest.ru/for-Tilda/video-hosting/%D0%A0%D0%B0%D0%B4%D1%83%D0%B6%D0%BD%D1%8B%D0%B5%20%D0%B4%D1%80%D1%83%D0%B7%D1%8C%D1%8F.mp4" },
+      "page": "kids",
+      "durationSec": 71,
+      "width": 1080,
+      "height": 1920,
+      "poster": "/assets/video-posters/kids-party-2.webp"
+    },
+    "roblox-trailer": { "title": "Квест «Роблокс. Радужные друзья» — трейлер", "kind": "trailer", "source": { "rutubeId": "7042ad3637e24dc8c2a91c0808864edf" }, "quest": "roblox", "durationSec": 71, "width": 720, "height": 1280, "poster": "/assets/video-posters/roblox-trailer.webp" },
+    "wednesday-poteryannaya-dusha-trailer": { "title": "Квест «Уэнсдей. Потерянная душа» — трейлер", "kind": "trailer", "source": { "rutubeId": "91f4248e78725551844eb0cef2b14ccc" }, "quest": "wednesday-poteryannaya-dusha", "durationSec": 24, "width": 720, "height": 1280, "poster": "/assets/video-posters/wednesday-poteryannaya-dusha-trailer.webp" },
+    "kvest_v_realnosti_psihbolnitsa-trailer": { "title": "Квест «Психбольница» — трейлер", "kind": "trailer", "source": { "rutubeId": "6e02cad09c6b4225b0fcef4384940eb2" }, "quest": "kvest_v_realnosti_psihbolnitsa", "durationSec": 48, "width": 720, "height": 1280, "poster": "/assets/video-posters/kvest_v_realnosti_psihbolnitsa-trailer.webp" },
+    "kvest_v_realnosti_sherlock_holms-trailer": { "title": "Квест «Шерлок Холмс» — трейлер", "kind": "trailer", "source": { "rutubeId": "51648da7c09a890c61989755e618c30b" }, "quest": "kvest_v_realnosti_sherlock_holms", "durationSec": 48, "width": 720, "height": 1280, "poster": "/assets/video-posters/kvest_v_realnosti_sherlock_holms-trailer.webp" },
+    "mystery_shack-trailer": { "title": "Квест «Хижина Чудес» — трейлер", "kind": "trailer", "source": { "rutubeId": "83bd55a5f71bae1314b9ae316beaa027" }, "quest": "mystery_shack", "durationSec": 47, "width": 720, "height": 1280, "poster": "/assets/video-posters/mystery_shack-trailer.webp" },
+    "ugon-trailer": { "title": "Квест «Фантастический угон» — трейлер", "kind": "trailer", "source": { "rutubeId": "ee773c4e12930cd46eb2f8dc924d9dd0" }, "quest": "ugon", "durationSec": 45, "width": 720, "height": 1280, "poster": "/assets/video-posters/ugon-trailer.webp" },
+    "kvest_v_realnosti_wednesday-trailer": { "title": "Квест «Уэнсдей. Новая битва» — трейлер", "kind": "trailer", "source": { "rutubeId": "0d360c29cf4439c8ce64a339c9f4bf8c" }, "quest": "kvest_v_realnosti_wednesday", "durationSec": 33, "width": 720, "height": 1280, "poster": "/assets/video-posters/kvest_v_realnosti_wednesday-trailer.webp" },
+    "puteshestvie-trailer": { "title": "Квест «Путешествие во времени» — трейлер", "kind": "trailer", "source": { "rutubeId": "126c23e4585e57709a35556e6706dc50" }, "quest": "puteshestvie", "durationSec": 41, "width": 720, "height": 1280, "poster": "/assets/video-posters/puteshestvie-trailer.webp" },
+    "pobeg-trailer": { "title": "Квест «Побег из Шоушенка» — трейлер", "kind": "trailer", "source": { "rutubeId": "2175d506fec92d04f6ff4c2fff80b049" }, "quest": "pobeg", "durationSec": 45, "width": 720, "height": 1280, "poster": "/assets/video-posters/pobeg-trailer.webp" },
+    "pirati-trailer": { "title": "Квест «Пираты» — трейлер", "kind": "trailer", "source": { "rutubeId": "bc87899d4a6b6f518fd18e74394e98ea" }, "quest": "pirati", "durationSec": 50, "width": 720, "height": 1280, "poster": "/assets/video-posters/pirati-trailer.webp" },
+    "kvest_v_realnosti_koralina-trailer": { "title": "Квест «Коралина в Стране Кошмаров» — трейлер", "kind": "trailer", "source": { "rutubeId": "3f713e9eccc2bae67c9562ecc8e47a68" }, "quest": "kvest_v_realnosti_koralina", "durationSec": 40, "width": 720, "height": 1280, "poster": "/assets/video-posters/kvest_v_realnosti_koralina-trailer.webp" },
+    "indiana-trailer": { "title": "Квест «Индиана Джонс» — трейлер", "kind": "trailer", "source": { "rutubeId": "0310b455297050ee346ce14232ceb796" }, "quest": "indiana", "durationSec": 37, "width": 720, "height": 1280, "poster": "/assets/video-posters/indiana-trailer.webp" },
+    "roblox-dors-trailer": { "title": "Квест «Роблокс Дорс» — трейлер", "kind": "trailer", "source": { "rutubeId": "b19aba767248d8710fb6b36c97d2c7e8" }, "quest": "roblox-dors", "durationSec": 39, "width": 720, "height": 1280, "poster": "/assets/video-posters/roblox-dors-trailer.webp" },
+    "kvest_v_realnosti_ograblenie_banka_bumazhniy_dom-trailer": { "title": "Квест «Ограбление банка. Бумажный дом» — трейлер", "kind": "trailer", "source": { "rutubeId": "07550a35d8f54371525c9c69cff4488b" }, "quest": "kvest_v_realnosti_ograblenie_banka_bumazhniy_dom", "durationSec": 62, "width": 720, "height": 1280, "poster": "/assets/video-posters/kvest_v_realnosti_ograblenie_banka_bumazhniy_dom-trailer.webp" },
+    "kvest_v_realnosti_noch_v_museum_ograblenie-trailer": { "title": "Квест «Ночь в музее. Ограбление» — трейлер", "kind": "trailer", "source": { "rutubeId": "35a005404447e5b28e2e2ff6e4c4c586" }, "quest": "kvest_v_realnosti_noch_v_museum_ograblenie", "durationSec": 31, "width": 720, "height": 1280, "poster": "/assets/video-posters/kvest_v_realnosti_noch_v_museum_ograblenie-trailer.webp" },
+    "minecraft-trailer": { "title": "Квест «Майнкрафт» — трейлер", "kind": "trailer", "source": { "rutubeId": "b8ce50080dc9e0f9964d121f639d1893" }, "quest": "minecraft", "durationSec": 44, "width": 720, "height": 1280, "poster": "/assets/video-posters/minecraft-trailer.webp" },
+    "garri-potter-i-kubok-ognya-trailer": { "title": "Квест «Гарри Поттер и Кубок огня» — трейлер", "kind": "trailer", "source": { "rutubeId": "ab38651d9a8eff907fd9abd54cf01901" }, "quest": "garri-potter-i-kubok-ognya", "durationSec": 44, "width": 720, "height": 1280, "poster": "/assets/video-posters/garri-potter-i-kubok-ognya-trailer.webp" },
+    "kvest_v_realnosti_dom_prizrakov-trailer": { "title": "Квест «Дом призраков» — трейлер", "kind": "trailer", "source": { "rutubeId": "c13ea62f8a27d68dce15b8fde520e031" }, "quest": "kvest_v_realnosti_dom_prizrakov", "durationSec": 37, "width": 720, "height": 1280, "poster": "/assets/video-posters/kvest_v_realnosti_dom_prizrakov-trailer.webp" },
+    "kvest_v_realnosti_harry_potter_i_krestrazh-trailer": { "title": "Квест «Гарри Поттер и Последний Крестраж» — трейлер", "kind": "trailer", "source": { "rutubeId": "bf7db825a085f845c68b0e3b76100162" }, "quest": "kvest_v_realnosti_harry_potter_i_krestrazh", "durationSec": 29, "width": 720, "height": 1280, "poster": "/assets/video-posters/kvest_v_realnosti_harry_potter_i_krestrazh-trailer.webp" },
+    "beguschij_v_labirinte-trailer": { "title": "Квест «Бегущий в лабиринте» — трейлер", "kind": "trailer", "source": { "rutubeId": "738e90dd023a39ac8a71ca768915b031" }, "quest": "beguschij_v_labirinte", "durationSec": 34, "width": 720, "height": 1280, "poster": "/assets/video-posters/beguschij_v_labirinte-trailer.webp" },
+    "among_us-trailer": { "title": "Квест «Амонг Ас» — трейлер", "kind": "trailer", "source": { "rutubeId": "ad111d70f0f6401e104de9da9fa20e3e" }, "quest": "among_us", "durationSec": 20, "width": 720, "height": 1280, "poster": "/assets/video-posters/among_us-trailer.webp" },
+    "hostel-podval-pytok-trailer": { "title": "Квест «Хостел. Подвал пыток» — трейлер", "kind": "trailer", "source": { "rutubeId": "55e73c9a3d8c80bc79ff1010192c285a" }, "quest": "hostel-podval-pytok", "durationSec": 34, "width": 720, "height": 1280, "poster": "/assets/video-posters/hostel-podval-pytok-trailer.webp" },
+    "patologiya-trailer": { "title": "Квест «Патология» — трейлер", "kind": "trailer", "source": { "rutubeId": "a152dc5b84eeb24cf7854aa718e22ec8" }, "quest": "patologiya", "durationSec": 20, "width": 608, "height": 1080, "poster": "/assets/video-posters/patologiya-trailer.webp" },
+    "shizofreniya-trailer": { "title": "Квест «Шизофрения. Тени правды» — трейлер", "kind": "trailer", "source": { "rutubeId": "40dc40066696419ec5794829cfc5a122" }, "quest": "shizofreniya", "durationSec": 22, "width": 720, "height": 1280, "poster": "/assets/video-posters/shizofreniya-trailer.webp" }
+  }
+}

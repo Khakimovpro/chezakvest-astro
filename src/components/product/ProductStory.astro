@@ -1,0 +1,4 @@
+---
+const { data } = Astro.props;
+---
+{data && <section class="product-section product-section--gray" id="story"><div class="container product-story"><div>{data.story?.title && <h2 class="section-title">{data.story.title}</h2>}{data.story?.paragraphs?.map((item) => <p>{item}</p>)}</div>{data.features && <div class="product-story__features"><h2>{data.features.title || 'Особенности'}</h2>{data.features.lead?.map((item) => <p>{item}</p>)}<ul>{data.features.items?.map((item) => <li><strong>{item.t}</strong>{item.sub && <span>{item.sub}</span>}</li>)}</ul></div>}</div></section>}

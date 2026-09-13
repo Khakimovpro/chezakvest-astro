@@ -258,6 +258,10 @@ const hiddenCustomArtboards = new Set([
 
 export const visibleHolidayFaqJsonLd = (page = {}, faqSection) => {
   const path = `/${page.slug}`;
+  if (page.render === 'native') {
+    const nativeFaq = (page.sections || []).find((section) => section.kind === 'faq');
+    return faqPageJsonLd(nativeFaq?.items || [], path);
+  }
   const hero = (page.sections || []).find((section) => section.kind === 'hero') || {};
   if (hero.composition === 'newyear-artboard') {
     return faqPageJsonLd(page.sourceParity?.faq || [], path);
@@ -324,6 +328,26 @@ export const videoObjectJsonLd = ({ video, path = '/', pageName = '' } = {}) => 
     url: absoluteUrl(`${path}#video`),
     duration: video.duration || undefined,
   };
+};
+
+// HLS entries are kept apart from page JSON so the same delivery metadata is
+// reused wherever a video is mounted. Omit unverified publication dates.
+export const hlsVideoObjectJsonLd = ({ entry, slug, base = '', path = '/', pageName = '' } = {}) => {
+  if (!entry?.uploadDate || !base) return null;
+  const videoSlug = slug || entry.slug;
+  if (!videoSlug) return null;
+  return videoObjectJsonLd({
+    video: {
+      name: entry.title,
+      description: entry.description || pageName,
+      src: `${base}/${videoSlug}/master.m3u8`,
+      poster: entry.poster,
+      uploadDate: entry.uploadDate,
+      duration: `PT${entry.durationSec}S`,
+    },
+    path,
+    pageName,
+  });
 };
 
 export const visibleHolidayVideoJsonLd = (page = {}) => {

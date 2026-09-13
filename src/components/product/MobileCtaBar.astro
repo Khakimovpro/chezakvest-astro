@@ -1,0 +1,22 @@
+---
+const { phoneHref, bookingId = 'booking', bookingLabel = 'Забронировать' } = Astro.props;
+---
+<nav class="product-mobile-cta" data-product-mobile-cta aria-label="Быстрые действия"><a href={phoneHref}>Позвонить</a><a href={`#${bookingId}`}>{bookingLabel}</a></nav>
+<script>
+  const bar = document.querySelector('[data-product-mobile-cta]');
+  const booking = document.querySelector('[data-product-mobile-cta] a:last-child')?.getAttribute('href')?.slice(1);
+  const bookingSection = booking && document.getElementById(booking);
+  const fab = document.querySelector('.mfab');
+  let bookingVisible = false;
+  const sync = () => {
+    const visible = scrollY > 350 && !bookingVisible;
+    bar?.classList.toggle('product-mobile-cta--visible', visible);
+    fab?.classList.toggle('mfab--above-product-cta', visible);
+  };
+  if (bar && bookingSection) {
+    const observer = new IntersectionObserver(([entry]) => { bookingVisible = entry.isIntersecting; sync(); }, { threshold: .15 });
+    observer.observe(bookingSection);
+    addEventListener('scroll', sync, { passive: true });
+    sync();
+  }
+</script>

@@ -1,0 +1,74 @@
+---
+import Layout from './Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ProductHero from '../components/product/ProductHero.astro';
+import ProductShort from '../components/product/ProductShort.astro';
+import ProductGallery from '../components/product/ProductGallery.astro';
+import ProductVideo from '../components/product/ProductVideo.astro';
+import ProductStory from '../components/product/ProductStory.astro';
+import ProductFit from '../components/product/ProductFit.astro';
+import ProductBooking from '../components/product/ProductBooking.astro';
+import ProductReviews from '../components/product/ProductReviews.astro';
+import ProductPlayers from '../components/product/ProductPlayers.astro';
+import ProductSafety from '../components/product/ProductSafety.astro';
+import ProductParty from '../components/product/ProductParty.astro';
+import ProductFaq from '../components/product/ProductFaq.astro';
+import ProductMap from '../components/product/ProductMap.astro';
+import ProductRelated from '../components/product/ProductRelated.astro';
+import ProductFinalCta from '../components/product/ProductFinalCta.astro';
+import MobileCtaBar from '../components/product/MobileCtaBar.astro';
+import site from '../data/site.json';
+import reviews from '../data/reviews.json';
+import videoRegistry from '../data/video-hls.json';
+import { breadcrumbJsonLd, faqPageJsonLd, questServiceJsonLd, withCollectionBreadcrumbs } from '../lib/seo.js';
+import { productFaqItems, productPageModel } from '../lib/product-page.js';
+import '../styles/page.css';
+import '../styles/product.css';
+
+const { page, index = [], venues = [] } = Astro.props;
+const venuePageModules = import.meta.glob('../data/pages/*.json', { eager: true });
+const venuePage = Object.values(venuePageModules)
+  .map((module) => module.default ?? module)
+  .find((candidate) => candidate.slug === page.venueSlug) || {};
+const base = import.meta.env.BASE_URL.replace(/\/$/u, '');
+const path = `/${page.slug}`;
+const venue = venues.find((item) => item.slug === page.venueSlug);
+const model = productPageModel({ page, site, venues, venuePage, reviews, videoRegistry });
+const faq = productFaqItems(page);
+const jsonld = [
+  questServiceJsonLd({ page, venue, venueVisible: Boolean(model.map), site }),
+  breadcrumbJsonLd(withCollectionBreadcrumbs(page.breadcrumbs || []), path),
+  faqPageJsonLd(faq, path),
+].filter(Boolean);
+const heroSource = page.hero?.bgset?.['1600'] || page.hero?.bg;
+const heroSrcset = Object.entries(page.hero?.bgset || {}).map(([width, image]) => `${base}${image} ${width}w`).join(', ');
+---
+<Layout title={page.seo.title} description={page.seo.description} schemaName={page.seo.h1} keywords={page.seo.keywords} path={path} ogImage={page.hero?.bg} ogType="article" jsonld={jsonld} page={page} bodyClass="product-page" preloadImage={heroSource ? { href: `${base}${heroSource}`, srcset: heroSrcset || `${base}${heroSource} 1600w`, sizes: '100vw' } : null}>
+  <Header />
+  <main class="product-page__main">
+    <ProductHero data={model.hero} phoneHref={site.header.phoneHref} wa={site.header.wa} base={base} />
+    <ProductShort data={model.short} />
+    <ProductGallery data={model.gallery} base={base} />
+    <ProductVideo data={model.video} />
+    <ProductStory data={model.story} />
+    <ProductFit data={model.fit} />
+    <ProductBooking data={model.booking} phoneHref={site.header.phoneHref} phone={site.header.phone} wa={site.header.wa} />
+    <ProductReviews data={model.reviews} />
+    <ProductPlayers data={model.players} base={base} />
+    <ProductSafety data={model.safety} />
+    <ProductParty data={model.party} base={base} />
+    <ProductFaq data={model.faq} />
+    <ProductMap data={model.map} base={base} />
+    <ProductRelated data={model.related} />
+    <ProductFinalCta data={model.finalCta} phoneHref={site.header.phoneHref} phone={site.header.phone} wa={site.header.wa} />
+  </main>
+  <Footer />
+  <MobileCtaBar phoneHref={site.header.phoneHref} />
+  <script>
+    import '../scripts/product-gallery.js';
+    import { initMapEmbed } from '../scripts/map-embed.js';
+
+    initMapEmbed();
+  </script>
+</Layout>

@@ -2361,6 +2361,19 @@ def main() -> None:
     all_routes = sorted(set(inventory["clone_route_paths"]))
     requested = [canonical_route(route.strip()) for route in args.routes.split(",") if route.strip()]
     routes = requested or all_routes
+    # A page can opt out of archived Tilda markup.  Keep the generator and the
+    # runtime on the same source of truth: on the next full rebuild it must not
+    # put a native route back into the snapshot manifest.
+    native_routes: set[str] = set()
+    pages_dir = ROOT / "src" / "data" / "pages"
+    for page_path in pages_dir.glob("*.json"):
+        try:
+            page = json.loads(page_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as error:
+            raise RuntimeError(f"Invalid page data: {page_path}") from error
+        if page.get("render") == "native":
+            native_routes.add(canonical_route(str(page.get("slug") or page_path.stem)))
+    routes = [route for route in routes if route not in native_routes]
     sources = pick_sources(routes)
     contract_sources = pick_sources(routes, use_overrides=False)
     missing = [route for route in routes if route not in sources and route != "/kvesty-v-rostove-na-donu/"]
