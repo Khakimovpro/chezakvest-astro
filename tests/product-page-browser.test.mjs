@@ -45,7 +45,13 @@ async function buildAndServe(t) {
   return `http://127.0.0.1:${address.port}`;
 }
 
-const mockSchedule = '<div class="resq"><button class="label_quest" type="button">12:00</button></div>';
+const mockSchedule = `<div class="quest_calendar">${Array.from({ length: 32 }, (_, index) => `
+  <div class="quest_line${index >= 7 ? ' show_more hidden' : ''}">
+    <div class="col-xs-2_quest">${index + 1} сентября</div>
+    <div class="col-xs-10_quest"><button class="label_quest" type="button">12:00</button></div>
+  </div>`).join('')}
+  <div class="show_more"><button class="show_more_btn" type="button" onclick="$('.show_more').toggleClass('hidden');">Показать ещё</button></div>
+</div>`;
 
 test('product booking keeps a visible path for schedule success, failure, and an eight-second timeout', { timeout: 120_000 }, async (t) => {
   const base = await buildAndServe(t);
@@ -59,7 +65,12 @@ test('product booking keeps a visible path for schedule success, failure, and an
   }));
   await success.goto(`${base}/igra_v_kalmara/`, { waitUntil: 'domcontentloaded' });
   await success.locator('[data-source-schedule]').scrollIntoViewIfNeeded();
-  await assert.doesNotReject(success.locator('[data-source-schedule] .label_quest').waitFor());
+  await assert.doesNotReject(success.locator('[data-source-schedule] .label_quest').first().waitFor());
+  const visibleDays = () => success.locator('[data-source-schedule] .quest_line').evaluateAll((items) => items
+    .filter((item) => getComputedStyle(item).display !== 'none').length);
+  assert.equal(await visibleDays(), 7);
+  await success.locator('[data-source-schedule] .show_more_btn').click();
+  assert.ok(await visibleDays() > 7);
   await assert.equal(await success.locator('[data-product-booking-fallback]').isHidden(), true);
   await success.close();
 
