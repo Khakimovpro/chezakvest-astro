@@ -1,4 +1,4 @@
-<!-- MAP-SIG: e4ebee0a069abfd796fc71dc781a9049432b9374 | blessed: 2026-09-13 -->
+<!-- MAP-SIG: 5488289c160d0c66bfcdc3662513d6c701bc5cf1 | blessed: 2026-09-13 -->
 
 # Навигационная карта «Чё за Квест»
 
@@ -11,8 +11,8 @@
 | Что нужно найти | Точка входа |
 | --- | --- |
 | Как JSON становится маршрутом | `getStaticPaths` в [`src/pages/[...slug].astro:11`](../../../src/pages/%5B...slug%5D.astro#L11): glob JSON, вычисление площадок и карточек, исключение legacy-дубля, выбор макета по `type` |
-| Где снимок заменяет нативный макет | [`src/layouts/Layout.astro:42`](../../../src/layouts/Layout.astro#L42) получает snapshot, а [`Layout.astro:118`](../../../src/layouts/Layout.astro#L118) выбирает `SourceSnapshotBody` вместо `<slot />` |
-| Как маршрут находится в манифесте | `sourceSnapshotFor` в [`src/lib/source-snapshots.js:14`](../../../src/lib/source-snapshots.js#L14) |
+| Где снимок заменяет нативный макет | [`src/layouts/Layout.astro:43`](../../../src/layouts/Layout.astro#L43) получает snapshot, а [`Layout.astro:119`](../../../src/layouts/Layout.astro#L119) выбирает `SourceSnapshotBody` вместо `<slot />` |
+| Как маршрут выключает снимок или находится в манифесте | `sourceSnapshotFor` в [`src/lib/source-snapshots.js:14`](../../../src/lib/source-snapshots.js#L14): `page.render === 'native'` возвращает `null`, иначе ищет маршрут в манифесте |
 | Где живёт runtime снимка | [`src/components/SourceSnapshotBody.astro:18`](../../../src/components/SourceSnapshotBody.astro#L18): подготовка HTML; [`:68`](../../../src/components/SourceSnapshotBody.astro#L68): подключение поведения; [`:139`](../../../src/components/SourceSnapshotBody.astro#L139): восстановление Tilda-геометрии; стили начинаются у [`:967`](../../../src/components/SourceSnapshotBody.astro#L967) |
 | Как строится автокаталог квестов | выбор `type: quest` в [`src/pages/kvesty-v-rostove-na-donu.astro:52`](../../../src/pages/kvesty-v-rostove-na-donu.astro#L52) |
 | Как строится sitemap | обработчик в [`src/pages/sitemap.xml.js:10`](../../../src/pages/sitemap.xml.js#L10); статьи блога добавляются отдельным блоком, потому что живут в контент-коллекции, а не в `data/pages` |
@@ -26,10 +26,11 @@
 | --- | --- |
 | Общий документ | [`src/layouts/Layout.astro:16`](../../../src/layouts/Layout.astro#L16) — props `<head>`; [`:40`](../../../src/layouts/Layout.astro#L40) — canonical; [`:47`](../../../src/layouts/Layout.astro#L47) — глобальная схема и `VideoObject` выбранного тела |
 | Квест | [`src/layouts/QuestPage.astro:27`](../../../src/layouts/QuestPage.astro#L27) — данные; [`:119`](../../../src/layouts/QuestPage.astro#L119) — `Service` и breadcrumbs |
+| Продуктовый квест | [`src/layouts/ProductQuestPage.astro:37`](../../../src/layouts/ProductQuestPage.astro#L37) — модель из JSON; [`:47`](../../../src/layouts/ProductQuestPage.astro#L47) — нативный макет и порядок блоков; блоки находятся в [`src/components/product/`](../../../src/components/product/) |
 | Площадка | [`src/layouts/VenuePage.astro:23`](../../../src/layouts/VenuePage.astro#L23) — данные и адрес; [`:41`](../../../src/layouts/VenuePage.astro#L41) — `EntertainmentBusiness` |
 | Категория | [`src/layouts/CategoryPage.astro:23`](../../../src/layouts/CategoryPage.astro#L23) — данные; [`:59`](../../../src/layouts/CategoryPage.astro#L59) — `CollectionPage` |
 | Инфостраница | [`src/layouts/InfoPage.astro:14`](../../../src/layouts/InfoPage.astro#L14) — данные; [`:32`](../../../src/layouts/InfoPage.astro#L32) — breadcrumbs |
-| Праздник/акция | [`src/layouts/HolidayPage.astro:59`](../../../src/layouts/HolidayPage.astro#L59) — флаг нативного рендера; [`:206`](../../../src/layouts/HolidayPage.astro#L206) — продуктовый диспетчер нативных `sections`; legacy-композиции остаются ниже у [`:228`](../../../src/layouts/HolidayPage.astro#L228) |
+| Праздник/акция | [`src/layouts/HolidayPage.astro:59`](../../../src/layouts/HolidayPage.astro#L59) — флаг нативного рендера; [`:213`](../../../src/layouts/HolidayPage.astro#L213) — продуктовый диспетчер нативных `sections`; legacy-композиции остаются ниже у [`:233`](../../../src/layouts/HolidayPage.astro#L233) |
 | Единые правила разметки | фабрики в [`src/lib/seo.js`](../../../src/lib/seo.js), человекочитаемый контракт — [`docs/SEO-RAZMETKA.md`](../../../docs/SEO-RAZMETKA.md) |
 
 ## Данные
@@ -41,6 +42,7 @@
 | Адреса и координаты | [`src/data/venues.json`](../../../src/data/venues.json); `venueSlug` квеста должен ссылаться сюда и на JSON площадки |
 | Отзывы | [`src/data/reviews.json`](../../../src/data/reviews.json); загрузчик и защиту от пустого ответа смотри в [`scripts/update-reviews.mjs:43`](../../../scripts/update-reviews.mjs#L43) |
 | Квизы | [`src/data/quizzes.json`](../../../src/data/quizzes.json), клиентское подключение — [`src/scripts/source-extras.js`](../../../src/scripts/source-extras.js) |
+| HLS-видео | [`src/data/video-hls.json`](../../../src/data/video-hls.json) — единственный реестр роликов; [`src/components/HlsVideo.astro`](../../../src/components/HlsVideo.astro) — плеер; схема и запуск конвейера — [`docs/VIDEO-HLS.md`](../../../docs/VIDEO-HLS.md) |
 
 | Статьи блога | `src/content/blog/*.md`; схема и лимиты метатегов — [`src/content.config.mjs`](../../../src/content.config.mjs); редакционные правила — [`docs/blog-redakcionnyy-brif.md`](../../../docs/blog-redakcionnyy-brif.md) |
 
@@ -54,6 +56,7 @@
 | SEO данных | [`scripts/seo-data-audit.mjs`](../../../scripts/seo-data-audit.mjs) |
 | Schema.org | [`scripts/structured-data-audit.mjs`](../../../scripts/structured-data-audit.mjs) |
 | Production HTML | [`scripts/production-contract.mjs`](../../../scripts/production-contract.mjs) |
+| HLS-конвейер | [`scripts/video/run.sh`](../../../scripts/video/run.sh) скачивает/копирует исходник, создаёт HLS и постер, заливает и проверяет CORS; локальные `raw/` и `hls/` удаляются после проверки |
 | Статьи блога | [`tests/blog.test.mjs`](../../../tests/blog.test.mjs): ссылки, картинки, метатеги, запрет неподтверждённых цен и часов работы |
 | Обложки блога | [`scripts/blog-covers.mjs`](../../../scripts/blog-covers.mjs): кадр квеста + типографика бренда → `public/assets/blog/<slug>.webp` |
 | Все команды | `scripts` в [`package.json`](../../../package.json) |
