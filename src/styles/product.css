@@ -108,6 +108,7 @@ body:not(.source-snapshot-page) .product-review--hidden { display: none; }
 body:not(.source-snapshot-page) .product-more { display: block; margin: var(--product-space-16) auto; padding: var(--product-space-12) var(--product-space-16); border: 1px solid var(--orange); border-radius: 8px; background: #fff; color: var(--orange-text); font-weight: 800; cursor: pointer; }
 body:not(.source-snapshot-page) .product-reviews__all { display: block; width: max-content; margin: 0 auto; color: var(--orange-text); font-weight: 800; }
 body:not(.source-snapshot-page) .product-safety { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--product-space-16); padding: 0; list-style: none; }
+body:not(.source-snapshot-page) .product-safety--four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 body:not(.source-snapshot-page) .product-safety li { display: grid; grid-template-columns: 34px 1fr; gap: var(--product-space-12); align-items: start; padding: var(--product-space-16); border: 1px solid rgb(255 255 255 / 25%); border-radius: 16px; }
 body:not(.source-snapshot-page) .product-safety svg { width: 30px; color: var(--orange-2); }
 body:not(.source-snapshot-page) .product-party__form .pform { margin-top: 0; }
@@ -164,6 +165,11 @@ body:not(.source-snapshot-page) .product-packages li span { flex: 0 0 auto; marg
 body:not(.source-snapshot-page) .product-packages__bullets { margin-top: 0; color: #555; font-size: var(--product-type-15); line-height: var(--product-leading-body); }
 body:not(.source-snapshot-page) .product-packages .btn-orange { align-self: flex-start; min-height: 44px; }
 body:not(.source-snapshot-page) .product-tiles { grid-template-columns: repeat(4, 1fr); }
+body:not(.source-snapshot-page) .product-tiles-container { container: product-tiles / inline-size; }
+body:not(.source-snapshot-page) .product-tiles--five { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@container product-tiles (min-width: 1080px) {
+  body:not(.source-snapshot-page) .product-tiles--five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
 body:not(.source-snapshot-page) .product-tiles li { overflow: hidden; border-radius: 14px; background: var(--bg); }
 body:not(.source-snapshot-page) .product-tiles img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
 body:not(.source-snapshot-page) .product-tiles h3 { margin: 0; padding: var(--product-space-12); font-size: var(--product-type-16); line-height: var(--product-leading-compact); min-width: 0; hyphens: auto; overflow-wrap: anywhere; }
