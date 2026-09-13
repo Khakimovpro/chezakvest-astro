@@ -1,4 +1,4 @@
-<!-- MAP-SIG: 5488289c160d0c66bfcdc3662513d6c701bc5cf1 | blessed: 2026-09-13 -->
+<!-- MAP-SIG: 2f4dcca9e6f6852b52c74e43edcd09a81b316589 | blessed: 2026-09-13 -->
 
 # Навигационная карта «Чё за Квест»
 
@@ -26,7 +26,7 @@
 | --- | --- |
 | Общий документ | [`src/layouts/Layout.astro:16`](../../../src/layouts/Layout.astro#L16) — props `<head>`; [`:40`](../../../src/layouts/Layout.astro#L40) — canonical; [`:47`](../../../src/layouts/Layout.astro#L47) — глобальная схема и `VideoObject` выбранного тела |
 | Квест | [`src/layouts/QuestPage.astro:27`](../../../src/layouts/QuestPage.astro#L27) — данные; [`:119`](../../../src/layouts/QuestPage.astro#L119) — `Service` и breadcrumbs |
-| Продуктовый квест | [`src/layouts/ProductQuestPage.astro:37`](../../../src/layouts/ProductQuestPage.astro#L37) — модель из JSON; [`:47`](../../../src/layouts/ProductQuestPage.astro#L47) — нативный макет и порядок блоков; блоки находятся в [`src/components/product/`](../../../src/components/product/) |
+| Продуктовый квест | [`src/layouts/ProductQuestPage.astro:37`](../../../src/layouts/ProductQuestPage.astro#L37) — модель из JSON; [`:47`](../../../src/layouts/ProductQuestPage.astro#L47) — нативный макет и порядок блоков; блоки находятся в [`src/components/product/`](../../../src/components/product/), а `ProductHalls.astro` пропускает внутренние ссылки через `siteHref(base, ...)` |
 | Площадка | [`src/layouts/VenuePage.astro:23`](../../../src/layouts/VenuePage.astro#L23) — данные и адрес; [`:41`](../../../src/layouts/VenuePage.astro#L41) — `EntertainmentBusiness` |
 | Категория | [`src/layouts/CategoryPage.astro:23`](../../../src/layouts/CategoryPage.astro#L23) — данные; [`:59`](../../../src/layouts/CategoryPage.astro#L59) — `CollectionPage` |
 | Инфостраница | [`src/layouts/InfoPage.astro:14`](../../../src/layouts/InfoPage.astro#L14) — данные; [`:32`](../../../src/layouts/InfoPage.astro#L32) — breadcrumbs |

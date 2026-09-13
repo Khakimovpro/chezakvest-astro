@@ -1,6 +1,8 @@
 ---
+import { siteHref } from '../../lib/urls.js';
 const { data, base = '' } = Astro.props;
 const asset = (path) => `${base}${path || ''}`;
+const href = (path) => siteHref(base, path);
 ---
 
-{data?.items?.length > 0 && <section class="product-section product-section--gray" id={data.id || 'zaly'}><div class="container"><h2 class="section-title">{data.title}</h2>{data.subtitle && <p class="section-sub">{data.subtitle}</p>}<ul class="product-halls">{data.items.map((item) => <li><img src={asset(item.img)} alt={`Зал: ${item.t}`} width="600" height="400" loading="lazy" decoding="async" /><div><h3>{item.href ? <a href={item.href}>{item.t}</a> : item.t}</h3>{item.size && <p>{item.size}</p>}{item.capacity && <p>{item.capacity}</p>}{item.format && <p>{item.format}</p>}{item.equipment?.length > 0 && <ul class="product-halls__equipment">{item.equipment.map((equipment) => <li>{equipment}</li>)}</ul>}</div></li>)}</ul><p class="product-halls__cta"><a class="btn-orange" href="#prazdnik">{data.cta || 'Узнать стоимость'}</a></p></div></section>}
+{data?.items?.length > 0 && <section class="product-section product-section--gray" id={data.id || 'zaly'}><div class="container"><h2 class="section-title">{data.title}</h2>{data.subtitle && <p class="section-sub">{data.subtitle}</p>}<ul class="product-halls">{data.items.map((item) => <li><img src={asset(item.img)} alt={`Зал: ${item.t}`} width="600" height="400" loading="lazy" decoding="async" /><div><h3>{item.href ? <a href={href(item.href)}>{item.t}</a> : item.t}</h3>{item.size && <p>{item.size}</p>}{item.capacity && <p>{item.capacity}</p>}{item.format && <p>{item.format}</p>}{item.equipment?.length > 0 && <ul class="product-halls__equipment">{item.equipment.map((equipment) => <li>{equipment}</li>)}</ul>}</div></li>)}</ul><p class="product-halls__cta"><a class="btn-orange" href="#prazdnik">{data.cta || 'Узнать стоимость'}</a></p></div></section>}
