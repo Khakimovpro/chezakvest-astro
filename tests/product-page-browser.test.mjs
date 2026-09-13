@@ -151,6 +151,53 @@ test('product pilots keep readable CTAs, complete hero images, distinct kids her
     assert.ok(checks.images.length > 0 && checks.images.every((image) => image.width > 0), `${slug}: visible photos loaded (${JSON.stringify(checks.images.filter((image) => image.width === 0))})`);
     assert.equal(checks.hero?.height, checks.hero?.imageHeight, `${slug}: hero image covers the whole hero`);
     assert.equal(checks.overlaps, false, `${slug}: holiday kicker and H1 do not overlap`);
+    for (const width of [390, 1440]) {
+      await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
+      const layout = await page.evaluate(() => {
+        const gap = (first, second) => second.getBoundingClientRect().top - first.getBoundingClientRect().bottom;
+        const story = document.querySelector('.product-story .product-prose');
+        const heading = story?.querySelector('h2');
+        const paragraphs = story?.querySelectorAll('p');
+        const callback = document.querySelector('.cbform__title');
+        return {
+          videos: [...document.querySelectorAll('.product-video .hls-video')].map((video) => {
+            const box = video.getBoundingClientRect();
+            const [w, h] = getComputedStyle(video).aspectRatio.split('/').map(Number);
+            return { width: box.width, height: box.height, ratio: w / h };
+          }),
+          points: document.querySelectorAll('.product-video__points > li').length,
+          headingGap: heading && gap(heading, paragraphs[0]),
+          paragraphGap: paragraphs?.length > 1 && gap(paragraphs[0], paragraphs[1]),
+          callbackColor: callback && getComputedStyle(callback).color,
+        };
+      });
+      assert.equal(layout.points, 3, `${slug}: video has three sourced points`);
+      for (const video of layout.videos) {
+        assert.ok(video.width <= (width === 390 ? 320 : 360) + 1, `${slug}: portrait video is bounded`);
+        assert.ok(Math.abs(video.width / video.height - video.ratio) < 0.01, `${slug}: media keeps source ratio`);
+      }
+      if (Number.isFinite(layout.headingGap)) {
+        assert.ok(layout.headingGap >= 16, 'story heading remains separated from copy after the CSS reset');
+        assert.ok(layout.paragraphGap >= 16, 'story paragraphs remain distinct');
+      }
+      if (layout.callbackColor) assert.ok(contrast(rgb(layout.callbackColor), [233, 233, 233]) >= 4.5, 'callback heading is readable on its light surface');
+      for (const tab of await page.locator('[data-product-package-tab]').all()) {
+        await tab.click();
+        const grid = page.locator('[data-product-package-panel]:visible .product-packages__grid');
+        for (const card of await grid.locator('article').all()) {
+          await card.scrollIntoViewIfNeeded();
+          const bounds = await card.evaluate((el) => {
+            const box = el.getBoundingClientRect();
+            const grid = el.parentElement.getBoundingClientRect();
+            return { width: box.width, gridWidth: grid.width, inside: box.left >= grid.left - 1 && box.right <= grid.right + 1, overflow: el.scrollWidth > el.clientWidth + 1 };
+          });
+          assert.ok(bounds.gridWidth <= width - 40, 'package rail fits its container');
+          assert.ok(bounds.inside && !bounds.overflow, 'every package can be scrolled fully into view without clipped content');
+          if (width === 390) assert.ok(Math.abs(bounds.width - 314) < 1, 'package leaves a visible preview of the next card');
+          assert.equal(await card.locator('.btn-orange').isVisible(), true);
+        }
+      }
+    }
     await page.close();
   }
 });

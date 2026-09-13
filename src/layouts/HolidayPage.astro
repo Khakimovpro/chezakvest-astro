@@ -213,7 +213,7 @@ const bodyClass = [
     {nativeHoliday && <div class="product-page product-holiday-page">
       <ProductHolidayHero data={hero} phoneHref={site.header.phoneHref} wa={site.header.wa} base={base} />
       <ProductPlayers data={nativePlayers?.photos?.length ? { title: nativePlayers.title, items: nativePlayers.photos.map((src, index) => ({ src, alt: `Фото праздника ${index + 1}` })) } : null} base={base} />
-      <ProductVideo data={nativeVideos.length ? { title: nativeVideo.title, kind: 'party', items: nativeVideos } : null} />
+      <ProductVideo data={nativeVideos.length ? { title: nativeVideo.title, kind: 'party', items: nativeVideos, intro: nativeVideo.intro, points: nativeVideo.points || nativeByKind('included')?.items } : null} />
       <ProductIncluded data={nativeByKind('included')} />
       <ProductStats data={nativeByKind('stats')} />
       <ProductPackages data={nativeByKind('packages')} />
