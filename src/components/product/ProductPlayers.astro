@@ -2,4 +2,4 @@
 import ProductGallery from './ProductGallery.astro';
 const { data, base } = Astro.props;
 ---
-{data && <ProductGallery data={data} base={base} group="product-players" />}
+{data && <ProductGallery data={{ ...data, layout: 'grid' }} base={base} group="product-players" />}

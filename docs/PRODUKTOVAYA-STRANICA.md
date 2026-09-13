@@ -10,7 +10,7 @@
 
 `product.short`: подтверждённый вводный абзац. `gallery` и `players` — массивы `{ src, alt }`; первая галерея требует минимум три фотографии. `videoSlug` — ключ из `src/data/video-hls.json`.
 
-`fit.for` и `fit.important` — списки подтверждённых форматов и правил. `reviewIndexes` — индексы дословных записей из `reviews.json`; подпись блока обязана говорить об отзывах компании, если квест или площадка в отзыве не названы.
+`fit.for` и `fit.important` — списки подтверждённых форматов и правил. `reviewIndexes` — индексы дословных записей из `reviews.json`; подпись блока обязана говорить об отзывах компании, если квест или площадка в отзыве не названы. Связанные карточки с тем же маршрутом или названием, что текущая страница, общий рендер исключает.
 
 `safety` — только подтверждённые факты. `party` содержит `title` и минимум три фото залов. `faq` — массив `{ q, a }`: эти же вопросы становятся FAQPage. `finalCta` содержит `{ title, text }`.
 
@@ -26,6 +26,6 @@
 
 Праздничная страница использует тот же флаг `render: native`, но её модель живёт в `sections[]`. Нативный диспетчер `HolidayPage.astro` берёт из данных только заполненные блоки и не меняет артборды страниц без флага.
 
-Порядок: hero → `included` → `packages` → `timeline` → `video` → `players` → `safety` → `reviews` → сценарии `cards` и квиз → `tiles` и `steps` → `halls` → `map` → `faq` → финальный `party-form`. `video.videoSlug` ссылается на `video-hls.json`; `reviews.reviewIndexes` — на локальные отзывы; `map` содержит локальный постер и ленивый iframe. FAQ выводится через `<details>` и одновременно становится FAQPage.
+Порядок: hero → `players` → `video` → `included` → `stats` → `packages` → `timeline` → `safety` → `reviews` → сценарии `cards` и квиз → `tiles` и `steps` → `halls` → `map` → `faq` → финальный `party-form`. `video.videoSlug` или `video.videoSlugs` ссылаются на `video-hls.json`; ролики `kind: party` подписываются как видео с праздников. `reviews.reviewIndexes` — на локальные отзывы; `map` содержит локальный постер и ленивый iframe. FAQ выводится через `<details>` и одновременно становится FAQPage. Несколько групп `packages` становятся вкладками после загрузки JavaScript, а без него остаются полным списком.
 
 Чтобы перевести лендинг, сохраните SEO, добавьте `render: native`, заполните только подтверждённые секции и оставьте единственный финальный `party-form` с `id: prazdnik`. Hero должен вести «Узнать стоимость» к этой форме, а телефон и WhatsApp берутся из `site.json`. После изменения проверьте HTML без `source-snapshot-shell`, FAQ, карту, форму, телефон, WhatsApp и снимки на 390, 768 и 1440 px.

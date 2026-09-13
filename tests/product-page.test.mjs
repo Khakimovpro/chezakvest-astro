@@ -23,6 +23,12 @@ test('product model is data driven, ordered and omits unavailable blocks', () =>
   assert.equal(productPageModel({ page: { product: {}, hero: {} }, site, venues: venues.chips }).gallery, null);
 });
 
+test('related product lists do not repeat the current route or title', () => {
+  const model = productPageModel({ page, site, venues: venues.chips, venuePage: {}, reviews, videoRegistry: registry });
+  assert.ok(model.related.items.every((item) => item.href !== '/igra_v_kalmara'));
+  assert.ok(model.related.scenarios.items.every((item) => item.t !== 'Игра в Кальмара'));
+});
+
 test('native product route has booking, phone, WhatsApp, required legacy anchors and one H1', async () => {
   const html = await readFile(new URL('../dist/igra_v_kalmara/index.html', import.meta.url), 'utf8');
   assert.doesNotMatch(html, /class="source-snapshot-shell/u);
@@ -37,4 +43,5 @@ test('FAQ schema source contains only visible questions', () => {
   const faq = productFaqItems(page);
   assert.equal(faq.length, page.product.faq.length);
   assert.ok(faq.every((item) => item.q && item.a));
+  assert.equal(faq.length, 10);
 });

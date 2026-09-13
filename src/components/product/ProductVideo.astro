@@ -1,5 +1,7 @@
 ---
 import HlsVideo from '../HlsVideo.astro';
 const { data } = Astro.props;
+const videos = data?.items?.length ? data.items : data?.slug ? [data] : [];
+const party = data?.kind === 'party';
 ---
-{data && <section class="product-section product-section--dark" id="video"><div class="container product-video"><div><p class="product-kicker">Трейлер</p><h2>{data.title}</h2><p>Посмотрите атмосферу игры до бронирования.</p></div><HlsVideo slug={data.slug} title={data.title} /></div></section>}
+{videos.length > 0 && <section class="product-section product-section--dark" id="video"><div class:list={['container', 'product-video', { 'product-video--multiple': videos.length > 1 }]}><div><p class="product-kicker">{party ? 'Как проходят наши праздники' : 'Трейлер'}</p><h2>{data.title}</h2><p>{party ? 'Посмотрите живые моменты с наших праздников.' : 'Посмотрите атмосферу игры до бронирования.'}</p></div><div class="product-video__media">{videos.map((video) => <HlsVideo slug={video.slug} title={video.title} />)}</div></div></section>}

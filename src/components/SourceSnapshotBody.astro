@@ -2,20 +2,19 @@
 import Header from './Header.astro';
 import MessengerFab from './MessengerFab.astro';
 import site from '../data/site.json';
-import '../styles/page.css';
-// Локальные надстройки поверх снимка: раскладка телефонной маски и виджеты,
-// которых нет в санированном HTML Tilda.
-import '../styles/source-phonemask.css';
-import '../styles/source-popups.css';
-import '../styles/source-forms.css';
-import '../styles/source-controls.css';
-import '../styles/source-media.css';
-import '../styles/source-reviews.css';
-import '../styles/source-extras.css';
-import '../styles/source-cosmetics.css';
-import '../styles/source-schedule.css';
+import pageStyles from '../styles/page.css?raw';
+import phonemaskStyles from '../styles/source-phonemask.css?raw';
+import popupStyles from '../styles/source-popups.css?raw';
+import formStyles from '../styles/source-forms.css?raw';
+import controlStyles from '../styles/source-controls.css?raw';
+import mediaStyles from '../styles/source-media.css?raw';
+import reviewStyles from '../styles/source-reviews.css?raw';
+import extraStyles from '../styles/source-extras.css?raw';
+import cosmeticStyles from '../styles/source-cosmetics.css?raw';
+import scheduleStyles from '../styles/source-schedule.css?raw';
 
 const { snapshot } = Astro.props;
+const sourceRuntimeStyles = [pageStyles, phonemaskStyles, popupStyles, formStyles, controlStyles, mediaStyles, reviewStyles, extraStyles, cosmeticStyles, scheduleStyles].join('\n');
 const base = import.meta.env.BASE_URL.replace(/\/$/u, '');
 const asset = (path) => `${base}${path}`;
 const link = (path) => `${base}${path}`;
@@ -49,6 +48,7 @@ const html = fillEmptyImages(withBase(snapshot.html
   });
 ---
 
+<style set:html={sourceRuntimeStyles}></style>
 <Header />
 <main
   class="source-snapshot-shell"

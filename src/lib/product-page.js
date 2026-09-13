@@ -8,11 +8,20 @@ export const PRODUCT_BLOCK_ORDER = [
 const hlsFor = (registry, slug, kind) => Object.entries(registry?.videos || {})
   .find(([, video]) => video.kind === kind && (video.quest === slug || video.page === slug))?.[0] || '';
 
+const comparableTitle = (value = '') => String(value).toLocaleLowerCase('ru-RU')
+  .replace(/квест/gu, '').replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+
 export function productPageModel({ page, site, venues = [], venuePage = {}, reviews = {}, videoRegistry = {} }) {
   const product = page.product || {};
   const venue = venues.find((item) => item.slug === page.venueSlug) || {};
   const address = product.address || venue.address || '';
-  const related = (page.related?.items || []).filter((item) => item.href !== route(page.slug).slice(0, -1));
+  const currentRoute = route(page.slug).slice(0, -1);
+  const currentTitles = new Set([page.seo?.h1, page.hero?.h1].map(comparableTitle).filter(Boolean));
+  const isCurrent = (item) => item.href === currentRoute || currentTitles.has(comparableTitle(item.t));
+  const relatedItems = (page.related?.items || []).filter((item) => !isCurrent(item));
+  const scenarios = page.scenarios?.items?.length
+    ? { ...page.scenarios, items: page.scenarios.items.filter((item) => !isCurrent(item)) }
+    : null;
   const selectedReviews = (product.reviewIndexes || [])
     .map((index) => reviews.reviews?.[index]).filter(Boolean);
   const gallery = product.gallery?.length ? product.gallery : [];
@@ -40,7 +49,7 @@ export function productPageModel({ page, site, venues = [], venuePage = {}, revi
     party: product.party?.photos?.length ? product.party : null,
     faq: product.faq?.length ? product.faq : null,
     map: hasMap ? { address, map: venuePage.map, howto: venuePage.howto, routeUrl: venuePage.howto?.routeUrl } : null,
-    related: related.length ? { title: page.related?.title || 'Другие квесты', items: related, scenarios: page.scenarios } : null,
+    related: relatedItems.length ? { title: page.related?.title || 'Другие квесты', items: relatedItems, scenarios } : null,
     finalCta: product.finalCta || { title: 'Остались вопросы?' },
   };
 }

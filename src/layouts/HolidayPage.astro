@@ -106,6 +106,11 @@ const nativeReviewsModel = nativeReviews.length ? {
 } : null;
 const nativePartyForm = sections.find((section) => section.kind === 'party-form' && section.id === 'prazdnik');
 const nativeQuizForm = sections.find((section) => section.kind === 'party-form' && section.id === 'quiz');
+const nativeVideos = (nativeVideo?.videoSlugs || (nativeVideo?.videoSlug ? [nativeVideo.videoSlug] : []))
+  .map((slug) => ({ slug }));
+const nativePlayers = nativeByKind('players');
+const nativeTiles = sections.filter((section) => section.kind === 'tiles' && section.items?.length > 0);
+const nativeSteps = nativeByKind('steps');
 
 const jsonld = [
   holidayServiceJsonLd({ page, site }),
@@ -207,19 +212,19 @@ const bodyClass = [
   <main>
     {nativeHoliday && <div class="product-page product-holiday-page">
       <ProductHolidayHero data={hero} phoneHref={site.header.phoneHref} wa={site.header.wa} base={base} />
+      <ProductPlayers data={nativePlayers?.photos?.length ? { title: nativePlayers.title, items: nativePlayers.photos.map((src, index) => ({ src, alt: `Фото праздника ${index + 1}` })) } : null} base={base} />
+      <ProductVideo data={nativeVideos.length ? { title: nativeVideo.title, kind: 'party', items: nativeVideos } : null} />
       <ProductIncluded data={nativeByKind('included')} />
       <ProductStats data={nativeByKind('stats')} />
       <ProductPackages data={nativeByKind('packages')} />
       <ProductTimeline data={nativeByKind('timeline')} />
-      <ProductVideo data={nativeVideo?.videoSlug ? { title: nativeVideo.title, slug: nativeVideo.videoSlug } : null} />
-      <ProductPlayers data={nativeByKind('players')?.photos?.length ? { title: nativeByKind('players').title, items: nativeByKind('players').photos.map((src, index) => ({ src, alt: `Фото праздника ${index + 1}` })) } : null} base={base} />
       <ProductSafety data={nativeByKind('safety')} />
       <ProductReviews data={nativeReviewsModel} />
       {nativeByKind('cards')?.items?.length > 0 && <CardsRow title={nativeByKind('cards').title} subtitle={nativeByKind('cards').subtitle} items={canonicalCardItems(nativeByKind('cards').items)} id={nativeByKind('cards').id || 'scenarii'} variant={nativeByKind('cards').variant || 'square'} uptitle={nativeByKind('cards').uptitle || ''} />}
       {nativeByKind('lead-cta')?.cta && <section class="product-section product-section--gray product-quiz"><div class="container"><h2 class="section-title">{nativeByKind('lead-cta').title}</h2>{nativeByKind('lead-cta').subtitle && <p class="section-sub">{nativeByKind('lead-cta').subtitle}</p>}<a class="btn-orange" href={nativeByKind('lead-cta').href || '#quiz'} data-quiz={quizId}>{nativeByKind('lead-cta').cta}</a></div></section>}
       {nativeQuizForm && <PartyForm id="kquiz" sectionId="quiz" title={nativeQuizForm.title} subtitle={nativeQuizForm.subtitle} cta={nativeQuizForm.cta} variant={nativeQuizForm.variant} />}
-      {sections.filter((section) => section.kind === 'tiles' && section.items?.length > 0).map((s) => <section class="product-section product-section--white"><div class="container"><h2 class="section-title">{s.title}</h2>{s.subtitle && <p class="section-sub">{s.subtitle}</p>}<ul class="product-tiles">{s.items.map((item) => <li><img src={asset(item.img)} alt={item.t} width="326" height="326" loading="lazy" decoding="async" /><h3>{item.t}</h3></li>)}</ul></div></section>)}
-      {nativeByKind('steps')?.items?.length > 0 && <section class="product-section product-section--gray"><div class="container"><h2 class="section-title">{nativeByKind('steps').title}</h2>{nativeByKind('steps').subtitle && <p class="section-sub">{nativeByKind('steps').subtitle}</p>}<ol class="product-timeline">{nativeByKind('steps').items.map((item, index) => <li><b>{index + 1}</b><div><h3>{item.t}</h3>{item.sub && <p>{item.sub}</p>}</div></li>)}</ol></div></section>}
+      {nativeTiles.map((s) => <section class="product-section product-section--white"><div class="container"><h2 class="section-title">{s.title}</h2>{s.subtitle && <p class="section-sub">{s.subtitle}</p>}<ul class="product-tiles">{s.items.map((item) => <li><img src={asset(item.img)} alt={item.t} width="326" height="326" loading="lazy" decoding="async" /><h3>{item.t}</h3></li>)}</ul></div></section>)}
+      {nativeSteps?.items?.length > 0 && <section class="product-section product-section--gray"><div class="container"><h2 class="section-title">{nativeSteps.title}</h2>{nativeSteps.subtitle && <p class="section-sub">{nativeSteps.subtitle}</p>}<ol class="product-timeline">{nativeSteps.items.map((item, index) => <li><b>{index + 1}</b><div><h3>{item.t}</h3>{item.sub && <p>{item.sub}</p>}</div></li>)}</ol></div></section>}
       <ProductHalls data={nativeByKind('halls')} base={base} />
       <ProductMap data={nativeByKind('map')} base={base} />
       <ProductFaq data={nativeByKind('faq')?.items} />
@@ -800,7 +805,7 @@ const bodyClass = [
     title="Рассчитать стоимость праздника" subtitle="Оставьте контакты — подберём программу праздника в стиле Roblox." cta="Отправить заявку" /></div>}
   {sourceKalmarLanding && <div class="kalmar-landing-artboard__booking"><PartyForm id="kalmar" sectionId="prazdnik"
     title="Рассчитать стоимость праздника" subtitle="Оставьте контакты — подберём программу и свободную дату." cta="Отправить заявку" /></div>}
-  {nativeHoliday && <><Footer /><MobileCtaBar phoneHref={site.header.phoneHref} bookingId="prazdnik" /></>}
+  {nativeHoliday && <><Footer /><MobileCtaBar phoneHref={site.header.phoneHref} bookingId="prazdnik" bookingLabel="Узнать стоимость" /></>}
   {!nativeHoliday && !sourceVypusknoj && !sourceMaxi && !sourceMinecraft && !sourceNewYear && !sourceAmongUs && !sourceRoblox && !sourceVrBirthday && !sourceKalmarLanding && !sourceAzkaban && !sourceKids && <Footer />}
 </Layout>
 
