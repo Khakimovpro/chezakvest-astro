@@ -28,6 +28,7 @@ const {
   robots = noindex ? 'noindex, follow' : '',
   jsonld = [],                // массив объектов Schema.org — по одному <script> на каждый
   video = null,               // нативный ролик и, при наличии, метаданные snapshot-плеера
+  page = {},                  // страница может явно выбрать нативное тело
   bodyClass = '',
   // LCP-картинка страницы: {href, srcset, sizes}. По умолчанию — фон героя главной.
   preloadImage = {
@@ -39,7 +40,7 @@ const {
 
 const canonical = canonicalUrl(path);
 const pageImage = typeof Astro.props.ogImage === 'string' ? Astro.props.ogImage.trim() : '';
-const sourceSnapshot = sourceSnapshotFor(path);
+const sourceSnapshot = sourceSnapshotFor(path, page);
 const verifiedPageImage = pageImage && (!sourceSnapshot || sourceSnapshot.html.includes(pageImage))
   ? pageImage
   : '';

@@ -1,0 +1,5 @@
+---
+import PrebookingForm from '../PrebookingForm.astro';
+const { data, phoneHref, phone, wa } = Astro.props;
+---
+{data && <section class="product-section product-section--booking" id="booking"><div class="container"><h2 class="section-title">{data.title || 'Онлайн-бронирование'}</h2>{data.lines?.map((line) => <p class="product-booking__line">{line}</p>)}<div class="product-schedule" data-source-schedule={data.calendarId} aria-live="polite"></div><div class="product-booking__fallback"><p>Если расписание временно недоступно, позвоните, напишите нам или оставьте предварительную заявку.</p><p><a href={phoneHref}>{phone}</a> · <a href={wa} target="_blank" rel="noopener">WhatsApp</a></p><PrebookingForm id="product-booking" quest={data.quest} calendarId={data.calendarId} /></div></div></section><script>import { initSourceSchedule } from '../../scripts/source-schedule.js'; initSourceSchedule();</script>}

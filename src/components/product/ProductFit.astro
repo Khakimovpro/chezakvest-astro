@@ -1,0 +1,4 @@
+---
+const { data } = Astro.props;
+---
+{data && <section class="product-section product-section--white"><div class="container product-fit"><div>{data.for?.length && <><h2>Кому подойдёт</h2><ul>{data.for.map((item) => <li>{item}</li>)}</ul></>}</div><div>{data.important?.length && <><h2>Что важно знать</h2><ul>{data.important.map((item) => <li>{item}</li>)}</ul></>}</div></div></section>}

@@ -1,0 +1,40 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import test from 'node:test';
+
+import site from '../src/data/site.json' with { type: 'json' };
+import venues from '../src/data/venues.json' with { type: 'json' };
+import reviews from '../src/data/reviews.json' with { type: 'json' };
+import registry from '../src/data/video-hls.json' with { type: 'json' };
+import page from '../src/data/pages/igra_v_kalmara.json' with { type: 'json' };
+import { PRODUCT_BLOCK_ORDER, productFaqItems, productPageModel } from '../src/lib/product-page.js';
+
+test('native render flag is evaluated before snapshot lookup', async () => {
+  const source = await readFile(new URL('../src/lib/source-snapshots.js', import.meta.url), 'utf8');
+  assert.match(source, /page\?\.render\s*===\s*'native'/u);
+  assert.match(source, /if \(page\?\.render\s*===\s*'native'\) return null;/u);
+});
+
+test('product model is data driven, ordered and omits unavailable blocks', () => {
+  const model = productPageModel({ page, site, venues: venues.chips, venuePage: { map: { img: '/x', embedUrl: '/map' } }, reviews, videoRegistry: registry });
+  assert.deepEqual(PRODUCT_BLOCK_ORDER, ['hero', 'short', 'gallery', 'video', 'story', 'fit', 'booking', 'reviews', 'players', 'safety', 'party', 'faq', 'map', 'related', 'finalCta']);
+  assert.equal(model.video.slug, 'igra_v_kalmara-trailer');
+  assert.equal(model.gallery.items.length, 3);
+  assert.equal(productPageModel({ page: { product: {}, hero: {} }, site, venues: venues.chips }).gallery, null);
+});
+
+test('native product route has booking, phone, WhatsApp, required legacy anchors and one H1', async () => {
+  const html = await readFile(new URL('../dist/igra_v_kalmara/index.html', import.meta.url), 'utf8');
+  assert.doesNotMatch(html, /class="source-snapshot-shell/u);
+  assert.match(html, /data-source-schedule="87"/u);
+  assert.ok(html.includes(site.header.phoneHref));
+  assert.match(html, /wa\.me/u);
+  for (const anchor of ['story', 'prazdnik', 'booking', 'video', 'karta']) assert.match(html, new RegExp(`id="${anchor}"`));
+  assert.equal((html.match(/<h1(?:\s|>)/gu) || []).length, 1);
+});
+
+test('FAQ schema source contains only visible questions', () => {
+  const faq = productFaqItems(page);
+  assert.equal(faq.length, page.product.faq.length);
+  assert.ok(faq.every((item) => item.q && item.a));
+});

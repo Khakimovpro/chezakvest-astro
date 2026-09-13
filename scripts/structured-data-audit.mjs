@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import {
   breadcrumbJsonLd,
   collectionPageJsonLd,
+  faqPageJsonLd,
   globalJsonLd,
   holidayServiceJsonLd,
   isValidIso8601DateTime,
@@ -174,6 +175,7 @@ function pageSpecificSchemas(page, pages, venueBySlug, site) {
     return [
       questServiceJsonLd({ page, venue, venueVisible: questVenueIsRendered(page, venueBySlug), site }),
       breadcrumbSchema(page, path),
+      faqPageJsonLd(visibleFaqItems(page), path),
     ].filter(Boolean);
   }
   if (page.type === 'venue') {
@@ -212,6 +214,7 @@ function pageSpecificSchemas(page, pages, venueBySlug, site) {
 }
 
 function visibleFaqItems(page) {
+  if (page.render === 'native') return (page.product?.faq || []).map(({ q, a }) => ({ q, a }));
   const hero = (page.sections || []).find((section) => section.kind === 'hero') || {};
   if (hero.composition === 'newyear-artboard') return page.sourceParity?.faq || [];
   if (HIDDEN_CUSTOM_ARTBOARDS.has(hero.composition)) return [];
@@ -219,6 +222,7 @@ function visibleFaqItems(page) {
 }
 
 function configuredVideoFor(page = {}) {
+  if (page.render === 'native') return null;
   if (page.type === 'quest') return page.video;
   if (page.type === 'holiday') return (page.sections || []).find((section) => section.kind === 'video');
   return null;
@@ -392,7 +396,7 @@ async function loadAuditPages() {
   const records = pages.map((page) => {
     const path = `/${page.slug}`;
     const candidateImage = canonicalImageFor(page);
-    const sourceHtml = snapshotHtml.get(`${path}/`);
+    const sourceHtml = page.render === 'native' ? '' : snapshotHtml.get(`${path}/`);
     const image = candidateImage && (!sourceHtml || sourceHtml.includes(candidateImage)) ? candidateImage : '';
     const mapUrl = page.howto?.routeUrl && sourceHtml?.includes(page.howto.routeUrl)
       ? page.howto.routeUrl

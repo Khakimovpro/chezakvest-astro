@@ -11,7 +11,8 @@ export function normaliseSourceRoute(path = '/') {
   return clean === '/' ? '/' : `${clean}/`;
 }
 
-export function sourceSnapshotFor(path = '/') {
+export function sourceSnapshotFor(path = '/', page = {}) {
+  if (page?.render === 'native') return null;
   const route = normaliseSourceRoute(path);
   const metadata = manifest.routes?.[route];
   if (!metadata) return null;
@@ -21,4 +22,3 @@ export function sourceSnapshotFor(path = '/') {
   }
   return { ...metadata, html, runtime: manifest.runtime ?? [] };
 }
-

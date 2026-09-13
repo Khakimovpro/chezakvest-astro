@@ -1,0 +1,5 @@
+---
+import CardsRow from '../CardsRow.astro';
+const { data } = Astro.props;
+---
+{data && <>{data.items.length > 0 && <CardsRow title={data.title} items={data.items} variant="poster" id="drugie" />}{data.scenarios?.items?.length > 0 && <CardsRow title={data.scenarios.title} subtitle={data.scenarios.subtitle} items={data.scenarios.items} variant="square" />}</>}

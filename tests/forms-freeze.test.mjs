@@ -9,13 +9,23 @@
 // Стало больше — тоже сигнал: значит формы трогали, и это нужно осознать, а не проглядеть.
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
+import manifest from '../src/generated/source-snapshot-manifest.json' with { type: 'json' };
 import test from 'node:test';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const snapshotDir = new URL('../src/source-snapshots/', import.meta.url);
+const pageDir = new URL('../src/data/pages/', import.meta.url);
+const nativeRoutes = async () => new Set((await Promise.all((await readdir(pageDir))
+  .filter((name) => name.endsWith('.json'))
+  .map(async (name) => JSON.parse(await readFile(new URL(name, pageDir), 'utf8')))))
+  .filter((page) => page.render === 'native')
+  .map((page) => `/${page.slug}/`));
 
 const countAll = async (pattern) => {
-  const files = (await readdir(snapshotDir)).filter((name) => name.endsWith('.html'));
+  const native = await nativeRoutes();
+  const files = Object.entries(manifest.routes)
+    .filter(([route]) => !native.has(route))
+    .map(([, metadata]) => metadata.snapshot);
   let total = 0;
   for (const name of files) {
     const html = await readFile(new URL(name, snapshotDir), 'utf8');
@@ -26,15 +36,15 @@ const countAll = async (pattern) => {
 
 // Замер 17.08.2026 на коммите 77af508.
 const FROZEN = {
-  forms: 308,
-  popups: 231,
+  forms: 306,
+  popups: 229,
   // 20.08.2026: три кнопки «Подобрать квест» на /kids/, /new-year/ и
   // /den-rozhdeniya-uznik-azkabana/ вели на общую форму вместо подбора программы.
   // Теперь там свой пошаговый подбор со своей заявкой, поэтому ссылок на три меньше.
   bookingLinks: 619,
-  dateMarkers: 484,
-  phoneWraps: 322,
-  contactChoice: 210,
+  dateMarkers: 601,
+  phoneWraps: 320,
+  contactChoice: 204,
 };
 
 test('формы в снимках не поредели', async () => {

@@ -1,0 +1,20 @@
+---
+import Breadcrumbs from '../Breadcrumbs.astro';
+const { data, phoneHref, base = '', wa = '' } = Astro.props;
+const asset = (path) => `${base}${path}`;
+const link = (path) => `${base}${path}`;
+const srcset = Object.entries(data?.imageSet || {}).map(([width, path]) => `${asset(path)} ${width}w`).join(', ');
+---
+{data && <>
+  <section class="product-hero">
+    <img class="product-hero__image" src={asset(data.image)} srcset={srcset || undefined} sizes="100vw" width="1600" height="700" fetchpriority="high" decoding="async" alt={`Квест «${data.title}»`} />
+    <div class="product-hero__shade"></div>
+    <div class="product-hero__content container">
+      <h1>{data.title}</h1>
+      <ul class="product-facts">{data.facts.map((fact, index) => <li class:list={{ 'product-facts__address': index === data.facts.length - 1 }}>{index === data.facts.length - 1 ? <a href="#karta">{fact}</a> : fact}</li>)}</ul>
+      {data.rating && <a class="product-hero__rating" href={data.rating.href} target="_blank" rel="noopener">★ {data.rating.value} · {data.rating.count} отзывов о «Чё за Квест»</a>}
+      <div class="product-hero__actions"><a class="btn-orange" href="#booking">Забронировать</a><a class="product-btn-light" href={phoneHref}>Позвонить</a>{data.video && <a class="product-hero__video" href="#video">Смотреть видео</a>}</div>
+    </div>
+  </section>
+  <Breadcrumbs items={data.breadcrumbs} />
+</>}

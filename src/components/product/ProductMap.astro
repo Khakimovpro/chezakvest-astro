@@ -1,0 +1,6 @@
+---
+import LazyMap from '../LazyMap.astro';
+const { data, base = '' } = Astro.props;
+const asset = (path) => `${base}${path}`;
+---
+{data && <section class="product-section product-section--gray" id="karta"><div class="container product-map"><div><h2 class="section-title">Адрес и карта</h2><p>{data.address}</p>{data.howto?.variants?.map((line) => <p>{line}</p>)}{data.routeUrl && <a class="btn-orange" href={data.routeUrl} target="_blank" rel="noopener">Построить маршрут</a>}</div><LazyMap embedUrl={data.map.embedUrl} poster={asset(data.map.img)} alt={`Карта: ${data.address}`} title={`Карта площадки: ${data.address}`} className="venues__map product-map__embed" /></div></section>}

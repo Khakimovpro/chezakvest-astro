@@ -1,0 +1,5 @@
+---
+import CallbackForm from '../CallbackForm.astro';
+const { data, phoneHref, phone, wa } = Astro.props;
+---
+{data && <section class="product-section product-section--dark product-final"><div class="container"><h2>{data.title}</h2><p>{data.text || 'Позвоните, напишите нам или оставьте номер — менеджер поможет выбрать формат.'}</p><p class="product-final__links"><a href={phoneHref}>{phone}</a><a href={wa} target="_blank" rel="noopener">WhatsApp</a></p><CallbackForm id="product-callback" sectionId="callback" /></div></section>}
