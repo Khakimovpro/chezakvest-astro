@@ -163,7 +163,7 @@ test('product pilots keep readable CTAs, complete hero images, distinct kids her
     assert.ok(checks.images.length > 0 && checks.images.every((image) => image.width > 0), `${slug}: visible photos loaded (${JSON.stringify(checks.images.filter((image) => image.width === 0))})`);
     assert.equal(checks.hero?.height, checks.hero?.imageHeight, `${slug}: hero image covers the whole hero`);
     assert.equal(checks.overlaps, false, `${slug}: holiday kicker and H1 do not overlap`);
-    for (const width of [390, 1440]) {
+    for (const width of [390, 768, 1440]) {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
       const layout = await page.evaluate(() => {
         const gap = (first, second) => second.getBoundingClientRect().top - first.getBoundingClientRect().bottom;
@@ -193,6 +193,16 @@ test('product pilots keep readable CTAs, complete hero images, distinct kids her
         assert.ok(layout.paragraphGap >= 16, 'story paragraphs remain distinct');
       }
       if (layout.callbackColor) assert.ok(contrast(rgb(layout.callbackColor), [233, 233, 233]) >= 4.5, 'callback heading is readable on its light surface');
+      for (const field of await page.locator('.pform__field--name, .pform__field--phone').all()) {
+        const input = field.locator('input');
+        await input.fill(await input.getAttribute('name') === 'phone' ? '+7 (900) 000-00-00' : 'Проверка');
+        for (const focused of [true, false]) {
+          if (focused) await input.focus();
+          else await input.blur();
+          const separated = await field.evaluate((el) => el.querySelector('label').getBoundingClientRect().bottom <= el.querySelector('input').getBoundingClientRect().top);
+          assert.ok(separated, `${slug} ${width}: field label stays above the entered value with and without focus`);
+        }
+      }
       for (const tab of await page.locator('[data-product-package-tab]').all()) {
         await tab.click();
         const grid = page.locator('[data-product-package-panel]:visible .product-packages__grid');

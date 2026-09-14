@@ -316,7 +316,7 @@ body:not(.source-snapshot-page) .product-final__links { margin-top: var(--produc
 @container product-packages (680px <= width < 992px) {
   body:not(.source-snapshot-page) .product-packages__grid article { flex-basis: calc((100% - var(--product-space-48) - var(--product-space-4)) / 2); }
 }
-:is(body.product-page, body:not(.source-snapshot-page) .product-page) .pform__label--inside { color: #666; }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .pform__label--inside { position: static; transform: none; margin-bottom: var(--product-space-8); color: #666; }
 :is(body.product-page, body:not(.source-snapshot-page) .product-page) .pform input::placeholder { color: #666; opacity: 1; }
 
 /* Keep the booking service's click/data contract within product schedules. */
