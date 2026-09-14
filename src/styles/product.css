@@ -1,5 +1,5 @@
 /* Shared product rhythm. Scoped selectors keep it above the native CSS reset. */
-.product-page {
+.product-page, .product-mobile-cta {
   --product-space-4: 4px;
   --product-space-8: 8px;
   --product-space-12: 12px;
@@ -105,10 +105,10 @@ body:not(.source-snapshot-page) .product-review p { margin: 0; white-space: pre-
 body:not(.source-snapshot-page) .product-review footer { margin-top: auto; padding-top: var(--product-space-16); display: grid; gap: var(--product-space-4); font-size: var(--product-type-13); }
 body:not(.source-snapshot-page) .product-review footer span { color: #666; }
 body:not(.source-snapshot-page) .product-review--hidden { display: none; }
-body:not(.source-snapshot-page) .product-more { display: block; margin: var(--product-space-16) auto; padding: var(--product-space-12) var(--product-space-16); border: 1px solid var(--orange); border-radius: 8px; background: #fff; color: var(--orange-text); font-weight: 800; cursor: pointer; }
+body:not(.source-snapshot-page) .product-more { display: block; min-height: 44px; margin: var(--product-space-16) auto; padding: var(--product-space-12) var(--product-space-16); border: 1px solid var(--orange); border-radius: 8px; background: #fff; color: var(--orange-text); font-weight: 800; cursor: pointer; }
 body:not(.source-snapshot-page) .product-reviews__actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--product-space-16); margin-top: var(--product-space-24); }
 body:not(.source-snapshot-page) .product-reviews__actions .product-more { margin: 0; min-height: 44px; }
-body:not(.source-snapshot-page) .product-reviews__actions .product-more[hidden] { display: none; }
+body:not(.source-snapshot-page) .product-more[hidden] { display: none; }
 body:not(.source-snapshot-page) .product-reviews__all { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding-inline: var(--product-space-16); color: var(--orange-text); font-weight: 800; }
 body:not(.source-snapshot-page) .product-safety { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--product-space-16); padding: 0; list-style: none; }
 body:not(.source-snapshot-page) .product-safety--four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -119,7 +119,8 @@ body:not(.source-snapshot-page) .product-faq { max-width: 900px; }
 body:not(.source-snapshot-page) .product-faq details { margin: var(--product-space-8) 0; padding: var(--product-space-16) var(--product-space-16); border-radius: 12px; background: var(--bg); }
 body:not(.source-snapshot-page) .product-faq summary { cursor: pointer; font-weight: 800; }
 body:not(.source-snapshot-page) .product-faq p { margin: var(--product-space-12) 0 0; line-height: var(--product-leading-body); }
-body:not(.source-snapshot-page) .product-map__embed { margin-top: 0; }
+body:not(.source-snapshot-page) .product-map__embed { margin-top: 0; height: 320px; aspect-ratio: auto; }
+body:not(.source-snapshot-page) .product-map__embed > :is(img, iframe) { width: 100%; height: 100%; object-fit: cover; }
 body:not(.source-snapshot-page) .product-final { text-align: center; }
 body:not(.source-snapshot-page) .product-final > .container { max-width: 740px; }
 body:not(.source-snapshot-page) .product-final p { font-size: var(--product-type-18); line-height: var(--product-leading-body); }
@@ -198,14 +199,14 @@ body:not(.source-snapshot-page) .product-facts li { padding: var(--product-space
 body:not(.source-snapshot-page) .product-hero__actions { gap: var(--product-space-8); margin-top: var(--product-space-16); }
 body:not(.source-snapshot-page) .product-hero__actions a { min-height: 46px; padding: var(--product-space-8) var(--product-space-12); }
 body:not(.source-snapshot-page) .product-hero__video { flex-basis: 100%; justify-content: flex-start !important; }
-body:not(.source-snapshot-page) .product-rail { grid-template-columns: 36px minmax(0, 1fr) 36px; gap: var(--product-space-4); }
-body:not(.source-snapshot-page) .product-rail__arrow { width: 36px; height: 36px; font-size: var(--product-type-28); }
+body:not(.source-snapshot-page) .product-rail { grid-template-columns: 44px minmax(0, 1fr) 44px; gap: var(--product-space-4); }
+body:not(.source-snapshot-page) .product-rail__arrow { width: 44px; height: 44px; font-size: var(--product-type-28); }
 body:not(.source-snapshot-page) .product-rail__item { flex-basis: 88%; }
 body:not(.source-snapshot-page) .product-video, body:not(.source-snapshot-page) .product-story, body:not(.source-snapshot-page) .product-fit, body:not(.source-snapshot-page) .product-map { grid-template-columns: 1fr; gap: var(--product-space-24); }
 
 body:not(.source-snapshot-page) .product-reviews__grid { grid-template-columns: 1fr; }
 body:not(.source-snapshot-page) .product-safety { grid-template-columns: 1fr; }
-body:not(.source-snapshot-page) .product-mobile-cta { position: fixed; z-index: 800; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: 1fr 1.25fr; padding: var(--product-space-8); gap: var(--product-space-8); transform: translateY(110%); transition: transform .2s ease; background: #fff; box-shadow: 0 -4px 18px rgb(0 0 0 / 16%); }
+body:not(.source-snapshot-page) .product-mobile-cta { position: fixed; z-index: 800; right: 0; bottom: 0; left: 0; display: grid; grid-template-columns: 1fr 1.25fr; padding: var(--product-space-8); padding-bottom: calc(var(--product-space-8) + env(safe-area-inset-bottom)); gap: var(--product-space-8); transform: translateY(110%); transition: transform .2s ease; background: #fff; box-shadow: 0 -4px 18px rgb(0 0 0 / 16%); }
 body:not(.source-snapshot-page) .product-mobile-cta--visible:not(.product-mobile-cta--booking) { transform: translateY(0); }
 body:not(.source-snapshot-page) .product-mobile-cta a { display: grid; min-height: 48px; place-items: center; border-radius: 8px; background: var(--dark); color: #fff; font-weight: 800; text-decoration: none; }
 body:not(.source-snapshot-page) .product-mobile-cta a:last-child { background: var(--orange); color: var(--cta-ink); }
@@ -304,4 +305,8 @@ body:not(.source-snapshot-page) .product-final__links { margin-top: var(--produc
 @media (max-width: 767px) {
   :is(body.product-page, body:not(.source-snapshot-page) .product-page) .cards { padding-block: var(--product-space-32); }
   :is(body.product-page, body:not(.source-snapshot-page) .product-page) .pform__title { font-size: var(--product-type-24); }
+}
+
+@media (max-width: 767px) {
+  body:not(.source-snapshot-page) .product-map__embed { height: 280px; }
 }
