@@ -96,7 +96,7 @@ const categoryBodyClass = [
   {sourceHorror ? (
     <HorrorCategoryArtboard page={page} source={page.sourceParity} games={games} asset={asset} href={link} />
   ) : (
-  <main>
+  <main id="main" tabindex="-1">
     <!-- ============ ГЕРОЙ КАТЕГОРИИ ============ -->
     <section class:list={['qhero', { 'qhero--source-top-copy': hero.copyPosition === 'top' }]}>
       <div class="container-wide">

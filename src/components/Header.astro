@@ -198,20 +198,40 @@ const currentAttrs = (href) => (isCurrent(href) ? { 'aria-current': 'page' } : {
     // при переходе между вкладками браузера и читалась как «залипшая».
     const CLOSE_DELAY = 160;
     let timer;
-    const closeAll = () => items.forEach((item) => item.classList.remove('is-open'));
+    const setOpen = (item, open) => {
+      item.classList.toggle('is-open', open);
+      item.classList.toggle('is-dismissed', !open);
+      item.querySelector('.nav__trigger > a')?.setAttribute('aria-expanded', String(open));
+    };
+    const closeAll = () => items.forEach((item) => setOpen(item, false));
 
     items.forEach((item) => {
+      const trigger = item.querySelector('.nav__trigger > a');
+      trigger?.setAttribute('aria-expanded', 'false');
+      trigger?.addEventListener('keydown', (event) => {
+        if (!['Enter', ' '].includes(event.key)) return;
+        // Enter opens the panel; a second Enter follows the trigger's normal link.
+        if (event.key === 'Enter' && item.classList.contains('is-open')) return;
+        event.preventDefault();
+        clearTimeout(timer);
+        const opening = !item.classList.contains('is-open');
+        closeAll();
+        setOpen(item, opening);
+      });
       item.addEventListener('mouseenter', () => {
         clearTimeout(timer);
         closeAll();
-        item.classList.add('is-open');
+        setOpen(item, true);
       });
       item.addEventListener('mouseleave', () => {
         clearTimeout(timer);
-        timer = setTimeout(() => item.classList.remove('is-open'), CLOSE_DELAY);
+        timer = setTimeout(() => {
+          if (!item.querySelector('.mega')?.contains(document.activeElement)) setOpen(item, false);
+        }, CLOSE_DELAY);
       });
-      // Переход по ссылке внутри панели закрывает её сразу, иначе она висит поверх новой страницы
-      // при возврате назад из истории браузера.
+      item.addEventListener('focusout', (event) => {
+        if (!item.contains(event.relatedTarget)) setOpen(item, false);
+      });
       item.querySelectorAll('a').forEach((anchor) => anchor.addEventListener('click', () => {
         clearTimeout(timer);
         closeAll();
@@ -221,10 +241,11 @@ const currentAttrs = (href) => (isCurrent(href) ? { 'aria-current': 'page' } : {
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') {
         clearTimeout(timer);
+        const active = items.find((item) => item.querySelector('.mega')?.contains(document.activeElement));
+        active?.querySelector('.nav__trigger > a')?.focus();
         closeAll();
       }
     });
-    // Клик мимо шапки и уход курсора за пределы окна тоже закрывают панель.
     document.addEventListener('click', (event) => {
       if (!event.target.closest('.nav__item.has-mega')) {
         clearTimeout(timer);

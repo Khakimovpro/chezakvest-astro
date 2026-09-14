@@ -45,7 +45,7 @@ const heroImage = heroImageAttrs(model.hero || {}, base);
 ---
 <Layout title={page.seo.title} description={page.seo.description} schemaName={page.seo.h1} keywords={page.seo.keywords} path={path} ogImage={page.hero?.bg} ogType="article" jsonld={jsonld} page={page} bodyClass="product-page" preloadImage={heroImage.src ? { href: heroImage.src, srcset: heroImage.srcset, sizes: heroImage.sizes } : null}>
   <Header />
-  <main class="product-page__main">
+  <main id="main" tabindex="-1" class="product-page__main">
     <ProductHero data={model.hero} phoneHref={site.header.phoneHref} wa={site.header.wa} base={base} />
     <ProductShort data={model.short} />
     <ProductGallery continue data={model.gallery} base={base} />

@@ -128,3 +128,7 @@ body:not(.source-snapshot-page) section{position:relative}
   }
   .reveal,.reveal--zoom{opacity:1!important;transform:none!important;transition:none!important}
 }
+
+/* The first keyboard stop bypasses the shared navigation on every route. */
+body .skip-link { position:absolute; inset-inline-start:16px; inset-block-start:-100px; z-index:1300; padding:12px 20px; border-radius:999px; background:#fff; color:#262626; font:700 16px Montserrat,Arial,sans-serif; text-decoration:none; }
+body .skip-link:focus-visible { inset-block-start:16px; }

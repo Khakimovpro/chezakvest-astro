@@ -217,7 +217,7 @@ const bodyClass = [
 >
   {renderSharedHeader && <Header />}
 
-  <main>
+  <main id="main" tabindex="-1">
     {nativeHoliday && <div class="product-page product-holiday-page">
       <ProductHolidayHero data={hero} phoneHref={site.header.phoneHref} wa={site.header.wa} base={base} />
       <ProductPlayers data={nativePlayers?.photos?.length ? { title: nativePlayers.title, items: nativePlayers.photos.map((src, index) => ({ src, alt: `Фото праздника ${index + 1}` })) } : null} base={base} />
@@ -231,14 +231,14 @@ const bodyClass = [
       {nativeByKind('cards')?.items?.length > 0 && <div class="product-cards-tail product-section--ink" data-product-reveal><CardsRow title={typograf(nativeByKind('cards').title)} subtitle={typograf(nativeByKind('cards').subtitle)} items={canonicalCardItems(nativeByKind('cards').items).map(item => ({...item, t: typograf(item.t)}))} id={nativeByKind('cards').id || 'scenarii'} variant={nativeByKind('cards').variant || 'square'} uptitle={typograf(nativeByKind('cards').uptitle || '')} /></div>}
       <section class="product-section product-section--ground product-lead-band"><div class="container">
         {nativeByKind('lead-cta')?.cta && <div class="product-quiz"><ProductSectionHeader title={nativeByKind('lead-cta').title} lead={nativeByKind('lead-cta').subtitle} /><ProductButton href={nativeByKind('lead-cta').href || '#quiz'} data-quiz={quizId} size="lg" icon="arrow-right" iconEnd block>{nativeByKind('lead-cta').cta}</ProductButton></div>}
-        {nativeQuizForm && <div data-product-reveal><PartyForm id="kquiz" sectionId="quiz" title={nativeQuizForm.title} subtitle={nativeQuizForm.subtitle} cta={nativeQuizForm.cta} variant={nativeQuizForm.variant} /></div>}
+        {nativeQuizForm && <div data-product-reveal><PartyForm id="kquiz" sectionId="quiz" title={typograf(nativeQuizForm.title)} subtitle={typograf(nativeQuizForm.subtitle)} cta={nativeQuizForm.cta} variant={nativeQuizForm.variant} /></div>}
       </div></section>
       {nativeTiles.map((s, index) => <section class:list={['product-section', index === 0 ? 'product-section--sheet' : 'product-section--ground', {'product-section--continue': index > 1}]}><div class="container product-tiles-container"><ProductSectionHeader title={s.title} lead={s.subtitle} /><ul data-product-reveal="group" class:list={['product-tiles', { 'product-tiles--five': s.items.length === 5 }]}>{s.items.map((item) => <li><img src={asset(item.img)} alt={item.t} width="326" height="326" loading="lazy" decoding="async" /><h3><span>{typograf(item.t)}</span></h3></li>)}</ul></div></section>)}
       {nativeSteps?.items?.length > 0 && <section class="product-section product-section--sheet"><div class="container"><ProductSectionHeader title={nativeSteps.title} lead={nativeSteps.subtitle} /><ol class="product-steps" data-product-reveal="group">{nativeSteps.items.map((item, index) => <ProductInfoCard item={item} number={index + 1} />)}</ol></div></section>}
       <ProductHalls data={nativeByKind('halls')} base={base} />
       <ProductMap surface="sheet" data={nativeByKind('map')} base={base} />
       <ProductFaq surface="ground" data={nativeByKind('faq')?.items} />
-      {nativePartyForm && <div class="product-section product-section--accent" data-product-reveal><PartyForm id="pkids" sectionId="prazdnik" title={nativePartyForm.title} subtitle={nativePartyForm.subtitle} cta={nativePartyForm.cta} variant={nativePartyForm.variant} /></div>}
+      {nativePartyForm && <div class="product-section product-section--accent" data-product-reveal><PartyForm id="pkids" sectionId="prazdnik" title={typograf(nativePartyForm.title)} subtitle={typograf(nativePartyForm.subtitle)} cta={nativePartyForm.cta} variant={nativePartyForm.variant} /></div>}
     </div>}
     {!nativeHoliday && <>
     <!-- ============ ГЕРОЙ ============ -->

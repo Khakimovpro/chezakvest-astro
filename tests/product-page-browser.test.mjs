@@ -48,7 +48,7 @@ async function buildAndServe(t) {
 
 const mockSchedule = `<div class="quest_calendar">${Array.from({ length: 32 }, (_, index) => `
   <div class="quest_line${index >= 7 ? ' show_more hidden' : ''}">
-    <div class="col-xs-2_quest">${index + 1} сентября</div>
+    <div class="col-xs-2_quest">${index === 31 ? 'Скоро' : `${index + 1} Сентября/пн`}</div>
     <div class="col-xs-10_quest"><span class="label_quest click_load_item" data-id="${index}" onclick="this.dataset.opened = Number(this.dataset.opened || 0) + 1">12:00</span><span class="label_quest close_item">13:00</span></div>
   </div>`).join('')}
   <div class="show_more"><button class="show_more_btn" type="button" onclick="$('.show_more').toggleClass('hidden');">Показать ещё</button></div>
@@ -70,6 +70,9 @@ test('product booking keeps a visible path for schedule success, failure, and an
   const visibleDays = () => success.locator('[data-source-schedule] .quest_line').evaluateAll((items) => items
     .filter((item) => getComputedStyle(item).display !== 'none').length);
   assert.equal(await visibleDays(), 7);
+  assert.equal(await success.locator('.col-xs-2_quest').first().innerText(), 'ПН, 1 сентября');
+  assert.equal(await success.locator('.product-schedule__dow').count(), 31);
+  assert.equal(await success.locator('.col-xs-2_quest').last().textContent(), 'Скоро');
   const available = success.getByRole('button', { name: '12:00', exact: true }).first();
   await available.focus();
   await success.keyboard.press('Enter');
@@ -98,8 +101,11 @@ test('product booking keeps a visible path for schedule success, failure, and an
     await new Promise((resolve) => setTimeout(resolve, 15_000));
     await route.fulfill({ body: mockSchedule, headers: { 'access-control-allow-origin': '*' } });
   });
+  const delayedRequest = delayed.waitForRequest('https://chezakvest.ru/calendar.php?quest=87');
   await delayed.goto(`${base}/igra_v_kalmara/`, { waitUntil: 'domcontentloaded' });
   await delayed.locator('[data-source-schedule]').scrollIntoViewIfNeeded();
+  await delayedRequest;
+  assert.equal(await delayed.locator('[data-product-booking-fallback]').isHidden(), true, 'fallback stays hidden while the calendar is loading');
   await delayed.locator('[data-product-booking-fallback]').waitFor({ state: 'visible', timeout: 10_000 });
   await delayed.close();
 
@@ -159,7 +165,7 @@ test('product pilots keep readable CTAs, complete hero images, distinct kids her
       return {
         buttons,
         images,
-        hero: hero && heroImage ? { height: hero.getBoundingClientRect().height, imageHeight: heroImage.getBoundingClientRect().height } : null,
+        hero: hero && heroImage ? { height: hero.querySelector('.product-hero__media').getBoundingClientRect().height, imageHeight: heroImage.getBoundingClientRect().height } : null,
         overlaps: kicker && h1 ? !(kicker.bottom <= h1.top || h1.bottom <= kicker.top) : false,
       };
     });
@@ -176,7 +182,7 @@ test('product pilots keep readable CTAs, complete hero images, distinct kids her
       } else assert.ok(contrast(rgb(button.color), rgb(button.background)) >= 4.5, `${slug}: ${button.text} has AA contrast`);
     }
     assert.ok(checks.images.length > 0 && checks.images.every((image) => image.width > 0), `${slug}: visible photos loaded (${JSON.stringify(checks.images.filter((image) => image.width === 0))})`);
-    assert.equal(checks.hero?.height, checks.hero?.imageHeight, `${slug}: hero image covers the whole hero`);
+    assert.equal(checks.hero?.height, checks.hero?.imageHeight, `${slug}: hero image fills its media frame`);
     assert.equal(checks.overlaps, false, `${slug}: holiday kicker and H1 do not overlap`);
     for (const width of [390, 768, 1440]) {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
@@ -246,7 +252,7 @@ test('product motion preserves layout, reduced-motion access and content without
   for (const slug of ['igra_v_kalmara', 'kids']) for (const width of [390,1440]) {
     const page = await browser.newPage({viewport:{width,height:900}});
     await page.route('https://chezakvest.ru/calendar.php?quest=87', route => route.fulfill({body:mockSchedule,headers:{'access-control-allow-origin':'*'}}));
-    await page.goto(`${base}/${slug}/`, {waitUntil:'networkidle'});
+    await page.goto(`${base}/${slug}/`, {waitUntil:'load'});
     await page.evaluate(() => document.fonts.ready);
     await page.evaluate(() => { window.productCLS = 0; new PerformanceObserver(list => list.getEntries().forEach(entry => { if (!entry.hadRecentInput) window.productCLS += entry.value; })).observe({type:'layout-shift'}); });
     assert.equal(await page.locator('.product-hero .is-pending').count(), 0);
@@ -271,6 +277,16 @@ test('product motion preserves layout, reduced-motion access and content without
       const states=await access.locator('[data-product-reveal]').evaluateAll(elements=>elements.map(el=>({opacity:getComputedStyle(el).opacity,transform:getComputedStyle(el).transform})));
       assert.ok(states.length > 10 && states.every(state=>state.opacity==='1'&&state.transform==='none'));
       if(options.javaScriptEnabled === false) {
+        for (const video of await access.locator('.hls-video').all()) {
+          assert.equal(await video.locator('a.hls-video__link[href]').isVisible(), true);
+        }
+        if (slug === 'igra_v_kalmara') {
+          const fallback = access.locator('[data-product-booking-fallback]');
+          assert.equal(await fallback.isVisible(), true);
+          assert.equal(await fallback.locator('a[href^="tel:"]').isVisible(), true);
+          assert.equal(await fallback.getByRole('link', {name:'WhatsApp', exact:true}).isVisible(), true);
+          assert.equal(await fallback.locator('form').isVisible(), true);
+        }
         const extra = access.locator('.product-photo-grid__item--hidden, .product-review--hidden');
         if(slug === 'kids') assert.ok(await extra.count() > 0, 'exercise content normally revealed by a button');
         assert.ok((await extra.evaluateAll(elements=>elements.map(el=>el.checkVisibility()))).every(Boolean), 'additional photos and reviews remain available without JavaScript');
@@ -406,4 +422,92 @@ test('product rails scroll, directions stay separate and mobile reviews expand w
     assert.equal(await page.locator('.is-clamped').count(),0);
     await page.close();
   }
+});
+
+
+test('shared navigation skips to content and product lightboxes accept real drag and touch gestures', {timeout:120_000}, async t => {
+  const base = await buildAndServe(t);
+  const browser = await chromium.launch({args:['--no-sandbox']});
+  t.after(() => browser.close());
+  for (const slug of ['igra_v_kalmara', 'kids']) {
+    const page = await browser.newPage({viewport:{width:1440,height:900}, reducedMotion:'reduce'});
+    await page.route('https://widget.yourgood.app/**', route => route.abort());
+    await page.goto(`${base}/${slug}/`, {waitUntil:'load'});
+    await page.evaluate(() => document.fonts.ready);
+    const fonts = await page.evaluate(() => ({
+      global: ['.nav a', '.hdr__phone', '.ft__col a', '.crumbs a'].map(selector => document.querySelector(selector)).filter(Boolean).map(el => getComputedStyle(el).fontFamily),
+      prose: getComputedStyle(document.querySelector('main .product-short p, main .product-hero__sub')).fontFamily,
+    }));
+    assert.ok(fonts.global.length >= 3 && fonts.global.every(font => /^"?Montserrat/u.test(font)));
+    assert.match(fonts.prose, /^"?Nunito/u);
+    await page.keyboard.press('Tab');
+    assert.equal(await page.locator('.skip-link').evaluate(el => el === document.activeElement), true);
+    const skipBounds = await page.locator('.skip-link').boundingBox();
+    assert.ok(skipBounds.y >= 0 && skipBounds.y + skipBounds.height <= 900, 'focused skip-link is on screen');
+    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('main#main').evaluate(el => el === document.activeElement), true);
+    const trigger = page.locator('.nav__trigger > a').first();
+    await trigger.focus();
+    assert.equal(await trigger.getAttribute('aria-expanded'), 'false');
+    await page.keyboard.press('Tab');
+    assert.equal(await page.evaluate(() => Boolean(document.activeElement.closest('.mega'))), false);
+    await trigger.focus();
+    await page.keyboard.press('Space');
+    assert.equal(await trigger.getAttribute('aria-expanded'), 'true');
+    await page.waitForFunction(() => { const style = getComputedStyle(document.querySelector('.mega')); return style.visibility === 'visible' && style.opacity === '1'; });
+    await page.keyboard.press('Tab');
+    assert.equal(await page.evaluate(() => Boolean(document.activeElement.closest('.mega'))), true);
+    await page.keyboard.press('Escape');
+    assert.equal(await trigger.getAttribute('aria-expanded'), 'false');
+    assert.equal(await trigger.evaluate(el => el === document.activeElement), true);
+    const currentUrl = page.url();
+    await page.keyboard.press('Enter');
+    assert.equal(await trigger.getAttribute('aria-expanded'), 'true');
+    await page.waitForFunction(() => { const style = getComputedStyle(document.querySelector('.mega')); return style.visibility === 'visible' && style.opacity === '1'; });
+    assert.equal(page.url(), currentUrl, 'first Enter opens the menu without navigation');
+    await page.keyboard.press('Escape');
+    await trigger.hover();
+    await page.locator('.mega a').first().focus();
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('.mega').first().isVisible(), false, 'Escape also dismisses a hovered panel');
+    await page.locator('main .zoomable').first().click();
+    const img = page.locator('.lb__img');
+    await img.evaluate(el => el.decode());
+    const bounds = await img.boundingBox();
+    await page.mouse.move(bounds.x + bounds.width * .8, bounds.y + bounds.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(bounds.x + bounds.width * .2, bounds.y + bounds.height / 2, {steps:12});
+    await page.mouse.up();
+    assert.match(await page.locator('.lb__counter').innerText(), /^2\s*\//u);
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('dialog.lb').evaluate(el => el.open), false);
+    await page.close();
+
+    const touch = await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,reducedMotion:'reduce'});
+    await touch.route('https://widget.yourgood.app/**', route => route.abort());
+    await touch.goto(`${base}/${slug}/`, {waitUntil:'load'});
+    await touch.locator('main .zoomable').first().tap();
+    await touch.locator('.lb__img').evaluate(el => el.decode());
+    const box = await touch.locator('.lb__img').boundingBox();
+    const y = box.y + box.height / 2;
+    const cdp = await touch.context().newCDPSession(touch);
+    await cdp.send('Input.dispatchTouchEvent', {type:'touchStart',touchPoints:[{x:320,y}]});
+    for (const x of [290,250,210,170,130,90,60]) {
+      await cdp.send('Input.dispatchTouchEvent', {type:'touchMove',touchPoints:[{x,y}]});
+      await touch.waitForTimeout(20);
+    }
+    await cdp.send('Input.dispatchTouchEvent', {type:'touchEnd',touchPoints:[]});
+    assert.match(await touch.locator('.lb__counter').innerText(), /^2\s*\//u);
+    await touch.keyboard.press('Escape');
+    assert.equal(await touch.locator('dialog.lb').evaluate(el => el.open), false);
+    await touch.close();
+  }
+  const snapshot = await browser.newPage({viewport:{width:1440,height:900}, reducedMotion:'reduce'});
+  await snapshot.route('https://widget.yourgood.app/**', route => route.abort());
+  await snapshot.goto(`${base}/`, {waitUntil:'load'});
+  await snapshot.keyboard.press('Tab');
+  assert.equal(await snapshot.locator('.skip-link').evaluate(el => el === document.activeElement), true);
+  await snapshot.keyboard.press('Enter');
+  assert.equal(await snapshot.locator('main#main').evaluate(el => el === document.activeElement), true, 'snapshot anchor adapter preserves native skip-link focus');
+  await snapshot.close();
 });

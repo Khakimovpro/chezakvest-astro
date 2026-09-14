@@ -1,6 +1,7 @@
 ---
 import ProductGallery from './ProductGallery.astro';
+import { typograf } from '../../lib/typograf.js';
 import PartyForm from '../PartyForm.astro';
 const { data, base } = Astro.props;
 ---
-{data && <div class="product-party product-section--ground"><ProductGallery data={{ title: data.title || 'Праздник после игры', items: data.photos }} base={base} group="product-party" /><div class="product-party__form" data-product-reveal><PartyForm /></div></div>}
+{data && <div class="product-party product-section--ground"><ProductGallery data={{ title: data.title || 'Праздник после игры', items: data.photos }} base={base} group="product-party" /><div class="product-party__form" data-product-reveal><PartyForm title={typograf('У нас вы можете отметить День рождения!')} /></div></div>}
