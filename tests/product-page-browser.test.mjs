@@ -362,8 +362,12 @@ test('product rails scroll, directions stay separate and mobile reviews expand w
           assert.equal(await wrap.locator('.cards__arrow--next').isHidden(), true);
           continue;
         }
-        await wrap.locator('.cards__arrow--next').click();
+        const immediatePosition=await wrap.locator('.cards__arrow--next').evaluate(button=>{button.click();return button.closest('.cards__wrap').querySelector('.cards__row').scrollLeft;});
+        assert.ok(immediatePosition>0,'reduced-motion click updates the row synchronously');
         await page.waitForFunction(el=>el.scrollLeft>0,await row.elementHandle());
+        const instantPosition=await row.evaluate(el=>el.scrollLeft);
+        await page.waitForTimeout(150);
+        assert.equal(await row.evaluate(el=>el.scrollLeft),instantPosition, 'reduced-motion scrolling completes immediately');
       }
     }
     for (const width of [390,768,1440]) {

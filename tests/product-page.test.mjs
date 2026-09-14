@@ -135,7 +135,7 @@ test('each pilot hall names its equipment in complete nominative labels', async 
   assert.ok(halls.length>0);
   for(const hall of halls) assert.ok(hall.equipment.every(item=>/^[А-ЯЁ]/u.test(item)));
   const html=await readFile(new URL('../dist/kids/index.html',import.meta.url),'utf8');
-  assert.equal((html.match(/class="product-halls__equipment-title"/gu)||[]).length,halls.length);
+  assert.equal((html.match(/<p class="product-halls__equipment-title"[^>]*>Оснащение<\/p>/gu)||[]).length,halls.length);
 });
 
 test('pilot display copy keeps the approved spelling and casing',()=>{

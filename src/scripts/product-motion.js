@@ -31,12 +31,15 @@ if (preference.matches && 'IntersectionObserver' in window && document.visibilit
   });
 }
 
-if (!preference.matches) document.querySelectorAll('[data-product-rail]').forEach((rail) => {
+document.querySelectorAll('[data-product-rail], .product-page .cards__wrap').forEach((rail) => {
   rail.addEventListener('click', (event) => {
-    const button = event.target.closest('[data-product-next], [data-product-previous]');
+    if (preference.matches) return;
+    const button = event.target.closest('[data-product-next], [data-product-previous], .cards__arrow');
     if (!button) return;
     event.stopImmediatePropagation();
-    const track = rail.querySelector('.product-rail__track');
-    track.scrollBy({ left: track.clientWidth * (button.hasAttribute('data-product-next') ? .85 : -.85), behavior: 'instant' });
+    const track = rail.querySelector('.product-rail__track, .cards__row');
+    const forward = button.hasAttribute('data-product-next') || button.classList.contains('cards__arrow--next');
+    const step = track.matches('.cards__row') ? Math.max(240, track.clientWidth * .8) : track.clientWidth * .85;
+    track.scrollBy({ left: step * (forward ? 1 : -1), behavior: 'instant' });
   }, true);
 });
