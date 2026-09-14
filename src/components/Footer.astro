@@ -56,3 +56,10 @@ const hrefFor = (item) => item.ext ? item.href : link(item.href);
 </footer>
 
 <MessengerFab />
+
+<style>
+  .ft { --footer-space: 24px; }
+  .ft .ft__logo { display: block; width: 140px; max-width: 140px; height: auto; }
+  .ft .ft__bottom { padding-block: var(--footer-space); }
+  @media (max-width: 767px) { .ft .ft__logo { width: 120px; max-width: 120px; } }
+</style>
