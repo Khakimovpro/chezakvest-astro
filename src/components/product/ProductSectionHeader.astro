@@ -7,7 +7,7 @@ const parts = headingParts(lead, titleTail);
 <header class:list={['product-sh', className]} data-product-reveal>
   <div class="product-sh__main">
     {eyebrow && <p class="product-sh__eyebrow">{typograf(eyebrow)}</p>}
-    <h2 class="product-sh__title" id={id}>{typograf(title)}{parts.tail && <span class="product-sh__tail">{typograf(parts.tail)}</span>}</h2>
+    <h2 class="product-sh__title" id={id}>{typograf(title)}{parts.tail && ' '}{parts.tail && <span class="product-sh__tail">{typograf(parts.tail)}</span>}</h2>
     {parts.lead && <p class="product-sh__lead">{typograf(parts.lead)}</p>}
   </div>
   {Astro.slots.has('aside') && <div class="product-sh__aside"><slot name="aside" /></div>}

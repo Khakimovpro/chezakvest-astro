@@ -5,8 +5,8 @@ import { typograf } from '../../lib/typograf.js';
 const { items = [], variant = 'inline', columns = 1, tone = 'light', class: className = '', fallback } = Astro.props;
 ---
 <ul class:list={['product-icon-list', `product-icon-list--${variant}`, `product-icon-list--${tone}`, { 'product-icon-list--columns': columns === 2 }, className]}>
-  {items.map((item) => { const text = typeof item === 'string' ? item : item.t; return <li>
-    <span class="product-icon-list__icon"><Icon name={item.icon || (variant === 'check' ? 'check' : pickIcon(text, fallback))} /></span>
-    <div><span class="product-icon-list__title">{typograf(text)}</span>{item.sub && <p>{typograf(item.sub)}</p>}</div>
+  {items.map((item) => { const entry = typeof item === 'string' ? { t: item } : item; const text = entry.t; return <li>
+    <span class="product-icon-list__icon"><Icon name={entry.icon || (variant === 'check' ? 'check' : pickIcon(text, fallback))} /></span>
+    <div><span class="product-icon-list__title">{typograf(text)}</span>{entry.sub && <p>{typograf(entry.sub)}</p>}</div>
   </li>; })}
 </ul>

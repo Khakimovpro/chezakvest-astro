@@ -1,7 +1,8 @@
 ---
+import ProductButton from './ProductButton.astro';
 const { phoneHref, bookingId = 'booking', bookingLabel = 'Забронировать' } = Astro.props;
 ---
-<nav class="product-mobile-cta" data-product-mobile-cta aria-label="Быстрые действия"><a href={phoneHref}>Позвонить</a><a href={`#${bookingId}`}>{bookingLabel}</a></nav>
+<nav class="product-mobile-cta" data-product-mobile-cta aria-label="Быстрые действия"><ProductButton href={phoneHref} variant="secondary" icon="phone">Позвонить</ProductButton><ProductButton href={`#${bookingId}`} icon="calendar-check">{bookingLabel}</ProductButton></nav>
 <script>
   const header = document.querySelector('.hdr');
   if (header) {
@@ -10,18 +11,22 @@ const { phoneHref, bookingId = 'booking', bookingLabel = 'Забронирова
     new ResizeObserver(syncHeaderHeight).observe(header);
   }
   const bar = document.querySelector('[data-product-mobile-cta]');
-  const booking = document.querySelector('[data-product-mobile-cta] a:last-child')?.getAttribute('href')?.slice(1);
-  const bookingSection = booking && document.getElementById(booking);
+  const hero = document.querySelector('.product-hero');
   const fab = document.querySelector('.mfab');
-  let bookingVisible = false;
+  const targets = [...document.querySelectorAll('.product-page #booking, .product-page #prazdnik, .product-page #quiz')];
+  const visibleTargets = new Set();
   const sync = () => {
-    const visible = scrollY > 350 && !bookingVisible;
+    const visible = Boolean(hero && hero.getBoundingClientRect().bottom < 0 && visibleTargets.size === 0);
     bar?.classList.toggle('product-mobile-cta--visible', visible);
+    bar?.toggleAttribute('inert', !visible);
     fab?.classList.toggle('mfab--above-product-cta', visible);
   };
-  if (bar && bookingSection) {
-    const observer = new IntersectionObserver(([entry]) => { bookingVisible = entry.isIntersecting; sync(); }, { threshold: .15 });
-    observer.observe(bookingSection);
+  if (bar && hero) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => entry.isIntersecting ? visibleTargets.add(entry.target) : visibleTargets.delete(entry.target));
+      sync();
+    });
+    targets.forEach((target) => observer.observe(target));
     addEventListener('scroll', sync, { passive: true });
     sync();
   }
