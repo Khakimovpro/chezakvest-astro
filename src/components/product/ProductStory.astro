@@ -1,9 +1,9 @@
 ---
 import ProductSectionHeader from './ProductSectionHeader.astro';
-import ProductButton from './ProductButton.astro';
 import ProductIconList from './ProductIconList.astro';
-import Icon from './Icon.astro';
 import { typograf } from '../../lib/typograf.js';
 const { data, surface = 'sheet' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const photo = data?.story?.photo;
 ---
-{data && <section class={`product-section product-section--${surface}`} id="story"><div class="container product-story"><div class="product-prose"><ProductSectionHeader title={data.story?.title} />{data.story?.paragraphs?.map((p) => <p>{typograf(p)}</p>)}</div>{data.features && <div class="product-story__features"><ProductSectionHeader title={data.features.title || 'Особенности'} class="product-sh--compact" />{data.features.lead?.map((p) => <p>{typograf(p)}</p>)}<ProductIconList items={data.features.items} variant="tile" /></div>}</div></section>}
+{data && <section class={`product-section product-section--${surface}`} id="story"><div class:list={["container product-story", {"product-story--photo": photo}]}>{photo && <div class="product-story__photo"><img src={`${base}${photo.src}`} alt={photo.alt} width="1200" height="800" loading="lazy" decoding="async" /></div>}<div class="product-prose"><ProductSectionHeader title={data.story?.title} />{data.story?.paragraphs?.map((p) => <p>{typograf(p)}</p>)}</div>{data.features && <div class="product-story__features"><ProductSectionHeader title={data.features.title || 'Особенности'} class="product-sh--compact" />{data.features.lead?.map((p) => <p>{typograf(p)}</p>)}<ProductIconList items={data.features.items} variant="tile" /></div>}</div></section>}

@@ -2,6 +2,7 @@
 // Schedule widgets are intentionally not copied. This lightweight fallback
 // collects a preliminary request for the selected quest through the common lead
 // form path, keeping the source calendar id available to a future integration.
+import PhoneField from './product/PhoneField.astro';
 import site from '../data/site.json';
 import { siteHref } from '../lib/urls.js';
 
@@ -19,8 +20,8 @@ const { id = 'booking-form', quest = '', calendarId = '' } = Astro.props;
             aria-describedby={`${id}-status`}>
         <div class="prebook__grid">
           <label class="prebook__field" for={`${id}-date`}>
-            <span>Желаемая дата</span>
-            <input id={`${id}-date`} name="date" type="date" autocomplete="off" required />
+            <span>Желаемая дата <small class="form-optional">(необязательно)</small></span>
+            <input id={`${id}-date`} name="date" type="date" autocomplete="off" />
           </label>
           <label class="prebook__field" for={`${id}-name`}>
             <span>Ваше имя</span>
@@ -28,7 +29,7 @@ const { id = 'booking-form', quest = '', calendarId = '' } = Astro.props;
           </label>
           <label class="prebook__field" for={`${id}-phone`}>
             <span>Телефон</span>
-            <input id={`${id}-phone`} name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="24" placeholder="+7 (000) 000-00-00" required />
+            <PhoneField id={`${id}-phone`} />
           </label>
         </div>
         <label class="prebook__consent">
@@ -45,3 +46,6 @@ const { id = 'booking-form', quest = '', calendarId = '' } = Astro.props;
 <script>
   import '../scripts/lead-form.js';
 </script>
+<style>
+  .prebook__submit { max-width: 100%; min-height: 56px; height: auto; white-space: normal; padding: 12px 20px; }
+</style>

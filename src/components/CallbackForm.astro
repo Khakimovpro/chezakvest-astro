@@ -1,5 +1,6 @@
 ---
 // Сквозная форма «Есть вопрос?» — есть на главной и на всех внутренних страницах.
+import PhoneField from './product/PhoneField.astro';
 import site from '../data/site.json';
 import { siteHref } from '../lib/urls.js';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
@@ -19,10 +20,7 @@ const s = site;
         </div>
         <div class="cbform__field">
           <label class="cbform__label" for={`${id}-phone`}>Телефон</label>
-          <div class="cbform__phone">
-            <span class="cbform__flag" aria-hidden="true">🇷🇺</span>
-            <input id={`${id}-phone`} name="phone" type="tel" placeholder={`+7 ${s.callback.phonePh}`} inputmode="tel" autocomplete="tel" maxlength="24" required />
-          </div>
+          <PhoneField id={`${id}-phone`} />
         </div>
       </div>
       <label class="cbform__consent">
@@ -39,3 +37,7 @@ const s = site;
 <script>
   import '../scripts/lead-form.js';
 </script>
+
+<style>
+  @media (min-width: 768px) and (max-width: 1023px) { .cbform__fields { grid-template-columns: minmax(0,1fr); } }
+</style>
