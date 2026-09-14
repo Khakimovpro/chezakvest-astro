@@ -45,7 +45,7 @@
   "vypusknoj": "67d071e5d174cb00188cdd22"
  },
  "leads": {
-  "recipient": ""
+  "recipient": "/api/lead"
  },
  "analytics": {
   "metrikaId": "48864086"

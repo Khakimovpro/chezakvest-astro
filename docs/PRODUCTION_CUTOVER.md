@@ -67,7 +67,6 @@ artifact.
 | `/garri-kvesttam` | `/kvest_v_realnosti_garri_potter_/` | 301 | KvestTam alias for the matching Harry Potter quest. |
 | `/header` | `/` | 301 | Retired Tilda header utility page returns visitors to the homepage. |
 | `/igra-v-kalmara-lend` | `/igra-v-kalmara-lend/` | 200 | Published Squid Game campaign landing owns its canonical URL. |
-| `/kids_spasibo` | `/kids/` | 301 | Retired children's thank-you page returns to the party landing. |
 | `/krestrazh-hunter` | `/kvest_v_realnosti_harry_potter_i_krestrazh/` | 301 | KvestHunter alias for the matching Harry Potter Horcrux quest. |
 | `/krestrazh-kvesttam` | `/kvest_v_realnosti_harry_potter_i_krestrazh/` | 301 | KvestTam alias for the matching Harry Potter Horcrux quest. |
 | `/madagaskar-hunter` | `/kvesty-v-rostove-na-donu/` | 301 | Retired Madagascar quest has no matching migrated page; send visitors to the catalog. |
@@ -144,7 +143,6 @@ artifact.
 | `/roblox-land` | `/roblox-land/` | 200 | Published Roblox campaign landing owns its canonical URL. |
 | `/sherlok-hunter` | `/kvest_v_realnosti_sherlock_holms/` | 301 | KvestHunter alias for the matching Sherlock Holmes quest. |
 | `/sherlok-kvesttam` | `/kvest_v_realnosti_sherlock_holms/` | 301 | KvestTam alias for the matching Sherlock Holmes quest. |
-| `/spasibo` | `/` | 301 | Retired thank-you page returns visitors to the homepage. |
 | `/sv` | `/` | 301 | Retired certificate-form utility page returns visitors to the homepage. |
 | `/wednesday_ukradennaya_vesch` | `/wednesday-poteryannaya-dusha/` | 301 + fallback | Tilda captures are duplicate; consolidate on the retained Wednesday page. |
 | `/zamok-hunter` | `/kvest_v_realnosti_zamok_drakuly/` | 301 | KvestHunter alias for the matching Dracula Castle quest. |

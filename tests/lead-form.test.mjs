@@ -10,7 +10,7 @@ import {
   sendLead,
 } from '../src/scripts/lead-form.js';
 
-test('keeps an accepted blank-recipient request from opening duplicate WhatsApp drafts until a field changes', () => {
+test('keeps an accepted request latched until a field changes', () => {
   const guard = createSubmissionGuard();
 
   assert.equal(guard.begin(), true, 'the first valid request may start');
@@ -44,12 +44,11 @@ test('uses Rostov local date as the minimum booking date', () => {
 
 test('does not make a delivery request while the configured recipient is blank', async () => {
   let requests = 0;
-  const delivered = await sendLead('', { name: 'Аня' }, async () => {
+  await assert.rejects(sendLead('', { name: 'Аня' }, async () => {
     requests += 1;
-    return { ok: true };
-  });
+    return { ok: true, json: async () => ({ ok: true }) };
+  }), /endpoint is missing/);
 
-  assert.equal(delivered, false);
   assert.equal(requests, 0);
 });
 
@@ -57,7 +56,7 @@ test('posts a single JSON lead to a configured recipient', async () => {
   let request;
   const delivered = await sendLead('https://example.test/leads', { name: 'Аня', phone: '+7 (928) 216-36-23' }, async (url, options) => {
     request = { url, options };
-    return { ok: true };
+    return { ok: true, json: async () => ({ ok: true }) };
   });
 
   assert.equal(delivered, true);
@@ -65,10 +64,17 @@ test('posts a single JSON lead to a configured recipient', async () => {
   assert.equal(request.options.method, 'POST');
   assert.equal(request.options.headers['content-type'], 'application/json');
   assert.deepEqual(JSON.parse(request.options.body), { name: 'Аня', phone: '+7 (928) 216-36-23' });
-  assert.equal(request.options.credentials, 'omit');
+  assert.equal(request.options.credentials, 'same-origin');
 });
 
 test('creates a safe WhatsApp draft URL only for a valid recipient', () => {
   assert.match(createWhatsAppUrl('https://wa.me/79282163623', 'Заявка'), /^https:\/\/wa\.me\/79282163623\?text=/);
   assert.equal(createWhatsAppUrl('not-a-number', 'Заявка'), '');
+});
+
+
+test('rejects non-2xx and malformed success responses', async () => {
+  for (const response of [{ok:false,status:500}, {ok:true,json:async()=>({ok:false})}]) {
+    await assert.rejects(sendLead('/api/lead', {}, async () => response));
+  }
 });

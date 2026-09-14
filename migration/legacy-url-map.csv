@@ -2,9 +2,7 @@ source,target,status,reason
 /page57307963.html,/minecraft,301,Legacy numeric alias for the Minecraft landing.
 /minecraft-lend,/minecraft-lend,200,Published Minecraft campaign landing owns its canonical URL.
 /page48687287.html,/,301,Retired thank-you page returns visitors to the homepage.
-/spasibo,/,301,Retired thank-you page returns visitors to the homepage.
 /page62529067.html,/kids,301,Retired children's thank-you page returns to the party landing.
-/kids_spasibo,/kids,301,Retired children's thank-you page returns to the party landing.
 /page51322757.html,/privacy,301,Legacy numeric alias for the published privacy policy.
 /privacy,/privacy,200,Already published at its canonical path; no redirect is emitted.
 /page56559131.html,/,301,Retired loyalty-form utility page returns visitors to the homepage.

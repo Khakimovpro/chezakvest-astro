@@ -1,3 +1,4 @@
+import { markLeadStarted, submitLeadForm } from './lead-form.js';
 /* Модуль «forms» живого слоя снимков.
  *
  * Что здесь живёт и зачем:
@@ -991,6 +992,10 @@ function normaliseForm(form) {
   if (form.dataset.sourceFormsReady === 'yes') return;
   form.dataset.sourceFormsReady = 'yes';
   form.setAttribute('novalidate', '');
+  form.querySelectorAll('[data-tilda-rule="date"], .t-datepicker').forEach((input) => {
+    input.removeAttribute('required');
+    input.removeAttribute('data-tilda-req');
+  });
   form.querySelectorAll('input[required], textarea[required], select[required]').forEach((control) => {
     control.removeAttribute('required');
     control.setAttribute('data-tilda-req', '1');
@@ -1011,7 +1016,10 @@ export function initSourceForms(root = document) {
   const shell = root.querySelector?.('.source-snapshot-shell');
   if (!shell) return;
 
-  shell.querySelectorAll('form').forEach((form) => normaliseForm(form));
+  shell.querySelectorAll('form').forEach((form) => {
+    normaliseForm(form);
+    form.addEventListener('focusin', () => markLeadStarted(form), { once: true });
+  });
   shell.querySelectorAll('div.t-input-phonemask__wrap').forEach((wrap) => initPhoneField(wrap));
   shell.querySelectorAll('input.t-datepicker').forEach((input) => initDateField(input));
 
@@ -1027,7 +1035,12 @@ export function initSourceForms(root = document) {
     if (!form.closest('.source-snapshot-shell')) return;
     const errors = collectErrors(form);
     clearErrors(form);
-    if (!errors.length) return;
+    if (!errors.length) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      void submitLeadForm(form);
+      return;
+    }
     event.preventDefault();
     event.stopImmediatePropagation();
     errors.forEach(([control, type]) => showError(form, control, MESSAGES[type]));
@@ -1062,4 +1075,5 @@ export function initSourceForms(root = document) {
   });
   window.addEventListener('resize', () => { if (openCalendar) positionCalendar(openCalendar); });
   document.addEventListener('scroll', () => { if (openCalendar) positionCalendar(openCalendar); }, true);
+  document.dispatchEvent(new CustomEvent('lead:forms-ready'));
 }

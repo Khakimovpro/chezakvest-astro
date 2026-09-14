@@ -850,6 +850,7 @@ const html = fillEmptyImages(withBase(snapshot.html
 
     const enableLocalFormControls = () => {
       document.querySelectorAll('[data-local-source-form][data-local-form-pending]').forEach((form) => {
+        if (form.dataset.leadReady !== 'true' && form.dataset.sourceFormsReady !== 'yes') return;
         form.querySelectorAll('input[disabled], textarea[disabled], select[disabled], button[disabled]').forEach((control) => {
           control.removeAttribute('disabled');
         });
@@ -857,27 +858,8 @@ const html = fillEmptyImages(withBase(snapshot.html
       });
     };
 
-    const submitLocally = (form) => {
-      const success = form.querySelector('[data-local-form-success], .js-successbox');
-      if (success instanceof HTMLElement) {
-        success.hidden = false;
-        success.style.display = 'grid';
-        success.textContent = 'Спасибо! Заявка принята.';
-      }
-      const inputs = form.querySelector('.t-form__inputsbox');
-      if (inputs instanceof HTMLElement) inputs.hidden = true;
-      form.dataset.submitted = 'true';
-    };
+    document.addEventListener('lead:forms-ready', enableLocalFormControls);
 
-    document.addEventListener('submit', (event) => {
-      const form = event.target;
-      if (!(form instanceof HTMLFormElement)
-        || !form.hasAttribute('data-local-source-form')
-        || form.hasAttribute('data-lead-form')
-        || event.defaultPrevented) return;
-      event.preventDefault();
-      submitLocally(form);
-    });
     document.addEventListener('click', (event) => {
       const sliderControl = event.target instanceof Element
         ? event.target.closest('.t-slds__arrow_wrapper-left, .t-slds__arrow_wrapper-right, .t-slds__bullet')
