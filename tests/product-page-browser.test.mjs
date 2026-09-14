@@ -48,7 +48,7 @@ async function buildAndServe(t) {
 const mockSchedule = `<div class="quest_calendar">${Array.from({ length: 32 }, (_, index) => `
   <div class="quest_line${index >= 7 ? ' show_more hidden' : ''}">
     <div class="col-xs-2_quest">${index + 1} сентября</div>
-    <div class="col-xs-10_quest"><button class="label_quest" type="button">12:00</button></div>
+    <div class="col-xs-10_quest"><span class="label_quest click_load_item" data-id="${index}" onclick="this.dataset.opened = Number(this.dataset.opened || 0) + 1">12:00</span><span class="label_quest close_item">13:00</span></div>
   </div>`).join('')}
   <div class="show_more"><button class="show_more_btn" type="button" onclick="$('.show_more').toggleClass('hidden');">Показать ещё</button></div>
 </div>`;
@@ -69,6 +69,18 @@ test('product booking keeps a visible path for schedule success, failure, and an
   const visibleDays = () => success.locator('[data-source-schedule] .quest_line').evaluateAll((items) => items
     .filter((item) => getComputedStyle(item).display !== 'none').length);
   assert.equal(await visibleDays(), 7);
+  const available = success.getByRole('button', { name: '12:00', exact: true }).first();
+  await available.focus();
+  await success.keyboard.press('Enter');
+  assert.equal(await available.getAttribute('data-opened'), '1');
+  await success.keyboard.press('Space');
+  assert.equal(await available.getAttribute('data-opened'), '2');
+  const unavailable = success.getByRole('button', { name: '13:00', exact: true }).first();
+  assert.equal(await unavailable.getAttribute('aria-disabled'), 'true');
+  assert.equal(await unavailable.getAttribute('tabindex'), '-1');
+  const bounds = await available.boundingBox();
+  assert.ok(bounds.width >= 44 && bounds.height >= 44);
+
   await success.locator('[data-source-schedule] .show_more_btn').click();
   assert.ok(await visibleDays() > 7);
   await assert.equal(await success.locator('[data-product-booking-fallback]').isHidden(), true);
@@ -151,6 +163,63 @@ test('product pilots keep readable CTAs, complete hero images, distinct kids her
     assert.ok(checks.images.length > 0 && checks.images.every((image) => image.width > 0), `${slug}: visible photos loaded (${JSON.stringify(checks.images.filter((image) => image.width === 0))})`);
     assert.equal(checks.hero?.height, checks.hero?.imageHeight, `${slug}: hero image covers the whole hero`);
     assert.equal(checks.overlaps, false, `${slug}: holiday kicker and H1 do not overlap`);
+    for (const width of [390, 768, 1440]) {
+      await page.setViewportSize({ width, height: width === 390 ? 844 : 900 });
+      const layout = await page.evaluate(() => {
+        const gap = (first, second) => second.getBoundingClientRect().top - first.getBoundingClientRect().bottom;
+        const story = document.querySelector('.product-story .product-prose');
+        const heading = story?.querySelector('h2');
+        const paragraphs = story?.querySelectorAll('p');
+        const callback = document.querySelector('.cbform__title');
+        return {
+          videos: [...document.querySelectorAll('.product-video .hls-video')].map((video) => {
+            const box = video.getBoundingClientRect();
+            const [w, h] = getComputedStyle(video).aspectRatio.split('/').map(Number);
+            return { width: box.width, height: box.height, ratio: w / h };
+          }),
+          points: document.querySelectorAll('.product-video__points > li').length,
+          headingGap: heading && gap(heading, paragraphs[0]),
+          paragraphGap: paragraphs?.length > 1 && gap(paragraphs[0], paragraphs[1]),
+          callbackColor: callback && getComputedStyle(callback).color,
+        };
+      });
+      assert.equal(layout.points, 3, `${slug}: video has three sourced points`);
+      for (const video of layout.videos) {
+        assert.ok(video.width <= (width === 390 ? 320 : 360) + 1, `${slug}: portrait video is bounded`);
+        assert.ok(Math.abs(video.width / video.height - video.ratio) < 0.01, `${slug}: media keeps source ratio`);
+      }
+      if (Number.isFinite(layout.headingGap)) {
+        assert.ok(layout.headingGap >= 16, 'story heading remains separated from copy after the CSS reset');
+        assert.ok(layout.paragraphGap >= 16, 'story paragraphs remain distinct');
+      }
+      if (layout.callbackColor) assert.ok(contrast(rgb(layout.callbackColor), [233, 233, 233]) >= 4.5, 'callback heading is readable on its light surface');
+      for (const field of await page.locator('.pform__field--name, .pform__field--phone').all()) {
+        const input = field.locator('input');
+        await input.fill(await input.getAttribute('name') === 'phone' ? '+7 (900) 000-00-00' : 'Проверка');
+        for (const focused of [true, false]) {
+          if (focused) await input.focus();
+          else await input.blur();
+          const separated = await field.evaluate((el) => el.querySelector('label').getBoundingClientRect().bottom <= el.querySelector('input').getBoundingClientRect().top);
+          assert.ok(separated, `${slug} ${width}: field label stays above the entered value with and without focus`);
+        }
+      }
+      for (const tab of await page.locator('[data-product-package-tab]').all()) {
+        await tab.click();
+        const grid = page.locator('[data-product-package-panel]:visible .product-packages__grid');
+        for (const card of await grid.locator('article').all()) {
+          await card.scrollIntoViewIfNeeded();
+          const bounds = await card.evaluate((el) => {
+            const box = el.getBoundingClientRect();
+            const grid = el.parentElement.getBoundingClientRect();
+            return { width: box.width, gridWidth: grid.width, inside: box.left >= grid.left - 1 && box.right <= grid.right + 1, overflow: el.scrollWidth > el.clientWidth + 1 };
+          });
+          assert.ok(bounds.gridWidth <= width - 40, 'package rail fits its container');
+          assert.ok(bounds.inside && !bounds.overflow, 'every package can be scrolled fully into view without clipped content');
+          if (width === 390) assert.ok(Math.abs(bounds.width - 314) < 1, 'package leaves a visible preview of the next card');
+          assert.equal(await card.locator('.btn-orange').isVisible(), true);
+        }
+      }
+    }
     await page.close();
   }
 });

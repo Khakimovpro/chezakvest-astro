@@ -213,7 +213,7 @@ const bodyClass = [
     {nativeHoliday && <div class="product-page product-holiday-page">
       <ProductHolidayHero data={hero} phoneHref={site.header.phoneHref} wa={site.header.wa} base={base} />
       <ProductPlayers data={nativePlayers?.photos?.length ? { title: nativePlayers.title, items: nativePlayers.photos.map((src, index) => ({ src, alt: `Фото праздника ${index + 1}` })) } : null} base={base} />
-      <ProductVideo data={nativeVideos.length ? { title: nativeVideo.title, kind: 'party', items: nativeVideos } : null} />
+      <ProductVideo data={nativeVideos.length ? { title: nativeVideo.title, kind: 'party', items: nativeVideos, intro: nativeVideo.intro, points: nativeVideo.points || nativeByKind('included')?.items } : null} />
       <ProductIncluded data={nativeByKind('included')} />
       <ProductStats data={nativeByKind('stats')} />
       <ProductPackages data={nativeByKind('packages')} />
@@ -223,7 +223,7 @@ const bodyClass = [
       {nativeByKind('cards')?.items?.length > 0 && <CardsRow title={nativeByKind('cards').title} subtitle={nativeByKind('cards').subtitle} items={canonicalCardItems(nativeByKind('cards').items)} id={nativeByKind('cards').id || 'scenarii'} variant={nativeByKind('cards').variant || 'square'} uptitle={nativeByKind('cards').uptitle || ''} />}
       {nativeByKind('lead-cta')?.cta && <section class="product-section product-section--gray product-quiz"><div class="container"><h2 class="section-title">{nativeByKind('lead-cta').title}</h2>{nativeByKind('lead-cta').subtitle && <p class="section-sub">{nativeByKind('lead-cta').subtitle}</p>}<a class="btn-orange" href={nativeByKind('lead-cta').href || '#quiz'} data-quiz={quizId}>{nativeByKind('lead-cta').cta}</a></div></section>}
       {nativeQuizForm && <PartyForm id="kquiz" sectionId="quiz" title={nativeQuizForm.title} subtitle={nativeQuizForm.subtitle} cta={nativeQuizForm.cta} variant={nativeQuizForm.variant} />}
-      {nativeTiles.map((s) => <section class="product-section product-section--white"><div class="container"><h2 class="section-title">{s.title}</h2>{s.subtitle && <p class="section-sub">{s.subtitle}</p>}<ul class="product-tiles">{s.items.map((item) => <li><img src={asset(item.img)} alt={item.t} width="326" height="326" loading="lazy" decoding="async" /><h3>{item.t}</h3></li>)}</ul></div></section>)}
+      {nativeTiles.map((s) => <section class="product-section product-section--white"><div class="container product-tiles-container"><h2 class="section-title">{s.title}</h2>{s.subtitle && <p class="section-sub">{s.subtitle}</p>}<ul class:list={['product-tiles', { 'product-tiles--five': s.items.length === 5 }]}>{s.items.map((item) => <li><img src={asset(item.img)} alt={item.t} width="326" height="326" loading="lazy" decoding="async" /><h3>{item.t}</h3></li>)}</ul></div></section>)}
       {nativeSteps?.items?.length > 0 && <section class="product-section product-section--gray"><div class="container"><h2 class="section-title">{nativeSteps.title}</h2>{nativeSteps.subtitle && <p class="section-sub">{nativeSteps.subtitle}</p>}<ol class="product-timeline">{nativeSteps.items.map((item, index) => <li><b>{index + 1}</b><div><h3>{item.t}</h3>{item.sub && <p>{item.sub}</p>}</div></li>)}</ol></div></section>}
       <ProductHalls data={nativeByKind('halls')} base={base} />
       <ProductMap data={nativeByKind('map')} base={base} />

@@ -39,7 +39,7 @@ export function productPageModel({ page, site, venues = [], venuePage = {}, revi
     } : null,
     short: product.short || null,
     gallery: gallery.length >= 3 ? { title: product.galleryTitle || 'Атмосфера игры', items: gallery } : null,
-    video: hlsSlug ? { title: product.videoTitle || 'Смотрите трейлер', slug: hlsSlug } : null,
+    video: hlsSlug ? { title: product.videoTitle || 'Смотрите трейлер', slug: hlsSlug, intro: product.videoIntro, points: product.videoPoints } : null,
     story: page.story?.paragraphs?.length || page.features?.items?.length ? { story: page.story, features: page.features } : null,
     fit: product.fit?.for?.length || product.fit?.important?.length ? product.fit : null,
     booking: page.booking?.calendarId ? { ...page.booking, quest: page.hero?.h1 || page.seo?.h1 } : null,

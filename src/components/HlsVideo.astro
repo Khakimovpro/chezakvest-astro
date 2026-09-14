@@ -11,7 +11,7 @@ const ratio = `${video.width} / ${video.height}`;
 const rutubeUrl = video.source.rutubeId ? `https://rutube.ru/video/${video.source.rutubeId}/` : '';
 ---
 
-<figure class:list={['hls-video', className]} data-hls-video style={`--hls-ratio:${ratio}`}>
+<figure class:list={['hls-video', { 'hls-video--portrait': video.height > video.width }, className]} data-hls-video style={`--hls-ratio:${ratio}`}>
   <video controls playsinline preload="none" poster={posterUrl} data-hls-src={`${registry.base}/${slug}/master.m3u8`} data-rutube-url={rutubeUrl || undefined} aria-label={title || video.title}></video>
   <button class="hls-video__play" type="button" aria-label={`Смотреть: ${title || video.title}`}>
     <span aria-hidden="true">▶</span>
