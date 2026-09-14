@@ -24,7 +24,7 @@ const LIVE_BLANK_DESCRIPTION_VALUES = new Map([
 ]);
 // `/privacy` is a live noindex legal page, not a migration fallback. It must
 // retain that source directive without permitting noindex on normal pages.
-const LIVE_NOINDEX_PATHS = new Set(['/privacy']);
+const LIVE_NOINDEX_PATHS = new Set(['/privacy', '/spasibo', '/kids_spasibo']);
 // The same live noindex policy has no social preview image tags. Omission is
 // allowed only for that exact route and only for image fields.
 const LIVE_OMITTED_META = new Map([

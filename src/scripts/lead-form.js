@@ -1,3 +1,16 @@
+import site from '../data/site.json' with { type: 'json' };
+import venues from '../data/venues.json' with { type: 'json' };
+import { getVisitContext } from './lead-context.js';
+
+// Public page JSON supplies route context without changing existing form markup.
+let files = {};
+try { files = import.meta.glob('../data/pages/*.json', { eager: true }); } catch { /* Node unit tests have no Vite transform. */ }
+const pageData = Object.fromEntries(Object.values(files).map((mod) => {
+  const page = mod.default || mod;
+  const listed = venues.chips.flatMap((venue) => venue.groups.flatMap((group) => group.items)).find((item) => item.href.replace(/^\/|\/$/g, '') === page.slug);
+  return [page.slug, { type: page.type, venueSlug: page.venueSlug, quest: page.type === 'quest' ? listed?.t || page.seo?.h1 || '' : '' }];
+}));
+
 const RUSSIAN_PHONE_PATTERN = /^(?:7\d{10}|\d{10})$/;
 const MOSCOW_TIME_ZONE = 'Europe/Moscow';
 // Обычная заявка не должна принимать произвольную двухсимвольную строку вместо имени.
@@ -19,11 +32,6 @@ export function formatPhone(digits) {
   return `+7 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 9)}-${digits.slice(9, 11)}`;
 }
 
-function formatDate(value) {
-  const [year, month, day] = value.split('-');
-  return year && month && day ? `${day}.${month}.${year}` : value;
-}
-
 export function getMoscowDate(date = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: MOSCOW_TIME_ZONE,
@@ -43,16 +51,18 @@ export function createWhatsAppUrl(target, message) {
 
 export async function sendLead(recipient, payload, fetchImpl = globalThis.fetch) {
   const endpoint = String(recipient || '').trim();
-  if (!endpoint) return false;
+  if (!endpoint) throw new Error('Lead endpoint is missing');
   if (typeof fetchImpl !== 'function') throw new Error('Lead delivery is unavailable');
 
   const response = await fetchImpl(endpoint, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    credentials: 'omit',
+    credentials: 'same-origin',
+    signal: AbortSignal.timeout(60000),
     body: JSON.stringify(payload),
   });
   if (!response.ok) throw new Error(`Lead delivery failed with ${response.status}`);
+  if ((await response.json()).ok !== true) throw new Error('Lead was not accepted');
   return true;
 }
 
@@ -79,23 +89,28 @@ export function createSubmissionGuard() {
   };
 }
 
-function setStatus(form, message, link, linkLabel = 'Открыть черновик WhatsApp') {
-  const status = form.querySelector('[data-lead-status]');
-  if (!status) return;
-
+function setStatus(form, message) {
+  let status = form.querySelector('[data-lead-status]');
+  if (!status) {
+    status = document.createElement('p');
+    status.dataset.leadStatus = '';
+    status.setAttribute('role', 'status');
+    form.append(status);
+  }
   status.hidden = false;
   status.replaceChildren(document.createTextNode(message));
+  return status;
+}
 
-  if (link) {
-    // Do not leave a PII-bearing wa.me URL in the DOM: analytics link trackers can collect its
-    // query string. The draft is reconstructed only when the visitor explicitly retries it.
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'lead-form__draft';
-    button.textContent = linkLabel;
-    button.addEventListener('click', () => openWhatsAppDraft(link));
-    status.append(' ', button);
-  }
+function deliveryError(form) {
+  const status = setStatus(form, 'Не получилось отправить заявку. Позвоните нам: ');
+  const phone = document.createElement('a');
+  phone.href = site.header.phoneHref;
+  phone.textContent = site.header.phone;
+  const wa = document.createElement('a');
+  wa.href = site.header.wa;
+  wa.textContent = 'WhatsApp';
+  status.append(phone, ' или напишите в ', wa);
 }
 
 function labelForInput(form, input) {
@@ -132,36 +147,103 @@ function validateName(input) {
   input.setCustomValidity(!value || isValidLeadName(value) ? '' : 'Введите настоящее имя.');
 }
 
-function createLeadPayload(form, phone) {
-  const data = new FormData(form);
-  const date = String(data.get('date') || '').trim();
+const startedForms = new WeakMap();
+const quizAnswers = new WeakMap();
+
+// Capture existing quiz nodes before their renderer replaces the current step.
+// Reading their final state in the next task preserves target-level click changes.
+function rememberQuizStep(event) {
+  const stage = event.target.closest?.('[data-source-quiz-stage]');
+  if (!stage || event.target.closest('.source-quiz__form')) return;
+  const question = stage.querySelector('.source-quiz__question')?.textContent?.trim();
+  if (!question) return;
+  const choices = [...stage.querySelectorAll('.source-quiz__answer')];
+  const date = stage.querySelector('input[type=date]');
+  window.setTimeout(() => {
+    const answers = quizAnswers.get(stage) || new Map();
+    const selected = choices.filter((choice) => choice.getAttribute('aria-pressed') === 'true')
+      .map((choice) => choice.querySelector('.source-quiz__answer-title')?.textContent?.trim() || '');
+    answers.set(question, { text: date?.value || selected.join(', '), date: date?.value || '' });
+    quizAnswers.set(stage, answers);
+  }, 0);
+}
+
+function quizDetails(form) {
+  const answers = quizAnswers.get(form.closest('[data-source-quiz-stage]'));
   return {
-    kind: form.dataset.leadKind || 'callback',
-    name: String(data.get('name') || '').trim(),
-    phone: formatPhone(phone),
-    date: date || null,
-    quest: form.dataset.leadQuest || null,
-    calendarId: form.dataset.leadCalendarId || null,
-    page: window.location.pathname,
+    date: [...(answers?.values() || [])].find((answer) => answer.date)?.date || '',
+    text: [...(answers?.entries() || [])].map(([question, answer]) => `${question}: ${answer.text}`).join('\n'),
   };
 }
 
-function createMessage(payload) {
-  const kind = payload.kind === 'party'
-    ? 'Заявка на праздник'
-    : payload.kind === 'booking'
-      ? 'Предварительная заявка на квест'
-      : 'Заявка на обратный звонок';
-  const lines = [
-    kind,
-    `Имя: ${payload.name}`,
-    `Телефон: ${payload.phone}`,
-  ];
+function formConsent(form) {
+  const checkbox = form.querySelector('[name=consent], [name=privacy]:not([type=hidden]), [name=Checkbox], .t-input-group_cb input, .source-quiz__consent input, [data-exit-intent-consent]');
+  if (checkbox) return checkbox.checked === true;
+  // Legacy Zero Blocks already declare consent by submitting next to their
+  // authored notice, and encode that choice as a hidden privacy=yes field.
+  const legacy = form.querySelector('input[type=hidden][name=privacy][value=yes]');
+  return Boolean(legacy && form.closest('.t-rec')?.textContent?.includes('согласие'));
+}
 
-  if (payload.date) lines.push(`Дата: ${formatDate(payload.date)}`);
-  if (payload.quest) lines.push(`Квест: ${payload.quest}`);
-  lines.push(`Страница: ${payload.page}`);
-  return lines.join('\n');
+export function markLeadStarted(form) {
+  if (!startedForms.has(form)) startedForms.set(form, Date.now());
+}
+
+function createLeadPayload(form, phone) {
+  const data = new FormData(form);
+  const read = (selector, key) => String(data.get(key) || form.querySelector(selector)?.value || '').trim();
+  const slug = window.location.pathname.replace(/^\/|\/$/g, '').replace((import.meta.env?.BASE_URL || '/').replace(/^\/|\/$/g, '') + '/', '');
+  const page = pageData[slug] || {};
+  const venue = venues.chips.find((item) => item.slug === page.venueSlug);
+  const details = quizDetails(form);
+  const dateText = read('[data-tilda-rule="date"], .t-datepicker', 'date') || details.date;
+  const date = dateText.replace(/^(\d{2})[.\/-](\d{2})[.\/-](\d{4})$/, '$3-$2-$1');
+  const snapshot = form.closest('.t-rec');
+  const quiz = form.classList.contains('source-quiz__form');
+  const exit = form.hasAttribute('data-exit-intent-form');
+  const formKind = quiz ? 'callback' : snapshot ? `snapshot-${snapshot.id}` : form.classList.contains('prebook__form') ? 'prebooking' : form.dataset.leadKind || 'callback';
+  const title = form.closest('section, .t-rec, dialog')?.querySelector('h1,h2,h3,.t-title,.t-heading,.source-quiz__question,[data-elem-type=text] .tn-atom')?.textContent?.trim();
+  const context = {
+    pageUrl: window.location.href.slice(0, 1500), pageTitle: document.title.slice(0, 300),
+    pageSlug: slug, pageType: page.type || document.body.dataset.pageType || 'info',
+    quest: read('select[name=kvest]', 'kvest') || form.dataset.leadQuest || page.quest || '', venue: form.dataset.leadVenue || venue?.t || '',
+  };
+  const preferences = ['sposob-svyazy', 'forma-svyazi', 'messenger-type', 'messenger-id', 'email', 'Email']
+    .filter((key) => data.get(key)).map((key) => `${key}: ${data.get(key)}`).join('\n');
+  const comment = [read('textarea, [name="Comment"]', 'comment'), details.text, preferences].filter(Boolean).join('\n');
+  return {
+    ...getVisitContext(), ...context,
+    form: formKind, formTitle: (title || form.dataset.leadTitle || formKind).slice(0, 250),
+    name: exit ? 'Обратный звонок' : read('[name="Name"], [data-tilda-rule="name"]', 'name'),
+    phone: `+${phone}`, date,
+    comment: exit ? 'Имя не запрашивается в форме обратного звонка.' : comment.slice(0, 1000),
+    consent: formConsent(form),
+    website: read('[name="website"]', 'website'), startedAt: startedForms.get(form) || Date.now(),
+  };
+}
+
+export async function submitLeadForm(form) {
+  if (form.dataset.leadSubmitting === 'true' || form.dataset.leadAccepted === 'true') return;
+  const phone = getPhoneDigits(form.querySelector('[name="phone"], [name="Phone"], [data-tilda-rule="phone"]')?.value || '');
+  const payload = createLeadPayload(form, phone);
+  if (!isValidLeadName(payload.name) || !phone || !payload.consent) {
+    setStatus(form, 'Проверьте имя, российский номер телефона и согласие на обработку данных.');
+    return;
+  }
+  form.dataset.leadSubmitting = 'true';
+  setSubmitting(form, true);
+  try {
+    await sendLead(site.leads.recipient, payload);
+    form.dataset.leadAccepted = 'true';
+    document.dispatchEvent(new CustomEvent('lead:accepted'));
+    const base = (import.meta.env?.BASE_URL || '/').replace(/\/$/, '');
+    window.location.assign(`${base}/${payload.pageType === 'holiday' ? 'kids_spasibo' : 'spasibo'}/?form=${encodeURIComponent(payload.form)}`);
+  } catch {
+    deliveryError(form);
+  } finally {
+    delete form.dataset.leadSubmitting;
+    setSubmitting(form, false);
+  }
 }
 
 function setDateMinimums(form) {
@@ -173,17 +255,9 @@ function setDateMinimums(form) {
 
 function setSubmitting(form, submitting) {
   form.toggleAttribute('aria-busy', submitting);
-  form.querySelectorAll('[data-lead-submit]').forEach((button) => {
+  form.querySelectorAll('[data-lead-submit], button[type=submit], input[type=submit]').forEach((button) => {
     button.disabled = submitting;
   });
-}
-
-function openWhatsAppDraft(url) {
-  if (url) window.open(url, '_blank', 'noopener,noreferrer');
-}
-
-function announceLeadAccepted() {
-  document.dispatchEvent(new CustomEvent('lead:accepted'));
 }
 
 function initialiseLeadForm(form) {
@@ -194,34 +268,30 @@ function initialiseLeadForm(form) {
   const nameInput = form.elements.namedItem('name');
   if (!(phoneInput instanceof HTMLInputElement) || !(nameInput instanceof HTMLInputElement)) return;
   setDateMinimums(form);
-  const submission = createSubmissionGuard();
+  form.addEventListener('focusin', () => markLeadStarted(form));
 
-  const refreshPhoneValidity = (changed = false) => {
-    if (changed) submission.reset();
+  const refreshPhoneValidity = () => {
     if (phoneInput.value) validatePhone(phoneInput);
     else phoneInput.setCustomValidity('');
     clearValidationState(form, phoneInput);
   };
 
-  phoneInput.addEventListener('input', () => refreshPhoneValidity(true));
+  phoneInput.addEventListener('input', () => refreshPhoneValidity());
   phoneInput.addEventListener('blur', () => refreshPhoneValidity());
   const refreshNameValidity = () => {
     validateName(nameInput);
     clearValidationState(form, nameInput);
   };
   nameInput.addEventListener('input', () => {
-    submission.reset();
     refreshNameValidity();
   });
   nameInput.addEventListener('blur', refreshNameValidity);
   form.querySelectorAll('input').forEach((input) => {
     if (input === phoneInput || input === nameInput) return;
     input.addEventListener('input', () => {
-      submission.reset();
       clearValidationState(form, input);
     });
     input.addEventListener('change', () => {
-      submission.reset();
       clearValidationState(form, input);
     });
   });
@@ -230,38 +300,13 @@ function initialiseLeadForm(form) {
     event?.preventDefault();
 
     validateName(nameInput);
-    const phone = validatePhone(phoneInput);
+    validatePhone(phoneInput);
     if (!form.checkValidity()) {
       showValidationStatus(form);
       return;
     }
 
-    if (!submission.begin()) return;
-
-    const payload = createLeadPayload(form, phone);
-    const draftUrl = createWhatsAppUrl(form.dataset.leadTarget || '', createMessage(payload));
-    if (!draftUrl) {
-      submission.fail();
-      setStatus(form, 'Не удалось подготовить черновик WhatsApp. Позвоните нам по телефону на сайте.');
-      return;
-    }
-
-    const recipient = form.dataset.leadRecipient || '';
-    setSubmitting(form, true);
-    openWhatsAppDraft(draftUrl);
-
-    try {
-      const delivered = await sendLead(recipient, payload);
-      if (delivered) form.reset();
-      setStatus(form, 'Заявка принята, перезвоним', draftUrl);
-      announceLeadAccepted();
-      submission.accept();
-    } catch {
-      submission.fail();
-      setStatus(form, 'Не удалось передать заявку. Откройте черновик WhatsApp, чтобы отправить её самостоятельно.', draftUrl);
-    } finally {
-      setSubmitting(form, false);
-    }
+    await submitLeadForm(form);
   };
 
   form.addEventListener('submit', submitLead);
@@ -274,5 +319,20 @@ function initialiseLeadForm(form) {
 }
 
 if (typeof document !== 'undefined') {
+  document.addEventListener('click', rememberQuizStep, true);
+  document.addEventListener('input', rememberQuizStep, true);
+  document.addEventListener('focusin', (event) => {
+    const form = event.target.closest?.('form');
+    if (form) markLeadStarted(form);
+  });
+  // Dynamic local quizzes and the exit dialog have older target-level handlers.
+  document.addEventListener('submit', (event) => {
+    const form = event.target;
+    if (!form.matches?.('.source-quiz__form, [data-exit-intent-form]')) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (form.reportValidity()) void submitLeadForm(form);
+  }, true);
   document.querySelectorAll('[data-lead-form]').forEach(initialiseLeadForm);
+  document.dispatchEvent(new CustomEvent('lead:forms-ready'));
 }

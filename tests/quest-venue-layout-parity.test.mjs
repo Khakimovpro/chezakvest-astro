@@ -94,16 +94,19 @@ test('matches the source callback-record heights on desktop and mobile', async (
   assert.match(styles, /body\.theme-dark \.cbform\{/);
 });
 
-test('keeps party-form field labels visibly associated while preserving the source placeholder copy', async () => {
-  const [form, styles] = await Promise.all([
+test('keeps party-form labels associated with the owner-approved phone hint', async () => {
+  const [form, styles, phone] = await Promise.all([
     read('src/components/PartyForm.astro'),
     read('src/styles/quest.css'),
+    read('src/components/product/PhoneField.astro'),
   ]);
 
   assert.match(form, /pform__label--date/);
   assert.match(form, /pform__label--inside[^>]*>Ваше имя<\/label>/);
-  assert.match(form, /pform__label--phone[^>]*>\+7 \(000\) 000-00-00<\/label>/);
-  assert.match(form, /aria-label="Телефон"/);
+  assert.match(form, /<label[^>]*for=\{`\$\{id\}-phone`\}[^>]*>Телефон<\/label>/);
+  assert.match(form, /<PhoneField id=\{`\$\{id\}-phone`\}/);
+  assert.match(phone, /aria-label="Телефон"/);
+  assert.match(phone, /placeholder="Ваш номер телефона"/);
   assert.doesNotMatch(styles, /\.pform__label\{[^}]*clip:/);
   assert.match(styles, /\.pform__label--inside\{[^}]*pointer-events:none/);
 });

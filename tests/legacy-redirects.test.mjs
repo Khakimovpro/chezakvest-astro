@@ -23,14 +23,16 @@ test('legacy URL map contains every audited URL and the Wednesday consolidation'
   const entries = await loadLegacyUrlMap();
   const auditedSources = await readAuditSnapshot();
 
-  assert.equal(entries.length, 103);
+  assert.equal(entries.length, 101);
   assert.equal(new Set(entries.map(({ source }) => source)).size, entries.length);
   assert.equal(auditedSources.length, 102);
   assert.equal(new Set(auditedSources).size, auditedSources.length);
   assert.deepEqual(
     entries.map(({ source }) => source).sort(),
-    [...auditedSources, '/wednesday_ukradennaya_vesch'].sort(),
+    [...auditedSources.filter((source) => !['/spasibo', '/kids_spasibo'].includes(source)), '/wednesday_ukradennaya_vesch'].sort(),
   );
+
+  assert.ok(entries.every(({source}) => !['/spasibo','/kids_spasibo'].includes(source)), 'native thank-you pages are no longer retired routes');
 
   const wednesday = entries.find(({ source }) => source === '/wednesday_ukradennaya_vesch');
   assert.deepEqual(wednesday, {
@@ -62,7 +64,7 @@ test('generator emits permanent redirects and never self-redirects an already pu
   assert.match(redirects, /^\/wednesday_ukradennaya_vesch \/wednesday-poteryannaya-dusha\/ 301$/m);
   assert.match(redirects, /^\/new-year-2025 \/new-year\/ 301$/m);
   assert.doesNotMatch(redirects, /^\/privacy /m);
-  assert.equal(redirects.split('\n').filter((line) => / 301$/.test(line)).length, 96);
+  assert.equal(redirects.split('\n').filter((line) => / 301$/.test(line)).length, 94);
 });
 
 test('generator emits exact Apache and nginx redirects without 200 self-routes', async () => {
@@ -75,14 +77,14 @@ test('generator emits exact Apache and nginx redirects without 200 self-routes',
   assert.match(htaccess, /^RewriteRule \^wednesday_ukradennaya_vesch\$ \/wednesday-poteryannaya-dusha\/ \[R=301,L\]$/m);
   assert.match(htaccess, /^RewriteRule \^new-year-2025\$ \/new-year\/ \[R=301,L\]$/m);
   assert.doesNotMatch(htaccess, /RewriteRule \^privacy\$/m);
-  assert.equal(htaccess.split('\n').filter((line) => line.startsWith('RewriteRule ')).length, 96);
+  assert.equal(htaccess.split('\n').filter((line) => line.startsWith('RewriteRule ')).length, 94);
 
   assert.match(nginx, /^# Include this file inside the relevant `server \{ \.\.\. \}` block\.$/m);
   assert.match(nginx, /^location = \/page57307963\.html \{ return 301 \/minecraft\/\$is_args\$args; \}$/m);
   assert.match(nginx, /^location = \/wednesday_ukradennaya_vesch \{ return 301 \/wednesday-poteryannaya-dusha\/\$is_args\$args; \}$/m);
   assert.match(nginx, /^location = \/new-year-2025 \{ return 301 \/new-year\/\$is_args\$args; \}$/m);
   assert.doesNotMatch(nginx, /^location = \/privacy \{/m);
-  assert.equal(nginx.split('\n').filter((line) => line.startsWith('location = ')).length, 96);
+  assert.equal(nginx.split('\n').filter((line) => line.startsWith('location = ')).length, 94);
 });
 
 test('checked-in redirect artifacts are deterministic renderings of the source map', async () => {

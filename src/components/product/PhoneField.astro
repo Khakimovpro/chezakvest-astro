@@ -1,0 +1,17 @@
+---
+const { id, name = 'phone', required = true } = Astro.props;
+---
+<div class="phone-field">
+  <span class="phone-field__prefix" aria-hidden="true"><svg viewBox="0 0 20 14" width="20" height="14"><path fill="#fff" d="M0 0h20v5H0z"/><path fill="#0039a6" d="M0 4.667h20v4.667H0z"/><path fill="#d52b1e" d="M0 9.333h20V14H0z"/></svg><span>+7</span></span>
+  <input id={id} name={name} type="tel" aria-label="Телефон" placeholder="Ваш номер телефона" inputmode="tel" autocomplete="tel" maxlength="24" required={required} data-phone-field />
+</div>
+<script>
+  import './phone-field.js';
+</script>
+<style is:global>
+  .phone-field { position: relative; display: block; min-width: 0; width: 100%; }
+  .phone-field__prefix { position: absolute; z-index: 1; inset-inline-start: 14px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 8px; color: #333; font-size: 15px; line-height: 1; pointer-events: none; }
+  .phone-field__prefix svg { flex: none; border-radius: 2px; box-shadow: 0 0 0 1px rgb(0 0 0 / 12%); }
+  .phone-field input[type=tel][data-phone-field] { display: block; width: 100%; min-width: 0; padding-inline-start: 76px !important; }
+  .form-optional { font-size: .85em; font-weight: 400; color: #666; }
+</style>

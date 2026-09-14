@@ -1,12 +1,6 @@
-// Заморозка форм.
-//
-// Формы сознательно выведены из работы до отдельного решения владельца (какой канал доставки
-// заявок). Пока это решение не принято, формы должны остаться ровно такими, какие есть: их
-// нельзя ни удалять, ни «упрощать», ни выкидывать вместе с попапами ради чистой метрики —
-// один раз на этом проекте уже потеряли карту, отзывы и мессенджеры именно так.
-//
-// Числа снизу — фактический замер на 17.08.2026. Тест падает, если чего-то стало МЕНЬШЕ.
-// Стало больше — тоже сигнал: значит формы трогали, и это нужно осознать, а не проглядеть.
+// Preserve the visible form inventory inherited from Tilda.
+// The owner authorized new delivery and optional dates on 2026-09-14;
+// fields, their order, popups, and contact choices remain protected.
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import manifest from '../src/generated/source-snapshot-manifest.json' with { type: 'json' };
@@ -66,4 +60,14 @@ test('локальный диалог заявки и сборщик форм н
   assert.match(component, /data-local-source-form/u, 'разметка локальной формы');
   const generator = await read('_capture/build_source_snapshots.py');
   assert.match(generator, /def materialize_zero_forms/u, 'сборщик Zero-block-форм');
+});
+
+// Owner authorized optional dates on 2026-09-14; field counts above stay frozen.
+test('native request forms retain their date field without requiring it', async () => {
+  for (const name of ['PartyForm', 'PrebookingForm']) {
+    const component = await read(`src/components/${name}.astro`);
+    const fields = component.match(/<input\b[^>]*type="date"[^>]*>/gu) || [];
+    assert.equal(fields.length, 1, `${name}: date field remains`);
+    assert.ok(fields.every(field => !/\brequired\b/u.test(field)), `${name}: date is optional`);
+  }
 });

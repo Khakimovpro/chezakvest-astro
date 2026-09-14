@@ -1,0 +1,24 @@
+[Unit]
+Description=Chezakvest lead receiver
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=chezakvest-leads
+Group=chezakvest-leads
+EnvironmentFile=/etc/chezakvest-leads/leads.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/chezakvest-leads
+ExecStart=/usr/bin/python3 /opt/chezakvest-leads/service.py
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/chezakvest-leads
+PrivateTmp=true
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

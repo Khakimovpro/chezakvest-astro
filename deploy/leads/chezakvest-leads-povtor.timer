@@ -1,0 +1,11 @@
+[Unit]
+Description=Retry Chezakvest leads every five minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+Persistent=true
+Unit=chezakvest-leads-povtor.service
+
+[Install]
+WantedBy=timers.target

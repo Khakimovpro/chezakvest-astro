@@ -1,0 +1,18 @@
+[Unit]
+Description=Retry queued Chezakvest leads
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=chezakvest-leads
+Group=chezakvest-leads
+EnvironmentFile=/etc/chezakvest-leads/leads.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/opt/chezakvest-leads
+ExecStart=/usr/bin/python3 /opt/chezakvest-leads/povtor.py
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/chezakvest-leads
+PrivateTmp=true
+UMask=0077

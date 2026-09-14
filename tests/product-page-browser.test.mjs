@@ -277,6 +277,12 @@ test('product motion preserves layout, reduced-motion access and content without
       const states=await access.locator('[data-product-reveal]').evaluateAll(elements=>elements.map(el=>({opacity:getComputedStyle(el).opacity,transform:getComputedStyle(el).transform})));
       assert.ok(states.length > 10 && states.every(state=>state.opacity==='1'&&state.transform==='none'));
       if(options.javaScriptEnabled === false) {
+        for (const slider of await access.locator('[data-product-slider]').all()) {
+          assert.equal(await slider.locator('[inert]').count(), 0, 'all slider photos stay reachable without JavaScript');
+          const viewport = slider.locator('.product-slider__viewport');
+          assert.equal(await viewport.evaluate(el => getComputedStyle(el).overflowX), 'auto');
+          assert.ok(await viewport.evaluate(el => el.scrollWidth > el.clientWidth));
+        }
         for (const video of await access.locator('.hls-video').all()) {
           assert.equal(await video.locator('a.hls-video__link[href]').isVisible(), true);
         }
@@ -512,4 +518,134 @@ test('shared navigation skips to content and product lightboxes accept real drag
   await snapshot.waitForFunction(() => document.activeElement === document.querySelector('main#main'));
   assert.equal(await snapshot.locator('main#main').evaluate(el => el === document.activeElement), true, 'snapshot anchor adapter preserves native skip-link focus');
   await snapshot.close();
+});
+
+test('product sliders cycle, swipe, pause autoplay and open the selected lightbox photo; forms accept no date', { timeout: 180_000 }, async t => {
+  const base = await buildAndServe(t);
+  const browser = await chromium.launch({ args: ['--no-sandbox'] });
+  t.after(() => browser.close());
+  for (const width of [390, 1440]) {
+    const page = await browser.newPage({ viewport: { width, height: 900 }, hasTouch: width === 390, isMobile: width === 390, reducedMotion: 'reduce' });
+    await page.route('https://widget.yourgood.app/**', route => route.abort());
+    await page.route('https://chezakvest.ru/calendar.php?quest=87', route => route.abort());
+    await page.goto(`${base}/igra_v_kalmara/`, { waitUntil: 'load' });
+    await page.evaluate(() => document.fonts.ready);
+    assert.equal(await page.locator('[data-product-slider]').count(), 2);
+    const story = await page.locator('.product-story__photo').evaluate(el => {
+      const frame = el.getBoundingClientRect(), image = el.querySelector('img').getBoundingClientRect();
+      return { bottomGap: Math.abs(frame.bottom - image.bottom), widthGap: Math.abs(frame.width - image.width), ratio: frame.width / frame.height };
+    });
+    assert.ok(story.bottomGap <= 1, 'story photo reaches the bottom of its card');
+    assert.ok(story.widthGap <= 1, 'story photo fills the card width');
+    if (width === 390) assert.ok(Math.abs(story.ratio - 4 / 3) < 0.01, 'mobile story card has a 4:3 frame');
+    for (const slider of await page.locator('[data-product-slider]').all()) {
+      await slider.scrollIntoViewIfNeeded();
+      const count = await slider.locator('.product-slider__slide').count();
+      const counter = slider.getByRole('status');
+      const read = () => counter.innerText();
+      assert.equal(await read(), `1 / ${count}`);
+      await slider.locator('[data-slider-prev]').click();
+      assert.equal(await read(), `${count} / ${count}`);
+      await slider.locator('[data-slider-next]').click();
+      assert.equal(await read(), `1 / ${count}`);
+      await slider.focus();
+      await page.keyboard.press('ArrowRight');
+      assert.equal(await read(), `2 / ${count}`);
+      const src = await slider.locator('.product-slider__slide:not([inert]) img').getAttribute('src');
+      await slider.locator('.product-slider__slide:not([inert]) button').click();
+      assert.equal(await page.locator('.lb__img').getAttribute('src'), new URL(src, base).href);
+      assert.equal(await page.locator('.lb__counter').innerText(), `2 / ${count}`);
+      await page.keyboard.press('Escape');
+      const box = await slider.locator('.product-slider__viewport').boundingBox();
+      const y = Math.max(10, Math.min(850, box.y + box.height / 2));
+      if (width === 390) {
+        const cdp = await page.context().newCDPSession(page);
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: box.x + box.width * .8, y }] });
+        for (const part of [.7,.6,.5,.4,.3,.2]) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: box.x + box.width * part, y }] });
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        await cdp.detach();
+      } else {
+        await page.mouse.move(box.x + box.width * .8, y);
+        await page.mouse.down();
+        await page.mouse.move(box.x + box.width * .2, y, { steps: 12 });
+        await page.mouse.up();
+      }
+      assert.equal(await read(), `3 / ${count}`);
+      assert.equal(await page.locator('dialog.lb').evaluate(el => el.open), false, 'swipe does not open lightbox');
+      await slider.locator('[data-slider-index="0"]').click();
+      assert.equal(await read(), `1 / ${count}`);
+    }
+    await page.locator('#booking').scrollIntoViewIfNeeded();
+    await page.locator('[data-product-booking-fallback]').waitFor({ state: 'visible' });
+    for (const form of await page.locator('[data-lead-form]').all()) {
+      if (!await form.isVisible()) continue;
+      await form.locator('[name="name"]').fill('Антон');
+      const phone = form.locator('[name="phone"]');
+      await phone.fill('89181234567');
+      assert.equal(await phone.inputValue(), '(918) 123-45-67');
+      await phone.fill('918');
+      assert.equal(await phone.inputValue(), '(918) ___-__-__');
+      assert.equal(await phone.evaluate(el => el.checkValidity()), false);
+      await phone.fill('');
+      await phone.pressSequentially('9181234567');
+      assert.equal(await phone.inputValue(), '(918) 123-45-67');
+      await phone.press('Backspace');
+      assert.equal(await phone.inputValue(), '(918) 123-45-6_');
+      await phone.press('7');
+      await form.locator('[name="consent"]').check();
+      assert.equal(await form.evaluate(el => el.checkValidity()), true, 'valid phone/name/consent allow an empty date');
+    }
+    await page.close();
+  }
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.clock.install();
+  await page.goto(`${base}/igra_v_kalmara/`, { waitUntil: 'load' });
+  const slider = page.locator('[data-product-slider]').first();
+  await page.clock.runFor(5100);
+  assert.equal(await slider.getByRole('status').innerText(), '2 / 3', 'desktop autoplay after five seconds');
+  await slider.hover();
+  await page.clock.runFor(10100);
+  assert.equal(await slider.getByRole('status').innerText(), '2 / 3', 'hover pauses autoplay');
+  await page.mouse.move(0, 0);
+  await page.clock.runFor(5100);
+  assert.equal(await slider.getByRole('status').innerText(), '3 / 3', 'leaving hover resumes autoplay');
+  await slider.focus();
+  await page.clock.runFor(10100);
+  assert.equal(await slider.getByRole('status').innerText(), '3 / 3', 'focus pauses autoplay');
+  await page.keyboard.press('ArrowRight');
+  await page.locator('h1').evaluate(el => { el.tabIndex = -1; el.focus(); });
+  await page.mouse.move(0, 0);
+  await page.clock.runFor(10100);
+  assert.equal(await slider.getByRole('status').innerText(), '1 / 3', 'manual navigation leaves autoplay stopped');
+  await page.close();
+  for (const mode of ['reduced', 'hidden', 'mobile', 'lightbox']) {
+    const paused = await browser.newPage({ viewport: { width: mode === 'mobile' ? 390 : 1440, height: 900 }, reducedMotion: mode === 'reduced' ? 'reduce' : 'no-preference' });
+    await paused.clock.install();
+    await paused.goto(`${base}/igra_v_kalmara/`, { waitUntil: 'load' });
+    if (mode === 'lightbox') {
+      await paused.locator('[data-product-slider]').first().locator('.product-slider__photo').first().focus();
+      await paused.keyboard.press('Enter');
+      assert.equal(await paused.locator('dialog.lb').evaluate(el => el.open), true);
+    }
+    if (mode === 'hidden') await paused.evaluate(() => {
+      // Only replace the browser visibility signal; exercise the real listener and timer.
+      Object.defineProperty(document, 'hidden', { configurable: true, value: true });
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    await paused.clock.runFor(10100);
+    assert.equal(await paused.locator('[data-product-slider]').first().getByRole('status').innerText(), '1 / 3', `${mode}: autoplay stays paused`);
+    if (mode === 'hidden') {
+      await paused.evaluate(() => {
+        Object.defineProperty(document, 'hidden', { configurable: true, value: false });
+        document.dispatchEvent(new Event('visibilitychange'));
+      });
+      await paused.clock.runFor(5100);
+      assert.equal(await paused.locator('[data-product-slider]').first().getByRole('status').innerText(), '2 / 3', 'visible tab restarts the timer');
+    }
+    if (mode === 'lightbox') {
+      await paused.keyboard.press('Escape');
+      assert.equal(await paused.locator('[data-product-slider]').first().locator('.product-slider__photo').first().evaluate(el => el === document.activeElement), true, 'lightbox close restores the active photo focus');
+    }
+    await paused.close();
+  }
 });

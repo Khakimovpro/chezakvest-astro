@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import site from '../data/site.json';
+import { siteHref } from '../lib/urls.js';
+import '../styles/page.css';
+import '../styles/product.css';
+const { kids = false } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const link = (path) => siteHref(base, path);
+---
+<Layout title="Спасибо! Заявка отправлена — Чё за Квест" description="Менеджер свяжется с вами в ближайшее время." path={kids ? '/kids_spasibo/' : '/spasibo/'} noindex={true} page={{ render: 'native' }} preloadImage={null} bodyClass="product-page">
+  <Header />
+  <main id="main" tabindex="-1" class="thanks container">
+    <section class="thanks__card" aria-labelledby="thanks-title">
+      <p class="thanks__eyebrow">Чё за Квест</p>
+      <h1 id="thanks-title">Спасибо!<br />Заявка отправлена</h1>
+      <p>Менеджер свяжется с вами в ближайшее время.</p>
+      <div class="thanks__contacts">
+        <a href={site.header.phoneHref}>{site.header.phone}</a>
+        <a href={site.header.wa}>Написать в WhatsApp</a>
+      </div>
+      <div class="thanks__actions">
+        <a class="btn-orange" href={link('/kvesty-v-rostove-na-donu/')}>Выбрать квест</a>
+        {kids && <a class="thanks__ideas" href={link('/kids/')}>Посмотреть идеи праздника</a>}
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
+<script>
+  import '../scripts/main.js';
+</script>
+<style>
+  .thanks { padding-block: 140px 72px; min-height: 70vh; }
+  .thanks__card { max-width: 880px; padding: clamp(24px, 5vw, 64px); border-radius: var(--product-radius-lg); box-shadow: var(--product-shadow-1); background: #fff; }
+  .thanks__eyebrow { margin: 0 0 20px; font-weight: 800; text-transform: uppercase; }
+  h1 { margin: 0 0 24px; font: 800 clamp(30px, 4.5vw, 58px)/1.12 'Montserrat', sans-serif; overflow-wrap: anywhere; }
+  p { font-size: 18px; line-height: 1.5; }
+  .thanks__contacts, .thanks__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin-top: 28px; }
+  .thanks__contacts a, .thanks__ideas { display: inline-flex; align-items: center; min-height: 44px; text-decoration: underline; font-size: 16px; }
+  .thanks__actions .btn-orange { min-height: 48px; padding: 14px 24px; text-align: center; }
+  a:focus-visible { outline: 3px solid #333; outline-offset: 4px; }
+</style>

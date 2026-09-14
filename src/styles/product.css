@@ -656,3 +656,37 @@ body:not(.source-snapshot-page) .product-schedule__dow { font: var(--product-wei
 @media (min-width: 768px) and (max-width: 1023px) {
 :is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-hero--contain .product-hero__shade { background: linear-gradient(90deg,rgb(14 14 14 / 86%),rgb(14 14 14 / 72%) 68%,rgb(14 14 14 / 12%)); }
 }
+
+/* Optional story photo: the prose determines desktop height. */
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-story--photo { grid-template-columns: minmax(0,1fr); }
+.product-story__photo { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--product-radius-lg); box-shadow: var(--product-shadow-2); }
+body:not(.source-snapshot-page) .product-story__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+@media (min-width: 1024px) {
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-story--photo { grid-template-columns: minmax(0,5fr) minmax(0,7fr); gap: var(--product-space-48); align-items: stretch; }
+  .product-story--photo .product-story__photo { aspect-ratio: auto; }
+  .product-story--photo .product-story__features { grid-column: 1 / -1; }
+  .product-story--photo .product-story__features .product-icon-list { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+
+@media (min-width: 1024px) {
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .pform__grid { grid-template-columns: minmax(0,4fr) minmax(0,6fr); }
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-lead-band .pform__grid { grid-template-columns: minmax(0,1fr); }
+}
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .prebook__field input { font-size: var(--product-type-input); }
+@media (max-width: 767px) {
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-booking__fallback { padding: var(--product-space-20); }
+}
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .prebook__submit { min-height: 56px; height: auto; white-space: normal; padding: var(--product-space-12) var(--product-space-20); }
+@media (min-width: 1024px) {
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .prebook__grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,1.25fr); }
+}
+@media (min-width: 1024px) and (max-width: 1239px) {
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .pform__grid { grid-template-columns: minmax(0,1fr); grid-template-areas: 'date' 'name' 'phone'; }
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .cbform__fields { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 1023px) {
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .prebook__grid { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 389px) {
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .prebook__card { padding-inline: var(--product-space-8); }
+}
