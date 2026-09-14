@@ -17,9 +17,9 @@ test('restores the six audited quest keys, booking fallbacks and two-hall celebr
     assert.equal(page.celebrationVenues?.length, 2);
     assert.equal(page.celebrationVenues?.[1]?.venueSlug, 'magnitogorskaya1');
   }
-  for (const page of [pages[0], pages[4]]) {
+  for (const [page, title] of [[pages[0], 'Костюмированный актер'], [pages[4], 'Костюмированный актёр']]) {
     assert.deepEqual(page.features.items[1], {
-      t: 'Костюмированный актер',
+      t: title,
       sub: 'погружающий детей в праздник входит в стоимость',
     });
   }
