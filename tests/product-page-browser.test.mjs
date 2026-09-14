@@ -48,7 +48,7 @@ async function buildAndServe(t) {
 const mockSchedule = `<div class="quest_calendar">${Array.from({ length: 32 }, (_, index) => `
   <div class="quest_line${index >= 7 ? ' show_more hidden' : ''}">
     <div class="col-xs-2_quest">${index + 1} сентября</div>
-    <div class="col-xs-10_quest"><button class="label_quest" type="button">12:00</button></div>
+    <div class="col-xs-10_quest"><span class="label_quest click_load_item" data-id="${index}" onclick="this.dataset.opened = Number(this.dataset.opened || 0) + 1">12:00</span><span class="label_quest close_item">13:00</span></div>
   </div>`).join('')}
   <div class="show_more"><button class="show_more_btn" type="button" onclick="$('.show_more').toggleClass('hidden');">Показать ещё</button></div>
 </div>`;
@@ -69,6 +69,18 @@ test('product booking keeps a visible path for schedule success, failure, and an
   const visibleDays = () => success.locator('[data-source-schedule] .quest_line').evaluateAll((items) => items
     .filter((item) => getComputedStyle(item).display !== 'none').length);
   assert.equal(await visibleDays(), 7);
+  const available = success.getByRole('button', { name: '12:00', exact: true }).first();
+  await available.focus();
+  await success.keyboard.press('Enter');
+  assert.equal(await available.getAttribute('data-opened'), '1');
+  await success.keyboard.press('Space');
+  assert.equal(await available.getAttribute('data-opened'), '2');
+  const unavailable = success.getByRole('button', { name: '13:00', exact: true }).first();
+  assert.equal(await unavailable.getAttribute('aria-disabled'), 'true');
+  assert.equal(await unavailable.getAttribute('tabindex'), '-1');
+  const bounds = await available.boundingBox();
+  assert.ok(bounds.width >= 44 && bounds.height >= 44);
+
   await success.locator('[data-source-schedule] .show_more_btn').click();
   assert.ok(await visibleDays() > 7);
   await assert.equal(await success.locator('[data-product-booking-fallback]').isHidden(), true);
