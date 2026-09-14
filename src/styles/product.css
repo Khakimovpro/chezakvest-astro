@@ -145,6 +145,9 @@ body:not(.source-snapshot-page) .product-stats { grid-template-columns: repeat(3
 body:not(.source-snapshot-page) .product-stats li, body:not(.source-snapshot-page) .product-stat-notes li { padding: var(--product-space-24); border-radius: var(--radius-card); background: #fff; }
 body:not(.source-snapshot-page) .product-stats p, body:not(.source-snapshot-page) .product-stats span { display: block; margin: 0; }
 body:not(.source-snapshot-page) .product-stats strong { display: block; color: var(--orange-text); font: 800 var(--product-type-stat)/1 Montserrat, sans-serif; }
+@media (min-width: 768px) {
+  body:not(.source-snapshot-page) .product-stats p { min-block-size: var(--product-space-24); }
+}
 body:not(.source-snapshot-page) .product-stat-notes { grid-template-columns: repeat(2, 1fr); margin-top: var(--product-space-24); }
 body:not(.source-snapshot-page) .product-stat-notes h3 { margin: 0; }
 body:not(.source-snapshot-page) .product-stat-notes p { margin: var(--product-space-8) 0 0; line-height: var(--product-leading-copy); }
