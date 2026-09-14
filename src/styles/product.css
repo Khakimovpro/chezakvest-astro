@@ -333,3 +333,8 @@ body:not(.source-snapshot-page) .product-schedule .show_more_btn {
 body:not(.source-snapshot-page) :is(.product-section, .product-page .pform, .product-page .callback, .product-page .prebook) {
   scroll-margin-block-start: calc(var(--product-header-height, 80px) + var(--product-space-16));
 }
+
+body:not(.source-snapshot-page) .product-video__points li { display: grid; grid-template-columns: var(--product-space-24) minmax(0, 1fr); gap: var(--product-space-12); padding: var(--product-space-12) var(--product-space-16); border: 1px solid rgb(255 255 255 / 35%); border-radius: 14px; background: rgb(0 0 0 / 20%); }
+body:not(.source-snapshot-page) .product-video__fact-icon { color: var(--orange-2); }
+body:not(.source-snapshot-page) .product-video__actions { margin-top: var(--product-space-24); }
+body:not(.source-snapshot-page) .product-video__actions a { min-height: 48px; }
