@@ -680,3 +680,13 @@ body:not(.source-snapshot-page) .product-story__photo img { position: absolute; 
 @media (min-width: 1024px) {
   :is(body.product-page, body:not(.source-snapshot-page) .product-page) .prebook__grid { grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(0,1.25fr); }
 }
+@media (min-width: 1024px) and (max-width: 1239px) {
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .pform__grid { grid-template-columns: minmax(0,1fr); grid-template-areas: 'date' 'name' 'phone'; }
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .cbform__fields { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 1023px) {
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .prebook__grid { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 389px) {
+  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .prebook__card { padding-inline: var(--product-space-8); }
+}
