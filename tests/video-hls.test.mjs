@@ -24,6 +24,7 @@ test('HLS registry has a complete, unique local delivery contract', async () => 
 
 test('HlsVideo derives its player source from the registry base', async () => {
   const component = await readFile(join(ROOT, 'src/components/HlsVideo.astro'), 'utf8');
-  assert.match(component, /data-hls-src=\{`\$\{registry\.base\}\/\$\{slug\}\/master\.m3u8`\}/u);
+  assert.match(component, /const hlsSrc = `\$\{registry\.base\}\/\$\{slug\}\/master\.m3u8`/u);
+  assert.match(component, /data-hls-src=\{hlsSrc\}/u);
   assert.match(component, /<video playsinline preload="none"/u);
 });

@@ -505,9 +505,11 @@ test('shared navigation skips to content and product lightboxes accept real drag
   const snapshot = await browser.newPage({viewport:{width:1440,height:900}, reducedMotion:'reduce'});
   await snapshot.route('https://widget.yourgood.app/**', route => route.abort());
   await snapshot.goto(`${base}/`, {waitUntil:'load'});
+  await snapshot.locator('main#main').waitFor({state:'visible'});
   await snapshot.keyboard.press('Tab');
   assert.equal(await snapshot.locator('.skip-link').evaluate(el => el === document.activeElement), true);
   await snapshot.keyboard.press('Enter');
+  await snapshot.waitForFunction(() => document.activeElement === document.querySelector('main#main'));
   assert.equal(await snapshot.locator('main#main').evaluate(el => el === document.activeElement), true, 'snapshot anchor adapter preserves native skip-link focus');
   await snapshot.close();
 });
