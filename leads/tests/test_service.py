@@ -100,6 +100,56 @@ class ServiceTests(unittest.TestCase):
         self.assertNotIn('<b>', note)
         self.assertNotIn('\x00', note)
 
+    def test_short_product_and_form_names(self):
+        cases = [
+            ({'form': 'party', 'quest': '', 'crmName': 'Детский день рождения'}, 'Праздник', 'Детский день рождения'),
+            ({'form': 'callback', 'quest': 'Игра в Кальмара', 'crmName': 'Детский день рождения'}, 'Обратный звонок', 'Игра в Кальмара'),
+            ({'form': 'snapshot-rec123', 'quest': 'Роблокс. Радужные Друзья'}, 'Форма сайта', 'Роблокс. Радужные Друзья'),
+            ({'form': 'snapshot-rec456', 'quest': '', 'crmName': 'День рождения в стиле Майнкрафт'}, 'Форма сайта', 'День рождения в стиле Майнкрафт'),
+            ({'form': 'prebooking', 'quest': 'Квест ' + 'а' * 60}, 'Предварительная бронь', ('Квест ' + 'а' * 60)[:40]),
+        ]
+        for index, (changes, kind, product) in enumerate(cases):
+            with self.subTest(form=changes['form'], product=product):
+                self.post(payload(phone=f'+7910000010{index}', pageTitle='Длинный SEO-заголовок страницы',
+                                  formTitle='Длинный рекламный заголовок', **changes))
+                lead = self.calls('POST', '/api/v4/leads')[-1][0]
+                self.assertEqual(lead['name'], f'Заявка с сайта: {kind} — {product}')
+                self.assertIn({'name': product}, lead['_embedded']['tags'])
+                self.assertTrue(all(len(t['name']) <= 40 for t in lead['_embedded']['tags']))
+
+    def test_note_preserves_plain_url_and_formula_protection(self):
+        url = 'https://chezakvest.com/roblox/?utm_source=codex_r2&utm_campaign=snimok'
+        self.post(payload(pageUrl=url, comment='=DANGEROUS & details'))
+        text = self.calls('POST', '/api/v4/leads/456/notes')[0][0]['params']['text']
+        self.assertIn('Страница: ' + url, text)
+        self.assertIn("Комментарий: '=DANGEROUS & details", text)
+        self.assertNotIn('&amp;', text)
+
+    def test_rejection_logs_one_safe_line_per_request(self):
+        for changes, headers, reason, status in [
+            ({'website': 'SECRET'}, {}, 'honeypot', 200),
+            ({'startedAt': time.time()*1000}, {}, 'too_fast', 200),
+            ({}, {'Origin': 'https://evil.test/SECRET'}, 'origin', 403),
+        ]:
+            with self.subTest(reason=reason):
+                with self.assertLogs('chezakvest-leads', level='INFO') as logs:
+                    self.assertEqual(self.post(payload(name='SECRET', **changes), headers)[0], status)
+                self.assertEqual(len(logs.output), 1)
+                self.assertIn(f'reason={reason} phone=+7******3623', logs.output[0])
+                self.assertNotIn('SECRET', logs.output[0])
+                self.assertNotIn('79282163623', logs.output[0])
+        self.assertEqual(self.fake.calls, [])
+        self.post()
+        with self.assertLogs('chezakvest-leads', level='INFO') as logs:
+            self.post(payload(phone='8 (928) 216-36-23'))
+        self.assertEqual(len(logs.output), 1)
+        self.assertIn('reason=dedup phone=+7******3623', logs.output[0])
+        self.assertEqual(len(self.calls('POST', '/api/v4/leads')), 1)
+        with self.assertLogs('chezakvest-leads', level='INFO') as logs:
+            self.assertEqual(self.post(payload(phone='SECRET'), {'Origin': 'null'})[0], 403)
+        self.assertIn('phone=unknown', logs.output[0])
+        self.assertNotIn('SECRET', logs.output[0])
+
     def test_exact_contact_match_and_unknown_enum(self):
         self.fake.contacts = [{'id': 888, 'custom_fields_values': [{'field_id':363447,'values':[{'value':'+79282163623'}]}]}]
         self.post(payload(quest='Неизвестный квест', venue='Нет адреса'))

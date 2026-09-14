@@ -38,6 +38,8 @@ test('built native and Tilda forms reach thank-you pages; full proxy path popula
     await page.waitForURL(`${base}/${thanks}/?form=*`);
     assert.equal(payload.utm_source,'test');
     assert.equal(payload.pageSlug,slug);
+    assert.ok(payload.crmName && payload.crmName !== payload.pageTitle);
+    if (slug === 'kids') assert.equal(payload.crmName, 'Детский день рождения');
     assert.ok(payload.pageUrl.includes(`/${slug}/`));
     assert.ok(payload.form.startsWith(kind));
     assert.equal(await page.locator('meta[name=robots]').getAttribute('content'),'noindex, follow');

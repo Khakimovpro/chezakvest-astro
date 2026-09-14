@@ -22,7 +22,7 @@ MAP = json.loads(Path(__file__).with_name('amo-map.json').read_text())
 KINDS = {'booking': 'Бронь квеста', 'prebooking': 'Предварительная бронь',
          'party': 'Праздник', 'callback': 'Обратный звонок'}
 LIMITS = {'name': 80, 'comment': 1000, 'form': 100, 'formTitle': 250, 'pageUrl': 1500,
-          'pageTitle': 300, 'pageSlug': 150, 'pageType': 40, 'quest': 200, 'venue': 200,
+          'crmName': 200, 'pageTitle': 300, 'pageSlug': 150, 'pageType': 40, 'quest': 200, 'venue': 200,
           'referrer': 1500, 'utm_referrer': 1500, 'ym_uid': 100, 'roistat_visit': 100,
           'yclid': 250, 'gclid': 250, **{f'utm_{k}': 250 for k in ['source','medium','campaign','content','term']}}
 
@@ -64,6 +64,14 @@ def phone(value):
     return '+' + digits
 
 
+def log_rejection(reason, value):
+    try:
+        masked = '+7******' + phone(value)[-4:]
+    except ValueError:
+        masked = 'unknown'
+    LOG.info('LEAD REJECT reason=%s phone=%s', reason, masked)
+
+
 def allowed_url(value, hosts):
     try:
         url = urllib.parse.urlsplit(value)
@@ -77,7 +85,11 @@ def validate(data, hosts):
         raise ValueError('JSON object required')
     # Silent bot rejection happens before normal field validation.
     started = data.get('startedAt')
-    if data.get('website') or (isinstance(started, (int, float)) and time.time()*1000 - started < 3000):
+    if data.get('website'):
+        log_rejection('honeypot', data.get('phone'))
+        return None
+    if isinstance(started, (int, float)) and time.time()*1000 - started < 3000:
+        log_rejection('too_fast', data.get('phone'))
         return None
     if isinstance(started, bool) or not isinstance(started, (int, float)) or not math.isfinite(started):
         raise ValueError('startedAt')
@@ -171,13 +183,14 @@ class Amo:
             checkpoint()
         if not record.get('lead_id'):
             kind = KINDS.get(lead['form'], 'Форма сайта')
-            tags = ['Сайт', 'Ростов', kind, lead['quest'] or lead['pageTitle']]
+            product = (lead['quest'] or lead.get('crmName') or 'Чё за Квест')[:40]
+            tags = ['Сайт', 'Ростов', kind, product]
             if test:
                 tags.append('ТЕСТ сайта')
             fields = self.custom_fields(lead)
             before_create()
             created = self.request('POST', '/leads', [{
-                'name': amo_text(f"Заявка с сайта: {lead['formTitle']} — {lead['pageTitle']}"[:255]),
+                'name': amo_text(f"Заявка с сайта: {kind} — {product}"[:255]),
                 'pipeline_id': 5519260 if test else int(os.environ.get('AMO_PIPELINE_ID', '6429238')),
                 'status_id': 48805513 if test else int(os.environ.get('AMO_STATUS_ID', '54964090')),
                 'custom_fields_values': fields,
@@ -199,7 +212,7 @@ def note(record):
     lead = record['lead']
     labels = {'name': 'Имя', 'phone': 'Телефон', 'pageUrl': 'Страница', 'pageTitle': 'Заголовок',
               'pageSlug': 'Слаг', 'pageType': 'Тип страницы', 'form': 'Вид формы', 'formTitle': 'Форма',
-              'quest': 'Квест', 'venue': 'Площадка', 'date': 'Желаемая дата', 'comment': 'Комментарий'}
+              'crmName': 'Продукт', 'quest': 'Квест', 'venue': 'Площадка', 'date': 'Желаемая дата', 'comment': 'Комментарий'}
     lines = [f'{labels.get(key, key)}: {value}' for key, value in lead.items() if value and key not in ('consent', 'phone')]
     lines += ['Согласие: получено', 'Устройство: ' + record['device'],
               'Отправлено (Москва): ' + dt.datetime.fromtimestamp(record['created'], ZoneInfo('Europe/Moscow')).isoformat(timespec='seconds')]
@@ -284,6 +297,7 @@ class Store:
             pending = self.root / 'queue' / (key + '.json')
             done = self.root / 'done' / pending.name
             if pending.exists() or (self.root / 'hold' / pending.name).exists() or (done.exists() and time.time() - json.loads(done.read_text())['created'] < 600):
+                log_rejection('dedup', lead['phone'])
                 return
             record = {'created': time.time(), 'lead': lead, 'device': device(agent)}
             self.save(pending, record)
@@ -328,6 +342,17 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(404, {'ok': False})
         origin, referer = self.headers.get('Origin'), self.headers.get('Referer')
         if not (origin or referer) or any(not allowed_url(v, self.server.hosts) for v in [origin, referer] if v):
+            rejected_phone = None
+            try:
+                length = int(self.headers.get('Content-Length', '0'))
+                if self.headers.get_content_type() == 'application/json' and not self.headers.get('Transfer-Encoding') and 0 < length <= 8192:
+                    self.connection.settimeout(10)
+                    data = json.loads(self.rfile.read(length))
+                    if isinstance(data, dict):
+                        rejected_phone = data.get('phone')
+            except (ValueError, TypeError, UnicodeError, TimeoutError):
+                pass
+            log_rejection('origin', rejected_phone)
             return self.respond(403, {'ok': False})
         if self.headers.get_content_type() != 'application/json':
             return self.respond(415, {'ok': False})

@@ -8,7 +8,7 @@ try { files = import.meta.glob('../data/pages/*.json', { eager: true }); } catch
 const pageData = Object.fromEntries(Object.values(files).map((mod) => {
   const page = mod.default || mod;
   const listed = venues.chips.flatMap((venue) => venue.groups.flatMap((group) => group.items)).find((item) => item.href.replace(/^\/|\/$/g, '') === page.slug);
-  return [page.slug, { type: page.type, venueSlug: page.venueSlug, quest: page.type === 'quest' ? listed?.t || page.seo?.h1 || '' : '' }];
+  return [page.slug, { type: page.type, venueSlug: page.venueSlug, quest: page.type === 'quest' ? listed?.t || page.seo?.h1 || '' : '', crmName: page.crmName || page.seo?.h1 || page.hero?.h1 || '' }];
 }));
 
 const RUSSIAN_PHONE_PATTERN = /^(?:7\d{10}|\d{10})$/;
@@ -205,6 +205,7 @@ function createLeadPayload(form, phone) {
   const title = form.closest('section, .t-rec, dialog')?.querySelector('h1,h2,h3,.t-title,.t-heading,.source-quiz__question,[data-elem-type=text] .tn-atom')?.textContent?.trim();
   const context = {
     pageUrl: window.location.href.slice(0, 1500), pageTitle: document.title.slice(0, 300),
+    crmName: (page.crmName || document.querySelector('h1')?.textContent?.trim() || 'Чё за Квест').slice(0, 200),
     pageSlug: slug, pageType: page.type || document.body.dataset.pageType || 'info',
     quest: read('select[name=kvest]', 'kvest') || form.dataset.leadQuest || page.quest || '', venue: form.dataset.leadVenue || venue?.t || '',
   };

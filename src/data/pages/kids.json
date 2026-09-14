@@ -1,5 +1,6 @@
 {
   "slug": "kids",
+  "crmName": "Детский день рождения",
   "type": "holiday",
   "render": "native",
   "showReviews": false,
