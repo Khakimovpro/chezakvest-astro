@@ -531,8 +531,13 @@ test('product sliders cycle, swipe, pause autoplay and open the selected lightbo
     await page.goto(`${base}/igra_v_kalmara/`, { waitUntil: 'load' });
     await page.evaluate(() => document.fonts.ready);
     assert.equal(await page.locator('[data-product-slider]').count(), 2);
-    const story = await page.locator('.product-story__photo').evaluate(el => ({frame: el.getBoundingClientRect().height, image: el.querySelector('img').getBoundingClientRect().height}));
-    assert.equal(story.image, story.frame);
+    const story = await page.locator('.product-story__photo').evaluate(el => {
+      const frame = el.getBoundingClientRect(), image = el.querySelector('img').getBoundingClientRect();
+      return { bottomGap: Math.abs(frame.bottom - image.bottom), widthGap: Math.abs(frame.width - image.width), ratio: frame.width / frame.height };
+    });
+    assert.ok(story.bottomGap <= 1, 'story photo reaches the bottom of its card');
+    assert.ok(story.widthGap <= 1, 'story photo fills the card width');
+    if (width === 390) assert.ok(Math.abs(story.ratio - 4 / 3) < 0.01, 'mobile story card has a 4:3 frame');
     for (const slider of await page.locator('[data-product-slider]').all()) {
       await slider.scrollIntoViewIfNeeded();
       const count = await slider.locator('.product-slider__slide').count();
