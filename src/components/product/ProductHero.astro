@@ -1,4 +1,10 @@
 ---
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductIconList from './ProductIconList.astro';
+import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
+import ProductFactChip from './ProductFactChip.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
 const { data, phoneHref, base = '', wa = '' } = Astro.props;
 const asset = (path) => `${base}${path}`;
@@ -10,11 +16,11 @@ const srcset = Object.entries(data?.imageSet || {}).map(([width, path]) => `${as
     <img class="product-hero__image" src={asset(data.image)} srcset={srcset || undefined} sizes="100vw" width="1600" height="700" fetchpriority="high" decoding="async" alt={`Квест «${data.title}»`} />
     <div class="product-hero__shade"></div>
     <div class="product-hero__content container">
-      <h1>{data.title}</h1>
-      <ul class="product-facts">{data.facts.map((fact, index) => <li class:list={{ 'product-facts__address': index === data.facts.length - 1 }}>{index === data.facts.length - 1 ? <a href="#karta">{fact}</a> : fact}</li>)}</ul>
-      {data.rating && <a class="product-hero__rating" href={data.rating.href} target="_blank" rel="noopener"><span aria-hidden="true">★</span> {data.rating.value} · {data.rating.count} отзывов о «Чё за Квест»</a>}
-      <div class="product-hero__actions"><a class="btn-orange" href="#booking">Забронировать</a><a class="product-btn-light" href={phoneHref}>Позвонить</a>{data.video && <a class="product-btn-video" href="#video"><span aria-hidden="true">▶</span> Смотреть видео</a>}</div>
+      <Breadcrumbs items={data.breadcrumbs} /><h1>{typograf(data.title)}</h1>
+      <ul class="product-facts">{data.facts.map((fact, index) => <ProductFactChip text={fact} icon={index === data.facts.length - 1 ? 'map-pin' : undefined} href={index === data.facts.length - 1 ? '#karta' : undefined} />)}</ul>
+      {data.rating && <a class="product-hero__rating" href={data.rating.href} target="_blank" rel="noopener"><Icon name="star" /> {data.rating.value} · {data.rating.count} отзывов о «Чё за Квест»</a>}
+      <div class="product-hero__actions"><ProductButton href="#booking" size="lg" icon="calendar-check" block>Забронировать</ProductButton><ProductButton href={phoneHref} variant="on-photo" size="lg" icon="phone">Позвонить</ProductButton>{data.video && <ProductButton href="#video" variant="on-ink" size="lg" icon="play">Смотреть видео</ProductButton>}</div>
     </div>
   </section>
-  <Breadcrumbs items={data.breadcrumbs} />
+
 </>}

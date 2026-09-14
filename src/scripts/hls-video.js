@@ -39,7 +39,8 @@ const attach = async (figure) => {
 document.querySelectorAll('[data-hls-video]').forEach((figure) => {
   const video = figure.querySelector('video');
   figure.querySelector('.hls-video__play')?.addEventListener('click', async () => {
-    if (!figure.dataset.ready) await attach(figure);
+    if (!figure.hasAttribute('data-ready')) await attach(figure);
+    video.controls = true;
     video?.play().catch(() => showError(figure));
   }, { once: true });
 });

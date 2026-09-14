@@ -1,0 +1,5 @@
+---
+import Icon from './Icon.astro';
+const { size = 16, score = 5 } = Astro.props;
+---
+<span class="product-stars" role="img" aria-label={`Оценка ${score} из 5`}>{Array.from({ length: 5 }, () => <Icon name="star" size={size} />)}</span>

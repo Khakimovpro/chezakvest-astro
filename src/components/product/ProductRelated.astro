@@ -1,5 +1,6 @@
 ---
 import CardsRow from '../CardsRow.astro';
+import { typograf } from '../../lib/typograf.js';
 const { data } = Astro.props;
 ---
-{data && <>{data.items.length > 0 && <CardsRow title={data.title} items={data.items} variant="poster" id="drugie" />}{data.scenarios?.items?.length > 0 && <CardsRow title={data.scenarios.title} subtitle={data.scenarios.subtitle} items={data.scenarios.items} variant="square" />}</>}
+{data && <div class="product-related product-section--ink"><div data-product-reveal>{data.items.length > 0 && <CardsRow title={typograf(data.title)} items={data.items} variant="poster" id="drugie" />}</div>{data.scenarios?.items?.length > 0 && <div class="product-cards-tail product-cards-continue" data-product-reveal><CardsRow title={typograf(data.scenarios.title)} subtitle={typograf(data.scenarios.subtitle)} items={data.scenarios.items} variant="square" /></div>}</div>}

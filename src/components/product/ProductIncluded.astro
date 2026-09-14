@@ -1,5 +1,10 @@
 ---
-const { data } = Astro.props;
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductIconList from './ProductIconList.astro';
+import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
+import ProductInfoCard from './ProductInfoCard.astro';
+const { data, surface = 'ground' } = Astro.props;
 ---
-
-{data?.items?.length > 0 && <section class="product-section product-section--white" id={data.id || undefined}><div class="container"><h2 class="section-title">{data.title}</h2>{data.subtitle && <p class="section-sub">{data.subtitle}</p>}<ul class="product-included">{data.items.map((item) => <li><strong>{item.t || item}</strong>{item.sub && <span>{item.sub}</span>}</li>)}</ul></div></section>}
+{data?.items?.length > 0 && <section class={`product-section product-section--${surface}`} id={data.id}><div class="container"><ProductSectionHeader title={data.title} lead={data.subtitle} /><ul class="product-included" data-product-reveal="group">{data.items.map((item) => <ProductInfoCard item={item} />)}</ul></div></section>}

@@ -1,4 +1,5 @@
 ---
+import Icon from './product/Icon.astro';
 import registry from '../data/video-hls.json';
 
 const { slug, title, poster, class: className = '' } = Astro.props;
@@ -12,11 +13,11 @@ const rutubeUrl = video.source.rutubeId ? `https://rutube.ru/video/${video.sourc
 ---
 
 <figure class:list={['hls-video', { 'hls-video--portrait': video.height > video.width }, className]} data-hls-video style={`--hls-ratio:${ratio}`}>
-  <video controls playsinline preload="none" poster={posterUrl} data-hls-src={`${registry.base}/${slug}/master.m3u8`} data-rutube-url={rutubeUrl || undefined} aria-label={title || video.title}></video>
+  <video playsinline preload="none" poster={posterUrl} data-hls-src={`${registry.base}/${slug}/master.m3u8`} data-rutube-url={rutubeUrl || undefined} aria-label={title || video.title}></video>
   <button class="hls-video__play" type="button" aria-label={`Смотреть: ${title || video.title}`}>
-    <span aria-hidden="true">▶</span>
+    <Icon name="play" size={28} />
   </button>
-  <span class="hls-video__duration" aria-label={`Длительность ${duration}`}>{duration}</span>
+  <span class="hls-video__duration" aria-label={`Длительность ${duration}`}><Icon name="clock" size={16} />{duration}</span>
   <p class="hls-video__error" hidden data-hls-error>Не удалось загрузить видео. <a href={rutubeUrl} hidden={!rutubeUrl} target="_blank" rel="noopener">Смотреть на Rutube</a></p>
 </figure>
 

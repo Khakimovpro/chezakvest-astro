@@ -1,0 +1,12 @@
+---
+import Icon from './Icon.astro';
+import { pickIcon } from '../../lib/product-icons.js';
+import { typograf } from '../../lib/typograf.js';
+const { item, number } = Astro.props;
+const title = item.t || item.title || item;
+const text = item.sub || item.text;
+---
+<li class="product-infocard">
+  <span class="product-infocard__icon">{number ? number : <Icon name={item.icon || pickIcon(title)} size={24} />}</span>
+  <div><h3>{typograf(title)}</h3>{text && <p>{typograf(text)}</p>}</div>
+</li>

@@ -1,4 +1,9 @@
 ---
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductIconList from './ProductIconList.astro';
+import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
 import PrebookingForm from '../PrebookingForm.astro';
 import scheduleStyles from '../../styles/source-schedule.css?raw';
 const { data, phoneHref, phone, wa } = Astro.props;
@@ -6,12 +11,14 @@ const { data, phoneHref, phone, wa } = Astro.props;
 {data && <>
   <!-- Calendar markup arrives from the booking service and depends on these scoped rules. -->
   <style set:html={scheduleStyles}></style>
-  <section class="product-section product-section--booking" id="booking"><div class="container"><h2 class="section-title">{data.title || 'Онлайн-бронирование'}</h2>{data.lines?.map((line) => <p class="product-booking__line">{line}</p>)}<div class="product-schedule" data-source-schedule={data.calendarId} aria-live="polite"></div><div class="product-booking__fallback" data-product-booking-fallback hidden><p>Если расписание временно недоступно, позвоните, напишите нам или оставьте предварительную заявку.</p><p><a href={phoneHref}>{phone}</a> · <a href={wa} target="_blank" rel="noopener">WhatsApp</a></p><PrebookingForm id="product-booking" quest={data.quest} calendarId={data.calendarId} /></div></div></section><script>
+  <section class="product-section product-section--ground" id="booking"><div class="container"><ProductSectionHeader title={data.title || 'Онлайн-бронирование'} /><ProductIconList items={data.lines?.map((t, i) => ({ t, icon: i ? 'wallet' : 'receipt' }))} columns={2} class="product-booking__lines" /><div class="product-schedule" data-product-reveal data-source-schedule={data.calendarId} aria-live="polite"></div><div class="product-booking__fallback" data-product-booking-fallback hidden><p>Если расписание временно недоступно, позвоните, напишите нам или оставьте предварительную заявку.</p><p><a href={phoneHref}>{phone}</a> · <a href={wa} target="_blank" rel="noopener">WhatsApp</a></p><PrebookingForm id="product-booking" quest={data.quest} calendarId={data.calendarId} /></div></div></section><script>
   import { initSourceSchedule } from '../../scripts/source-schedule.js';
   document.querySelectorAll('.product-schedule[data-source-schedule]').forEach((schedule) => {
     const fallback = schedule.parentElement?.querySelector('[data-product-booking-fallback]');
     let fallbackTimer;
     const prepareSlots = () => {
+      const more = schedule.querySelector('button.show_more_btn');
+      if (more) more.textContent = 'Показать ещё';
       schedule.querySelectorAll('.quest_calendar .label_quest').forEach((slot) => {
         const available = slot.matches('.click_load_item:not(.close_item)') && !slot.hasAttribute('disabled');
         slot.setAttribute('role', 'button');

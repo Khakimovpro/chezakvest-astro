@@ -49,7 +49,7 @@ const heroSrcset = Object.entries(page.hero?.bgset || {}).map(([width, image]) =
   <main class="product-page__main">
     <ProductHero data={model.hero} phoneHref={site.header.phoneHref} wa={site.header.wa} base={base} />
     <ProductShort data={model.short} />
-    <ProductGallery data={model.gallery} base={base} />
+    <ProductGallery continue data={model.gallery} base={base} />
     <ProductVideo data={model.video} />
     <ProductStory data={model.story} />
     <ProductFit data={model.fit} />

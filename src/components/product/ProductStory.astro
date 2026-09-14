@@ -1,4 +1,9 @@
 ---
-const { data } = Astro.props;
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductIconList from './ProductIconList.astro';
+import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
+const { data, surface = 'sheet' } = Astro.props;
 ---
-{data && <section class="product-section product-section--gray" id="story"><div class="container product-story"><div class="product-prose">{data.story?.title && <h2 class="section-title">{data.story.title}</h2>}{data.story?.paragraphs?.map((item) => <p>{item}</p>)}</div>{data.features && <div class="product-story__features product-prose"><h2>{data.features.title || 'Особенности'}</h2>{data.features.lead?.map((item) => <p>{item}</p>)}<ul>{data.features.items?.map((item) => <li><strong>{item.t}</strong>{item.sub && <span>{item.sub}</span>}</li>)}</ul></div>}</div></section>}
+{data && <section class={`product-section product-section--${surface}`} id="story"><div class="container product-story"><div class="product-prose"><ProductSectionHeader title={data.story?.title} />{data.story?.paragraphs?.map((p) => <p>{typograf(p)}</p>)}</div>{data.features && <div class="product-story__features"><ProductSectionHeader title={data.features.title || 'Особенности'} class="product-sh--compact" />{data.features.lead?.map((p) => <p>{typograf(p)}</p>)}<ProductIconList items={data.features.items} variant="tile" /></div>}</div></section>}

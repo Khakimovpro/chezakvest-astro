@@ -3,4 +3,4 @@ import ProductGallery from './ProductGallery.astro';
 import PartyForm from '../PartyForm.astro';
 const { data, base } = Astro.props;
 ---
-{data && <section id="prazdnik"><ProductGallery data={{ title: data.title || 'Праздник после игры', items: data.photos }} base={base} group="product-party" /><div class="product-party__form"><PartyForm /></div></section>}
+{data && <div class="product-party product-section--ground"><ProductGallery data={{ title: data.title || 'Праздник после игры', items: data.photos }} base={base} group="product-party" /><div class="product-party__form" data-product-reveal><PartyForm /></div></div>}

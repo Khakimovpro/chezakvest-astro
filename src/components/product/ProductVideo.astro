@@ -1,22 +1,18 @@
 ---
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductIconList from './ProductIconList.astro';
+import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
 import HlsVideo from '../HlsVideo.astro';
-const { data } = Astro.props;
+const { data, surface = 'ink' } = Astro.props;
 const videos = data?.items?.length ? data.items : data?.slug ? [data] : [];
 const party = data?.kind === 'party';
 ---
-{videos.length > 0 && (
-  <section class="product-section product-section--dark" id="video">
-    <div class:list={['container', 'product-video', { 'product-video--multiple': videos.length > 1 }]}>
-      <div class="product-video__info product-prose">
-        <p class="product-kicker">{party ? 'Как проходят наши праздники' : 'Трейлер'}</p>
-        <h2>{data.title}</h2>
-        <p>{data.intro || (party ? 'Посмотрите живые моменты с наших праздников.' : 'Посмотрите атмосферу игры до бронирования.')}</p>
-        {data.points?.length > 0 && <ul class="product-video__points">{data.points.map((point) => (
-          <li><svg class="product-video__fact-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m8 12 3 3 5-6" /></svg><div><strong>{point.t}</strong>{point.sub && <span>{point.sub}</span>}</div></li>
-        ))}</ul>}
-        <div class="product-video__actions"><a class="btn-orange" href={party ? '#prazdnik' : '#booking'}>{party ? 'Узнать стоимость' : 'Забронировать'}</a></div>
-      </div>
-      <div class="product-video__media">{videos.map((video) => <HlsVideo slug={video.slug} title={video.title} />)}</div>
-    </div>
-  </section>
-)}
+{videos.length > 0 && <section class={`product-section product-section--${surface}`} id="video">
+  <div class:list={['container', 'product-video', { 'product-video--multiple': videos.length > 1 }]}>
+    <ProductSectionHeader title={data.title} eyebrow={party ? 'Как проходят наши праздники' : undefined} lead={data.intro || (party ? 'Посмотрите живые моменты с наших праздников.' : 'Посмотрите атмосферу игры до бронирования.')} />
+    <div class="product-video__info"><ProductIconList items={data.points} variant="tile" tone="ink" class="product-video__points" /><div class="product-video__actions"><ProductButton href={party ? '#prazdnik' : '#booking'} size="lg" icon={party ? 'arrow-right' : 'calendar-check'} iconEnd={party} block>{party ? 'Узнать стоимость' : 'Забронировать'}</ProductButton></div></div>
+    <div class="product-video__media" data-product-reveal>{videos.map((video) => <HlsVideo slug={video.slug} title={video.title} />)}</div>
+  </div>
+</section>}

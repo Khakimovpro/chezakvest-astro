@@ -55,3 +55,8 @@ export function productPageModel({ page, site, venues = [], venuePage = {}, revi
 }
 
 export const productFaqItems = (page = {}) => (page.product?.faq || []).map(({ q, a }) => ({ q, a })).filter((item) => item.q && item.a);
+
+export const headingParts = (lead, tail) => ({
+  tail: tail || (/^[а-яё]/u.test(lead || '') ? lead : ''),
+  lead: tail || !/^[а-яё]/u.test(lead || '') ? lead : '',
+});

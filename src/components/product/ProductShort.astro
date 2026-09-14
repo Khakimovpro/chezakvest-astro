@@ -1,5 +1,9 @@
 ---
-const { data } = Astro.props;
-const paragraphs = Array.isArray(data) ? data : data ? [data] : [];
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductIconList from './ProductIconList.astro';
+import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
+const { data, surface = 'ground' } = Astro.props;
 ---
-{data && <section class="product-section product-section--white"><div class="container product-short product-prose"><h2>Коротко о квесте</h2>{paragraphs.map((paragraph) => <p>{paragraph}</p>)}</div></section>}
+{data && <section class={`product-section product-section--${surface}`}><div class="container product-short product-prose"><ProductSectionHeader title="Коротко о квесте" />{(Array.isArray(data) ? data : [data]).map((p) => <p>{typograf(p)}</p>)}</div></section>}
