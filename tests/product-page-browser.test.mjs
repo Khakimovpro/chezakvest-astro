@@ -25,7 +25,7 @@ const mime = {
 async function buildAndServe(t) {
   const output = await mkdtemp(join(tmpdir(), 'cheza-product-browser-'));
   t.after(() => rm(output, { recursive: true, force: true }));
-  await run('flock', ['/tmp/chezakvest-sborka.lock', 'node_modules/.bin/astro', 'build', '--outDir', output], { cwd: root });
+  await run('flock', ['/tmp/chezakvest-sborka.lock', 'flock', '/tmp/chezakvest-astro-test-build.lock', 'node_modules/.bin/astro', 'build', '--outDir', output], { cwd: root });
   const server = createServer(async (request, response) => {
     const pathname = decodeURIComponent(new URL(request.url || '/', 'http://site.test').pathname);
     const relative = pathname.endsWith('/') ? `${pathname}index.html` : pathname;
@@ -263,6 +263,11 @@ test('product motion preserves layout, reduced-motion access and content without
       assert.equal(await access.locator('.is-pending').count(), 0);
       const states=await access.locator('[data-product-reveal]').evaluateAll(elements=>elements.map(el=>({opacity:getComputedStyle(el).opacity,transform:getComputedStyle(el).transform})));
       assert.ok(states.length > 10 && states.every(state=>state.opacity==='1'&&state.transform==='none'));
+      if(options.javaScriptEnabled === false) {
+        const extra = access.locator('.product-photo-grid__item--hidden, .product-review--hidden');
+        if(slug === 'kids') assert.ok(await extra.count() > 0, 'exercise content normally revealed by a button');
+        assert.ok((await extra.evaluateAll(elements=>elements.map(el=>el.checkVisibility()))).every(Boolean), 'additional photos and reviews remain available without JavaScript');
+      }
       if(options.reducedMotion) assert.equal(await access.locator('.product-hero__image').evaluate(el=>getComputedStyle(el).animationName),'none');
       await access.close();
     }
@@ -292,4 +297,41 @@ test('product video controls activate on click and another player pauses the fir
   await players.nth(1).locator('button').click();
   assert.equal(await players.nth(1).locator('video').evaluate(v=>v.controls),true);
   assert.equal(await players.nth(0).locator('video').getAttribute('data-pause-calls'),'1');
+});
+
+test('mobile actions leave room for the local messenger and a late-loading support widget', { timeout: 90_000 }, async (t) => {
+  const base = await buildAndServe(t);
+  const browser = await chromium.launch({ args: ['--no-sandbox'] });
+  t.after(() => browser.close());
+  for (const slug of ['igra_v_kalmara', 'kids']) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 900 }, reducedMotion: 'reduce' });
+    await page.route('https://widget.yourgood.app/**', route => route.abort());
+    await page.goto(`${base}/${slug}/`, { waitUntil: 'networkidle' });
+    await page.evaluate(() => scrollTo(0, document.querySelector('.product-hero').offsetHeight + 100));
+    await page.locator('.product-mobile-cta--visible').waitFor();
+    const actionBounds = await page.locator('.product-mobile-cta .product-button').evaluateAll(buttons => buttons.map(button => {
+      const r = button.getBoundingClientRect(); return { left: r.left, right: r.right, width: r.width, contentWidth: button.scrollWidth };
+    }));
+    assert.ok(actionBounds.every(r => r.left >= 11.9 && r.right <= 378.1 && r.contentWidth <= r.width + 1), `${slug}: both mobile actions fit inside the 12px gutters`);
+    const overlap = async (selector) => page.evaluate(selector => {
+      const a = document.querySelector('.product-mobile-cta').getBoundingClientRect();
+      const element = selector === 'support' ? document.querySelector('pf-widget').shadowRoot.querySelector('section') : document.querySelector(selector);
+      const b = element.getBoundingClientRect();
+      return { width: b.width, height: b.height, area: Math.max(0, Math.min(a.right,b.right)-Math.max(a.left,b.left))*Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)) };
+    }, selector);
+    assert.deepEqual(await overlap('.mfab'), { width: 56, height: 56, area: 0 });
+    // Reproduce the documented vendor shadow boundary after the bar is already visible.
+    await page.evaluate(() => {
+      const widget = document.createElement('pf-widget');
+      widget.attachShadow({ mode: 'open' }).innerHTML = '<section id="PWPreviewWidgetButtonWrapper" style="position:fixed;width:64px;height:64px;right:32px;bottom:24px"></section>';
+      document.body.append(widget);
+      document.body.classList.add('has-support-chat');
+    });
+    await page.waitForFunction(() => document.querySelector('pf-widget').shadowRoot.querySelector('[data-product-chat-position]'));
+    assert.deepEqual(await overlap('support'), { width: 64, height: 64, area: 0 });
+    await page.evaluate(() => scrollTo(0,0));
+    await page.locator('.product-mobile-cta--visible').waitFor({ state: 'detached' });
+    assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('pf-widget').shadowRoot.querySelector('section')).translate), '0px');
+    await page.close();
+  }
 });

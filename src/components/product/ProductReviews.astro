@@ -20,4 +20,4 @@ const avatarIndex = (name = '') => [...name].reduce((sum, ch) => sum + ch.codePo
 </div></section><script>document.querySelector('[data-product-more]')?.addEventListener('click', (event) => { document.querySelectorAll('[data-product-review]').forEach((card) => card.classList.remove('product-review--hidden')); event.currentTarget.hidden = true; });</script>}
 
 
-<noscript><style is:global>.product-page .product-review--hidden { display: block; } .product-page [data-product-more] { display: none; }</style></noscript>
+<noscript><style is:global>.product-page .product-review--hidden { display: block !important; } .product-page [data-product-more] { display: none; }</style></noscript>

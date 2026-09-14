@@ -1,7 +1,7 @@
 ---
-import { ICONS, FILLED, VIEWBOX } from './icons/lucide.js';
+import { productIcon, FILLED, VIEWBOX } from './icons/lucide.js';
 const { name, size = 20, class: className = '', label } = Astro.props;
-if (!Object.hasOwn(ICONS, name)) throw new Error(`Unknown product icon: ${name}`);
+const paths = productIcon(name);
 const filled = FILLED.has(name);
 ---
-<svg class:list={['product-icon', `product-icon--${name}`, className]} viewBox={VIEWBOX[name] || '0 0 24 24'} width={size} height={size} fill={filled ? 'currentColor' : 'none'} stroke={filled ? 'none' : 'currentColor'} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden={label ? undefined : 'true'} role={label ? 'img' : undefined} aria-label={label} focusable="false" set:html={ICONS[name]} />
+<svg class:list={['product-icon', `product-icon--${name}`, className]} viewBox={VIEWBOX[name] || '0 0 24 24'} width={size} height={size} fill={filled ? 'currentColor' : 'none'} stroke={filled ? 'none' : 'currentColor'} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden={label ? undefined : 'true'} role={label ? 'img' : undefined} aria-label={label} focusable="false" set:html={paths} />

@@ -13,6 +13,24 @@ const { phoneHref, bookingId = 'booking', bookingLabel = 'Забронирова
   const bar = document.querySelector('[data-product-mobile-cta]');
   const hero = document.querySelector('.product-hero');
   const fab = document.querySelector('.mfab');
+  // YourGood replaces the local FAB after loading. Its button lives in an open shadow root.
+  const placeSupportChat = () => {
+    const root = document.querySelector('pf-widget')?.shadowRoot;
+    if (!root) return false;
+    if (!root.querySelector('[data-product-chat-position]')) {
+      const style = document.createElement('style');
+      style.setAttribute('data-product-chat-position', '');
+      style.textContent = '@media(max-width:767px){#PWPreviewWidgetButtonWrapper{translate:0 var(--product-chat-shift,0px);transition:none!important}}';
+      root.append(style);
+    }
+    return true;
+  };
+  if (!placeSupportChat()) {
+    const chatObserver = new MutationObserver(() => { if (placeSupportChat()) chatObserver.disconnect(); });
+    chatObserver.observe(document.body, { childList: true, subtree: true });
+    customElements.whenDefined('pf-widget').then(() => { if (placeSupportChat()) chatObserver.disconnect(); });
+    setTimeout(() => chatObserver.disconnect(), 30_000);
+  }
   const targets = [...document.querySelectorAll('.product-page #booking, .product-page #prazdnik, .product-page #quiz')];
   const visibleTargets = new Set();
   const sync = () => {

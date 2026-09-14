@@ -47,7 +47,7 @@ test('FAQ schema source contains only visible questions', () => {
 });
 
 import kids from '../src/data/pages/kids.json' with { type: 'json' };
-import { ICONS } from '../src/components/product/icons/lucide.js';
+import { ICONS, productIcon } from '../src/components/product/icons/lucide.js';
 import { pickIcon } from '../src/lib/product-icons.js';
 import { typograf } from '../src/lib/typograf.js';
 
@@ -64,10 +64,18 @@ test('all pilot fact lists resolve known meaningful icons', () => {
   assert.ok(sections.video.points.every((point) => !sections.included.items.some((item) => item.t === point.t)));
 });
 
+test('icon rendering rejects unknown names including inherited object keys', () => {
+  assert.equal(productIcon('users'), ICONS.users);
+  for (const name of ['typo-icon', 'toString', undefined]) {
+    assert.throws(() => productIcon(name), /Unknown product icon:/u);
+  }
+});
+
 test('typography preserves text while joining short words and number ranges', () => {
   assert.equal(typograf('Игра в Кальмара для 2-24'), 'Игра в\u00a0Кальмара для 2–24');
   assert.equal(typograf('На карте — адрес'), 'На\u00a0карте\u00a0— адрес');
   assert.equal(typograf('<текст>'), '<текст>');
+  assert.equal(typograf('Чё за Квест'), 'Чё\u00a0за\u00a0Квест');
 });
 
 test('built product sections use registered SVG icons instead of typographic glyphs', async () => {

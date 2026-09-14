@@ -40,3 +40,8 @@ export const ICONS = {
 };
 export const FILLED = new Set(["star", "play", "whatsapp"]);
 export const VIEWBOX = { whatsapp: "0 0 32 32" };
+
+export function productIcon(name) {
+  if (!Object.hasOwn(ICONS, name)) throw new Error(`Unknown product icon: ${name}`);
+  return ICONS[name];
+}
