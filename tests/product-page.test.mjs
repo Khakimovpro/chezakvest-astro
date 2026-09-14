@@ -75,7 +75,7 @@ test('typography preserves text while joining short words and number ranges', ()
   assert.equal(typograf('Игра в Кальмара для 2-24'), 'Игра в\u00a0Кальмара для 2–24');
   assert.equal(typograf('На карте — адрес'), 'На\u00a0карте\u00a0— адрес');
   assert.equal(typograf('<текст>'), '<текст>');
-  assert.equal(typograf('Чё за Квест'), 'Чё\u00a0за\u00a0Квест');
+  assert.equal(typograf('Чё за Квест'), 'Чё за\u00a0Квест');
 });
 
 test('built product sections use registered SVG icons instead of typographic glyphs', async () => {
@@ -115,4 +115,8 @@ test('each pilot hall names its equipment in complete nominative labels', async 
   for(const hall of halls) assert.ok(hall.equipment.every(item=>/^[А-ЯЁ]/u.test(item)));
   const html=await readFile(new URL('../dist/kids/index.html',import.meta.url),'utf8');
   assert.equal((html.match(/class="product-halls__equipment-title"/gu)||[]).length,halls.length);
+});
+
+test('pilot display copy keeps the approved spelling and casing',()=>{
+ for(const data of [page,kids]) assert.doesNotMatch(JSON.stringify(data),/Уверенны|пришел|актер|ребен|День Рождения/u);
 });

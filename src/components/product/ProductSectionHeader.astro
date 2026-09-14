@@ -4,7 +4,7 @@ import { headingParts } from '../../lib/product-page.js';
 const { eyebrow, title, lead, titleTail, id, class: className = '' } = Astro.props;
 const parts = headingParts(lead, titleTail);
 ---
-<header class:list={['product-sh', className]} data-product-reveal>
+<header class:list={['product-sh', className]}>
   <div class="product-sh__main">
     {eyebrow && <p class="product-sh__eyebrow">{typograf(eyebrow)}</p>}
     <h2 class="product-sh__title" id={id}>{typograf(title)}{parts.tail && ' '}{parts.tail && <span class="product-sh__tail">{typograf(parts.tail)}</span>}</h2>

@@ -1,207 +1,5 @@
-.product-page,
-.product-mobile-cta,
-body:is(.product-page,:has(.product-page)) .mfab,
-body:is(.product-page,:has(.product-page)) pf-widget,
-body:is(.product-page,:has(.product-page)) .lb {
-  /* ── Отступы: шкала 4 ─────────────────────────────── */
-  --product-space-4: 4px;
-  --product-space-8: 8px;
-  --product-space-12: 12px;
-  --product-space-16: 16px;
-  --product-space-20: 20px;
-  --product-space-24: 24px;
-  --product-space-32: 32px;
-  --product-space-40: 40px;
-  --product-space-48: 48px;
-  --product-space-64: 64px;
-  --product-space-80: 80px;
-  --product-space-96: 96px;
+@import './product/tokens.css';
 
-  /* ── Ритм секций (390 → 1440 линейно) ─────────────── */
-  --product-section-y: clamp(56px, 41.14px + 3.81vw, 104px);        /* 390→56, 768→70, 1440→96 */
-  --product-section-y-tight: clamp(24px, 16.57px + 1.905vw, 44px);  /* верх «продолжения»: 24 → 44 */
-  --product-header-gap: clamp(28px, 20.57px + 1.905vw, 48px);       /* SectionHeader → контент: 28 → 48 */
-  --product-block-gap: clamp(40px, 32.57px + 1.905vw, 60px);        /* между подблоками одной секции */
-  --product-grid-gap: clamp(16px, 13.03px + 0.762vw, 24px);         /* карточки и колонки: 16 → 24 */
-  --product-stack-gap: 12px;                                        /* соседние карточки в столбик на телефоне */
-
-  /* ── Контейнер ─────────────────────────────────────── */
-  --product-container: 1200px;       /* контент 1160, левый край 140 на 1440 — совпадает с логотипом шапки */
-  --product-gutter: 20px;            /* 768–1239px: 32px (см. медиазапрос ниже) */
-  --product-measure: 64ch;           /* абзацы */
-  --product-measure-lead: 56ch;      /* лиды */
-  --product-title-measure: 26ch;     /* H2 */
-  --product-hero-measure: 14ch;      /* H1 */
-
-  /* ── Шрифты ────────────────────────────────────────── */
-  --product-font-display: 'Montserrat', Arial, sans-serif;  /* заголовки, кнопки, плашки, цифры, подписи UI */
-  --product-font-text: 'Nunito', Arial, sans-serif;         /* абзацы, лиды, отзывы, ответы FAQ, описания */
-
-  /* ── Типографика по ролям ──────────────────────────── */
-  --product-type-display: clamp(36px, 25.6px + 2.667vw, 64px);   /* H1: 36 → 64, 800, lh 1.04, ls -0.02em */
-  --product-leading-display: 1.04;
-  --product-tracking-display: -0.02em;
-
-  --product-type-h2: clamp(28px, 22.06px + 1.524vw, 44px);       /* H2: 28 → 44, 800, lh 1.1, ls -0.015em */
-  --product-leading-h2: 1.1;
-  --product-tracking-h2: -0.015em;
-
-  --product-type-h3: clamp(20px, 18.51px + 0.381vw, 24px);       /* H3: 20 → 24, 700, lh 1.25, ls -0.01em */
-  --product-leading-h3: 1.25;
-  --product-tracking-h3: -0.01em;
-
-  --product-type-title: clamp(17px, 16.63px + 0.095vw, 18px);    /* заголовок карточки/вопроса: 700, lh 1.3 */
-  --product-leading-title: 1.3;
-
-  --product-type-lead: clamp(18px, 16.89px + 0.286vw, 21px);     /* Nunito 400, lh 1.55 */
-  --product-leading-lead: 1.55;
-
-  --product-type-body: clamp(16px, 15.63px + 0.095vw, 17px);     /* Nunito 400, lh 1.6; на ink lh 1.66 */
-  --product-leading-body: 1.6;
-  --product-leading-body-ink: 1.66;
-
-  --product-type-small: 15px;          /* Nunito 400 lh 1.5 — описания в карточках; Montserrat 600 — UI */
-  --product-leading-small: 1.5;
-  --product-type-button: 16px;         /* Montserrat 700 */
-  --product-type-button-lg: 17px;      /* Montserrat 700 */
-  --product-type-caption: 13px;        /* Montserrat 600, lh 1.4, ls 0.01em — даты, источники, «Уже» */
-  --product-leading-caption: 1.4;
-  --product-type-eyebrow: 13px;        /* Montserrat 700, uppercase, ls 0.08em — только где кикер есть в данных */
-  --product-tracking-eyebrow: 0.08em;
-  --product-type-stat: clamp(40px, 32.57px + 1.905vw, 60px);     /* Montserrat 800, lh 1, tabular-nums */
-
-  --product-weight-heavy: 800;
-  --product-weight-bold: 700;
-  --product-weight-semibold: 600;
-  --product-weight-regular: 400;
-
-  /* ── Цвет: акцент ──────────────────────────────────── */
-  --product-accent: #ff6b00;           /* заливки: кнопки, слоты, активная вкладка, бейджи, полоса accent */
-  --product-accent-hover: #ff7d1a;
-  --product-accent-press: #f06200;     /* текст #1f2933 на нём 4.53:1 */
-  --product-accent-soft: #fff1e6;      /* подложка иконок на светлом */
-  --product-accent-ink: #b84a00;       /* оранжевый текст и иконки на светлом: 5.23 на белом, 4.72 на ground */
-  --product-accent-on-ink: #ff8a00;    /* оранжевый на тёмном: 6.65 на #1c1c1c */
-  --product-on-accent: #1f2933;        /* текст на оранжевом: 5.17 (= --cta-ink) */
-  --product-accent-display: #e85a00; /* Display text >=24px bold and rating graphics only. */
-  --product-star: var(--product-accent-display);             /* звёзды рейтинга: 3.56 на белом (графика ≥ 3:1) */
-
-  /* ── Цвет: текст ───────────────────────────────────── */
-  --product-ink: #262626;              /* заголовки, акцентный текст */
-  --product-text: #3a3a3a;             /* абзацы: 11.4 на белом, 10.2 на ground */
-  --product-muted: #5c5c5c;            /* мета, подписи: 6.69 на белом, 5.98 на ground; светлее на светлом нельзя */
-  --product-disabled-text: #767676;    /* закрытые слоты: 4.54 на белом */
-
-  /* ── Цвет: поверхности ─────────────────────────────── */
-  --product-ground: transparent;       /* дудл body просвечивает */
-  --product-paper: #f4f2ef;            /* сплошной тон ground, где нужна непрозрачность */
-  --product-sheet: #ffffff;
-  --product-sheet-muted: #f7f6f4;      /* карточка на sheet-полосе */
-  --product-ink-band: #1c1c1c;
-  --product-ink-raised: #262626;       /* карточка на ink */
-  --product-ink-title: #ffffff;
-  --product-ink-text: #e6e6e6;         /* 13.65 на #1c1c1c */
-  --product-ink-muted: #bdbdbd;        /* 9.07 на #1c1c1c */
-  --product-accent-band: #ff6b00;
-
-  /* ── Линии ─────────────────────────────────────────── */
-  --product-line: rgb(20 16 12 / 10%);         /* рамки полей и светлых кнопок */
-  --product-line-strong: rgb(20 16 12 / 18%);  /* рамка поля в покое, hover светлой кнопки */
-  --product-divider: rgb(20 16 12 / 8%);       /* разделители строк, FAQ, календарь */
-  --product-line-ink: rgb(255 255 255 / 12%);
-  --product-image-outline: rgb(0 0 0 / 8%);
-
-  /* ── Радиусы (телефон: lg 20, xl 24) ────────────────── */
-  --product-radius-xs: 8px;            /* длительность на видео, мелкие метки */
-  --product-radius-sm: 14px;           /* поля ввода */
-  --product-radius-md: 16px;           /* иконочные квадраты, внутренние блоки */
-  --product-radius-lg: 24px;           /* карточки, фото, видео, карта */
-  --product-radius-xl: 32px;           /* панели: календарь, формы, статистика */
-  --product-radius-pill: 999px;        /* кнопки, плашки, вкладки, слоты, чипы площадок */
-
-  /* ── Тени ──────────────────────────────────────────── */
-  --product-shadow-1: 0 0 0 1px rgb(20 16 12 / 5%), 0 1px 2px rgb(20 16 12 / 6%), 0 4px 12px -2px rgb(20 16 12 / 6%);
-  --product-shadow-2: 0 0 0 1px rgb(20 16 12 / 6%), 0 8px 20px -6px rgb(20 16 12 / 14%), 0 24px 48px -16px rgb(20 16 12 / 16%);
-  --product-shadow-3: 0 24px 64px -20px rgb(0 0 0 / 40%);
-  --product-shadow-cta: 0 10px 24px -8px rgb(255 107 0 / 55%);
-  --product-ring-ink: 0 0 0 1px rgb(255 255 255 / 10%);
-
-  /* ── Слои (чужие: шапка 900, квиз 1080, мессенджер 1100, меню 1200, лайтбокс — top layer) ── */
-  --product-z-media-overlay: 1;
-  --product-z-media-control: 2;
-  --product-z-tab-indicator: 0;
-  --product-z-tab-label: 1;
-  --product-z-mobile-bar: 800;
-
-  /* ── Движение ──────────────────────────────────────── */
-  --product-dur-press: 120ms;
-  --product-dur-fast: 160ms;
-  --product-dur-base: 220ms;
-  --product-dur-slow: 320ms;
-  --product-dur-reveal: 560ms;
-  --product-dur-hero: 1400ms;
-  --product-stagger: 60ms;             /* шаг задержки, не больше 5 шагов (300ms) */
-  --product-reveal-distance: 16px;     /* телефон: 12px */
-  --product-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --product-ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-  --product-ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-  --product-ease-standard: cubic-bezier(0.2, 0, 0, 1);
-}
-
-@media (min-width: 768px) and (max-width: 1239px) {
-  :is(body.product-page, body:not(.source-snapshot-page) .product-page) { --product-gutter: 32px; }
-}
-@media (max-width: 767px) {
-  .product-page, body:is(.product-page,:has(.product-page)) .lb {
-    --product-radius-lg: 20px;
-    --product-radius-xl: 24px;
-    --product-reveal-distance: 12px;
-  }
-}
-
-.product-page, .product-mobile-cta, body:is(.product-page,:has(.product-page)) .lb {
- --product-optical-1: 1px;
- --product-optical-2: 2px;
- --product-schedule-row-pitch: 76px;
- --product-schedule-slot-height: 44px;
- --product-button-lg-gap: 10px;
- --product-whatsapp: #1fa855;
- --product-hero-content: 640px;
- --product-hero-height: 720px;
- --product-hero-top: 160px;
- --product-hero-bottom: 72px;
- --product-hero-top-mobile: 120px;
- --product-hero-top-shade: 180px;
- --product-hero-top-shade-mobile: 140px;
- --product-hero-shade-floor: 8%;
- --product-media-scrim: linear-gradient(180deg, rgb(0 0 0 / 0%) 35%, rgb(0 0 0 / 55%) 62%, rgb(0 0 0 / 88%) 100%);
- --product-tile-inset-mobile: 10px;
- --product-play-size: 72px;
- --product-play-halo: 0 0 0 8px rgb(255 107 0 / 25%);
- --product-gallery-width: 520px;
- --product-rating-size: 56px;
- --product-review-padding: 28px;
- --product-type-ui-small: 14px;
- --product-type-input: 17px;
- --product-type-review-mobile: 16px;
- --product-type-form-title: clamp(24px,20.29px + .952vw,34px);
- --product-field-height: 52px;
- --product-checkbox-size: 22px;
- --product-form-button-min: 240px;
- --product-stat-caption-height: 18px;
- --product-chip-height-mobile: 36px;
- --product-video-mobile: 300px;
- --product-shadow-bar: 0 -8px 24px -12px rgb(0 0 0 / 18%);
- --product-avatar-0: #fff1e6;
- --product-avatar-1: #f1ede8;
- --product-avatar-2: #e9f1ec;
- --product-avatar-3: #eceaf5;
- --product-avatar-4: #f5e9ec;
- --product-avatar-5: #e8eff3;
-}
-@media (max-width:767px) {
- :is(body.product-page, body:not(.source-snapshot-page) .product-page) { --product-play-size: 64px; --product-rating-size: 40px; }
-}
 :is(body.product-page, body:not(.source-snapshot-page) .product-page) { background-color: transparent; color: var(--product-text); font: var(--product-weight-regular) var(--product-type-body)/var(--product-leading-body) var(--product-font-text); }
 :is(body.product-page, body:not(.source-snapshot-page) .product-page) .container { width: 100%; max-width: var(--product-container); padding-inline: var(--product-gutter); margin-inline: auto; }
 :is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-page__main,.product-holiday-page) { overflow: clip; padding-bottom: 0; }
@@ -606,13 +404,13 @@ body:not(.source-snapshot-page) .product-schedule .show_more_btn::after {
   body:not(.source-snapshot-page) .product-schedule .quest_calendar .label_quest { padding: 0; font-size: var(--product-type-ui-small); }
   body:not(.source-snapshot-page) .product-schedule .show_more_btn { width: 100%; justify-content: center; }
 }
-/* Movement is opt-in. Colors and shadows change immediately; only transforms and opacity interpolate. */
+/* Spatial movement is opt-in; interaction colors and shadows use short transitions. */
 @media (prefers-reduced-motion:no-preference) {
  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .is-pending { opacity: 0; transform: translateY(var(--product-reveal-distance)); }
  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .is-revealed { opacity: 1; transform: none; transition: opacity var(--product-dur-reveal) var(--product-ease-out),transform var(--product-dur-reveal) var(--product-ease-out); transition-delay: calc(var(--product-reveal-i,0) * var(--product-stagger)); }
  :is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-hero__image { animation: product-hero-settle var(--product-dur-hero) var(--product-ease-out) both; }
  @keyframes product-hero-settle { from { transform: scale(1.06); } to { transform: scale(1); } }
- :is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-button,.btn-orange,.venues__map-load,.product-rail__arrow,.product-faq__chevron), .product-mobile-cta .product-button { transition: transform var(--product-dur-press) var(--product-ease-out),opacity var(--product-dur-fast) var(--product-ease-out); }
+ :is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-button,.btn-orange,.venues__map-load,.product-rail__arrow), .product-mobile-cta .product-button { transition: transform var(--product-dur-press) var(--product-ease-out),opacity var(--product-dur-fast) var(--product-ease-out); }
  :is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-button,.btn-orange,.venues__map-load):active, .product-mobile-cta .product-button:active { transform: scale(.96); }
  :is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-rail__item,.product-photo-grid__item,.card__link):active { transform: scale(.98); }
  :is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-rail__image,.product-photo-grid__image,.card__img) { transition: transform var(--product-dur-slow) var(--product-ease-out); }
@@ -783,4 +581,40 @@ body:not(.source-snapshot-page) .product-schedule .quest_line.show_more:not(.hid
 @media(max-width:1023px) {
 :is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-hero--holiday { --product-hero-shade-floor: 55%; }
 :is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-hero__shade { background: linear-gradient(0deg,rgb(14 14 14 / 90%) 0%,rgb(14 14 14 / 72%) 45%,rgb(14 14 14 / var(--product-hero-shade-floor)) 100%),linear-gradient(180deg,rgb(14 14 14 / 45%) 0,transparent var(--product-hero-top-shade-mobile)); }
+}
+
+/* B: optical list alignment, tablet compositions and focus. */
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-icon-list--tile > li { align-items: center; }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-icon-list--tile > li:has(> div > p) { align-items: start; }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-icon-list--tile > li:has(> div > p) .product-icon-list__title { display: block; padding-block-start: calc((44px - 1lh) / 2); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-faq summary:focus-visible { border-radius: var(--product-radius-xs); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.pform,.cbform) input:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--product-accent-ink), 0 0 0 var(--product-space-4) rgb(255 107 0 / 20%); }
+@media(min-width:768px) and (max-width:1023px) {
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-video:not(.product-video--multiple) { grid-template-columns: minmax(0,1fr) 300px; column-gap: var(--product-space-40); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.pform__card,.product-lead-band .pform__card) { display: block; padding: var(--product-space-40); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .pform__form { margin-top: var(--product-space-24); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-lead-band .pform__grid { grid-template-columns: repeat(2,minmax(0,1fr)); grid-template-areas: "date date" "name phone"; }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-final > .container,.product-lead-band > .container) { grid-template-columns: minmax(0,1fr); gap: var(--product-space-32); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-faq { grid-template-columns: minmax(0,1fr); gap: 0; }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-faq > .product-sh { position: static; }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-included,.product-steps) { grid-template-columns: minmax(0,1fr); gap: var(--product-space-12); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-included,.product-steps) .product-infocard { display: grid; grid-template-columns: 44px minmax(0,1fr); gap: var(--product-space-16); padding: var(--product-space-20); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-included,.product-steps) .product-infocard__icon { width: 44px; height: 44px; margin: 0; }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-halls { display: flex; gap: var(--product-space-16); overflow-x: auto; scroll-snap-type: x mandatory; margin-inline: calc(-1 * var(--product-gutter)); padding: var(--product-space-4) var(--product-gutter); scroll-padding-inline: var(--product-gutter); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-halls > li { flex: 0 0 44%; scroll-snap-align: start; }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-halls > li > div { padding: var(--product-space-20); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-tiles h3 { padding: var(--product-space-12); font-size: var(--product-type-small); }
+}
+
+/* B: all interactive surface transitions share the system durations. */
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-button,.btn-orange,.venues__map-load) { transition: background-color var(--product-dur-fast) ease, box-shadow var(--product-dur-fast) ease, color var(--product-dur-fast) ease, transform var(--product-dur-press) var(--product-ease-out); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-rail__arrow,.cards__arrow) { transition: background-color var(--product-dur-fast) ease, box-shadow var(--product-dur-fast) ease, opacity var(--product-dur-fast) ease, transform var(--product-dur-press) var(--product-ease-out); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-media,.card__link) { transition: transform var(--product-dur-base) var(--product-ease-out), box-shadow var(--product-dur-base) var(--product-ease-out); }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-media__zoom { transition: opacity var(--product-dur-fast) ease; }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-reviews__services a,.product-packages__tabs button,.product-faq summary) { transition: box-shadow var(--product-dur-fast) ease, color var(--product-dur-fast) ease, background-color var(--product-dur-fast) ease; }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.pform,.cbform) input { transition: box-shadow var(--product-dur-fast) ease; }
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) .product-faq__chevron { transition: transform var(--product-dur-base) var(--product-ease-out), background-color var(--product-dur-fast) ease; }
+.product-mobile-cta .product-button { transition: background-color var(--product-dur-fast) ease, box-shadow var(--product-dur-fast) ease, color var(--product-dur-fast) ease, transform var(--product-dur-press) var(--product-ease-out); }
+@media(prefers-reduced-motion:reduce) {
+:is(body.product-page, body:not(.source-snapshot-page) .product-page) :is(.product-button,.btn-orange,.venues__map-load,.product-rail__arrow,.cards__arrow,.product-media,.card__link,.product-reviews__services a,.product-packages__tabs button,.product-faq summary,.product-faq__chevron,.pform input,.cbform input), .product-mobile-cta .product-button { transition: color var(--product-dur-fast) ease, background-color var(--product-dur-fast) ease, box-shadow var(--product-dur-fast) ease, opacity var(--product-dur-fast) ease !important; }
 }

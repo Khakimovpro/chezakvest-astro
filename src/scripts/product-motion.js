@@ -11,10 +11,10 @@ if (preference.matches && 'IntersectionObserver' in window && document.visibilit
   };
   const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
     if (entry.isIntersecting) { observer.unobserve(entry.target); reveal(entry.target); }
-  }), { rootMargin: '0px 0px -12% 0px' });
+  }), { rootMargin: '0px 0px -6% 0px' });
   const mark = (element, index = 0) => {
     if (element.getBoundingClientRect().top < innerHeight) return;
-    element.style.setProperty('--product-reveal-i', String(Math.min(index, 5)));
+    element.style.setProperty('--product-reveal-i', String(Math.min(index, 4)));
     element.classList.add('is-pending'); pending.add(element); observer.observe(element);
   };
   document.querySelectorAll('[data-product-reveal]').forEach((element) => {

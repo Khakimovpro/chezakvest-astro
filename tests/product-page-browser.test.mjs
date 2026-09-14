@@ -250,8 +250,9 @@ test('product motion preserves layout, reduced-motion access and content without
     await page.evaluate(() => document.fonts.ready);
     await page.evaluate(() => { window.productCLS = 0; new PerformanceObserver(list => list.getEntries().forEach(entry => { if (!entry.hadRecentInput) window.productCLS += entry.value; })).observe({type:'layout-shift'}); });
     assert.equal(await page.locator('.product-hero .is-pending').count(), 0);
-    const reveal = await page.locator('.product-sh.is-pending').first().elementHandle();
-    assert.ok(reveal, 'below-fold headers are prepared for reveal');
+    assert.equal(await page.locator('.product-sh[data-product-reveal]').count(), 0);
+    const reveal = await page.locator('[data-product-reveal].is-pending').first().elementHandle();
+    assert.ok(reveal, 'below-fold content is prepared for reveal');
     await reveal.scrollIntoViewIfNeeded();
     await page.waitForTimeout(80);
     assert.equal(await reveal.evaluate(el => el.classList.contains('is-revealed')), true);
@@ -368,7 +369,7 @@ test('product rails scroll, directions stay separate and mobile reviews expand w
     for (const width of [390,768,1440]) {
       await page.setViewportSize({width,height:900});
       if (slug === 'igra_v_kalmara') {
-        const address=page.locator('.product-story__features li').filter({hasText:'2 адреса на выбор'}).locator('p');
+        const address=page.locator('.product-story__features li').filter({hasText:/2\s+адреса на\s+выбор/u}).locator('p');
         assert.equal((await address.innerText()).split('\n').length,2);
       }
       const icons=await page.locator('.product-map .product-icon-list__icon svg').evaluateAll(els=>els.map(el=>el.getAttribute('class')));
