@@ -40,7 +40,15 @@ def load_env(path):
 def clean(value):
     if not isinstance(value, str):
         raise ValueError('Expected text')
-    return re.sub(r'[\x00-\x1f\x7f]', ' ', re.sub(r'<[^>]*>', '', html.unescape(value))).strip()
+    decoded = re.sub(r'<[^>]*>', '', html.unescape(value))
+    cleaned = re.sub(r'[\x00-\x1f\x7f]', ' ', decoded).strip()
+    return amo_text(cleaned, leading_control=decoded.startswith(('\t', '\r', '\n')))
+
+
+def amo_text(value, leading_control=False):
+    if isinstance(value, str) and (leading_control or value.lstrip(' ').startswith(('=', '+', '-', '@', '\t', '\r', '\n'))):
+        return "'" + value
+    return value
 
 
 def phone(value):
@@ -126,7 +134,7 @@ class Amo:
         values = {**lead, 'ym_counter': '48864086'}
         if values.get('date'):
             values['date'] = int(dt.datetime.combine(dt.date.fromisoformat(values['date']), dt.time(), ZoneInfo('Europe/Moscow')).timestamp())
-        result = [{'field_id': field_id, 'values': [{'value': values[key]}]}
+        result = [{'field_id': field_id, 'values': [{'value': amo_text(values[key])}]}
                   for key, field_id in MAP['fields'].items() if values.get(key)]
         selects = {'source': 'Наш сайт',
                    'venue': MAP['venue_aliases'].get(lead['venue'], lead['venue']),
@@ -139,7 +147,7 @@ class Amo:
                 result.append({'field_id': field_id, 'values': [{'enum_id': enum_id}]})
         return result
 
-    def deliver(self, record, checkpoint):
+    def deliver(self, record, checkpoint, before_create=lambda: None):
         lead = record['lead']
         test = lead['phone'] == os.environ.get('LEAD_TEST_PHONE', '+79000000000')
         if not record.get('contact_id'):
@@ -156,7 +164,7 @@ class Amo:
                         except ValueError:
                             pass
             if not contact_id:
-                contact = self.request('POST', '/contacts', [{'name': lead['name'], 'custom_fields_values': [
+                contact = self.request('POST', '/contacts', [{'name': amo_text(lead['name']), 'custom_fields_values': [
                     {'field_id': MAP['contact_phone'], 'values': [{'value': lead['phone'], 'enum_code': 'WORK'}]}]}])
                 contact_id = contact['_embedded']['contacts'][0]['id']
             record['contact_id'] = contact_id
@@ -166,12 +174,14 @@ class Amo:
             tags = ['Сайт', 'Ростов', kind, lead['quest'] or lead['pageTitle']]
             if test:
                 tags.append('ТЕСТ сайта')
+            fields = self.custom_fields(lead)
+            before_create()
             created = self.request('POST', '/leads', [{
-                'name': f"Заявка с сайта: {lead['formTitle']} — {lead['pageTitle']}"[:255],
+                'name': amo_text(f"Заявка с сайта: {lead['formTitle']} — {lead['pageTitle']}"[:255]),
                 'pipeline_id': 5519260 if test else int(os.environ.get('AMO_PIPELINE_ID', '6429238')),
                 'status_id': 48805513 if test else int(os.environ.get('AMO_STATUS_ID', '54964090')),
-                'custom_fields_values': self.custom_fields(lead),
-                '_embedded': {'contacts': [{'id': record['contact_id']}], 'tags': [{'name': tag[:100]} for tag in dict.fromkeys(tags) if tag]}
+                'custom_fields_values': fields,
+                '_embedded': {'contacts': [{'id': record['contact_id']}], 'tags': [{'name': amo_text(tag[:100])} for tag in dict.fromkeys(tags) if tag]}
             }])
             record['lead_id'] = created['_embedded']['leads'][0]['id']
             checkpoint()
@@ -190,10 +200,10 @@ def note(record):
     labels = {'name': 'Имя', 'phone': 'Телефон', 'pageUrl': 'Страница', 'pageTitle': 'Заголовок',
               'pageSlug': 'Слаг', 'pageType': 'Тип страницы', 'form': 'Вид формы', 'formTitle': 'Форма',
               'quest': 'Квест', 'venue': 'Площадка', 'date': 'Желаемая дата', 'comment': 'Комментарий'}
-    lines = [f'{labels.get(key, key)}: {value}' for key, value in lead.items() if value and key != 'consent']
+    lines = [f'{labels.get(key, key)}: {value}' for key, value in lead.items() if value and key not in ('consent', 'phone')]
     lines += ['Согласие: получено', 'Устройство: ' + record['device'],
               'Отправлено (Москва): ' + dt.datetime.fromtimestamp(record['created'], ZoneInfo('Europe/Moscow')).isoformat(timespec='seconds')]
-    return '\n'.join(lines)
+    return amo_text('\n'.join(lines))
 
 
 def device(agent):
@@ -202,10 +212,14 @@ def device(agent):
     return f'{platform}, {browser}'
 
 
+class HoldLead(Exception):
+    pass
+
+
 class Store:
     def __init__(self, root, amo):
         self.root, self.amo = Path(root), amo
-        for name in ['queue', 'failed', 'done']:
+        for name in ['queue', 'failed', 'done', 'hold']:
             (self.root / name).mkdir(parents=True, exist_ok=True, mode=0o700)
 
     @contextlib.contextmanager
@@ -228,9 +242,34 @@ class Store:
             os.fsync(handle.fileno())
         os.replace(temp, path)
 
+    def reserve_creation(self, record, reserve=True):
+        # The delivery lock spans this durable reservation and the POST. Count
+        # ambiguous POST attempts too, since a missing response may hide a deal.
+        now = time.time()
+        path = self.root / 'quota.json'
+        events = json.loads(path.read_text()) if path.exists() else []
+        events = [event for event in events if now - event['at'] < 86400]
+        key = hashlib.sha256(record['lead']['phone'].encode()).hexdigest()
+        if sum(event['phone'] == key for event in events) >= 3:
+            raise HoldLead('phone_daily')
+        if sum(now - event['at'] < 3600 for event in events) >= 40:
+            raise HoldLead('service_hourly')
+        if reserve:
+            events.append({'phone': key, 'at': now})
+            self.save(path, events)
+
     def attempt(self, path, record):
         try:
-            self.amo.deliver(record, lambda: self.save(path, record))
+            if not record.get('lead_id'):
+                self.reserve_creation(record, reserve=False)
+            self.amo.deliver(record, lambda: self.save(path, record),
+                             lambda: self.reserve_creation(record))
+        except HoldLead as exc:
+            record['hold_reason'] = str(exc)
+            self.save(self.root / 'hold' / path.name, record)
+            path.unlink()
+            LOG.critical('LEAD HOLD quota=%s id=%s', exc, path.stem)
+            return False
         except Exception as exc:
             code = exc.code if isinstance(exc, urllib.error.HTTPError) else type(exc).__name__
             LOG.error('LEAD QUEUED amo=%s phone=+7******%s', code, record['lead']['phone'][-4:])
@@ -240,12 +279,11 @@ class Store:
         return True
 
     def accept(self, lead, agent):
-        parsed = urllib.parse.urlsplit(lead['pageUrl'])
-        key = hashlib.sha256((lead['phone'] + parsed.netloc + parsed.path).encode()).hexdigest()
+        key = hashlib.sha256(lead['phone'].encode()).hexdigest()
         with self.lock('.ingest.lock'):
             pending = self.root / 'queue' / (key + '.json')
             done = self.root / 'done' / pending.name
-            if pending.exists() or (done.exists() and time.time() - json.loads(done.read_text())['created'] < 600):
+            if pending.exists() or (self.root / 'hold' / pending.name).exists() or (done.exists() and time.time() - json.loads(done.read_text())['created'] < 600):
                 return
             record = {'created': time.time(), 'lead': lead, 'device': device(agent)}
             self.save(pending, record)

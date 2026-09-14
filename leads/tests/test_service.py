@@ -113,12 +113,114 @@ class ServiceTests(unittest.TestCase):
             results = list(executor.map(lambda _: self.post(), range(3)))
         self.assertTrue(all(result[0] == 200 for result in results))
         self.http.store = Store(self.temp.name, self.store.amo)
-        self.post(payload(pageUrl='https://chezakvest.com/kids/?utm_source=other'))
+        self.post(payload(phone='8 (928) 216-36-23', pageUrl='https://chezakvest.com/arbitrary-new-path/?utm_source=other'))
         self.assertEqual(len(self.calls('POST','/api/v4/leads')), 1)
         done = next((Path(self.temp.name)/'done').glob('*.json'))
         self.store.save(done, {'created':time.time()-601})
         self.post()
         self.assertEqual(len(self.calls('POST','/api/v4/leads')), 2)
+
+    def test_daily_limit_survives_restart_and_holds_fourth(self):
+        start = time.time()
+        for index in range(4):
+            with patch('leads.service.time.time', return_value=start + index * 601):
+                self.http.store = Store(self.temp.name, self.store.amo)
+                if index == 3:
+                    with self.assertLogs('chezakvest-leads', level='CRITICAL') as logs:
+                        self.post()
+                    self.assertIn('phone_daily', logs.output[0])
+                else:
+                    self.post()
+        self.assertEqual(len(self.calls('POST', '/api/v4/leads')), 3)
+        held = list((Path(self.temp.name) / 'hold').glob('*.json'))
+        self.assertEqual(len(held), 1)
+        self.assertEqual(held[0].stat().st_mode & 0o777, 0o600)
+        self.assertEqual(json.loads(held[0].read_text())['hold_reason'], 'phone_daily')
+        self.store.retry()
+        original = held[0].read_bytes()
+        for delta in [2404, 86401]:
+            with patch('leads.service.time.time', return_value=start + delta):
+                self.post(payload(phone='8 (928) 216-36-23', comment='Повтор с изменёнными деталями'))
+        self.assertEqual(held[0].read_bytes(), original)
+        self.assertEqual(len(self.calls('POST', '/api/v4/leads')), 3)
+
+    def test_hourly_limit_applies_to_queued_delivery_and_expires(self):
+        start = time.time()
+        with self.store.lock():
+            for index in range(42):
+                self.post(payload(phone=f'+7910000{index:04d}'))
+        with patch('leads.service.time.time', return_value=start):
+            with self.assertLogs('chezakvest-leads', level='CRITICAL'):
+                self.store.retry()
+        self.assertEqual(len(self.calls('POST', '/api/v4/leads')), 40)
+        self.assertEqual(len(self.calls('POST', '/api/v4/contacts')), 40)
+        self.assertEqual(len(list((Path(self.temp.name) / 'hold').glob('*.json'))), 2)
+        with patch('leads.service.time.time', return_value=start + 3601):
+            self.post(payload(phone='+79100009999'))
+        self.assertEqual(len(self.calls('POST', '/api/v4/leads')), 41)
+
+    def test_failed_field_lookup_does_not_consume_creation_quota(self):
+        self.fake.failure, self.fake.fail_path = 500, '/custom_fields'
+        self.post()
+        for _ in range(3):
+            self.store.retry()
+        self.assertEqual(self.calls('POST', '/api/v4/leads'), [])
+        self.assertFalse((Path(self.temp.name) / 'quota.json').exists())
+        self.fake.failure = 0
+        self.store.retry()
+        self.assertEqual(len(self.calls('POST', '/api/v4/leads')), 1)
+
+    def test_ambiguous_creation_attempts_consume_quota(self):
+        self.store.amo.enums = {}
+        self.fake.failure, self.fake.fail_path = 500, '/api/v4/leads'
+        self.post()
+        self.store.retry()
+        self.store.retry()
+        self.fake.failure = 0
+        with self.assertLogs('chezakvest-leads', level='CRITICAL'):
+            self.store.retry()
+        self.assertEqual(len(self.calls('POST', '/api/v4/leads')), 3)
+        self.assertEqual(len(list((Path(self.temp.name) / 'hold').glob('*.json'))), 1)
+
+    def test_note_retry_succeeds_even_when_phone_quota_is_full(self):
+        start = time.time()
+        for delta in [0, 601]:
+            with patch('leads.service.time.time', return_value=start + delta):
+                self.post()
+        self.fake.failure, self.fake.fail_path = 500, '/notes'
+        with patch('leads.service.time.time', return_value=start + 1202):
+            self.post()
+            self.fake.failure = 0
+            self.store.retry()
+        self.assertEqual(len(self.calls('POST', '/api/v4/leads')), 3)
+        self.assertEqual(len(self.calls('POST', '/api/v4/leads/456/notes')), 4)
+        self.assertEqual(list((Path(self.temp.name) / 'hold').glob('*.json')), [])
+        self.assertEqual(list((Path(self.temp.name) / 'queue').glob('*.json')), [])
+
+    def test_phone_daily_window_expires(self):
+        start = time.time()
+        for delta in [0, 601, 1202, 86401]:
+            with patch('leads.service.time.time', return_value=start + delta):
+                self.post()
+        self.assertEqual(len(self.calls('POST', '/api/v4/leads')), 4)
+
+    def test_formula_text_is_escaped_and_phone_only_in_phone_field(self):
+        for index, prefix in enumerate(['=', '+', '-', '@', '\t', '\n', '\r']):
+            value = prefix + 'DANGEROUS'
+            self.post(payload(phone=f'+7911111111{index}', name=value, quest=value,
+                              pageTitle=value, formTitle=value, comment=value,
+                              utm_source=value))
+            contact = self.calls('POST', '/api/v4/contacts')[-1][0]
+            self.assertTrue(contact['name'].startswith("'"), repr(value))
+            self.assertEqual(contact['custom_fields_values'][0]['values'][0]['value'], f'+7911111111{index}')
+            lead = self.calls('POST', '/api/v4/leads')[-1][0]
+            self.assertTrue(lead['name'].startswith('Заявка с сайта: '))
+            self.assertIn({'name': "'" + value.strip()}, lead['_embedded']['tags'])
+            field = next(f for f in lead['custom_fields_values'] if f['field_id'] == 491799)
+            self.assertTrue(field['values'][0]['value'].startswith("'"))
+            note = self.calls('POST', '/api/v4/leads/456/notes')[-1][0]['params']['text']
+            self.assertIn("Комментарий: '" + value.strip(), note)
+            self.assertNotIn(f'+7911111111{index}', note)
 
     def test_queue_500_401_retry_and_checkpoint(self):
         for code in [500,401]:
