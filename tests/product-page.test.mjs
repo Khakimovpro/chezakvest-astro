@@ -45,3 +45,39 @@ test('FAQ schema source contains only visible questions', () => {
   assert.ok(faq.every((item) => item.q && item.a));
   assert.equal(faq.length, 10);
 });
+
+import kids from '../src/data/pages/kids.json' with { type: 'json' };
+import { ICONS } from '../src/components/product/icons/lucide.js';
+import { pickIcon } from '../src/lib/product-icons.js';
+import { typograf } from '../src/lib/typograf.js';
+
+test('all pilot fact lists resolve known meaningful icons', () => {
+  const sections = Object.fromEntries(kids.sections.map((section) => [section.kind, section]));
+  const lists = [page.hero.pills, page.features.items, page.product.videoPoints, page.product.safety,
+    sections.hero.pills, sections.video.points, sections.included.items, sections.safety.items];
+  for (const item of lists.flat()) {
+    const text = typeof item === 'string' ? item : item.t || item.title;
+    const icon = item.icon || pickIcon(text);
+    assert.ok(Object.hasOwn(ICONS, icon), `${text}: known icon`);
+    assert.notEqual(icon, 'sparkles', `${text}: intentional icon`);
+  }
+  assert.ok(sections.video.points.every((point) => !sections.included.items.some((item) => item.t === point.t)));
+});
+
+test('typography preserves text while joining short words and number ranges', () => {
+  assert.equal(typograf('Игра в Кальмара для 2-24'), 'Игра в\u00a0Кальмара для 2–24');
+  assert.equal(typograf('На карте — адрес'), 'На\u00a0карте\u00a0— адрес');
+  assert.equal(typograf('<текст>'), '<текст>');
+});
+
+test('built product sections use registered SVG icons instead of typographic glyphs', async () => {
+  for (const slug of ['igra_v_kalmara', 'kids']) {
+    const html = await readFile(new URL(`../dist/${slug}/index.html`, import.meta.url), 'utf8');
+    const main = html.match(/<main[\s\S]*?<\/main>/u)?.[0];
+    assert.ok(main);
+    assert.doesNotMatch(main, /[✓✔★☆▶►‹›]/u);
+    const names = [...main.matchAll(/product-icon--([a-z0-9-]+)/gu)].map((match) => match[1]);
+    assert.ok(names.length > 30);
+    for (const name of names) assert.ok(Object.hasOwn(ICONS, name), name);
+  }
+});

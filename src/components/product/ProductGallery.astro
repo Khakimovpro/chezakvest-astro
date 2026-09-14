@@ -17,11 +17,13 @@ const grid = data?.layout === 'grid';
    const previous = rail.querySelector('[data-product-previous]');
    const next = rail.querySelector('[data-product-next]');
    const update = () => {
-     previous?.setAttribute('aria-disabled', String(track.scrollLeft < 1));
-     next?.setAttribute('aria-disabled', String(track.scrollLeft + track.clientWidth >= track.scrollWidth - 1));
+     if (previous) { previous.disabled = track.scrollLeft < 1; previous.setAttribute('aria-disabled', String(previous.disabled)); }
+     if (next) { next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1; next.setAttribute('aria-disabled', String(next.disabled)); }
    };
    track.addEventListener('scroll', update, { passive: true });
    new ResizeObserver(update).observe(track);
    update();
  });
 </script>
+
+<noscript><style is:global>.product-page .product-photo-grid__item--hidden { display: block; } .product-page [data-product-gallery-more] { display: none; }</style></noscript>

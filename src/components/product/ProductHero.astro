@@ -19,7 +19,7 @@ const srcset = Object.entries(data?.imageSet || {}).map(([width, path]) => `${as
       <Breadcrumbs items={data.breadcrumbs} /><h1>{typograf(data.title)}</h1>
       <ul class="product-facts">{data.facts.map((fact, index) => <ProductFactChip text={fact} icon={index === data.facts.length - 1 ? 'map-pin' : undefined} href={index === data.facts.length - 1 ? '#karta' : undefined} />)}</ul>
       {data.rating && <a class="product-hero__rating" href={data.rating.href} target="_blank" rel="noopener"><Icon name="star" /> {data.rating.value} · {data.rating.count} отзывов о «Чё за Квест»</a>}
-      <div class="product-hero__actions"><ProductButton href="#booking" size="lg" icon="calendar-check" block>Забронировать</ProductButton><ProductButton href={phoneHref} variant="on-photo" size="lg" icon="phone">Позвонить</ProductButton>{data.video && <ProductButton href="#video" variant="on-ink" size="lg" icon="play">Смотреть видео</ProductButton>}</div>
+      <div class="product-hero__actions"><ProductButton href="#booking" size="lg" icon="calendar-check" block>Забронировать</ProductButton><ProductButton href={phoneHref} variant="on-photo" size="lg" icon="phone">Позвонить</ProductButton>{data.video && <ProductButton href="#video" class="product-hero__video" variant="on-ink" size="lg" icon="play">Смотреть видео</ProductButton>}</div>
     </div>
   </section>
 
