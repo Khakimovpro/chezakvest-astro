@@ -15,7 +15,7 @@ const rules = [
   [/квест|игр|VR/iu, 'puzzle'],
   [/пригласительн/iu, 'mail'],
   [/организац|менеджер/iu, 'clipboard-check'],
-  [/стоимост|цен/iu, 'receipt'],
+  [/стоимост|цен/iu, 'receipt-russian-ruble'],
   [/оплат|налич|перевод/iu, 'wallet'],
 ];
 export const pickIcon = (text, fallback = 'sparkles') => rules.find(([pattern]) => pattern.test(String(text)))?.[1] || fallback;

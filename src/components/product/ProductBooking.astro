@@ -11,7 +11,7 @@ const { data, phoneHref, phone, wa } = Astro.props;
 {data && <>
   <!-- Calendar markup arrives from the booking service and depends on these scoped rules. -->
   <style set:html={scheduleStyles}></style>
-  <section class="product-section product-section--ground" id="booking"><div class="container"><ProductSectionHeader title={data.title || 'Онлайн-бронирование'} /><ProductIconList items={data.lines?.map((t, i) => ({ t, icon: i ? 'wallet' : 'receipt' }))} columns={2} class="product-booking__lines" /><div class="product-schedule" data-product-reveal data-source-schedule={data.calendarId} aria-live="polite"></div><div class="product-booking__fallback" data-product-booking-fallback hidden><p>Если расписание временно недоступно, позвоните, напишите нам или оставьте предварительную заявку.</p><p><a href={phoneHref}>{phone}</a> · <a href={wa} target="_blank" rel="noopener">WhatsApp</a></p><PrebookingForm id="product-booking" quest={data.quest} calendarId={data.calendarId} /></div></div></section><script>
+  <section class="product-section product-section--ground" id="booking"><div class="container"><ProductSectionHeader title={data.title || 'Онлайн-бронирование'} /><ProductIconList items={data.lines?.map((t, i) => ({ t, icon: i ? 'wallet' : 'receipt-russian-ruble' }))} columns={2} class="product-booking__lines" /><div class="product-schedule" data-product-reveal data-source-schedule={data.calendarId} aria-live="polite"></div><div class="product-booking__fallback" data-product-booking-fallback hidden><p>Если расписание временно недоступно, позвоните, напишите нам или оставьте предварительную заявку.</p><p><a href={phoneHref}>{phone}</a> · <a href={wa} target="_blank" rel="noopener">WhatsApp</a></p><PrebookingForm id="product-booking" quest={data.quest} calendarId={data.calendarId} /></div></div></section><script>
   import { initSourceSchedule } from '../../scripts/source-schedule.js';
   document.querySelectorAll('.product-schedule[data-source-schedule]').forEach((schedule) => {
     const fallback = schedule.parentElement?.querySelector('[data-product-booking-fallback]');
@@ -26,6 +26,20 @@ const { data, phoneHref, phone, wa } = Astro.props;
         slot.setAttribute('aria-disabled', String(!available));
       });
     };
+    schedule.addEventListener('click', (event) => {
+      if (!event.target.closest('button.show_more_btn')) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const remaining = [...schedule.querySelectorAll('.quest_line.show_more.hidden')];
+      remaining.slice(0, 7).forEach((row, index) => {
+        row.style.setProperty('--i', String(Math.min(index, 5)));
+        row.classList.remove('hidden');
+      });
+      if (remaining.length <= 7) {
+        const control = schedule.querySelector('div.show_more:not(.quest_line)');
+        if (control) control.hidden = true;
+      }
+    }, true);
     schedule.addEventListener('keydown', (event) => {
       const slot = event.target.closest('.label_quest[role="button"]');
       if (!slot || slot.matches('button') || !['Enter', ' '].includes(event.key)) return;

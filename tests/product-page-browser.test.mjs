@@ -83,7 +83,13 @@ test('product booking keeps a visible path for schedule success, failure, and an
   assert.ok(bounds.width >= 44 && bounds.height >= 44);
 
   await success.locator('[data-source-schedule] .show_more_btn').click();
-  assert.ok(await visibleDays() > 7);
+  assert.equal(await visibleDays(), 14);
+  assert.equal(await success.locator('.show_more_btn').evaluate((button) => document.activeElement === button), true);
+  for (const expected of [21, 28, 32]) {
+    await success.locator('.show_more_btn').click();
+    assert.equal(await visibleDays(), expected);
+  }
+  assert.equal(await success.locator('.show_more_btn').isHidden(), true);
   await assert.equal(await success.locator('[data-product-booking-fallback]').isHidden(), true);
   await success.close();
 
