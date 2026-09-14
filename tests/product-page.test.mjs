@@ -93,10 +93,10 @@ test('icon rendering rejects unknown names including inherited object keys', () 
 });
 
 test('typography preserves text while joining short words and number ranges', () => {
-  assert.equal(typograf('Игра в Кальмара для 2-24'), 'Игра в\u00a0Кальмара для 2–24');
+  assert.equal(typograf('Игра в Кальмара для 2-24'), 'Игра в\u00a0Кальмара для\u00a02–24');
   assert.equal(typograf('На карте — адрес'), 'На\u00a0карте\u00a0— адрес');
   assert.equal(typograf('<текст>'), '<текст>');
-  assert.equal(typograf('Чё за Квест'), 'Чё за\u00a0Квест');
+  assert.equal(typograf('Чё за Квест'), 'Чё\u00a0за\u00a0Квест');
 });
 
 test('built product sections use registered SVG icons instead of typographic glyphs', async () => {
@@ -140,4 +140,32 @@ test('each pilot hall names its equipment in complete nominative labels', async 
 
 test('pilot display copy keeps the approved spelling and casing',()=>{
  for(const data of [page,kids]) assert.doesNotMatch(JSON.stringify(data),/Уверенны|пришел|актер|ребен|День Рождения/u);
+});
+
+import { parse } from 'parse5';
+import sharp from 'sharp';
+test('pilot image descriptors match local files and preload selects the hero candidates', async () => {
+  for (const slug of ['igra_v_kalmara', 'kids']) {
+    const dom = parse(await readFile(new URL(`../dist/${slug}/index.html`, import.meta.url), 'utf8'));
+    const images = [], preloads = [];
+    const visit = (node) => {
+      const attrs = Object.fromEntries((node.attrs || []).map(({name, value}) => [name, value]));
+      if (node.tagName === 'img') images.push(attrs);
+      if (node.tagName === 'link' && attrs.rel === 'preload' && attrs.as === 'image') preloads.push(attrs);
+      (node.childNodes || []).forEach(visit);
+    };
+    visit(dom);
+    const hero = images.find((attrs) => attrs.class?.split(' ').includes('product-hero__image'));
+    assert.ok(hero?.srcset, `${slug}: responsive LCP image`);
+    assert.equal(preloads.length, 1);
+    assert.equal(preloads[0].imagesrcset, hero.srcset);
+    assert.equal(preloads[0].imagesizes, hero.sizes);
+    for (const attrs of images.filter((image) => image.srcset)) {
+      for (const candidate of attrs.srcset.split(',')) {
+        const [path, descriptor] = candidate.trim().split(/\s+/u);
+        const { width } = await sharp(new URL(`../public${path}`, import.meta.url).pathname).metadata();
+        assert.ok(width >= .9 * parseInt(descriptor, 10), `${slug}: ${path}, ${width}px for ${descriptor}`);
+      }
+    }
+  }
 });

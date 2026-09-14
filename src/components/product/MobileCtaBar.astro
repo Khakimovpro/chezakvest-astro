@@ -34,7 +34,9 @@ const { phoneHref, bookingId = 'booking', bookingLabel = 'Забронирова
   const targets = [...document.querySelectorAll('.product-page #booking, .product-page #prazdnik, .product-page #quiz')];
   const visibleTargets = new Set();
   const sync = () => {
-    const visible = Boolean(hero && hero.getBoundingClientRect().bottom < 0 && visibleTargets.size === 0);
+    const pastHero = Boolean(hero && hero.getBoundingClientRect().bottom < 0);
+    document.body.classList.toggle('product-past-hero', pastHero);
+    const visible = pastHero && visibleTargets.size === 0;
     bar?.classList.toggle('product-mobile-cta--visible', visible);
     bar?.toggleAttribute('inert', !visible);
     fab?.classList.toggle('mfab--above-product-cta', visible);

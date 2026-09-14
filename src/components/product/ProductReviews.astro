@@ -3,6 +3,7 @@ import ProductSectionHeader from './ProductSectionHeader.astro';
 import ProductButton from './ProductButton.astro';
 import ProductStars from './ProductStars.astro';
 import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
 import { pluralRu } from '../../lib/plural.js';
 const { data, surface = 'sheet' } = Astro.props;
 const format = (n) => new Intl.NumberFormat('ru-RU').format(n);
@@ -14,11 +15,11 @@ const count = format(data?.data?.counts?.summary || 0);
 const avatarIndex = (name = '') => [...name].reduce((sum, ch) => sum + ch.codePointAt(0), 0) % 6;
 ---
 {data?.items?.length > 0 && <section class={`product-section product-section--${surface}`} id="otzyvy"><div class="container">
-  <ProductSectionHeader eyebrow="Рейтинг компании" title={data.title}><div slot="aside" class="product-reviews__summary"><strong>{score}</strong><div><ProductStars size={20} score={score} /><p>{count} {reviewWord(count)}</p></div></div></ProductSectionHeader>
+  <ProductSectionHeader eyebrow="Рейтинг компании" title={data.title}><div slot="aside" class="product-reviews__summary"><strong>{score}</strong><div><ProductStars size={20} score={score} /><p>{typograf(`${count} ${reviewWord(count)}`)}</p></div></div></ProductSectionHeader>
   <ul class="product-reviews__services">{Object.values(data.data.services || {}).filter((item) => item.count >= 10).map((item) => <li><a href={item.url} aria-label={`${serviceName(item.name)}: ${formatRating(item.rating)} из 5, ${format(item.count)} ${reviewWord(item.count)}`} target="_blank" rel="noopener"><span>{serviceName(item.name)}</span><Icon name="star" size={16} /><b>{formatRating(item.rating)}</b><span class="product-reviews__count">{format(item.count)}</span><Icon name="arrow-up-right" size={16} /></a></li>)}</ul>
   <div class="product-reviews__grid" data-product-reveal>{data.items.map((item, index) => <article class:list={['product-review', { 'product-review--hidden': index > 5 }]} data-product-review>
     <header class="product-review__header"><span class={`product-review__avatar product-review__avatar--${avatarIndex(item.username)}`} aria-hidden="true">{item.username?.trim().slice(0,1)}</span><div><strong>{item.username}</strong><div class="product-review__meta"><span>{serviceName(data.data.services[String(item.service)]?.name)}</span><time datetime={item.date_create.split('.').reverse().join('-')}>{item.date_create}</time></div></div><ProductStars /></header>
-    <p>{item.message}</p><footer><Icon name="map-pin" size={16} />{item.firmName}</footer>
+    <p>{typograf(item.message)}</p><footer><Icon name="map-pin" size={16} />{typograf(item.firmName)}</footer>
   </article>)}</div>
   <div class="product-reviews__actions">{data.items.length > 6 && <ProductButton variant="secondary" icon="chevron-down" iconEnd data-product-more>Показать ещё</ProductButton>}<ProductButton variant="ghost" href={data.data.feedbackUrl} icon="arrow-up-right" iconEnd target="_blank" rel="noopener">Все отзывы</ProductButton></div>
 </div></section><script>

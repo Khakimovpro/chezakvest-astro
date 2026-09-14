@@ -31,6 +31,7 @@ import VenuesSection from '../components/VenuesSection.astro';
 import ProductSectionHeader from '../components/product/ProductSectionHeader.astro';
 import ProductButton from '../components/product/ProductButton.astro';
 import ProductInfoCard from '../components/product/ProductInfoCard.astro';
+import { heroImageAttrs } from '../lib/product-page.js';
 import { typograf } from '../lib/typograf.js';
 import ProductHolidayHero from '../components/product/ProductHolidayHero.astro';
 import ProductIncluded from '../components/product/ProductIncluded.astro';
@@ -175,7 +176,10 @@ const quizKeyBySlug = {
   'new-year': 'newyear',
 };
 const quizId = site.quiz[quizKeyBySlug[page.slug] || 'main'];
-const preload = hero.bg
+const productHeroImage = heroImageAttrs(hero, base);
+const preload = nativeHoliday && productHeroImage.src
+  ? { href: productHeroImage.src, srcset: productHeroImage.srcset, sizes: productHeroImage.sizes }
+  : hero.bg
   ? { href: asset(heroSource), srcset: heroSrcset, sizes: '(max-width:700px) 100vw, 1200px' }
   : null;
 // A small group of campaign landings use a complete dark art direction in the

@@ -43,12 +43,12 @@
           "href": "#scenarii"
         }
       ],
-      "bg": "/assets/q/9225f40989.webp",
+      "bg": "/assets/q/92ae1774eb.webp",
       "bgset": {
-        "760": "/assets/q/5c1b73b72a.webp",
-        "1200": "/assets/q/789ed91e1f.webp",
-        "1600": "/assets/q/9225f40989.webp"
-      }
+        "760": "/assets/q/f26ff4856b.webp",
+        "1200": "/assets/q/92ae1774eb.webp"
+      },
+      "fit": "contain"
     },
     {
       "kind": "included",
