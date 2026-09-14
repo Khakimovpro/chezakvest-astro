@@ -108,3 +108,11 @@ test('review counts use Russian plural forms including formatted counts', () => 
     assert.equal(pluralRu(n,['отзыв','отзыва','отзывов']), word);
   }
 });
+
+test('each pilot hall names its equipment in complete nominative labels', async () => {
+  const halls=kids.sections.find(section=>section.kind==='halls').items;
+  assert.ok(halls.length>0);
+  for(const hall of halls) assert.ok(hall.equipment.every(item=>/^[А-ЯЁ]/u.test(item)));
+  const html=await readFile(new URL('../dist/kids/index.html',import.meta.url),'utf8');
+  assert.equal((html.match(/class="product-halls__equipment-title"/gu)||[]).length,halls.length);
+});
