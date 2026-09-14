@@ -1,4 +1,9 @@
 ---
-const { data } = Astro.props;
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductIconList from './ProductIconList.astro';
+import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
+const { data, surface = 'sheet' } = Astro.props;
 ---
-{data && <section class="product-section product-section--white"><div class="container product-fit"><div>{data.for?.length && <><h2>Кому подойдёт</h2><ul>{data.for.map((item) => <li>{item}</li>)}</ul></>}</div><div>{data.important?.length && <><h2>Что важно знать</h2><ul>{data.important.map((item) => <li>{item}</li>)}</ul></>}</div></div></section>}
+{data && <section class={`product-section product-section--${surface} product-section--continue`}><div class="container"><div class="product-fit">{[{title:'Кому подойдёт', items:data.for}, {title:'Что важно знать',items:data.important}].map((group) => group.items?.length > 0 && <div><ProductSectionHeader title={group.title} class="product-sh--compact" /><ProductIconList items={group.items} variant="check" /></div>)}</div></div></section>}

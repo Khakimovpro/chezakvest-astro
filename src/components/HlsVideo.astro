@@ -1,4 +1,5 @@
 ---
+import Icon from './product/Icon.astro';
 import registry from '../data/video-hls.json';
 
 const { slug, title, poster, class: className = '' } = Astro.props;
@@ -7,17 +8,19 @@ if (!video) throw new Error(`Unknown HLS video: ${slug}`);
 const base = import.meta.env.BASE_URL.replace(/\/$/u, '');
 const posterUrl = poster || `${base}${video.poster}`;
 const duration = `${Math.floor(video.durationSec / 60)}:${String(video.durationSec % 60).padStart(2, '0')}`;
+const hlsSrc = `${registry.base}/${slug}/master.m3u8`;
 const ratio = `${video.width} / ${video.height}`;
 const rutubeUrl = video.source.rutubeId ? `https://rutube.ru/video/${video.source.rutubeId}/` : '';
 ---
 
 <figure class:list={['hls-video', { 'hls-video--portrait': video.height > video.width }, className]} data-hls-video style={`--hls-ratio:${ratio}`}>
-  <video controls playsinline preload="none" poster={posterUrl} data-hls-src={`${registry.base}/${slug}/master.m3u8`} data-rutube-url={rutubeUrl || undefined} aria-label={title || video.title}></video>
+  <video playsinline preload="none" poster={posterUrl} data-hls-src={hlsSrc} data-rutube-url={rutubeUrl || undefined} aria-label={title || video.title}></video>
   <button class="hls-video__play" type="button" aria-label={`Смотреть: ${title || video.title}`}>
-    <span aria-hidden="true">▶</span>
+    <Icon name="play" size={28} />
   </button>
-  <span class="hls-video__duration" aria-label={`Длительность ${duration}`}>{duration}</span>
+  <span class="hls-video__duration" aria-label={`Длительность ${duration}`}><Icon name="clock" size={16} />{duration}</span>
   <p class="hls-video__error" hidden data-hls-error>Не удалось загрузить видео. <a href={rutubeUrl} hidden={!rutubeUrl} target="_blank" rel="noopener">Смотреть на Rutube</a></p>
+<noscript><a class="hls-video__link" href={rutubeUrl || hlsSrc} target="_blank" rel="noopener">Открыть видео</a></noscript>
 </figure>
 
 <script>
@@ -31,6 +34,7 @@ const rutubeUrl = video.source.rutubeId ? `https://rutube.ru/video/${video.sourc
   .hls-video__play:focus-visible { outline:3px solid #fff; outline-offset:3px; }
   .hls-video__duration { position:absolute; right:12px; bottom:12px; padding:5px 8px; border-radius:8px; color:#fff; background:#000b; font:700 14px/1 Montserrat,sans-serif; }
   .hls-video__error { position:absolute; inset:auto 12px 12px; margin:0; padding:10px; border-radius:10px; color:#fff; background:#333e; font:600 14px/1.35 Nunito,sans-serif; }
+  .hls-video__link { position:absolute; z-index:3; bottom:12px; left:12px; display:inline-flex; align-items:center; min-height:44px; padding:0 16px; border-radius:999px; background:#fff; color:#262626; font:700 15px/1.2 Montserrat,Arial,sans-serif; text-decoration:none; }
   .hls-video__error a { color:#ff8a00; }
   .hls-video[data-ready] .hls-video__play { display:none; }
   @media (min-width:768px) { .hls-video[style*="720 / 1280"], .hls-video[style*="1080 / 1920"] { max-width:480px; } }

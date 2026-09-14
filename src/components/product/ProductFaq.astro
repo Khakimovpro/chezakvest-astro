@@ -1,4 +1,9 @@
 ---
-const { data } = Astro.props;
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductIconList from './ProductIconList.astro';
+import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
+const { data, surface = 'sheet' } = Astro.props;
 ---
-{data?.length > 0 && <section class="product-section product-section--white" id="faq"><div class="container product-faq"><h2 class="section-title">Частые вопросы</h2>{data.map((item) => <details><summary>{item.q}</summary><p>{item.a}</p></details>)}</div></section>}
+{data?.length > 0 && <section class={`product-section product-section--${surface}`} id="faq"><div class="container product-faq"><ProductSectionHeader title="Частые вопросы" /><div class="product-faq__list" data-product-reveal>{data.map((item) => <details><summary>{typograf(item.q)}<span class="product-faq__chevron"><Icon name="chevron-down" size={16} /></span></summary><p>{typograf(item.a)}</p></details>)}</div></div></section>}

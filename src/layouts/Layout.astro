@@ -116,6 +116,7 @@ const montserratCyr = asset('/assets/fonts.gstatic.com/s/montserrat/v31/JTUSjIg1
     <Analytics />
   </head>
   <body class={renderedBodyClass}>
+    <a class="skip-link" href="#main">К содержанию</a>
     {sourceSnapshot ? <SourceSnapshotBody snapshot={sourceSnapshot} /> : <slot />}
     {!sourceSnapshot && <Lightbox />}
     <dialog class="exit-intent" data-exit-intent-dialog data-exit-whatsapp={site.header.wa} aria-labelledby="exit-intent-title">

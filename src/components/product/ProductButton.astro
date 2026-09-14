@@ -1,0 +1,10 @@
+---
+import Icon from './Icon.astro';
+const { href, type = 'button', variant = 'primary', size = 'md', icon, iconEnd = false, block = false, class: className = '', ...attributes } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+<Tag href={href} type={href ? undefined : type} class:list={['product-button', `product-button--${variant}`, `product-button--${size}`, { 'product-button--block': block }, className]} {...attributes}>
+  {icon && !iconEnd && <Icon name={icon} size={size === 'sm' ? 16 : 20} />}
+  <slot />
+  {icon && iconEnd && <Icon name={icon} size={size === 'sm' ? 16 : 20} />}
+</Tag>

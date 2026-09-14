@@ -1,6 +1,63 @@
 ---
-const { data } = Astro.props;
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductStars from './ProductStars.astro';
+import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
+import { pluralRu } from '../../lib/plural.js';
+const { data, surface = 'sheet' } = Astro.props;
+const format = (n) => new Intl.NumberFormat('ru-RU').format(n);
+const formatRating = (n) => new Intl.NumberFormat('ru-RU', {minimumFractionDigits: 1, maximumFractionDigits: 1}).format(n);
+const serviceName = (name) => name === '2Gis' ? '2ГИС' : name;
+const reviewWord = (n) => pluralRu(n, ['отзыв', 'отзыва', 'отзывов']);
 const score = String(data?.data?.ratings?.summaryWeight || '').replace('.', ',');
-const count = new Intl.NumberFormat('ru-RU').format(data?.data?.counts?.summary || 0);
+const count = format(data?.data?.counts?.summary || 0);
+const avatarIndex = (name = '') => [...name].reduce((sum, ch) => sum + ch.codePointAt(0), 0) % 6;
 ---
-{data?.items?.length > 0 && <section class="product-section product-section--gray" id="otzyvy"><div class="container"><p class="product-kicker">Рейтинг компании</p><h2 class="section-title">{data.title}</h2><p class="product-reviews__summary">★ {score} · {count} отзывов</p><ul class="product-reviews__services">{Object.values(data.data.services || {}).filter((item) => item.count >= 10).map((item) => <li><a href={item.url} target="_blank" rel="noopener">{item.name}: {item.rating} ({item.count})</a></li>)}</ul><div class="product-reviews__grid">{data.items.map((item, index) => <article class:list={['product-review', { 'product-review--hidden': index > 5 }]} data-product-review><div>★★★★★ <time datetime={item.date_create.split('.').reverse().join('-')}>{item.date_create}</time></div><p>{item.message}</p><footer><strong>{item.username}</strong><span>{data.data.services[String(item.service)]?.name} · {item.firmName}</span></footer></article>)}</div><div class="product-reviews__actions">{data.items.length > 6 && <button class="product-more" type="button" data-product-more>Показать ещё</button>}<a class="product-reviews__all" href={data.data.feedbackUrl} target="_blank" rel="noopener">Все отзывы</a></div></div></section><script>document.querySelector('[data-product-more]')?.addEventListener('click', (event) => { document.querySelectorAll('[data-product-review]').forEach((card) => card.classList.remove('product-review--hidden')); event.currentTarget.hidden = true; });</script>}
+{data?.items?.length > 0 && <section class={`product-section product-section--${surface}`} id="otzyvy"><div class="container">
+  <ProductSectionHeader eyebrow="Рейтинг компании" title={data.title}><div slot="aside" class="product-reviews__summary"><strong>{score}</strong><div><ProductStars size={20} score={score} /><p>{typograf(`${count} ${reviewWord(count)}`)}</p></div></div></ProductSectionHeader>
+  <ul class="product-reviews__services">{Object.values(data.data.services || {}).filter((item) => item.count >= 10).map((item) => <li><a href={item.url} aria-label={`${serviceName(item.name)}: ${formatRating(item.rating)} из 5, ${format(item.count)} ${reviewWord(item.count)}`} target="_blank" rel="noopener"><span>{serviceName(item.name)}</span><Icon name="star" size={16} /><b>{formatRating(item.rating)}</b><span class="product-reviews__count">{format(item.count)}</span><Icon name="arrow-up-right" size={16} /></a></li>)}</ul>
+  <div class="product-reviews__grid" data-product-reveal>{data.items.map((item, index) => <article class:list={['product-review', { 'product-review--hidden': index > 5 }]} data-product-review>
+    <header class="product-review__header"><span class={`product-review__avatar product-review__avatar--${avatarIndex(item.username)}`} aria-hidden="true">{item.username?.trim().slice(0,1)}</span><div><strong>{item.username}</strong><div class="product-review__meta"><span>{serviceName(data.data.services[String(item.service)]?.name)}</span><time datetime={item.date_create.split('.').reverse().join('-')}>{item.date_create}</time></div></div><ProductStars /></header>
+    <p>{typograf(item.message)}</p><footer><Icon name="map-pin" size={16} />{typograf(item.firmName)}</footer>
+  </article>)}</div>
+  <div class="product-reviews__actions">{data.items.length > 6 && <ProductButton variant="secondary" icon="chevron-down" iconEnd data-product-more>Показать ещё</ProductButton>}<ProductButton variant="ghost" href={data.data.feedbackUrl} icon="arrow-up-right" iconEnd target="_blank" rel="noopener">Все отзывы</ProductButton></div>
+</div></section><script>
+  document.querySelectorAll('.product-reviews__grid').forEach((grid) => {
+    const section = grid.closest('section');
+    section.querySelector('[data-product-more]')?.addEventListener('click', (event) => {
+      grid.querySelectorAll('[data-product-review]').forEach((card) => card.classList.remove('product-review--hidden'));
+      event.currentTarget.hidden = true;
+    });
+    const mobile = matchMedia('(max-width: 767px)');
+    const entries = [...grid.querySelectorAll('.product-review > p')].map((text) => ({text, button: null, expanded: false}));
+    const refresh = () => entries.forEach((entry) => {
+      const {text} = entry;
+      text.classList.remove('is-clamped');
+      const long = mobile.matches && text.scrollHeight > parseFloat(getComputedStyle(text).lineHeight) * 7 + 1;
+      if (long && !entry.button) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'product-button product-button--ghost product-button--sm product-review__read';
+        button.addEventListener('click', () => { entry.expanded = !entry.expanded; refresh(); });
+        text.after(button);
+        entry.button = button;
+      }
+      text.classList.toggle('is-clamped', long && !entry.expanded);
+      if (entry.button) {
+        entry.button.hidden = !long;
+        entry.button.textContent = entry.expanded ? 'Свернуть' : 'Читать полностью';
+        entry.button.setAttribute('aria-expanded', String(entry.expanded));
+      }
+    });
+    let width = 0;
+    new ResizeObserver(([entry]) => {
+      if (entry.contentRect.width !== width) { width = entry.contentRect.width; refresh(); }
+    }).observe(grid);
+    mobile.addEventListener('change', refresh);
+    document.fonts.ready.then(refresh);
+  });
+</script>}
+
+
+<noscript><style is:global>.product-page .product-review--hidden { display: block !important; } .product-page [data-product-more] { display: none; }</style></noscript>

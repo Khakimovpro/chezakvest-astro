@@ -1,0 +1,16 @@
+// Text-only typography. Callers render the result through Astro escaping.
+export const typograf = (value = '') => String(value)
+  .replace(/(\d)[ \t]*-[ \t]*(?=\d)/gu, '$1–')
+  .replace(/[ \t]+[-–—][ \t]+/gu, '\u00a0— ')
+  .replace(/(?<![\p{L}\p{N}])(в|во|и|а|с|со|к|ко|о|об|у|на|по|за|от|до|из|не|ни|но|да|или|как|что|чем|для|при|без|под|над|про|через|ещё|уже)[ \t]+(?=\S)/giu, '$1\u00a0')
+  .replace(/(\S)[ \t]+(ли|ль|же|ж|бы|б)(?=[\s.,!?…:;]|$)/giu, '$1\u00a0$2')
+  .replace(/(?<!\p{L})(ул\.|пр\.|пер\.|д\.|г\.|им\.|стр\.|пр-т)[ \t]+(?=\S)/giu, '$1\u00a0')
+  .replace(/(\d{1,3})[ \t](?=\d{3}(?!\d))/gu, '$1\u00a0')
+  .replace(/(\d{1,3})[ \t](?=\d{3}(?!\d))/gu, '$1\u00a0')
+  .replace(/(\d)[ \t]+(?!(?:и|или|а|но)[\s\u00a0])(?=\p{L})/gu, '$1\u00a0')
+  .replace(/(\d)-(?=\p{L})/gu, '$1-\u2060')
+  .replace(/(?<!\p{L})(\p{L}+-\p{L}+)(?!\p{L})/gu, word => word.length <= 14 ? word.replace('-', '-\u2060') : word)
+  .replace(/(\p{L}{3,}),[ \t](?=\d{1,4}[\p{L}\/]?(?!\d))/gu, '$1,\u00a0')
+  .replace(/"(\S[^"\n]{0,60}\S)"/gu, (match, text) => /\p{L}/u.test(text) ? `«${text}»` : match)
+  .replace(/«([^»]{2,24})»/gu, (_, text) => `«${text.replace(/ /gu, '\u00a0')}»`)
+  .replace(/(?<!\p{L})(День[ \u00a0]рождения|Чё[ \u00a0]за[ \u00a0]Квест|Новый[ \u00a0]год|под[ \u00a0]ключ|на[ \u00a0]выбор|от[ \u00a0]9[ \u00a0]лет)(?!\p{L})/giu, text => text.replace(/ /gu, '\u00a0'));

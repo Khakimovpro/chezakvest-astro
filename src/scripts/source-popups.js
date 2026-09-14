@@ -168,7 +168,7 @@ export function initSourcePopups() {
     }
 
     // Остальные внутристраничные ссылки: плавно ведём к блоку, адрес не меняем.
-    const anchor = element.closest('a[href^="#"]');
+    const anchor = element.closest('a[href^="#"]:not(.skip-link)');
     if (!(anchor instanceof HTMLAnchorElement)) return;
     const hash = anchor.getAttribute('href') ?? '';
     if (hash === '#') {

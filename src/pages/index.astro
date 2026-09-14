@@ -124,7 +124,7 @@ const jsonld = [websiteJsonLd()];
 <Layout bodyClass="home-page" schemaName={[s.hero.h1line1, s.hero.h1line2].filter(Boolean).join(' ')} ogImage={s.hero.bg} jsonld={jsonld} preloadImage={homeHeroPreload}>
   <Header />
 
-  <main>
+  <main id="main" tabindex="-1">
     <!-- ============ ГЕРОЙ ============ -->
     <section class="hero">
       <div class="container-wide">

@@ -1,0 +1,9 @@
+---
+import Icon from './Icon.astro';
+import { pickIcon, factLabel } from '../../lib/product-icons.js';
+import { typograf } from '../../lib/typograf.js';
+const { text, icon = pickIcon(text), label = factLabel(icon), href, tone = 'on-photo' } = Astro.props;
+---
+<li class:list={['product-chip', `product-chip--${tone}`, { 'product-chip--link': href }]}>
+  {href ? <a href={href}><Icon name={icon} /><span class="visually-hidden">{label}</span>{typograf(text)}</a> : <><Icon name={icon} /><span class="visually-hidden">{label}</span>{typograf(text)}</>}
+</li>

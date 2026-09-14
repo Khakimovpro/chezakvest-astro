@@ -1,4 +1,9 @@
 ---
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductIconList from './ProductIconList.astro';
+import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
 import PrebookingForm from '../PrebookingForm.astro';
 import scheduleStyles from '../../styles/source-schedule.css?raw';
 const { data, phoneHref, phone, wa } = Astro.props;
@@ -6,12 +11,23 @@ const { data, phoneHref, phone, wa } = Astro.props;
 {data && <>
   <!-- Calendar markup arrives from the booking service and depends on these scoped rules. -->
   <style set:html={scheduleStyles}></style>
-  <section class="product-section product-section--booking" id="booking"><div class="container"><h2 class="section-title">{data.title || 'Онлайн-бронирование'}</h2>{data.lines?.map((line) => <p class="product-booking__line">{line}</p>)}<div class="product-schedule" data-source-schedule={data.calendarId} aria-live="polite"></div><div class="product-booking__fallback" data-product-booking-fallback hidden><p>Если расписание временно недоступно, позвоните, напишите нам или оставьте предварительную заявку.</p><p><a href={phoneHref}>{phone}</a> · <a href={wa} target="_blank" rel="noopener">WhatsApp</a></p><PrebookingForm id="product-booking" quest={data.quest} calendarId={data.calendarId} /></div></div></section><script>
+  <section class="product-section product-section--ground" id="booking"><div class="container"><ProductSectionHeader title={data.title || 'Онлайн-бронирование'} /><ProductIconList items={data.lines?.map((t, i) => ({ t, icon: i ? 'wallet' : 'receipt-russian-ruble' }))} columns={2} class="product-booking__lines" /><div class="product-schedule" data-product-reveal data-source-schedule={data.calendarId} aria-live="polite"></div><div class="product-booking__fallback" data-product-booking-fallback><p>Если расписание временно недоступно, позвоните, напишите нам или оставьте предварительную заявку.</p><p><a href={phoneHref}>{phone}</a> · <a href={wa} target="_blank" rel="noopener">WhatsApp</a></p><PrebookingForm id="product-booking" quest={data.quest} calendarId={data.calendarId} /></div></div></section><script>
   import { initSourceSchedule } from '../../scripts/source-schedule.js';
   document.querySelectorAll('.product-schedule[data-source-schedule]').forEach((schedule) => {
     const fallback = schedule.parentElement?.querySelector('[data-product-booking-fallback]');
+    if (fallback) fallback.hidden = true;
     let fallbackTimer;
     const prepareSlots = () => {
+      schedule.querySelectorAll('.col-xs-2_quest').forEach((date) => {
+        const match = date.textContent.trim().match(/^(\d{1,2})\s+([А-Яа-яЁё]+)\/([А-Яа-яЁё]{2})$/u);
+        if (!match) return;
+        const day = document.createElement('b');
+        day.className = 'product-schedule__dow';
+        day.textContent = match[3].toUpperCase();
+        date.replaceChildren(day, document.createTextNode(`, ${match[1]} ${match[2].toLowerCase()}`));
+      });
+      const more = schedule.querySelector('button.show_more_btn');
+      if (more) more.textContent = 'Показать ещё';
       schedule.querySelectorAll('.quest_calendar .label_quest').forEach((slot) => {
         const available = slot.matches('.click_load_item:not(.close_item)') && !slot.hasAttribute('disabled');
         slot.setAttribute('role', 'button');
@@ -19,6 +35,20 @@ const { data, phoneHref, phone, wa } = Astro.props;
         slot.setAttribute('aria-disabled', String(!available));
       });
     };
+    schedule.addEventListener('click', (event) => {
+      if (!event.target.closest('button.show_more_btn')) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const remaining = [...schedule.querySelectorAll('.quest_line.show_more.hidden')];
+      remaining.slice(0, 7).forEach((row, index) => {
+        row.style.setProperty('--i', String(Math.min(index, 5)));
+        row.classList.remove('hidden');
+      });
+      if (remaining.length <= 7) {
+        const control = schedule.querySelector('div.show_more:not(.quest_line)');
+        if (control) control.hidden = true;
+      }
+    }, true);
     schedule.addEventListener('keydown', (event) => {
       const slot = event.target.closest('.label_quest[role="button"]');
       if (!slot || slot.matches('button') || !['Enter', ' '].includes(event.key)) return;

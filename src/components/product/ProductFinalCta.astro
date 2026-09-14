@@ -1,5 +1,10 @@
 ---
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductIconList from './ProductIconList.astro';
+import Icon from './Icon.astro';
+import { typograf } from '../../lib/typograf.js';
 import CallbackForm from '../CallbackForm.astro';
 const { data, phoneHref, phone, wa } = Astro.props;
 ---
-{data && <section class="product-section product-section--dark product-final"><div class="container"><h2>{data.title}</h2><p>{data.text || 'Позвоните, напишите нам или оставьте номер — менеджер поможет выбрать формат.'}</p><p class="product-final__links"><a href={phoneHref}>{phone}</a><a href={wa} target="_blank" rel="noopener">WhatsApp</a></p><div class="product-surface-light"><CallbackForm id="product-callback" sectionId="callback" /></div></div></section>}
+{data && <section class="product-section product-section--accent product-final"><div class="container" data-product-reveal><div><ProductSectionHeader title={data.title} lead={data.text || 'Позвоните, напишите нам или оставьте номер — менеджер поможет выбрать формат.'} /><div class="product-final__links"><ProductButton href={phoneHref} variant="on-accent" size="lg" icon="phone" aria-label={phone}>Позвонить</ProductButton><ProductButton href={wa} variant="on-photo" size="lg" icon="whatsapp" target="_blank" rel="noopener">WhatsApp</ProductButton></div></div><div class="product-surface-light"><CallbackForm id="product-callback" sectionId="callback" /></div></div></section>}

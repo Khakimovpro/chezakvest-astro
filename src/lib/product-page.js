@@ -55,3 +55,20 @@ export function productPageModel({ page, site, venues = [], venuePage = {}, revi
 }
 
 export const productFaqItems = (page = {}) => (page.product?.faq || []).map(({ q, a }) => ({ q, a })).filter((item) => item.q && item.a);
+
+export const headingParts = (lead, tail) => ({
+  tail: tail || (/^[а-яё]/u.test(lead || '') ? lead : ''),
+  lead: tail || !/^[а-яё]/u.test(lead || '') ? lead : '',
+});
+
+// Share candidate selection between the LCP image and its preload, including preview bases.
+export function heroImageAttrs(data = {}, base = '') {
+  const set = data.imageSet || data.bgset || {};
+  const candidates = Object.entries(set).filter(([, path]) => path).sort(([a], [b]) => Number(a) - Number(b));
+  const source = candidates.at(-1)?.[1] || data.image || data.bg;
+  return {
+    src: source ? `${base}${source}` : undefined,
+    srcset: candidates.map(([width, path]) => `${base}${path} ${width}w`).join(', ') || undefined,
+    sizes: '100vw',
+  };
+}

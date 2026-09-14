@@ -1,5 +1,7 @@
 # Продуктовая страница квеста
 
+Дизайн, токены, иконки и компоненты: [Дизайн продуктовых страниц](DIZAYN-PRODUKTOVYH-STRANIC.md).
+
 Продуктовый макет включается полем `"render": "native"` в JSON квеста. Оно отключает архивный Tilda-снимок для маршрута и исключает его из следующей полной генерации снимков. Поле не зависит от slug: та же схема подходит каждому квесту.
 
 Порядок блоков: hero → коротко → галерея → видео → сюжет и особенности → кому подойдёт → бронирование → отзывы → фото игроков → безопасность → праздник → FAQ → карта → другие квесты и сценарии → финальный CTA. Блок выводится, только если модель получила для него данные.
@@ -32,9 +34,9 @@
 
 ## Подача продуктовых блоков
 
-`src/styles/product.css` задаёт общую шкалу `--product-space-*` (4/8/12/16/24/32/48/64/96 px), типографику `--product-type-*`, межстрочные интервалы и ширину подводок `--product-copy-width: 60ch`. Обычная секция имеет поля 32 px на телефоне и 48 px на ПК. Заголовок отделён от текста на 16/24 px, от списка или галереи — на 24/32 px. Класс `product-prose` сохраняет 16 px между абзацами; `product-surface-light` задаёт читаемый цвет вложенных светлых форм в тёмной секции. Селекторы продуктового оформления выигрывают у общего сброса `global.css`.
+Актуальные визуальные правила, токены и приёмка находятся в [дизайн-системе продуктовых страниц](DIZAYN-PRODUKTOVYH-STRANIC.md). Источники значений — `src/styles/product/tokens.css` и `src/styles/product.css`. Межсекционные поля растут от 56 до 96 px на ширинах 390–1440, ширина текста ограничена `--product-measure: 64ch`.
 
-`ProductVideo` принимает `title`, `intro`, `points: [{ t, sub? }]` и `slug` либо `items: [{ slug, title? }]`. Праздник может передать `video.intro` и `video.points`; без собственных пунктов используются дословные `included.items`. На ПК информационная и медиа-колонки имеют пропорции 40/60 и промежуток 48 px, на телефоне идут последовательно через 24 px. Вертикальный вариант определяется размерами реестра HLS; ширина ограничена 360 px на ПК и минимумом из доступного места, 320 px и ширины для высоты 70svh на телефоне. Рамка сохраняет исходные пропорции. Несколько роликов располагаются рядом в медиа-колонке ПК, последовательно на телефоне.
+`ProductVideo` принимает `title`, `intro`, `points: [{ t, sub? }]` и `slug` либо `items: [{ slug, title? }]`. Праздник может передать `video.intro` и `video.points`; без собственных пунктов используются дословные `included.items`. Кадр сохраняет пропорции из HLS-реестра. Несколько роликов на телефоне образуют горизонтальную ленту с превью следующего кадра; точная геометрия по брейкпоинтам описана в дизайн-системе.
 
 `ProductPackages` reserves a 28 px badge slot in every card header, followed by 8 px gaps before the name and duration. Lists keep their natural row heights with 12 px item gaps and 16 px between lists; spare card height stays before the bottom-aligned action. `ProductReviews` separates metadata from the full review text by 12 px, groups the author and source at the card bottom with 16 px top padding, and keeps a 24 px gap before its actions even after expansion.
 
@@ -47,7 +49,7 @@ Package layout follows the `product-packages` content container: below 680 px, o
 
 `ProductBooking` makes the service's available `.click_load_item` time spans keyboard buttons after the schedule loads, preserving their `data-id` and click handler. Enter and Space activate them; unavailable `.close_item` slots have `aria-disabled=true` and leave the tab order. Product schedule slots and the expand action have a minimum 44 px target, 15 px text, and dark text on orange. The initial seven days and fallback remain unchanged; archived schedules keep their original adapter and styling.
 
-Shared `.product-more[hidden]` removes expanded gallery and review actions from layout and keyboard navigation. Mobile photo-rail arrows are 44 px with 4 px gaps; tablet and desktop arrows remain 48 px. `ProductMap` reserves 280 px below 768 px and 320 px above it before loading, and the iframe fills the same area. Video facts use icon chips, followed by the same primary action and anchor as the corresponding product hero.
+Shared `.product-more[hidden]` removes expanded gallery and review actions from layout and keyboard navigation. Mobile photo-rail arrows are 44 px with 4 px gaps; tablet and desktop arrows remain 48 px. `ProductMap` reserves its area with aspect-ratio (4/3 on mobile, 16/10 from 768 px); the iframe fills the same area. At 768–1023 px the address precedes the full-width map in one column. Video facts use icon chips, followed by the same primary action and anchor as the corresponding product hero.
 
 `scripts/video/poster.sh` samples ten frames evenly across 10–90% of the source duration. It ranks full-range grayscale mean and variance with equal min/max-normalized weights, selecting the earliest candidate on a tie. The selected frame is encoded within 81,920 bytes; an unsuccessful encode preserves the previous poster. Candidate times, metrics, selected frame, quality and size are emitted as JSON to stderr; stdout retains the output path. Inspect the generated scene before publication. Posters are served from the local paths in the HLS registry.
 

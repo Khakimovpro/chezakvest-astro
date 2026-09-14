@@ -1,22 +1,25 @@
 ---
+import ProductSectionHeader from './ProductSectionHeader.astro';
+import ProductButton from './ProductButton.astro';
+import ProductIconList from './ProductIconList.astro';
+import Icon from './Icon.astro';
+import { heroImageAttrs } from '../../lib/product-page.js';
+import { typograf } from '../../lib/typograf.js';
+import ProductFactChip from './ProductFactChip.astro';
 const { data, phoneHref, wa, base = '' } = Astro.props;
-const asset = (path) => `${base}${path || ''}`;
-const source = data?.bgset?.['1600'] || data?.bgset?.['1200'] || data?.bg;
-const srcset = Object.entries(data?.bgset || {}).map(([width, path]) => `${asset(path)} ${width}w`).join(', ');
+const image = heroImageAttrs(data, base);
 ---
 
-{data && <section class="product-hero product-hero--holiday">
-  {source && <img class="product-hero__image" src={asset(source)} srcset={srcset || undefined} sizes="100vw" width="1600" height="700" fetchpriority="high" decoding="async" alt="" />}
+{data && <section class:list={['product-hero', 'product-hero--holiday', {'product-hero--contain': data.fit === 'contain'}]}>
+  <div class="product-hero__media">
+  {image.src && <img class="product-hero__image" {...image} width="1600" height="700" fetchpriority="high" decoding="async" alt="" />}
   <div class="product-hero__shade"></div>
+  </div>
   <div class="product-hero__content container">
-    {data.up && <p class="product-kicker">{data.up}</p>}
-    <h1>{data.h1}</h1>
-    {data.sub && <p class="product-hero__sub">{data.sub}</p>}
-    {(data.pills || []).length > 0 && <ul class="product-facts">{data.pills.map((fact) => <li>{fact}</li>)}</ul>}
-    <div class="product-hero__actions">
-      <a class="btn-orange" href="#prazdnik">Узнать стоимость</a>
-      <a class="product-btn-light" href={phoneHref}>Позвонить</a>
-      <a class="product-hero__wa" href={wa} target="_blank" rel="noopener">WhatsApp</a>
-    </div>
+    {data.up && <p class="product-kicker">{typograf(data.up)}</p>}
+    <h1>{typograf(data.h1)}</h1>
+    {data.sub && <p class="product-hero__sub">{typograf(data.sub)}</p>}
+    {(data.pills || []).length > 0 && <ul class="product-facts">{data.pills.map((fact) => <ProductFactChip text={fact} />)}</ul>}
+    <div class="product-hero__actions"><ProductButton href="#prazdnik" size="lg" icon="arrow-right" iconEnd block>Узнать стоимость</ProductButton><ProductButton href={phoneHref} variant="on-photo" size="lg" icon="phone">Позвонить</ProductButton><ProductButton href={wa} variant="on-ink" size="lg" icon="whatsapp" target="_blank" rel="noopener">WhatsApp</ProductButton></div>
   </div>
 </section>}

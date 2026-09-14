@@ -1,0 +1,8 @@
+---
+import Icon from './Icon.astro';
+const { src, alt, group, width, height, imageClass = '', buttonClass = '', loading = 'lazy', decoding = 'async' } = Astro.props;
+---
+<button class:list={['zoomable', 'product-media', buttonClass]} type="button" data-zoom={group} aria-label={`Открыть фото: ${alt}`}>
+  <img class={imageClass} src={src} alt={alt} width={width} height={height} loading={loading} decoding={decoding} />
+  <span class="product-media__zoom"><Icon name="maximize-2" size={20} /></span>
+</button>
