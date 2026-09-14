@@ -5,7 +5,7 @@ const { items = [], base = '', group = 'product-slider', label = 'Фотогра
 {items.length > 0 && <div class="product-slider" data-product-slider role="region" aria-roledescription="carousel" aria-label={label} tabindex="0" data-product-reveal>
   <div class="product-slider__viewport">
     <div class="product-slider__track">
-      {items.map((item, index) => <div class="product-slider__slide" role="group" aria-roledescription="slide" aria-label={`${index + 1} из ${items.length}`} aria-hidden={index !== 0} inert={index !== 0}>
+      {items.map((item, index) => <div class="product-slider__slide" role="group" aria-roledescription="slide" aria-label={`${index + 1} из ${items.length}`}>
         <button class="zoomable product-slider__photo" type="button" data-zoom={group} aria-label={`Открыть фото: ${item.alt || label}`}>
           <img src={`${base}${item.src || item}`} alt={item.alt || label} width="1200" height="750" loading="lazy" decoding="async" draggable="false" />
         </button>
@@ -25,7 +25,7 @@ const { items = [], base = '', group = 'product-slider', label = 'Фотогра
 <script>
   import './product-slider.js';
 </script>
-<noscript><style is:global>.product-slider__navigation,.product-slider__arrow { display: none; }</style></noscript>
+<noscript><style is:global>.product-slider__navigation,.product-slider__arrow,.product-slider__counter { display: none !important; } .product-slider__viewport { overflow-x: auto !important; touch-action: auto !important; }</style></noscript>
 <style>
   .product-slider { min-width: 0; }
   .product-slider__viewport { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border-radius: var(--product-radius-lg); background: var(--product-ink); box-shadow: var(--product-shadow-2); touch-action: pan-y; }

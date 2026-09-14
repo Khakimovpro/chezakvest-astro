@@ -74,6 +74,6 @@ document.querySelectorAll('[data-product-slider]').forEach((slider) => {
   document.addEventListener('visibilitychange', schedule);
   desktop.addEventListener('change', schedule);
   reduced.addEventListener('change', schedule);
-  preload();
+  show(0);
   schedule();
 });
