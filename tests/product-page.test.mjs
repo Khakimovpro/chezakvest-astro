@@ -89,3 +89,22 @@ test('built product sections use registered SVG icons instead of typographic gly
     for (const name of names) assert.ok(Object.hasOwn(ICONS, name), name);
   }
 });
+
+test('pilot preparation states sourced facts without editorial uncertainty', () => {
+  assert.equal(page.product.safetyTitle, 'Перед игрой');
+  assert.doesNotMatch(JSON.stringify(page.product), /не опубликован|Что известно/u);
+  assert.equal(page.product.safety.length, 4);
+});
+
+test('directions ignore quoted quest names when resolving icons', () => {
+  for (const text of ['Справа от двери «Чё за Квест?»', 'У входа "Квест"']) {
+    assert.equal(pickIcon(text, 'footprints'), 'footprints');
+  }
+});
+
+import { pluralRu } from '../src/lib/plural.js';
+test('review counts use Russian plural forms including formatted counts', () => {
+  for (const [n, word] of [[1,'отзыв'],[3,'отзыва'],[11,'отзывов'],['4 483','отзыва'],[21,'отзыв'],[112,'отзывов'],[0,'отзывов']]) {
+    assert.equal(pluralRu(n,['отзыв','отзыва','отзывов']), word);
+  }
+});

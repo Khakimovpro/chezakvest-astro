@@ -17,6 +17,7 @@ const grid = data?.layout === 'grid';
    const previous = rail.querySelector('[data-product-previous]');
    const next = rail.querySelector('[data-product-next]');
    const update = () => {
+     previous.hidden = next.hidden = track.scrollWidth <= track.clientWidth + 1;
      if (previous) { previous.disabled = track.scrollLeft < 1; previous.setAttribute('aria-disabled', String(previous.disabled)); }
      if (next) { next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1; next.setAttribute('aria-disabled', String(next.disabled)); }
    };

@@ -18,5 +18,5 @@ const rules = [
   [/стоимост|цен/iu, 'receipt-russian-ruble'],
   [/оплат|налич|перевод/iu, 'wallet'],
 ];
-export const pickIcon = (text, fallback = 'sparkles') => rules.find(([pattern]) => pattern.test(String(text)))?.[1] || fallback;
+export const pickIcon = (text, fallback = 'sparkles') => rules.find(([pattern]) => pattern.test(String(text).replace(/«[^»]*»|"[^"]*"/gu, '')))?.[1] || fallback;
 export const factLabel = (icon) => ({ users: 'Игроков:', clock: 'Длительность:', 'user-round-check': 'Возраст:', 'map-pin': 'Адрес:', 'party-popper': 'Формат:', 'building-2': 'Площадок:' })[icon] || '';

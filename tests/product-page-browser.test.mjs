@@ -341,3 +341,62 @@ test('mobile actions leave room for the local messenger and a late-loading suppo
     await page.close();
   }
 });
+
+test('product rails scroll, directions stay separate and mobile reviews expand without losing text', { timeout: 120_000 }, async (t) => {
+  const base = await buildAndServe(t);
+  const browser = await chromium.launch({ args: ['--no-sandbox'] });
+  t.after(() => browser.close());
+  for (const slug of ['igra_v_kalmara', 'kids']) {
+    const page = await browser.newPage({ viewport: {width:1440,height:900}, reducedMotion:'reduce' });
+    await page.goto(`${base}/${slug}/`, {waitUntil:'load'});
+    await page.evaluate(() => document.fonts.ready);
+    for (const width of [1440,768]) {
+      await page.setViewportSize({width,height:900});
+      for (const wrap of await page.locator('.cards__wrap').all()) {
+        const row=wrap.locator('.cards__row');
+        await row.evaluate(el=>el.scrollTo({left:0,behavior:'instant'}));
+        await page.waitForTimeout(100);
+        assert.equal(await wrap.locator('.cards__arrow--prev').isDisabled(),true);
+        if (await row.evaluate(el=>el.scrollWidth <= el.clientWidth + 2)) {
+          assert.equal(await wrap.locator('.cards__arrow--next').isHidden(), true);
+          continue;
+        }
+        await wrap.locator('.cards__arrow--next').click();
+        await page.waitForFunction(el=>el.scrollLeft>0,await row.elementHandle());
+      }
+    }
+    for (const width of [390,768,1440]) {
+      await page.setViewportSize({width,height:900});
+      if (slug === 'igra_v_kalmara') {
+        const address=page.locator('.product-story__features li').filter({hasText:'2 адреса на выбор'}).locator('p');
+        assert.equal((await address.innerText()).split('\n').length,2);
+      }
+      const icons=await page.locator('.product-map .product-icon-list__icon svg').evaluateAll(els=>els.map(el=>el.getAttribute('class')));
+      assert.ok(icons.length && icons.every(icon=>icon.includes('product-icon--footprints')));
+    }
+    await page.setViewportSize({width:390,height:900});
+    const grid=page.locator('.product-reviews__grid');
+    await grid.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(150);
+    const cards=grid.locator('.product-review');
+    const heights=await cards.evaluateAll(els=>els.map(el=>el.getBoundingClientRect().height));
+    assert.ok(Math.max(...heights)-Math.min(...heights)<=1);
+    const card=grid.locator('.product-review').filter({has: page.getByRole('button',{name:'Читать полностью'})}).first();
+    const handle=await card.elementHandle();
+    const read=await handle.$('button.product-review__read');
+    assert.ok(read);
+    const paragraph=await handle.$(':scope > p');
+    const message=await paragraph.textContent();
+    const before=await paragraph.evaluate(el=>el.getBoundingClientRect().height);
+    await read.click();
+    assert.equal(await read.getAttribute('aria-expanded'),'true');
+    assert.equal(await paragraph.textContent(),message);
+    assert.ok(await paragraph.evaluate(el=>el.getBoundingClientRect().height)>before);
+    await read.click();
+    assert.equal(await read.getAttribute('aria-expanded'),'false');
+    await page.setViewportSize({width:768,height:900});
+    await page.waitForTimeout(100);
+    assert.equal(await page.locator('.is-clamped').count(),0);
+    await page.close();
+  }
+});
