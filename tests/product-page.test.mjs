@@ -39,6 +39,27 @@ test('native product route has booking, phone, WhatsApp, required legacy anchors
   assert.equal((html.match(/<h1(?:\s|>)/gu) || []).length, 1);
 });
 
+test('product pages with card arrows load the shared row handler in their module graph', async () => {
+  const dist = new URL('../dist/', import.meta.url);
+  for (const slug of ['igra_v_kalmara', 'kids']) {
+    const html = await readFile(new URL(`${slug}/index.html`, dist), 'utf8');
+    assert.match(html, /cards__arrow/u);
+    const pending = [...html.matchAll(/<script\b[^>]*\bsrc="([^"]+\.js)"/gu)]
+      .map((match) => new URL(match[1].replace(/^\//u, ''), dist));
+    const visited = new Set();
+    let found = false;
+    while (pending.length && !found) {
+      const url = pending.pop();
+      if (visited.has(url.href) || !url.href.startsWith(dist.href)) continue;
+      visited.add(url.href);
+      const source = await readFile(url, 'utf8');
+      found = source.includes('.cards__wrap') && source.includes('scrollBy') && source.includes('addEventListener');
+      for (const match of source.matchAll(/(?:from\s*|import\s*)["'](\.[^"']+\.js)["']/gu)) pending.push(new URL(match[1], url));
+    }
+    assert.ok(found, `${slug}: card row handler is reachable from the page`);
+  }
+});
+
 test('FAQ schema source contains only visible questions', () => {
   const faq = productFaqItems(page);
   assert.equal(faq.length, page.product.faq.length);

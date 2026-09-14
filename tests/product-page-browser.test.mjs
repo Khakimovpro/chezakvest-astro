@@ -395,6 +395,8 @@ test('product rails scroll, directions stay separate and mobile reviews expand w
     assert.ok(await paragraph.evaluate(el=>el.getBoundingClientRect().height)>before);
     await read.click();
     assert.equal(await read.getAttribute('aria-expanded'),'false');
+    assert.ok(Math.abs(await paragraph.evaluate(el=>el.getBoundingClientRect().height)-before)<=1, 'collapse restores the original seven-line height');
+    assert.equal(await paragraph.textContent(),message);
     await page.setViewportSize({width:768,height:900});
     await page.waitForTimeout(100);
     assert.equal(await page.locator('.is-clamped').count(),0);
