@@ -1,30 +1,12 @@
 ---
 import ProductSectionHeader from './ProductSectionHeader.astro';
 import ProductButton from './ProductButton.astro';
-import ProductIconList from './ProductIconList.astro';
-import Icon from './Icon.astro';
-import { typograf } from '../../lib/typograf.js';
+import ProductSlider from './ProductSlider.astro';
 import ProductMediaCard from './ProductMediaCard.astro';
 const { data, base = '', group = 'product-gallery', surface = 'ground', continue: continuation = false } = Astro.props;
 const asset = (path) => `${base}${path}`;
 const grid = data?.layout === 'grid';
 ---
-{data?.items?.length > 0 && <section class:list={['product-section', `product-section--${surface}`, { 'product-section--continue': continuation }]}><div class="container"><ProductSectionHeader title={data.title} />{grid ? <><div class="product-photo-grid" data-product-photo-grid data-product-reveal>{data.items.map((item, index) => <ProductMediaCard src={asset(item.src || item)} group={group} alt={item.alt || 'Фото квеста'} width="800" height="560" imageClass="product-photo-grid__image" buttonClass={`product-photo-grid__item${index > 5 ? ' product-photo-grid__item--hidden' : ''}`} loading="lazy" decoding="async" />)}</div>{data.items.length > 6 && <ProductButton variant="secondary" icon="chevron-down" iconEnd block data-product-gallery-more>Показать все фото ({data.items.length})</ProductButton>}</> : <div class="product-rail" data-product-rail data-product-reveal><button class="product-rail__arrow" type="button" data-product-previous aria-label="Предыдущая фотография"><Icon name="chevron-left" size={24} /></button><div class="product-rail__track">{data.items.map((item, index) => <ProductMediaCard src={asset(item.src || item)} group={group} alt={item.alt || 'Фото квеста'} width="800" height="560" imageClass="product-rail__image" buttonClass="product-rail__item" loading="lazy" decoding="async" />)}</div><button class="product-rail__arrow" type="button" data-product-next aria-label="Следующая фотография"><Icon name="chevron-right" size={24} /></button></div>}</div></section>}
-
-<script>
- document.querySelectorAll('[data-product-rail]').forEach((rail) => {
-   const track = rail.querySelector('.product-rail__track');
-   const previous = rail.querySelector('[data-product-previous]');
-   const next = rail.querySelector('[data-product-next]');
-   const update = () => {
-     previous.hidden = next.hidden = track.scrollWidth <= track.clientWidth + 1;
-     if (previous) { previous.disabled = track.scrollLeft < 1; previous.setAttribute('aria-disabled', String(previous.disabled)); }
-     if (next) { next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1; next.setAttribute('aria-disabled', String(next.disabled)); }
-   };
-   track.addEventListener('scroll', update, { passive: true });
-   new ResizeObserver(update).observe(track);
-   update();
- });
-</script>
+{data?.items?.length > 0 && <section class:list={['product-section', `product-section--${surface}`, { 'product-section--continue': continuation }]}><div class="container"><ProductSectionHeader title={data.title} />{grid ? <><div class="product-photo-grid" data-product-photo-grid data-product-reveal>{data.items.map((item, index) => <ProductMediaCard src={asset(item.src || item)} group={group} alt={item.alt || 'Фото квеста'} width="800" height="560" imageClass="product-photo-grid__image" buttonClass={`product-photo-grid__item${index > 5 ? ' product-photo-grid__item--hidden' : ''}`} loading="lazy" decoding="async" />)}</div>{data.items.length > 6 && <ProductButton variant="secondary" icon="chevron-down" iconEnd block data-product-gallery-more>Показать все фото ({data.items.length})</ProductButton>}</> : <ProductSlider items={data.items} base={base} group={group} label={data.title} />}</div></section>}
 
 <noscript><style is:global>.product-page .product-photo-grid__item--hidden { display: block !important; } .product-page [data-product-gallery-more] { display: none; }</style></noscript>

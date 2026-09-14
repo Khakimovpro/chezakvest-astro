@@ -1,0 +1,55 @@
+---
+import Icon from './Icon.astro';
+const { items = [], base = '', group = 'product-slider', label = 'Фотографии' } = Astro.props;
+---
+{items.length > 0 && <div class="product-slider" data-product-slider role="region" aria-roledescription="carousel" aria-label={label} tabindex="0" data-product-reveal>
+  <div class="product-slider__viewport">
+    <div class="product-slider__track">
+      {items.map((item, index) => <div class="product-slider__slide" role="group" aria-roledescription="slide" aria-label={`${index + 1} из ${items.length}`} aria-hidden={index !== 0} inert={index !== 0}>
+        <button class="zoomable product-slider__photo" type="button" data-zoom={group} aria-label={`Открыть фото: ${item.alt || label}`}>
+          <img src={`${base}${item.src || item}`} alt={item.alt || label} width="1200" height="750" loading="lazy" decoding="async" draggable="false" />
+        </button>
+      </div>)}
+    </div>
+    {items.length > 1 && <>
+      <button class="product-slider__arrow product-slider__arrow--prev" type="button" data-slider-prev aria-label="Предыдущая фотография"><Icon name="chevron-left" size={24} /></button>
+      <button class="product-slider__arrow product-slider__arrow--next" type="button" data-slider-next aria-label="Следующая фотография"><Icon name="chevron-right" size={24} /></button>
+    </>}
+    <span class="product-slider__counter" role="status" aria-live="polite" aria-atomic="true">1 / {items.length}</span>
+  </div>
+  {items.length > 1 && <div class="product-slider__navigation" aria-label="Выбор фотографии">{items.map((item, index) => <button class="product-slider__choice" type="button" data-slider-index={index} aria-label={`Фото ${index + 1}: ${item.alt || label}`} aria-current={index === 0 ? 'true' : undefined}>
+    <img src={`${base}${item.src || item}`} alt="" width="120" height="75" loading="lazy" decoding="async" />
+    <span class="product-slider__dot" aria-hidden="true"></span>
+  </button>)}</div>}
+</div>}
+<script>
+  import './product-slider.js';
+</script>
+<noscript><style is:global>.product-slider__navigation,.product-slider__arrow { display: none; }</style></noscript>
+<style>
+  .product-slider { min-width: 0; }
+  .product-slider__viewport { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border-radius: var(--product-radius-lg); background: var(--product-ink); box-shadow: var(--product-shadow-2); touch-action: pan-y; }
+  .product-slider__track { display: flex; height: 100%; transition: transform var(--product-dur-slow) var(--product-ease-out); }
+  .product-slider__slide { flex: 0 0 100%; min-width: 0; height: 100%; }
+  .product-slider__photo { display: block; width: 100%; height: 100%; padding: 0; border: 0; background: transparent; border-radius: 0; cursor: grab; }
+  .product-slider__photo:active { cursor: grabbing; }
+  .product-slider__photo img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; }
+  .product-slider__arrow { position: absolute; top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgb(255 255 255 / 40%); border-radius: var(--product-radius-pill); color: white; background: rgb(28 28 28 / 80%); cursor: pointer; }
+  .product-slider__arrow--prev { left: var(--product-space-12); }
+  .product-slider__arrow--next { right: var(--product-space-12); }
+  .product-slider__counter { position: absolute; bottom: var(--product-space-16); left: 50%; transform: translateX(-50%); border-radius: var(--product-radius-pill); padding: var(--product-space-4) var(--product-space-12); background: rgb(28 28 28 / 80%); color: white; font-size: var(--product-type-ui-small); font-variant-numeric: tabular-nums; pointer-events: none; }
+  .product-slider__navigation { display: flex; justify-content: center; flex-wrap: wrap; margin-top: var(--product-space-8); }
+  .product-slider__choice { display: grid; place-items: center; width: 44px; height: 44px; border: 0; padding: 0; background: transparent; cursor: pointer; border-radius: var(--product-radius-xs); }
+  .product-slider__choice img { display: none; }
+  .product-slider__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--product-muted); }
+  .product-slider__choice[aria-current] .product-slider__dot { background: var(--product-accent-ink); transform: scale(1.5); }
+  @media (min-width: 1024px) {
+    .product-slider__viewport { aspect-ratio: 16 / 10; }
+    .product-slider__navigation { gap: var(--product-space-12); margin-top: var(--product-space-16); }
+    .product-slider__choice { width: 96px; height: 60px; overflow: hidden; opacity: .6; }
+    .product-slider__choice img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .product-slider__choice[aria-current] { opacity: 1; outline: 3px solid var(--product-accent-ink); outline-offset: 3px; }
+    .product-slider__dot { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .product-slider__track { transition: none; } }
+</style>
