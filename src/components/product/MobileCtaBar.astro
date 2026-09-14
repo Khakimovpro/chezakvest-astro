@@ -3,6 +3,12 @@ const { phoneHref, bookingId = 'booking', bookingLabel = 'Забронирова
 ---
 <nav class="product-mobile-cta" data-product-mobile-cta aria-label="Быстрые действия"><a href={phoneHref}>Позвонить</a><a href={`#${bookingId}`}>{bookingLabel}</a></nav>
 <script>
+  const header = document.querySelector('.hdr');
+  if (header) {
+    const syncHeaderHeight = () => document.documentElement.style.setProperty('--product-header-height', `${header.getBoundingClientRect().height}px`);
+    syncHeaderHeight();
+    new ResizeObserver(syncHeaderHeight).observe(header);
+  }
   const bar = document.querySelector('[data-product-mobile-cta]');
   const booking = document.querySelector('[data-product-mobile-cta] a:last-child')?.getAttribute('href')?.slice(1);
   const bookingSection = booking && document.getElementById(booking);

@@ -329,3 +329,7 @@ body:not(.source-snapshot-page) .product-schedule .quest_calendar .label_quest {
 body:not(.source-snapshot-page) .product-schedule .show_more_btn {
   min-height: 44px; font-size: var(--product-type-15); color: var(--cta-ink);
 }
+
+body:not(.source-snapshot-page) :is(.product-section, .product-page .pform, .product-page .callback, .product-page .prebook) {
+  scroll-margin-block-start: calc(var(--product-header-height, 80px) + var(--product-space-16));
+}
