@@ -30,7 +30,7 @@
     "hls.js": "^1.7.3"
   },
   "optionalDependencies": {
-    "sharp": "^0.35.3"
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
     "parse5": "^8.0.1",
